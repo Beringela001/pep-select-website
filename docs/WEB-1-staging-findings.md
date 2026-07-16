@@ -29,7 +29,7 @@ Environment: Staging
 
 ## Confirmed editor failure
 
-Opening the normal WordPress editor for Home post ID 79 causes a fatal PHP memory error.
+Opening Home post ID 79 in Elementor normally exhausted the Staging environment's 256 MB per-thread PHP memory limit and produced an HTTP 500/critical error.
 
 Observed error:
 
@@ -38,6 +38,38 @@ Observed error:
 - Secondary failure location: wp-includes/functions.php line 4398
 - Additional database messages appeared after memory exhaustion
 
-This confirms a 256 MB memory exhaustion event, but it does not identify the plugin or component responsible.
+## Kinsta resource findings
 
-No plugins were deactivated and no memory settings were changed during this audit checkpoint.
+- Kinsta Staging has a 512 MB PHP memory pool across two threads.
+- Each PHP thread has 256 MB available.
+- Kinsta reported 15 memory-limit events.
+- Kinsta reported 28 thread-limit events.
+
+## Troubleshooting results
+
+The following isolation tests were completed on Staging:
+
+1. The homepage loaded successfully in Elementor Safe Mode. This confirmed that the Home page content itself was not corrupted.
+2. Temporarily disabling Marquee Addons did not resolve the normal Elementor editor failure.
+3. Disabling both ElementsKit Lite and ElementsKit Pro allowed the Home editor to load normally without Safe Mode.
+4. Re-enabling ElementsKit Lite by itself reproduced the editor failure.
+
+These results confirm that ElementsKit Lite was the trigger for Elementor editor memory exhaustion on this Staging environment.
+
+## Staging remediation
+
+- ElementsKit Lite and ElementsKit Pro remain disabled on Staging.
+- Disabling ElementsKit removed the ElementsKit navigation widget from Header template #1323.
+- The missing navigation was replaced with Elementor's native WordPress Menu widget.
+- The native menu was configured for desktop and mobile.
+- The menu was tested on the public Staging site and published.
+
+## Verification status
+
+- The public homepage now loads normally on Staging.
+- The Home page Elementor editor now loads normally without Safe Mode.
+
+## Backup and environment boundary
+
+- A Kinsta manual Staging backup was created named `After ElementsKit Removal - Elementor Fixed`.
+- Live was not modified.
