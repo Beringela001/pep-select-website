@@ -1,0 +1,28 @@
+# Kinsta and WordPress backups
+backups/
+site-backups/
+*.sql
+*.sql.gz
+*.zip
+*.tar
+*.tar.gz
+
+# WordPress uploads and cache
+wp-content/uploads/
+wp-content/cache/
+wp-content/upgrade/
+wp-content/ai1wm-backups/
+
+# Environment files and credentials
+.env
+.env.*
+*.pem
+*.key
+*.crt
+wp-config.php
+
+# Operating system and editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
