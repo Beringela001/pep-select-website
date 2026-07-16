@@ -30,3 +30,9 @@ Inventory date: July 16, 2026
 - Do not enter real customer information during testing.
 - All redesign and functional changes begin on staging.
 - Production changes require desktop, tablet, mobile, account, cart, checkout, and order-flow verification.
+
+## Rollback points
+
+- Staging manual backup: Before WEB-1 Audit
+- Created: July 16, 2026
+- State: Clean clone of Live before website audit or redesign changes
