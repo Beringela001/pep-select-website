@@ -2,6 +2,13 @@
 
 All notable changes to the Pep Select child theme are documented here.
 
+## 0.3.0 - 2026-07-16
+
+- Added the first coded footer behind administrator-only `pepselect_footer_preview` and combined `pepselect_shell_preview` request flags.
+- Preserved current footer branding, research-use statements, support address, internal destinations, canonical `/testing/` COA route, and exact published FDA disclaimer through environment-neutral WordPress and WooCommerce URL helpers.
+- Added responsive dark footer presentation with semantic link groups, visible focus, practical mobile targets, compact mobile hierarchy, and reduced-motion support.
+- Preserved the independent coded-header preview, public Elementor Header #1323/Footer #391, all Elementor conditions, WooCommerce behavior, and business logic.
+
 ## 0.2.3 - 2026-07-16
 
 - Increased desktop logo presence, reduced desktop search width, and compacted the desktop Rewards control without changing header height or the `1200px` inner-width foundation.

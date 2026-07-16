@@ -10,19 +10,42 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Determine whether the current user may access a coded shell preview.
+ *
+ * @return bool
+ */
+function pepselect_child_user_can_preview_shell() {
+	if ( is_admin() || ! is_user_logged_in() || ! current_user_can( 'manage_options' ) ) {
+		return false;
+	}
+
+	return true;
+}
+
+/**
+ * Determine whether an exact read-only preview flag is present.
+ *
+ * @param string $flag Query-string key.
+ * @return bool
+ */
+function pepselect_child_preview_flag_is_set( $flag ) {
+	if ( ! pepselect_child_user_can_preview_shell() ) {
+		return false;
+	}
+
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only preview flag; access is capability restricted.
+	$preview_value = isset( $_GET[ $flag ] ) ? sanitize_text_field( wp_unslash( $_GET[ $flag ] ) ) : '';
+
+	return '1' === $preview_value;
+}
+
+/**
  * Determine whether the current front-end request may show the coded header.
  *
  * @return bool
  */
 function pepselect_child_is_header_preview_request() {
-	if ( is_admin() || ! is_user_logged_in() || ! current_user_can( 'manage_options' ) ) {
-		return false;
-	}
-
-	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only preview flag; access is capability restricted.
-	$preview_value = isset( $_GET['pepselect_header_preview'] ) ? sanitize_text_field( wp_unslash( $_GET['pepselect_header_preview'] ) ) : '';
-
-	return '1' === $preview_value;
+	return pepselect_child_preview_flag_is_set( 'pepselect_header_preview' ) || pepselect_child_preview_flag_is_set( 'pepselect_shell_preview' );
 }
 
 /**

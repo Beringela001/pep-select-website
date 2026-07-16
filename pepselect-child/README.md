@@ -1,10 +1,10 @@
 # Pep Select child theme
 
-- Version: 0.2.3
+- Version: 0.3.0
 - Parent: Hello Elementor (`hello-elementor`)
 - Text domain: `pepselect-child`
 
-Pep Select is a lightweight presentation child theme for the controlled WEB-2 customer-facing rebuild. Version 0.2.3 keeps the coded header behind a private, administrator-only preview, refines its desktop proportions, and corrects route-aware mobile menu state. It does not replace the public Elementor header, footer, search-results presentation, WooCommerce template, page template, or Elementor display condition.
+Pep Select is a lightweight presentation child theme for the controlled WEB-2 customer-facing rebuild. Version 0.3.0 adds the first coded footer behind private, administrator-only footer and shell previews while retaining the independently selectable coded header preview. It does not replace the public Elementor header, footer, search-results presentation, WooCommerce template, page template, or Elementor display condition.
 
 ## Requirements and safe failure
 
@@ -25,10 +25,13 @@ Installing a ZIP does not activate a theme automatically. The child theme is alr
 - Adds no business logic, database access, migration, analytics, tracking, remote request, dependency, or administrative asset.
 - Adds no WooCommerce template override and does not modify WooCommerce behavior.
 - Adds `?pepselect_header_preview=1`, restricted to logged-in users with `manage_options`, for the coded-header review.
-- Loads coded-header CSS and JavaScript only during an authorized preview and sends no-cache headers for that response.
+- Adds `?pepselect_footer_preview=1` for the coded footer only and `?pepselect_shell_preview=1` for the coded header and footer together, under the same capability restriction.
+- Loads coded-header or coded-footer assets only during the corresponding authorized preview and sends no-cache headers for those responses.
 - Uses the confirmed Elementor Header #1323 Media Library logo attachment when no WordPress Custom Logo is set, without storing an environment URL.
+- Uses the confirmed Elementor Footer #391 Media Library logo attachment when no WordPress Custom Logo is set, without storing an environment URL.
 - Uses the officially documented YITH remaining-points shortcode only for logged-in users and only when registered; otherwise it shows the Rewards destination without a numeric balance.
 - Uses the confirmed Xootix side-cart shortcode only when registered, with an environment-neutral cart fallback.
+- Preserves current research-use statements, support email, footer destinations, exact published FDA disclaimer, and dynamic copyright year; removes developer credit only from the private coded preview.
 - Leaves ordinary requests, existing Elementor page content, Header #1323, Footer #391, and Elementor display conditions untouched.
 
 ## Structure
@@ -38,14 +41,20 @@ pepselect-child/
 |-- assets/
 |   |-- css/
 |   |   |-- foundations.css
+|   |   |-- footer.css
 |   |   `-- header.css
 |   `-- js/
 |       |-- header.js
 |       `-- README.md
 |-- inc/
+|   |-- footer-preview.php
 |   |-- header-preview.php
 |   `-- setup.php
 |-- template-parts/
+|   |-- footer/
+|   |   |-- disclaimer.php
+|   |   |-- link-groups.php
+|   |   `-- site-footer.php
 |   |-- header/
 |   |   |-- actions.php
 |   |   |-- navigation.php
@@ -62,4 +71,4 @@ The `woocommerce/` directory is deliberately absent. Add an override only in its
 
 ## Rollback boundary
 
-The existing Hello Elementor parent theme and active Elementor Header #1323 and Footer #391 remain the rollback baseline. Version 0.2.3 changes no WordPress records or Elementor display conditions. Removing the preview query parameter immediately restores the ordinary Header #1323 request path; reactivating the parent theme remains the full theme-level rollback.
+The existing Hello Elementor parent theme and active Elementor Header #1323 and Footer #391 remain the rollback baseline. Version 0.3.0 changes no WordPress records or Elementor display conditions. Removing the preview query parameters immediately restores ordinary Header #1323 and Footer #391 request paths; reactivating the parent theme remains the full theme-level rollback.

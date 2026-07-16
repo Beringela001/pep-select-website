@@ -898,3 +898,20 @@ Version `0.2.2` changes only coded-header preview styles at widths up to `767px`
 Version `0.2.3` slightly increases desktop logo presence with layout-neutral visual scaling, reduces desktop product-search width, and compacts Rewards spacing while retaining the existing vertical padding, control heights, `1200px` inner-width token, and balanced account/cart actions. These proportion rules apply only above `1024px`. On mobile, the approved version `0.2.2` structure remains unchanged; Rewards now receives `is-current` and `aria-current="page"` only when its WooCommerce account endpoint matches the current route. Non-current hover treatment no longer uses the active-page cyan border or dark background, and keyboard focus remains independently visible through the existing focus outline.
 
 - Test package: `dist/pepselect-child-0.2.3.zip`; SHA256: `599C41193E598FE05372A02953C73A704328F5248A38327AA30F2F9D339A2934`.
+
+## Coded Footer Preview Created
+
+Version `0.3.0` adds the first coded WEB-2B footer behind private administrator previews. It does not publish a replacement, alter Elementor display conditions, or change ordinary requests.
+
+- `?pepselect_footer_preview=1` shows the coded footer with the existing Elementor Header #1323.
+- `?pepselect_header_preview=1` continues to show only the coded header with Elementor Footer #391.
+- `?pepselect_shell_preview=1` shows the coded header and footer together.
+- Every preview requires a logged-in user with `manage_options`; authorized responses receive no-cache headers and load only the assets for the requested component.
+- Footer #391 remains active outside preview. During footer or shell preview it is suppressed for that request through Elementor's Theme Location filter, with the Hello Elementor fallback footer hidden by scoped preview CSS.
+- The coded footer prefers the configured WordPress Custom Logo and otherwise uses Footer #391's confirmed Media Library attachment `687`; the site name remains the accessible no-logo fallback.
+- Current research-use statements, `support@pepselect.com`, current internal link labels, the canonical `/testing/` COA route, and the exact published FDA disclaimer are preserved. Internal destinations use WordPress or WooCommerce URL functions and environment-neutral fallbacks.
+- The copyright year is dynamic and the external developer credit is omitted from the private coded preview pending final approval.
+- The responsive footer uses the approved WEB-2A colors, typography, `1200px` width, gutters, spacing, visible focus, reduced motion, and practical mobile link targets. Legal and support content remains visible through mobile layouts.
+- No WooCommerce template, business logic, customer data, Elementor condition, WordPress record, plugin, configuration, Staging setting, or Live environment was changed.
+- Test package: `dist/pepselect-child-0.3.0.zip`; SHA256: `2792ED92425024F28068DCB1F5210B7E8375AEAACEFF33AD95AA31171C87D7A3`.
+- Package validation confirmed one `pepselect-child/` root, portable forward-slash entries, required theme files, no nested theme folder, successful temporary extraction, and byte-for-byte source matching across all `20` files.
