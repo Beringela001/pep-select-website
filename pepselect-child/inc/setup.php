@@ -9,6 +9,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+require_once get_stylesheet_directory() . '/inc/header-preview.php';
+
 /**
  * Determine whether the required Hello Elementor parent theme is available.
  *
@@ -102,4 +104,5 @@ function pepselect_child_bootstrap() {
 	}
 
 	add_action( 'wp_enqueue_scripts', 'pepselect_child_enqueue_styles', 20 );
+	pepselect_child_register_header_preview();
 }

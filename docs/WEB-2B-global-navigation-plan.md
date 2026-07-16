@@ -829,3 +829,51 @@ At the time version `0.1.1` was packaged, it had not yet been installed or activ
   - `Before WEB-2B Header Footer Rebuild`
   - `After WEB-2B Child Theme Activation`
 - The failed version `0.1.0` package attempt is resolved by the successfully installed version `0.1.1` package. The packaging cause and correction remain documented in the preceding section and are not repeated here.
+
+## Coded Header Preview Created
+
+Version `0.2.0` adds the first coded WEB-2B header behind a private preview. This checkpoint creates no public header switch and changes no Elementor display condition.
+
+### Preview access and isolation
+
+- Preview query parameter: `?pepselect_header_preview=1`
+- Access is restricted to logged-in users with the WordPress `manage_options` capability.
+- Authorized preview responses send no-cache headers.
+- During an authorized preview, the coded header renders through `wp_body_open` and Elementor Header #1323 is suppressed for that request through Elementor's documented Theme Location template-ID filter.
+- The Hello Elementor fallback header is hidden by preview-only CSS; the existing Elementor footer and normal page content remain visible.
+- Without the exact query value and capability check, no coded-header asset, markup, body class, or Elementor-header suppression is applied. Ordinary visitors continue to receive Header #1323 unchanged.
+- The unpublished draft `Pep Select Header — WEB-2B` remains inactive and has no display conditions.
+
+### Coded preview contents
+
+- Announcement: `Free 2-Day Shipping on Cart Subtotals of $200`.
+- Custom logo from WordPress site settings, with the site name as the no-logo fallback.
+- Product-only search using standard `s` and `post_type=product` query parameters and no autocomplete.
+- Exactly five primary destinations: Home, Compounds, COAs at `/testing/`, FAQ, and Contact.
+- Responsive desktop, tablet, and mobile layouts using the approved WEB-2A colors, typography, `1200px` content width, approved gutters, radii, and approximately `180ms` motion.
+- Mobile navigation uses a semantic button, accurate `aria-expanded`, Escape-to-close with focus return, link-close behavior, and responsive state reset. It never locks body scrolling.
+- Search-results presentation is not replaced in this checkpoint and remains a later WEB-2B repair.
+
+### Confirmed integrations and fallbacks
+
+- Header #1323 export confirms the YITH Points and Rewards shortcode `[yith_ywpar_points label="" show_worth="no"]`. Version `0.2.0` uses it only when WordPress reports that shortcode as registered.
+- Header #1323 export confirms the Xootix Side Cart shortcode `[xoo_wsc_cart]`. Version `0.2.0` uses it only when WordPress reports that shortcode as registered, without recreating cart state or calling plugin JavaScript.
+- My Account, Cart, and Shop destinations use public WooCommerce URL functions when available; no Staging or Live hostname is stored in the theme.
+- Navigation checks the export-confirmed `new` menu first, then assigned and existing WordPress menus. Only safe same-site matches for the five approved labels are used; missing matches receive controlled environment-neutral fallbacks, and COAs always resolves to `/testing/`.
+- If the YITH balance shortcode is unavailable, the header shows a Rewards link without an invented point value.
+- If the Xootix shortcode is unavailable, the header shows the normal WooCommerce Cart link with the server-rendered WooCommerce item count.
+- If no custom logo exists, the linked WordPress site name is shown.
+
+### Validation and package
+
+- Theme version: `0.2.0`.
+- Package: `dist/pepselect-child-0.2.0.zip`.
+- SHA256: `335DC6A9B96FCFF36704A6D1197B57B5AAACF3B8DB946EE590B292B6AC394865`.
+- JavaScript syntax passed the bundled Node.js syntax check.
+- PHP source passed manual and structural static review; PHP CLI remains unavailable locally, so `php -l` was not run.
+- Every required and referenced local file exists.
+- Static checks confirm the exact preview parameter, `manage_options` restriction, preview-only assets, scoped Elementor suppression, no settings/data writes, and no `header.php` override.
+- No hard-coded environment domain, secret, credential, remote request, analytics, tracking call, WooCommerce template override, or business-logic replacement was found.
+- Mobile CSS uses bounded widths, `min-width: 0`, `max-width: 100%`, no `100vw`, and no body scroll lock; no obvious body-level horizontal-overflow rule was found.
+- The ZIP contains one `pepselect-child/` root, uses forward-slash paths, contains no nested theme folder, matches the source files byte-for-byte, and reproduced the same files after temporary extraction.
+- This repository checkpoint did not upload version `0.2.0`, modify Staging or Live, or change WordPress, Elementor, plugins, configuration, credentials, or database content.

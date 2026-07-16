@@ -2,6 +2,14 @@
 
 All notable changes to the Pep Select child theme are documented here.
 
+## 0.2.0 - 2026-07-16
+
+- Added a coded announcement, logo, product search, rewards/account/cart controls, and five-link primary navigation.
+- Restricted the coded header to logged-in administrators using `?pepselect_header_preview=1`.
+- Added preview-only CSS and dependency-free mobile navigation JavaScript with Escape and responsive reset behavior.
+- Reused the confirmed YITH points and Xootix side-cart shortcodes when registered, with safe account/cart fallbacks.
+- Preserved ordinary Elementor Header #1323 requests, Footer #391, Elementor conditions, WooCommerce templates, and all business logic.
+
 ## 0.1.1 - 2026-07-16
 
 - Rebuilt the distributable archive with portable forward-slash ZIP entry paths.

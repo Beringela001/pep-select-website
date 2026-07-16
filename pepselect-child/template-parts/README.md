@@ -1,5 +1,5 @@
 # Template parts
 
-Version 0.1.1 intentionally contains no template parts.
+Version 0.2.0 adds the coded header preview under `header/`.
 
-Approved presentation components will be added in later bounded milestones. This foundation does not provide or replace the active header, footer, search, WooCommerce presentation, or Elementor content templates.
+These template parts render only for a logged-in administrator who requests `?pepselect_header_preview=1`. Ordinary visitors continue to receive Elementor Header #1323. No footer, search-results, WooCommerce, page-content, or Elementor template override is included.

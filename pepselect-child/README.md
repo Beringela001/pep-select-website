@@ -1,10 +1,10 @@
 # Pep Select child theme
 
-- Version: 0.1.1
+- Version: 0.2.0
 - Parent: Hello Elementor (`hello-elementor`)
 - Text domain: `pepselect-child`
 
-Pep Select is a lightweight presentation child theme for the controlled WEB-2 customer-facing rebuild. Version 0.1.1 establishes only the inactive theme foundation. It does not provide a coded header, footer, search results, WooCommerce override, page template, or Elementor display condition.
+Pep Select is a lightweight presentation child theme for the controlled WEB-2 customer-facing rebuild. Version 0.2.0 adds the first coded header behind a private, administrator-only preview. It does not replace the public Elementor header, footer, search-results presentation, WooCommerce template, page template, or Elementor display condition.
 
 ## Requirements and safe failure
 
@@ -14,7 +14,7 @@ Pep Select is a lightweight presentation child theme for the controlled WEB-2 cu
 
 The `Template: hello-elementor` declaration allows WordPress to reject activation when the parent is missing. A defensive runtime guard also prevents child assets from loading and displays an administrator notice if the parent becomes unavailable after activation.
 
-Installing the ZIP does not activate the theme. Activation must be a separate, approved Staging action after a named backup and rollback check. This repository checkpoint does not install or activate the theme anywhere.
+Installing a ZIP does not activate a theme automatically. The child theme is already active on Staging under the separately documented WEB-2B activation checkpoint; this local version does not modify Staging or Live.
 
 ## Foundation scope
 
@@ -24,7 +24,10 @@ Installing the ZIP does not activate the theme. Activation must be a separate, a
 - Bundles no font files. Georgia and system fallbacks remain available when Plus Jakarta Sans or IBM Plex Mono are not supplied by an approved site-level font source.
 - Adds no business logic, database access, migration, analytics, tracking, remote request, dependency, or administrative asset.
 - Adds no WooCommerce template override and does not modify WooCommerce behavior.
-- Leaves existing Elementor page content and the active Elementor header/footer untouched.
+- Adds `?pepselect_header_preview=1`, restricted to logged-in users with `manage_options`, for the coded-header review.
+- Loads coded-header CSS and JavaScript only during an authorized preview and sends no-cache headers for that response.
+- Uses the confirmed YITH rewards and Xootix side-cart shortcodes only when registered, with environment-neutral account/cart fallbacks.
+- Leaves ordinary requests, existing Elementor page content, Header #1323, Footer #391, and Elementor display conditions untouched.
 
 ## Structure
 
@@ -32,12 +35,19 @@ Installing the ZIP does not activate the theme. Activation must be a separate, a
 pepselect-child/
 |-- assets/
 |   |-- css/
-|   |   `-- foundations.css
+|   |   |-- foundations.css
+|   |   `-- header.css
 |   `-- js/
+|       |-- header.js
 |       `-- README.md
 |-- inc/
+|   |-- header-preview.php
 |   `-- setup.php
 |-- template-parts/
+|   |-- header/
+|   |   |-- actions.php
+|   |   |-- navigation.php
+|   |   `-- site-header.php
 |   `-- README.md
 |-- CHANGELOG.md
 |-- functions.php
@@ -50,4 +60,4 @@ The `woocommerce/` directory is deliberately absent. Add an override only in its
 
 ## Rollback boundary
 
-The existing Hello Elementor parent theme and active Elementor Header #1323 and Footer #391 remain the rollback baseline. Later Staging activation of this child theme must remain reversible by reactivating the parent theme. Version 0.1.1 changes no WordPress records or template display conditions.
+The existing Hello Elementor parent theme and active Elementor Header #1323 and Footer #391 remain the rollback baseline. Version 0.2.0 changes no WordPress records or Elementor display conditions. Removing the preview query parameter immediately restores the ordinary Header #1323 request path; reactivating the parent theme remains the full theme-level rollback.
