@@ -1,4 +1,6 @@
-# WEB-2B — Header, Navigation, Search, and Footer Implementation Plan
+# WEB-2B — Coded Global Shell Implementation Plan
+
+**Scope:** Header, Navigation, Product Search, Account/Rewards/Cart Controls, and Footer
 
 **Checkpoint:** Planning only
 
@@ -11,617 +13,663 @@
 - `docs/WEB-2-rebuild-plan.md`
 - `docs/WEB-2A-design-system-audit.md`
 
-This document authorizes no WordPress, Elementor, plugin, configuration, export, credential, database, or Live-environment change. It defines the controlled implementation sequence for the later WEB-2B implementation checkpoint.
+This document authorizes no WordPress, Elementor, theme, plugin, configuration, export, credential, database, or Live-environment change. It replaces the earlier manual Elementor header/footer implementation approach with a coded Hello Elementor child-theme plan.
 
-## 1. Objective
+## 1. Approved architecture decision
 
-Replace the fragile global presentation shell with a clean, accessible Pep Select header, navigation, product-search experience, and footer while preserving the working commerce, account, rewards, cart, COA Archive, and legal destinations underneath it.
+Elementor proved too unstable and inefficient for building critical global site components manually. WEB-2B will not build or publish the global shell through new Elementor Theme Builder templates.
 
-WEB-2B is a presentation milestone. It must not change products, prices, stock, customers, orders, rewards calculations, side-cart calculations, checkout, the emailed Square payment-link workflow, COA records, or account behavior.
+The approved approach is:
 
-## 2. Recommended replacement strategy
+- Do not publish or assign display conditions to the draft `Pep Select Header — WEB-2B`.
+- Preserve active Elementor Header #1323 and Footer #391, including their current `Entire Site` display conditions, until the coded replacements pass testing.
+- Build a lightweight Hello Elementor child theme in parallel on Staging.
+- Use the child theme to control the global site shell and presentation only:
+  - Announcement bar
+  - Desktop and mobile header
+  - Navigation
+  - Product search and results presentation
+  - Account, rewards, and cart controls
+  - Footer
+  - Responsive global spacing and styling
+- Keep Elementor available for editable marketing and editorial page content.
+- Do not move business logic into the theme.
+- Make the coded replacement independently reversible by switching back to the existing Hello Elementor parent theme.
+- Keep Live untouched.
 
-### Recommendation: build parallel replacement templates
+## 2. Why the plan changed
 
-Build new draft templates named clearly for WEB-2B, with no active display conditions, rather than modifying Header #1323 and Footer #391 directly.
+### Confirmed current problem
 
-Only switch the `Entire Site` display conditions after the replacements pass preview, responsive, accessibility, search, account, rewards, and cart testing on Staging.
+- Staging has a 512 MB PHP memory pool across two threads, with 256 MB available per thread.
+- Kinsta reported 15 memory-limit events and 28 thread-limit events.
+- Opening the Home page in normal Elementor previously exhausted the 256 MB thread limit and produced an HTTP 500/critical error.
+- ElementsKit Lite was the confirmed trigger. ElementsKit Lite and Pro remain disabled.
+- Replacing the broken ElementsKit navigation inside Header #1323 with Elementor's native WordPress Menu widget restored the current public header, but the broader manual Elementor workflow remains inefficient for a launch-critical global shell.
 
-### Why this minimizes risk
+### Architectural conclusion
 
-- Header #1323 and Footer #391 are assigned across the entire site. Editing either directly exposes every Staging page to incomplete work.
-- Header #1323 is currently functional after the ElementsKit menu was replaced with Elementor's native WordPress Menu widget. It is a known-good rollback point even though its broader presentation needs replacement.
-- The header binds navigation to product search, YITH rewards, WooCommerce account access, and the side-cart trigger. A partial edit could strand launch-critical customer actions.
-- Footer #391 contains policy, support, research-use, FDA, account-order, military, and COA destinations. A partial edit could hide compliance or support access.
-- Parallel templates allow isolated preview and immediate rollback by restoring the old Theme Builder conditions.
-- The existing templates and exports remain historical and recovery evidence. WEB-2B does not delete them.
+Header, navigation, product search, customer utilities, and footer are global, launch-critical presentation. A lightweight child theme gives them a versioned, reviewable, testable, and independently reversible home without placing customer or commerce logic in Elementor.
 
-### Switching rule
+Elementor remains appropriate for editable marketing sections and editorial page composition. It is no longer the planned owner of the WEB-2B global shell.
 
-Do not leave old and new global templates assigned to `Entire Site` simultaneously. During the approved switch window, remove the old condition and add the corresponding replacement condition as one controlled operation, then run an immediate public Staging smoke test.
+## 3. Replacement and rollback strategy
 
-Switch and verify the header first. Switch and verify the footer second. If either fails, restore its old condition immediately without disturbing the other verified surface.
+### Build in parallel
 
-## 3. Preservation boundary
+Create the child theme as a new, version-controlled package. Install it on Staging without deleting or modifying the Hello Elementor parent theme, Header #1323, Footer #391, or the draft `Pep Select Header — WEB-2B`.
 
-WEB-2B must preserve:
+The draft Elementor header must remain unpublished and receive no display conditions. It is not a fallback, migration target, or source of truth.
 
-- Existing Pep Select logo files, proportions, destinations, and approved branding assets.
-- The current WordPress menu and correct navigation destinations.
-- WooCommerce account access and logged-in/logged-out behavior.
-- WooCommerce cart behavior and the existing side-cart integration.
-- YITH rewards balances and account/rewards links until WEB-2G.
-- `/testing/` as the official Pep Select COA Archive destination.
-- Pep Select COA Archive ownership of COA search, testing records, and result routes.
-- Existing functional footer destinations unless this plan explicitly marks a label or route for review.
-- Current legal, research-use, FDA, support, and policy text until separately approved content exists.
-- Desktop and mobile access to all primary navigation and customer utilities.
-- The current Staging rollback points:
+### Preserve the active Elementor shell
+
+Header #1323 and Footer #391 remain assigned to `Entire Site` while the child theme is being built and reviewed. Their template records, content, and conditions must not be deleted or overwritten.
+
+### Theme-level takeover
+
+The child theme will use normal WordPress child-theme template hierarchy to provide its own coded `header.php` and `footer.php`.
+
+The child templates must preserve required WordPress hooks and document structure while rendering the coded Pep Select shell instead of invoking Elementor Theme Builder header/footer locations. This allows the existing Elementor templates and conditions to remain stored and unchanged.
+
+The implementation must verify that:
+
+- The child theme renders exactly one header and one footer.
+- Elementor Header #1323/Footer #391 do not also render while the child theme is active.
+- Switching back to the Hello Elementor parent theme restores the parent's normal Elementor location handling and the still-active #1323/#391 templates.
+- No undocumented Elementor private API is required.
+
+If normal template hierarchy cannot provide this cleanly on Staging, stop implementation and revise the plan. Do not solve the conflict by deleting templates or assigning the draft Elementor header.
+
+### Activation rule
+
+Child-theme activation is the shell switch. It must occur only in an approved Staging test window after the package, static checks, local rendering checks where available, and a named backup are complete.
+
+Immediate rollback is theme activation back to the Hello Elementor parent theme. Database restoration is a secondary recovery path, not the first response.
+
+## 4. Preservation boundary
+
+The child theme must preserve:
+
+- Existing Pep Select logo and branding assets.
+- WooCommerce products, variations, inventory, customers, orders, coupons, taxes, shipping, and email workflows.
+- The temporary emailed Square payment-link workflow.
+- WooCommerce account data, login state, account endpoints, and password reset.
+- Existing cart calculations and Side Cart WooCommerce/Xootix behavior.
+- YITH rewards balances, calculations, conversion, coupons, and account links until WEB-2G.
+- VerifyPass identity verification and WooCommerce coupon creation.
+- Pep Select COA Archive, its records, search behavior, and canonical `/testing/` routes.
+- Existing checkout, fulfillment, and payment integrations.
+- Current legal, research-use, FDA, support, and policy content until replacement copy is approved.
+- Existing functional footer destinations unless explicitly marked for review.
+- Elementor page-content rendering and editing for marketing/editorial pages.
+- Current Staging rollback points:
   - `Before WEB-1 Audit`
   - `After ElementsKit Removal - Elementor Fixed`
   - `Before WEB-2A Design System`
   - `After WEB-2A Global Foundations`
-- The working Staging environment and all customer, order, checkout, and account data.
+- Hello Elementor parent theme unchanged and available for immediate activation.
 - Live unchanged.
 
-## 4. Current-state summary
-
-### 4.1 Header and navigation
-
-- Header #1323 is assigned to `Entire Site` on Staging.
-- The supplied export is `header-elementor-73.json`, titled `Elementor Header #1323`; the filename/export ID mismatch must remain documented.
-- ElementsKit Lite is the confirmed trigger for Elementor editor memory exhaustion under Staging's 256 MB per-thread limit.
-- ElementsKit Lite and Pro remain disabled.
-- Disabling ElementsKit removed the old navigation widget. It was replaced on Staging with Elementor's native WordPress Menu widget, configured for desktop and mobile, publicly tested, and published.
-- The exported header couples the logo, announcement bar, desktop/mobile search, YITH rewards shortcode, account access, side-cart shortcode, and primary navigation.
-- The export contains hard-coded live-domain account, rewards, and logo asset URLs. Replacement links must be WordPress-aware or canonical rather than environment-specific.
-- The raw account link in the export does not prove a meaningful accessible name.
-- The header previously used separate desktop and mobile search widgets. Duplicate interactive controls create focus and behavioral drift risk if visibility rules fail.
-- The shipping announcement makes a specific free two-day shipping promise at a `$200` subtotal. It is unverified and must not be carried into the replacement without current operational approval.
-
-### 4.2 Search
-
-- WEB-1 confirmed that both header search and compound/product search results render with broken layouts and oversized product imagery.
-- The exported header search references shared Dark Loop #65 for results. Loop #65 is also used by Archive #441, Homepage #571, and related-product contexts.
-- Changing Dark Loop #65 inside WEB-2B would create cross-milestone risk. Its full replacement remains owned by WEB-2D.
-- Product search and COA search are different behaviors even though they must share one recognizable visual pattern:
-  - Header and Shop search must query WooCommerce products.
-  - COA Archive search must remain owned by Pep Select COA Archive and return compounds/testing records through `/testing/` routes.
-- The generic WordPress search-results layout is not an acceptable launch destination.
-
-### 4.3 Footer
-
-- Footer #391 is assigned to `Entire Site` on Staging.
-- The supplied export is `footer-elementor-70.json`, titled `Elementor Footer #391`; the mismatch must remain documented.
-- The footer uses Elementor Image, Text Editor, Icon List, Heading, and container widgets. It contains ElementsKit metadata but no direct ElementsKit widget in the exported tree.
-- The export hard-codes 12 `pepselect.kinsta.cloud` URLs/assets.
-- The COA link points to the obsolete `/coas/` route and uses the singular label “Certificate of Analysis.” The replacement must use the approved COA destination `/testing/`; final label styling still requires visual review.
-- “Track your order” currently points to `/my-account/orders/`. That destination is a customer order list, not proof of a public tracking feature. Preserve access to orders, but mark the label for later content approval rather than implying functionality that is not present.
-- The footer has seven mobile overrides and no tablet-specific overrides despite multiple link groups and long legal text.
-- Research-use language, FDA disclaimer, support information, copyright, and policy text require preservation and verification, not rewriting in WEB-2B.
+No visual milestone may change prices, product relationships, stock, rewards rules, coupons, taxes, shipping rules, payment behavior, order states, customer records, checkout validation, email delivery, COA records, or verification logic as a side effect.
 
 ## 5. Preserve / Refine / Replace / Remove classification
 
 | Decision | Items |
 |---|---|
-| Preserve | Pep Select logo/brand assets; active WordPress menu destinations; WooCommerce account/cart behavior; side-cart provider and trigger; YITH rewards calculation/balance; `/testing/`; existing legal/support/footer text; Header #1323 and Footer #391 as rollback templates |
-| Refine | Native WordPress Menu presentation; header information hierarchy; link grouping; responsive layouts; focus and touch states; footer hierarchy; account/rewards/cart labels and accessible names; environment-neutral links |
-| Replace | Header and footer presentation templates; broken product-search presentation; oversized general search-results layout; duplicate desktop/mobile search structure where one responsive instance can serve both |
-| Remove from replacements | ElementsKit widgets/dependency; hard-coded Kinsta/Hostinger/legacy-brand URLs; inaccessible raw HTML controls where a native Elementor widget is available; shrink effects; unsupported mega-menu/dropdown behavior; copied legacy-brand styling |
+| Preserve | Hello Elementor parent theme; Header #1323; Footer #391; current menu records/destinations; logo assets; WooCommerce account/cart behavior; side cart; YITH rewards; `/testing/`; legal/support text; Elementor page content |
+| Refine | Header hierarchy; responsive navigation; product search presentation; focus/touch states; account/rewards/cart presentation; footer hierarchy; global spacing; environment-neutral links |
+| Replace | Elementor-rendered global shell while the child theme is active; broken product-search results presentation; oversized general WordPress product-search layout |
+| Exclude from replacement | ElementsKit; manual Elementor header/footer rebuild; draft `Pep Select Header — WEB-2B`; hard-coded environment/legacy URLs; raw inaccessible controls; unsupported mega menus; copied legacy-brand styling |
 
-“Remove” here means omit from the new replacement. It does not authorize deleting current templates, exports, assets, plugins, records, or historical evidence.
+“Replace” means the child theme becomes the active presentation layer after testing. It does not authorize deleting the preserved Elementor templates, parent theme, exports, assets, records, plugins, or data.
 
-## 6. Approved WEB-2A foundations to apply
+## 6. Ownership by layer
 
-| Foundation | WEB-2B use |
+| Layer | Owns in WEB-2B | Must not own |
+|---|---|---|
+| Hello Elementor parent theme | Stable parent framework and immediate fallback | Pep Select customizations or edited parent files |
+| Pep Select Hello child theme | Global shell markup; header/footer presentation; navigation rendering; product-search form/results presentation; responsive spacing; narrow WooCommerce presentation hooks/overrides when necessary | Customer/order data models, authentication, rewards calculations, cart calculations, COA queries, payment/shipping/email logic, secrets |
+| Elementor | Editable marketing and editorial page content | WEB-2B global shell, business logic, secrets, customer/order logic |
+| WordPress | Menus, theme activation, URLs, users, authentication, query and template APIs | Duplicated theme-specific data stores |
+| WooCommerce | Products, product search truth, prices, stock, cart, checkout, accounts, orders, taxes, shipping, emails | Duplicated commerce logic in the child theme |
+| YITH Points and Rewards | Rewards balance, rules, conversion, and coupons | Theme-calculated rewards values |
+| Side Cart WooCommerce/Xootix | Side-cart state, trigger integration, drawer, and calculations | Theme-recreated cart state |
+| Pep Select COA Archive | COA search, records, statuses, and `/testing/` routes | Theme-created parallel COA search/data |
+| VerifyPass | Identity verification and coupon handoff | Theme-created verification logic |
+| Pep Select Site Core | Durable site-specific business behavior only when separately approved and launch-critical | Design-system panel or speculative WEB-2B backend work |
+
+The child theme may call public WordPress, WooCommerce, YITH, side-cart, and COA integration points to render presentation. It must not duplicate, recalculate, or store the data those systems own.
+
+## 7. Approved WEB-2A foundations
+
+| Foundation | Coded-shell use |
 |---|---|
-| Primary Pep Select Navy `#002A53` | Primary header/footer surfaces, high-emphasis controls, or text where contrast is verified |
-| Pep Cyan `#17A1CF` | Focus/active/accent treatment where contrast is verified; not the sole indicator of state |
-| Plus Jakarta Sans | Navigation, search, buttons, account/rewards/cart labels, footer links, and general interface text |
-| Maximum content width `1200px` | Inner header, navigation, search, and footer containers |
-| Gutters | `32px` desktop, `24px` tablet, and `20px` mobile on outer containers only |
-| Radii | `8px` small, `12px` medium, `20px` large, `999px` pill; large rounding reserved for prominent features |
-| Motion | Approximately `180ms`; subtle color, border, shadow, or `1–2px` lift only; no shrink; reduced-motion alternative |
+| Pep Navy `#002A53` | Primary header/footer surfaces and high-emphasis controls after contrast verification |
+| Pep Dark Navy `#001D3A` | Secondary dark surfaces only where intentionally specified |
+| Pep Cyan `#17A1CF` | Accent, focus, active, and information treatment after contrast verification |
+| Pep Ink `#13283D` | Primary text on light surfaces |
+| Pep Slate `#5E6F80` | Secondary text after contrast verification |
+| Pep Border `#D7E1E9` | Dividers, search fields, and subtle boundaries |
+| Pep Surface `#F3F8FC` and Pep White `#FFFFFF` | Light shell/search/footer surfaces |
+| Plus Jakarta Sans | Navigation, body/interface text, search, buttons, footer links, account/rewards/cart controls |
+| IBM Plex Mono | Technical metadata only where appropriate; not general navigation |
+| Maximum content width | `1200px` |
+| Outer gutters | `32px` desktop, `24px` tablet, `20px` mobile |
+| Radius system | `8px` small, `12px` medium, `20px` large, `999px` pill |
+| Motion | Approximately `180ms`; subtle color, border, shadow, or `1–2px` lift; no shrink; reduced-motion behavior |
 | Retained breakpoints | Mobile `767px`; Tablet `1024px` |
 
-Use the custom Elementor global color and font tokens already added on Staging. Do not change Elementor System Colors, System Fonts, global container padding, global gaps, global buttons, or Theme Styles during WEB-2B.
+The child theme should mirror these approved tokens as CSS custom properties. It must not create a design-system settings panel in Site Core during the prelaunch rebuild.
 
-## 7. Architecture and ownership
+## 8. Coded global-shell component structure
 
-| Concern | Source of truth / owner | WEB-2B responsibility |
-|---|---|---|
-| Header/footer composition | Elementor Theme Builder | Build lightweight replacement templates using native Elementor widgets |
-| Primary navigation destinations | WordPress menu assignment | Reuse the current menu and correct destinations; do not duplicate links manually unless a documented limitation requires it |
-| Product catalog/search data | WooCommerce products and native query context | Present product search safely without altering products, stock, prices, or query truth |
-| COA search/data/routes | Pep Select COA Archive | Apply approved presentation only through plugin-supported output; do not recreate its query or records in Elementor |
-| Account identity and endpoints | WordPress/WooCommerce | Preserve links and state; do not implement authentication logic in Elementor |
-| Rewards balance/rules | YITH Points and Rewards | Preserve the existing shortcode/integration and calculations; presentation only |
-| Side cart | Side Cart WooCommerce/Xootix and WooCommerce cart | Preserve `[xoo_wsc_cart]` or its verified integration point; presentation/trigger only |
-| Global tokens | Elementor custom globals documented in WEB-2A | Consume approved tokens; do not create a Site Core settings panel |
-| Theme-coupled search routing/style, if native tools are insufficient | A separately justified child-theme/presentation layer | Requires an explicit implementation approval; keep narrow and presentation-only |
-| Durable custom search behavior, if genuinely required | Pep Select Site Core only when launch-critical and approved | Not assumed in WEB-2B; advanced autocomplete and speculative backend work are deferred |
+### 8.1 Announcement bar
 
-Native Elementor Shortcode widgets may host the existing YITH and side-cart integrations. That does not transfer ownership of rewards or cart logic to Elementor.
+- Render only if the exact operational statement is verified and approved.
+- Do not copy the current free two-day shipping/$200 claim by default.
+- Keep content within the `1200px` inner container and approved outer gutters.
+- Use semantic text/link markup and no decorative script or marquee dependency.
 
-## 8. Proposed component structure
+### 8.2 Desktop header
 
-### 8.1 Header replacement
+- Semantic `<header>` landmark.
+- Existing Pep Select logo linked to the dynamic home URL.
+- Product search using WordPress/WooCommerce query APIs and a product-specific form.
+- Rewards presentation supplied by the existing YITH integration.
+- Account link supplied by the canonical WooCommerce My Account URL/state.
+- Cart trigger supplied by the existing side-cart/WooCommerce integration.
+- Semantic primary `<nav>` rendered from the current WordPress menu.
+- Required primary destinations: Home; Compounds / Shop; COAs → `/testing/`; FAQ; Contact.
+- No unsupported mega menu or prelaunch nested feature.
 
-1. **Optional announcement region**
-   - Present only if its exact operational claim is verified and approved.
-   - Do not copy the current shipping promise by default.
-   - Keep it short, dismiss-free for launch unless dismissal state is genuinely required, and readable at all widths.
-2. **Identity and customer-utility region**
-   - Existing Pep Select logo linked through the dynamic Site URL.
-   - Product search with a visible or programmatic label and clear submit control.
-   - Rewards link/balance using the current YITH integration.
-   - Account link using the canonical WooCommerce My Account destination.
-   - Cart/side-cart trigger using the current working integration.
-3. **Primary-navigation region**
-   - Elementor's native WordPress Menu widget using the existing assigned menu.
-   - Required destinations: Home; Compounds / Shop; COAs → `/testing/`; FAQ; Contact.
-   - No mega menu or unverified nested dropdown before launch.
-4. **Mobile navigation panel**
-   - One menu toggle with a meaningful accessible name.
-   - The same WordPress menu, not a separately maintained duplicate list.
-   - Essential customer links arranged without duplicating visible header controls unnecessarily.
-   - A visible close path, Escape behavior where supported, logical focus order, and no trapped focus.
+### 8.3 Mobile header and navigation
 
-### 8.2 Product search components
+- One visible menu toggle with a meaningful name and programmatic expanded state.
+- One coded navigation panel using the same WordPress menu, not a duplicated hard-coded list.
+- Logo, cart, and menu remain immediately reachable.
+- Account/rewards placement avoids duplicate controls and excessive blank space.
+- Visible close control, Escape behavior, focus containment appropriate to the panel pattern, and focus return to the toggle.
+- Correct overlay ordering with the side-cart drawer.
 
-1. A compact header product-search control.
-2. A wider Shop search variant using the same field, icon, border, type, radius, focus, loading, and error language.
-3. A bounded, lightweight product-results presentation for WEB-2B:
-   - Controlled thumbnail dimensions or a missing-image fallback.
-   - Product name and canonical product link.
-   - WooCommerce-owned price only if the chosen native result widget supplies it reliably.
-   - Clear no-results and error states.
-   - No use of the current oversized general WordPress image layout.
-4. No changes to shared Dark Loop #65 during this milestone. A dedicated temporary search-result item may be built for WEB-2B and later reconciled with the canonical WEB-2D product-card system.
+### 8.4 Product search and results
 
-### 8.3 COA search component
+- Header and Shop search use one recognizable Pep Select pattern.
+- Header search may remain compact; Shop search may be wider.
+- Both submit a product-only WordPress/WooCommerce search through supported APIs.
+- Result presentation uses bounded thumbnails, canonical product titles/links, and native WooCommerce values where displayed.
+- No fallthrough to the current oversized-image general WordPress search-results layout.
+- COA Archive search remains visually related but functionally separate and plugin-owned.
 
-1. Retain Pep Select COA Archive as the query, record, and routing owner.
-2. Apply the same approved outer shape, type, icon, border, focus, and interaction language as product search where the plugin supports safe styling.
-3. Keep the task and destination distinct: COA search returns compounds/testing records under `/testing/`, not WooCommerce products.
-4. Do not copy old `coa` post-type search logic, Loop #485, `[coa_table]`, or `/coas/` routing into the new header.
+### 8.5 Account, rewards, and cart controls
 
-### 8.4 Footer replacement
+- Use semantic links/buttons and documented public integration points.
+- Preserve logged-in/logged-out account behavior.
+- Preserve zero/nonzero rewards states without calculating balances in the theme.
+- Preserve empty/populated cart states, side-cart opening, and cart totals without recreating cart logic.
+- Icon-only controls require meaningful accessible names and at least a `44×44px` target where practical.
 
-1. **Brand/support region**
-   - Existing logo/brand asset.
-   - Current support information, pending factual verification.
-   - Current research-use and FDA language unchanged.
-2. **Navigation groups**
-   - Shop/compounds and COA Archive (`/testing/`).
-   - Support destinations such as FAQ and Contact.
-   - Customer destinations such as My Account/orders where currently functional.
-   - Military/first responder destination, preserving the current VerifyPass flow until WEB-2H.
-3. **Policy group**
-   - Existing Privacy Policy, Terms & Conditions, Refund & Shipping Policy, and RUO Disclaimer destinations.
-   - No legal rewrite or placeholder-date correction in WEB-2B.
-4. **Bottom line**
-   - Preserve current copyright and any approved credit until content approval.
-   - Review external developer-credit intent before carrying it forward.
+### 8.6 Footer
 
-Use native Elementor Heading, Text Editor, Image, Icon List, Social/Icon, Menu, and container widgets as appropriate. Do not introduce ElementsKit or raw HTML for standard controls.
+- Semantic `<footer>` landmark.
+- Existing logo/branding.
+- Current support information, research-use language, FDA disclaimer, and policy text unchanged.
+- Clear link groups for compounds/Shop, COA Archive, support, customer account/orders, military/first responder, and policies.
+- COA destination corrected to `/testing/`.
+- “Track your order” label remains flagged because `/my-account/orders/` is an account-order list, not confirmed public tracking.
+- External developer credit remains flagged for Paulo's approval.
+- Mobile hierarchy reduces height through grouping and spacing, not hidden legal/support links.
 
 ## 9. Navigation destination register
 
-| Visible destination | Required route/source | Decision |
+| Destination | Source/route | Decision |
 |---|---|---|
-| Home | Dynamic Site URL/home | Preserve |
-| Compounds / Shop | Canonical WooCommerce Shop page | Preserve; Paulo approves the displayed label |
-| COAs | `/testing/` | Correct the obsolete `/coas/` destination |
+| Home | Dynamic WordPress home URL | Preserve |
+| Compounds / Shop | Canonical WooCommerce Shop page | Preserve; displayed label requires visual/content approval |
+| COAs | `/testing/` | Use canonical Pep Select COA Archive route; do not use `/coas/` |
 | FAQ | Existing functional FAQ page | Preserve |
 | Contact | Existing functional Contact page | Preserve |
 | My Account | Canonical WooCommerce My Account page | Preserve |
-| Rewards | Existing YITH account/rewards destination | Preserve until WEB-2G; do not change rules |
-| Cart | Existing side-cart trigger and cart destination | Preserve |
-| Orders | `/my-account/orders/` | Preserve access; do not call it public “tracking” without approved wording |
-| Military / First Responder | Current functional page/VerifyPass entry | Preserve until WEB-2H determines the canonical page |
-| Policy links | Current functional policy pages | Preserve unchanged until WEB-2I |
-| External developer credit | Current `serviceslash.com` destination | Mark for owner approval; not assumed required for launch |
+| Rewards | Existing YITH account/rewards destination | Preserve until WEB-2G |
+| Cart | Existing side-cart trigger/cart destination | Preserve |
+| Orders | `/my-account/orders/` | Preserve access; do not describe as public tracking without approval |
+| Military / First Responder | Current functional VerifyPass entry page | Preserve until WEB-2H confirms the canonical page |
+| Policies | Current functional policy pages | Preserve unchanged until WEB-2I |
+| External developer credit | Current `serviceslash.com` destination | Owner decision required; not assumed launch-critical |
 
-All internal destinations must use dynamic/relative WordPress-aware links or canonical WordPress page/menu assignments. Do not hard-code Kinsta, Staging, Hostinger, Peptides Divas, or BioQuantum hosts.
+Use WordPress functions/menu records for internal destinations. Do not hard-code Kinsta, Staging, Hostinger, Peptides Divas, BioQuantum, or obsolete hosts/routes.
 
-## 10. Desktop layout
+## 10. Desktop, tablet, and mobile layouts
 
-**Target:** wider than the retained `1024px` tablet breakpoint.
+### Desktop: wider than `1024px`
 
-1. Optional verified announcement row spans the viewport; content sits within the `1200px` inner container and `32px` outer gutters.
-2. Main utility row uses a stable three-part hierarchy:
-   - Logo/identity at the start.
-   - Product search as the flexible central region.
-   - Rewards, account, and cart controls grouped at the end.
-3. Primary WordPress navigation sits in a dedicated row or clearly separated region so menu labels do not compete with the search and customer utilities.
-4. Each icon control has a visible label or meaningful accessible name and at least a `44×44px` interactive area where practical.
-5. Search growth must be bounded so it cannot push account/cart controls outside the container.
-6. Active/current navigation is visually identifiable without relying only on color.
-7. No hover interaction is required to reach primary destinations.
+1. Optional verified announcement bar spans the viewport; content uses the inner `1200px` container and `32px` gutters.
+2. Main header establishes logo, flexible product search, and grouped rewards/account/cart controls.
+3. Primary navigation receives its own clear region when necessary rather than competing for one crowded row.
+4. Search width is bounded so utilities cannot be pushed off screen.
+5. Current-page navigation state is apparent without relying only on color.
+6. Header remains usable with browser zoom and longer labels.
+7. Footer uses intentional brand/support and link-group columns, not equal-weight clutter.
 
-Footer desktop structure:
+### Tablet: `768px` through `1024px`
 
-- `1200px` maximum content width with `32px` outer gutters.
-- Brand/support/legal statement receives sufficient reading width.
-- Link groups align in intentional columns rather than six equal-weight columns.
-- Policy and support links remain visible.
-- Bottom line is visually separated without an oversized blank region.
+1. Use `24px` outer gutters.
+2. Collapse navigation before labels become cramped; verify the exact `1024px` transition and resize without reload.
+3. Keep logo, account access, and cart reachable.
+4. Move search to a full or near-full row when needed.
+5. Place rewards once, in the utility row or panel, without duplicate actions.
+6. Footer wraps in balanced groups and keeps legal text at a readable measure.
 
-## 11. Tablet layout
+### Mobile: `767px` and below
 
-**Target:** `768px` through `1024px`, including the exact `1024px` transition.
+1. Use `20px` outer gutters.
+2. Prioritize logo, cart, and one menu toggle in the first row.
+3. Present product search as a full-width second row or clearly labeled expandable region.
+4. Keep one navigation list and avoid duplicate account/rewards/cart controls.
+5. Do not create large blank regions after navigation links.
+6. Prevent body-level horizontal scrolling and nested scroll traps.
+7. Menu and side-cart overlays must not compete; one layer visually and interactively dominates at a time.
+8. Footer uses compact, always-discoverable groups. Legal/support text remains visible and readable through `320px`.
 
-1. Use the `24px` approved outer gutter.
-2. Do not squeeze the full desktop menu between the logo and utilities.
-3. Use the native menu toggle/panel at the point the desktop labels no longer fit; retained breakpoint behavior must be verified at `1024px` and browser resize without reload.
-4. Keep logo, account, and cart immediately reachable.
-5. Search becomes its own full or near-full row when necessary; do not reduce the text field below a usable width.
-6. Rewards may move into the utility row or navigation panel, but access and balance behavior must remain intact and must not duplicate confusing controls.
-7. Drawer/panel layering must not conflict with the side cart. Only one overlay should visually dominate at a time.
-
-Footer tablet structure:
-
-- Use a two-column or balanced wrapping layout with `24px` outer gutters.
-- Keep legal/research text readable rather than forcing narrow multi-column paragraphs.
-- Link groups wrap in complete groups; headings must not separate from their links.
-- No tablet behavior may depend on the current footer's absence of tablet overrides.
-
-## 12. Mobile layout
-
-**Target:** `767px` and below, tested through `320px`.
-
-1. Use the `20px` approved outer gutter.
-2. First row prioritizes the logo, cart, and one native menu toggle. Account may remain as a labeled/icon control if space permits; otherwise it appears once in the opened navigation panel.
-3. Search appears as a full-width second row or a clearly labeled expandable region. It must not overlap the logo, cart, menu, or side-cart drawer.
-4. Do not show separate, behaviorally different desktop and mobile searches unless Elementor cannot reflow one instance safely. If two instances are unavoidable, verify that only one is focusable/rendered at each breakpoint and both use identical product-query behavior.
-5. The navigation panel presents Home, Compounds / Shop, COAs, FAQ, and Contact in one clear list.
-6. Avoid duplicate rewards, account, and cart controls inside the panel when the same action remains visible in the header.
-7. Menu and close controls meet the touch-target baseline and have meaningful accessible names.
-8. Panel content must not create a large empty area after the last item, body-level horizontal scrolling, nested scroll traps, or covered actions.
-9. The open menu must not sit underneath the floating cart or side-cart layer. Closing the menu restores focus to its trigger.
-
-Footer mobile structure:
-
-- Use a compact, intentional stack with `20px` outer gutters.
-- Prefer always-visible, tightly grouped link lists over decorative empty space.
-- A native Elementor accordion may be considered only if it remains accessible and reduces height without hiding required legal/support access. Do not use ElementsKit.
-- Research-use and FDA language remain visible and readable; do not truncate or conceal it.
-- Avoid excessive gaps between headings and link groups.
-- Copyright and support information wrap naturally without tiny text.
-
-## 13. Search behavior decision tree
+## 11. Product search behavior decision tree
 
 ```text
 User starts a search
 |
-+-- From Header or Shop
++-- Header or Shop product search
 |   |
 |   +-- Query is empty
-|   |   `-- Do not submit; keep focus in the field and provide a clear accessible prompt
+|   |   `-- Do not submit; retain focus and expose a clear product-search prompt
 |   |
 |   `-- Query contains text
 |       |
-|       +-- Submit as a WooCommerce product search (`post_type=product` or verified native equivalent)
+|       +-- Submit through supported WordPress/WooCommerce product search
+|       |   using a verified product-only query
 |       |
 |       +-- Products found
-|       |   `-- Show bounded product results with controlled thumbnails and canonical product links
+|       |   `-- Render bounded product results with canonical links
 |       |
 |       +-- No products found
-|       |   `-- Show a product-specific no-results state and a path back to Shop
+|       |   `-- Render a product-specific no-results state and a path to Shop
 |       |
 |       `-- Query fails
-|           `-- Show a recoverable product-search error; never fall through to the oversized general WordPress layout
+|           `-- Render a recoverable product-search error; never show oversized general results
 |
-`-- From COA Archive
+`-- COA Archive search
     |
     +-- Query is empty
-    |   `-- Do not submit; retain the COA Archive prompt and context
+    |   `-- Retain the COA-specific prompt and context
     |
     `-- Query contains text
         |
         +-- Submit through Pep Select COA Archive
-        |
-        +-- Records found
-        |   `-- Return compound/testing records through canonical `/testing/` routes
-        |
-        +-- No records found
-        |   `-- Show the plugin-owned COA no-results state
-        |
-        `-- Query fails
-            `-- Show the plugin-owned recoverable error without substituting product results
+        +-- Records found: show compounds/testing records through `/testing/`
+        +-- No records: show the plugin-owned COA no-results state
+        `-- Failure: show the plugin-owned recoverable error
 ```
 
-Product and COA search share a visual system, not a query or database implementation.
+Product and COA searches share approved visual tokens and interaction language, not a query implementation or data model.
 
-## 14. Search implementation decision and code boundary
+## 12. WordPress/WooCommerce implementation rules
 
-### Launch-ready first choice: native tools
+- Use WordPress template hierarchy, `get_header()`, `get_footer()`, semantic landmarks, WordPress menu APIs, and public URL functions.
+- Preserve `wp_head()`, `wp_body_open()`, `body_class()`, `wp_footer()`, and other required parent/theme/plugin integration points.
+- Use WordPress and WooCommerce hooks before copying templates.
+- Add a WooCommerce template override only when a hook or conditional presentation cannot meet the verified requirement.
+- When an override is necessary, copy the correct installed-version template, document its source/version, keep changes minimal, and add it to the WooCommerce template-status review.
+- Use the native product search request shape and WooCommerce product query; do not build a parallel product index.
+- Scope product-results presentation so it does not intercept COA Archive results or unrelated WordPress searches.
+- Call the existing YITH and side-cart integration through supported public hooks/functions/shortcodes; do not calculate rewards or cart contents in the theme.
+- Do not expose private customer/order data in shell markup, JavaScript, or search results.
+- Do not edit Hello Elementor parent files, WordPress core, WooCommerce core, or third-party plugin files.
+- Do not store secrets, credentials, environment URLs, or private identifiers in the theme.
 
-Use the least complex verified path in this order:
+## 13. Proposed child-theme file structure
 
-1. Inspect Elementor's native Search widget and WooCommerce search behavior on Staging.
-2. If the native Elementor widget can reliably restrict header/Shop queries to WooCommerce products and route them to an isolated, properly designed product-results context, use it.
-3. Otherwise use WooCommerce's native product-search form/widget with a verified `product` query and a dedicated/bounded product-results presentation.
-4. Do not publish either approach if it falls through to the generic oversized-image WordPress search-results page.
+This is a proposed structure only. No files are created in this planning checkpoint.
 
-Elementor/WooCommerce can own:
+```text
+pep-select-hello-child/
+├── style.css
+├── functions.php
+├── header.php
+├── footer.php
+├── screenshot.png                         # Optional, approved branded theme thumbnail
+├── README.md
+├── assets/
+│   ├── css/
+│   │   └── pep-select-shell.css           # Tokens, shell, responsive, focus, search, footer
+│   └── js/
+│       └── pep-select-navigation.js       # Menu state, Escape, focus return; no business logic
+├── inc/
+│   ├── setup.php                          # Enqueues, supports, menu locations
+│   ├── shell-integrations.php             # Public YITH/side-cart presentation adapters
+│   └── search-presentation.php            # Product-search routing/presentation hooks only
+├── template-parts/
+│   ├── header/
+│   │   ├── announcement.php
+│   │   ├── brand.php
+│   │   ├── product-search.php
+│   │   ├── customer-controls.php
+│   │   └── navigation.php
+│   ├── footer/
+│   │   ├── brand-support.php
+│   │   ├── link-groups.php
+│   │   ├── legal-disclaimers.php
+│   │   └── footer-bottom.php
+│   └── search/
+│       ├── product-result.php
+│       ├── product-empty.php
+│       └── product-error.php
+└── woocommerce/
+    └── product-searchform.php              # Optional; include only if a supported hook is insufficient
+```
 
-- Search field and submit presentation.
-- Product query submission through native WooCommerce behavior.
-- A product-search results template or result item when Theme Builder/query conditions can isolate it safely.
-- Result thumbnails, titles, links, prices, and empty states supplied by native product context.
-- Responsive styling and focus states.
+### File-boundary rules
 
-Pep Select COA Archive continues to own:
+- `style.css` contains the required child-theme header and only minimal bootstrap styles.
+- `functions.php` is a small loader, not a monolithic implementation file.
+- CSS uses WEB-2A variables and remains scoped to global shell/search presentation.
+- JavaScript manages accessible menu presentation only; it does not fetch account, rewards, cart, order, or COA data.
+- `inc/shell-integrations.php` adapts existing public plugin output for placement; it does not duplicate plugin logic.
+- `inc/search-presentation.php` may select product-result presentation through supported query/template hooks; it does not create a custom product database or recommendation engine.
+- The `woocommerce/` directory remains absent unless the implementation spike proves the override necessary.
+- Do not add build tooling, package dependencies, frameworks, or a Site Core settings panel unless a separate launch-critical need is approved.
 
-- COA query interpretation.
-- Compound/testing record retrieval.
-- COA result states and canonical `/testing/` routes.
-- Any plugin-specific search endpoint or record permissions.
+## 14. Accessibility requirements
 
-Later code may be required only if native behavior cannot safely provide:
+### Global shell
 
-- Reliable product-only query scoping without affecting general WordPress or COA searches.
-- A dedicated product-results route/template condition.
-- Accessible autocomplete, suggestion ranking, keyboard navigation, request cancellation, or debouncing.
-- Cross-surface analytics or other advanced search behavior.
+- Use semantic `<header>`, `<nav>`, `<main>`, and `<footer>` landmarks without duplicates.
+- Provide a working skip-to-main-content link.
+- Ensure DOM and keyboard order match the visual order.
+- Give logo/home, menu, search, rewards, account, cart, and close controls meaningful names.
+- Use visible `:focus-visible` states on light and dark surfaces.
+- Target at least `44×44px` interactive areas where practical and adequate spacing between adjacent controls.
+- Preserve zoom, text scaling, and browser accessibility settings.
 
-Advanced autocomplete is excluded from the launch-critical WEB-2B path. If narrow theme-coupled routing or CSS is required, prefer the justified presentation layer. Add Site Core work only when launch-critical durable behavior is proven necessary and separately approved.
+### Mobile navigation
 
-## 15. Accessibility requirements
+- Toggle is a semantic button with accessible name and accurate expanded/controls state.
+- Panel has a visible close path and Escape behavior.
+- Focus moves intentionally on open, remains within an actual modal drawer if that pattern is used, and returns to the toggle on close.
+- Closing behavior works by keyboard, pointer, and touch without trapping the user.
+- Current navigation location is not communicated by color alone.
 
-### Header, navigation, and utilities
+### Product search
 
-- One logical keyboard order matching the visual order.
-- Meaningful names for logo/home, menu toggle, search, rewards, account, cart, menu close, and all icon-only controls.
-- Visible `focus-visible` treatment on light and navy surfaces; do not remove browser focus without an accessible replacement.
-- Minimum `44×44px` interactive target where practical, with at least `8px` separation between adjacent icon controls.
-- Current-page state conveyed through more than color alone.
-- Menu open/closed state exposed programmatically where the native widget supports it.
-- Escape closes overlays where supported, no keyboard trap, and focus returns to the opening control.
-- Skip-to-main-content behavior must remain available through the theme or be included only through an approved accessible method.
-- Logo alternative text must identify Pep Select without redundant “image of” wording.
-
-### Search
-
-- Programmatic label or visible label; placeholder text is not the only label.
-- Search purpose distinguishes products from COA/testing records.
+- Visible or programmatic label distinguishes product search from COA search.
+- Placeholder is not the only label.
 - Submit control has a meaningful name.
-- Loading, no-results, and errors are announced without stealing focus.
-- Keyboard users can reach every result and return to the query.
-- Result focus order follows visual order; no hover-only content.
-- Long product/compound names wrap without clipping.
-- Missing images retain a usable text result.
-
-### Footer
-
-- Link-group headings communicate structure without breaking semantic heading order.
-- Link text describes its destination; avoid ambiguous “click here.”
-- Legal/support text meets contrast and readable-size requirements.
-- Accordion behavior, if approved, exposes expanded state, works by keyboard, and keeps required destinations discoverable.
+- Results are keyboard reachable and retain logical order.
+- Loading, no-results, and failure feedback is announced appropriately without stealing focus.
+- Long titles wrap; missing images do not remove the result's text/link.
 
 ### Motion and contrast
 
-- Normal text targets at least `4.5:1`; larger text and essential UI graphics meet applicable contrast requirements.
-- Pep Cyan is not assumed accessible on white or navy until the exact foreground/background pairing is tested.
-- Interaction changes use the approved approximately `180ms` duration, no shrink, and no layout-shifting animation.
-- Reduced-motion mode removes nonessential lift/movement while retaining state clarity.
+- Normal text targets at least `4.5:1`; essential non-text controls meet applicable contrast requirements.
+- Pep Cyan is tested in each actual foreground/background pairing.
+- Approximately `180ms` transitions do not shift layout; no shrink effects.
+- Reduced-motion mode removes nonessential movement while preserving clear states.
 
-## 16. Performance and Elementor-memory safeguards
+## 15. Performance and stability safeguards
 
-- Keep ElementsKit Lite and Pro disabled. Do not import an ElementsKit widget or restore its dependency.
-- Build from native Elementor containers and widgets with the smallest practical widget tree.
-- Use one responsive component where possible instead of duplicate desktop/mobile trees.
-- Use native Image/Site Logo, Menu, Search, Icon, Text, and Shortcode widgets rather than raw HTML/SVG/style blocks for standard controls.
-- Consume WEB-2A global tokens rather than repeating local color/font CSS.
-- Add no large inline style blocks, copied gradients, decorative scripts, background video, marquee, or animation library.
-- Use the existing optimized logo asset; do not create or load duplicate logo files for breakpoints unless required by an approved brand variant.
-- Bound result-image dimensions to avoid layout shift and oversized downloads.
-- Do not load a full 20-item product grid inside a header overlay.
-- Avoid live autocomplete for launch, eliminating unnecessary AJAX requests and keyboard/state complexity.
-- Keep custom CSS minimal, centralized, documented, and scoped to the replacement; do not duplicate it per widget.
-- Open and save replacement templates in representative editor sessions while reviewing Kinsta memory/thread events against the 256 MB per-thread limit.
-- Stop implementation if the normal Elementor editor again reaches a critical error, if memory events increase materially during representative edits, or if a new add-on dependency appears.
+- Keep ElementsKit Lite and Pro disabled.
+- Do not load Elementor to render the coded header/footer while the child theme is active.
+- Keep markup and DOM depth small; avoid duplicate desktop/mobile trees where responsive CSS can reflow one structure.
+- Use one modest navigation script with no framework or third-party dependency.
+- Load CSS/JavaScript only where required and use versioned enqueueing.
+- Use the existing approved logo asset with declared dimensions to reduce layout shift.
+- Bound product-result image dimensions and avoid full-size images.
+- Do not load a large live-results product grid inside the header.
+- Defer advanced autocomplete; use a reliable submit-to-results flow for launch.
+- Prefer public hooks and conditional CSS over broad WooCommerce template copies.
+- Avoid repeated inline CSS, raw SVG blocks, decorative animation, background video, marquee, and plugin add-ons.
+- Verify that Elementor marketing pages still edit normally within the Staging 256 MB per-thread limit; the coded shell must not increase editor instability.
+- Stop if the child theme creates duplicate headers/footers, breaks required hooks, causes editor critical errors, or requires an undocumented private API.
 
-## 17. Step-by-step implementation order
+## 16. Step-by-step implementation sequence
 
-### Phase 0 — preflight and rollback capture
+### Phase 0 — preflight and recovery capture
 
-1. Confirm Kinsta Staging, branch, and clean worktree.
-2. Confirm ElementsKit Lite and Pro remain disabled.
-3. Create Kinsta backup `Before WEB-2B Global Shell Replacement`.
-4. Preserve the existing WEB-1 and WEB-2A backups.
-5. Export current Header #1323 and Footer #391 from Staging.
-6. Record their `Entire Site` display conditions, current WordPress menu assignment, logo asset, and active URLs.
-7. Record current YITH rewards shortcode/output, account destination/states, side-cart shortcode/trigger, and empty/populated cart behavior.
-8. Capture desktop, tablet, and mobile screenshots of the current header, open menu, search, side cart, and footer for rollback comparison.
+1. Confirm Kinsta Staging, the correct Git branch, and a clean worktree.
+2. Confirm Hello Elementor parent theme name, version, files, and current active state.
+3. Confirm ElementsKit Lite and Pro remain disabled.
+4. Create Kinsta backup `Before WEB-2B Coded Global Shell`.
+5. Preserve all existing WEB-1/WEB-2A backups.
+6. Export Header #1323 and Footer #391 and record their `Entire Site` conditions.
+7. Record that draft `Pep Select Header — WEB-2B` is unpublished and has no display condition.
+8. Record current menu assignments, logo asset, YITH output, My Account destination, side-cart trigger, and footer routes/text.
+9. Capture current desktop/tablet/mobile screenshots for comparison.
 
-### Phase 1 — freeze destinations and content
+### Phase 1 — create the child-theme foundation locally
 
-1. Create a route matrix for every header/footer link.
-2. Confirm Home, Shop, FAQ, Contact, account, orders, military, and policy destinations.
-3. Set COAs to `/testing/` in the replacement only.
-4. Mark “Track your order,” developer credit, copyright format, support details, and the shipping announcement for approval.
-5. Preserve research-use, FDA, and legal text verbatim; do not rewrite it.
+1. Create the child theme with Hello Elementor as its declared parent.
+2. Add only required theme metadata, setup/enqueue loading, and approved WEB-2A CSS variables.
+3. Add no business logic, credentials, environment URLs, dependencies, or database migrations.
+4. Validate PHP syntax, text-domain/escaping practices, and archive structure.
+5. Package the child theme as one installable top-level theme folder.
 
-### Phase 2 — validate the launch search path
+### Phase 2 — build the coded header/footer shell
 
-1. Test native Elementor product query scoping and WooCommerce Product Search behavior in an isolated draft/preview context.
-2. Confirm the submitted request returns products only.
-3. Confirm it can avoid the generic WordPress search-results layout.
-4. Build the smallest dedicated product-result item/template necessary for WEB-2B without modifying Dark Loop #65.
-5. Test empty, one, many, long-name, missing-image, and error behavior.
-6. Confirm COA search continues through Pep Select COA Archive and `/testing/` without query changes.
-7. Stop and request approval before adding code if the native launch path cannot meet these gates.
+1. Implement `header.php` with required WordPress document hooks and semantic shell markup.
+2. Render the current WordPress menu through menu APIs.
+3. Add the existing logo, product search, My Account, YITH rewards output, and side-cart integration through supported interfaces.
+4. Implement accessible desktop/tablet/mobile navigation behavior.
+5. Implement `footer.php` with required WordPress footer hooks.
+6. Preserve support, research-use, FDA, and policy text; update only the COA route to `/testing/`.
+7. Confirm no call renders Elementor Theme Builder header/footer locations from the child templates.
 
-### Phase 3 — build the header replacement
+### Phase 3 — implement product search presentation
 
-1. Create a new Header template with no display conditions.
-2. Use the existing logo through a dynamic Site URL destination.
-3. Add the verified product search.
-4. Add rewards using the existing YITH integration without changing its logic.
-5. Add native account and side-cart controls with meaningful labels.
-6. Add Elementor's native WordPress Menu widget using the current menu.
-7. Configure desktop, tablet, and mobile layouts from one shared structure where practical.
-8. Apply the approved WEB-2A tokens and outer gutters only inside the replacement.
-9. Verify menu and side-cart overlay/z-index behavior together.
+1. Use a product-specific form built on supported WordPress/WooCommerce search behavior.
+2. Confirm the request returns products only and does not intercept COA searches.
+3. Implement bounded product-result presentation through hooks/template parts.
+4. Add a WooCommerce override only if the supported hook path cannot meet the requirement.
+5. Test empty, one, many, long-title, missing-image, and failure states.
+6. Confirm no result reaches the oversized general WordPress product-results layout.
 
-### Phase 4 — build the footer replacement
+### Phase 4 — local/static verification and packaging
 
-1. Create a new Footer template with no display conditions.
-2. Reuse the approved logo/brand asset.
-3. Rebuild link groups with native Elementor widgets and dynamic/canonical URLs.
-4. Point COAs to `/testing/`.
-5. Preserve research-use, FDA, support, copyright, and policy text without legal rewriting.
-6. Implement desktop, tablet, and compact mobile hierarchy.
-7. Mark but do not silently change outdated/uncertain labels and external credit.
+1. Run PHP syntax checks and available WordPress coding/static checks.
+2. Review escaping, sanitization, nonce usage where relevant, URLs, hooks, and template output.
+3. Confirm no secrets, personal data, database dump, cache, log, vendor backup, or environment hostname enters the package.
+4. Validate the ZIP extracts to one child-theme folder and declares the correct parent.
+5. Record a version and package hash.
 
-### Phase 5 — isolated QA
+### Phase 5 — install inactive and preview on Staging
 
-1. Preview header and footer on Home, Shop, a product page, `/testing/`, Contact, FAQ, a policy page, Cart, Checkout, and My Account.
-2. Test at `1440`, `1280`, `1024`, `768`, `480`, `430`, `390`, `375`, `360`, and `320px`.
-3. Resize without reload across `1024px` and `767px`.
-4. Test keyboard-only, zoom/large text, reduced motion, and common browser focus behavior.
-5. Test logged out/logged in, zero/nonzero rewards, empty/populated cart, menu open, side cart open, and search result states.
-6. Confirm no horizontal scroll, covered control, duplicate focus target, hard-coded environment URL, or ElementsKit widget.
-7. Review Elementor editor stability and Kinsta memory/thread events.
+1. Upload/install the child theme on Staging without activating it.
+2. Use WordPress's supported theme preview where it accurately exercises the child templates.
+3. Confirm one header/footer, correct global hooks, page content, styles, and integrations in preview.
+4. If preview cannot test the true shell because of environment limitations, document the gap and proceed only to an approved short activation test window with rollback ready.
 
-### Phase 6 — visual approval
+### Phase 6 — controlled Staging activation test
 
-1. Present desktop, tablet, and mobile screenshots for Paulo's approval.
-2. Resolve only WEB-2B visual decisions listed in Section 22.
-3. Re-run affected responsive and accessibility checks.
-4. Do not switch display conditions without explicit approval.
+1. Reconfirm `Before WEB-2B Coded Global Shell` and the parent theme fallback.
+2. Activate the Pep Select child theme on Staging.
+3. Immediately verify exactly one header and footer and no Elementor shell duplication.
+4. Test desktop header, mobile navigation, product search, account/rewards/cart controls, footer, and Elementor page content.
+5. If a P0 failure appears, reactivate the Hello Elementor parent theme immediately.
+6. Do not modify Header #1323/Footer #391 conditions to make the test pass.
 
-### Phase 7 — controlled condition switch
+### Phase 7 — full Staging QA
 
-1. Confirm the `Before WEB-2B Global Shell Replacement` backup and exports are recoverable.
-2. Remove Header #1323's `Entire Site` condition and assign it to the approved replacement in one controlled operation.
-3. Immediately smoke-test public Staging navigation, search, account, rewards, and cart.
-4. Restore #1323 immediately if a failure occurs.
-5. After the header passes, switch Footer #391 the same way.
-6. Immediately smoke-test all footer, policy, support, account-order, military, and `/testing/` links.
-7. Keep #1323 and #391 inactive and unchanged as rollback templates.
+1. Test Home, Shop, a product page, `/testing/`, Contact, FAQ, policy pages, Cart, Checkout, and My Account.
+2. Test `1440`, `1280`, `1024`, `768`, `480`, `430`, `390`, `375`, `360`, and `320px` plus resize without reload.
+3. Test keyboard only, focus, zoom/large text, reduced motion, mobile drawer open, and orientation changes.
+4. Test logged out/logged in, zero/nonzero rewards, empty/populated cart, and side-cart interaction.
+5. Test product-search empty, one, many, long-name, missing-image, and failure states.
+6. Verify COA search and `/testing/` are unchanged.
+7. Verify checkout/payment, order, rewards, VerifyPass, shipping, email, and account logic remains owned by existing systems.
+8. Verify representative Elementor marketing pages render publicly and open in the editor.
 
-### Phase 8 — closeout
+### Phase 8 — approval and closeout
 
-1. Export the approved replacement templates and record their IDs/conditions.
-2. Record every changed database-held Elementor/menu setting separately from Git files.
-3. Create a post-verification Staging backup only after the replacements pass.
-4. Document tests, residual risks, and exact rollback steps.
-5. Confirm Live was not modified.
-6. Stop before WEB-2C, WEB-2D, or any deployment work.
+1. Present desktop, tablet, and mobile screenshots to Paulo.
+2. Resolve only WEB-2B visual decisions.
+3. Export/package the approved child theme and record version/hash.
+4. Record active theme, preserved parent theme, preserved Elementor template conditions, tests, residual risks, and rollback steps.
+5. Create a post-verification Staging backup only after all acceptance criteria pass.
+6. Confirm Live was not modified.
+7. Stop before WEB-2C, WEB-2D, deployment, or legacy cleanup.
 
-## 18. Acceptance criteria
+## 17. Acceptance criteria and rollback by surface
 
-### Header and navigation
+### 17.1 Desktop header
 
-- Replacement header uses native Elementor widgets and contains no ElementsKit widget/dependency required for rendering.
-- Existing Pep Select logo and brand assets remain intact and link to the correct site home.
-- Home, Compounds / Shop, COAs (`/testing/`), FAQ, and Contact work from desktop, tablet, and mobile navigation.
-- Native WordPress Menu uses the correct assigned menu and has no unsupported mega menu or prelaunch dropdown feature.
-- Logo, product search, rewards/account, and cart controls have clear hierarchy and do not overlap or become cramped.
-- Account access works logged out and logged in.
-- YITH rewards shows correct zero/nonzero states without changing balances or calculations.
-- Empty/populated side-cart behavior and totals remain correct; the menu does not conflict with the cart drawer.
-- All interactive controls have meaningful names, visible focus, logical keyboard order, and comfortable targets.
-- No duplicate focusable desktop/mobile controls exist at a given width.
+**Acceptance criteria**
 
-### Search
+- Exactly one semantic header renders while the child theme is active.
+- Logo, product search, rewards, account, cart, and primary navigation are clearly organized within the `1200px` container and approved gutters.
+- Home, Compounds / Shop, COAs (`/testing/`), FAQ, and Contact resolve correctly.
+- Header remains readable at `1440`, `1280`, and `1024px`, zoomed text, and browser resize without overlap.
+- Controls have meaningful names, visible focus, correct current-page state, and comfortable targets.
+- No ElementsKit or Elementor Theme Builder header rendering is required while the child theme is active.
 
-- Header and Shop search submit product-only queries and return WooCommerce products.
-- Product searches never land on the current oversized-image general WordPress results layout.
-- Product results have bounded images and readable layout for no, one, and many results, long names, and missing images.
-- COA Archive search remains plugin-owned and returns compounds/testing records through `/testing/` routes.
-- Header, Shop, and COA search share recognizable shape, border, type, icon, focus, and interaction language without sharing backend logic.
-- Search is keyboard operable, labeled by purpose, and has accessible loading/no-results/error feedback.
-- Advanced autocomplete is not required for acceptance.
+**Rollback**
 
-### Footer
+1. Reactivate Hello Elementor parent theme.
+2. Confirm Header #1323 renders through its preserved `Entire Site` condition.
+3. Verify logo, menu, product search, rewards, account, and cart.
+4. Clear only necessary Staging caches and record the failure.
 
-- Replacement footer uses native Elementor widgets and no ElementsKit dependency.
-- COA link points to `/testing/`.
-- Existing functional Shop, FAQ, Contact, account/orders, military, support, and policy destinations remain available.
-- Research-use language, FDA disclaimer, support information, and legal text are not rewritten in WEB-2B.
-- Desktop and tablet grouping is clear; mobile height is reduced through hierarchy and spacing rather than hidden required links.
-- Footer text remains readable and links remain keyboard/touch accessible.
-- Outdated or uncertain labels/destinations remain documented for approval rather than silently changed.
+### 17.2 Mobile navigation
 
-### Safety, performance, and rollback
+**Acceptance criteria**
 
-- Header #1323 and Footer #391 remain recoverable and are not deleted.
-- No hard-coded Kinsta, Staging, Hostinger, Peptides Divas, BioQuantum, or obsolete `/coas/` link remains in the active replacements.
-- No WooCommerce, YITH, side-cart, account, checkout, order, email, or COA business logic changes.
-- Representative Elementor editing remains stable within the Staging 256 MB per-thread constraint, with no repeat ElementsKit-triggered failure.
-- Required width matrix, keyboard, focus, contrast, target size, reduced motion, and resize-without-reload checks pass.
-- New/old template IDs, display conditions, menu assignment, test evidence, backups, and rollback steps are recorded.
-- Live remains untouched.
+- One toggle opens one navigation panel using the current WordPress menu.
+- Toggle/close semantics, expanded state, Escape, focus handling, and focus return work.
+- Navigation contains no excessive blank area, duplicate controls, horizontal scroll, or keyboard trap.
+- Logo/cart remain reachable, and menu layering does not conflict with the side cart.
+- Behavior passes `767`, `480`, `430`, `390`, `375`, `360`, and `320px` plus resize without reload.
 
-## 19. Rollback checkpoint
+**Rollback**
 
-Before implementation:
+1. Reactivate Hello Elementor parent theme.
+2. Verify Header #1323's native Elementor WordPress Menu mobile behavior returns.
+3. Confirm the side cart and account access remain reachable.
 
-- Create `Before WEB-2B Global Shell Replacement`.
-- Retain all existing WEB-1 and WEB-2A backups.
-- Export Header #1323 and Footer #391.
-- Record the exact `Entire Site` conditions and WordPress menu assignment.
+### 17.3 Product search
 
-Before switching conditions:
+**Acceptance criteria**
 
-- Export both replacement templates.
-- Confirm the old templates remain unchanged and recoverable.
-- Record the condition-switch order and public smoke-test list.
+- Header and Shop search submit product-only searches through supported WordPress/WooCommerce behavior.
+- Results contain bounded images, readable titles, canonical links, and appropriate no-results/failure states.
+- Searches never land on the oversized-image general WordPress results layout.
+- COA search remains plugin-owned and returns testing records through `/testing/`.
+- Search is labeled, keyboard operable, and handles no, one, many, long-title, and missing-image states.
+- No custom product database, advanced autocomplete, or copied Dark Loop #65 is required.
 
-Immediate rollback procedure:
+**Rollback**
 
-1. Remove the failing replacement's `Entire Site` condition.
-2. Restore the same condition to Header #1323 or Footer #391.
-3. Clear only the necessary Staging/Elementor caches.
-4. Verify public navigation, account, rewards, cart, search, `/testing/`, support, and policy links.
-5. If template-condition rollback is insufficient, restore `Before WEB-2B Global Shell Replacement`.
-6. Record the failure and stop; do not attempt Live changes.
+1. Reactivate Hello Elementor parent theme to restore the preserved Elementor shell/search path.
+2. If the child theme remains active for a non-search test, disable only the child theme's optional product-search presentation module through its documented reversible configuration; do not alter product data.
+3. Verify Shop, product links, and COA Archive routes.
 
-The old templates are not cleanup candidates during WEB-2B. Retirement or deletion requires the later legacy-removal gate.
+### 17.4 Cart/account/rewards controls
 
-## 20. Explicit exclusions
+**Acceptance criteria**
 
-- No WordPress, Elementor, plugin, configuration, export, credential, database, or Live change during this planning checkpoint.
-- No direct implementation until a separate WEB-2B implementation action is approved.
-- No deletion of Header #1323, Footer #391, Dark Loop #65, COA Loop #485, old `/coas/` page, or historical exports.
+- Logged-out/logged-in account destinations work through canonical WooCommerce URLs.
+- YITH zero/nonzero rewards output matches the existing system; no reward value is calculated by the theme.
+- Empty/populated cart and side-cart opening work; totals and items match WooCommerce.
+- Controls are labeled, focusable, touch-friendly, and do not expose private customer/order data.
+- No checkout, order, coupon, reward, shipping, payment, or email behavior changes.
+
+**Rollback**
+
+1. Reactivate Hello Elementor parent theme.
+2. Verify Header #1323 restores the known rewards, account, and side-cart integration points.
+3. Confirm cart contents and customer session remain intact; do not clear customer data as a rollback step.
+
+### 17.5 Footer
+
+**Acceptance criteria**
+
+- Exactly one semantic footer renders while the child theme is active.
+- COA link uses `/testing/`.
+- Existing Shop, FAQ, Contact, account/orders, military, support, and policy destinations remain available.
+- Research-use language, FDA disclaimer, support information, and legal text are not rewritten.
+- Desktop/tablet grouping is clear; mobile height is reduced without hiding important legal/support links.
+- Links are keyboard/touch accessible and readable through `320px`.
+
+**Rollback**
+
+1. Reactivate Hello Elementor parent theme.
+2. Confirm Footer #391 renders through its preserved `Entire Site` condition.
+3. Verify policy, support, account/orders, military, and COA links.
+4. Note that the old `/coas/` link may return with Footer #391; this is a known fallback limitation, not permission to delete the template.
+
+### 17.6 Elementor page-content compatibility
+
+**Acceptance criteria**
+
+- Existing Elementor-built marketing/editorial pages render their content inside the coded global shell.
+- Home, Contact, FAQ, About, policy pages, product/archive templates, Cart, Checkout, and My Account retain their current page/template ownership.
+- Representative pages open in Elementor without a new critical error or missing content.
+- The child theme does not override `page.php`, `singular.php`, Elementor canvas/full-width layouts, or content loops unless a separately documented launch-critical need is approved.
+- Elementor CSS, frontend scripts, dynamic tags, forms, and page-level responsive settings continue to load where currently required.
+
+**Rollback**
+
+1. Reactivate Hello Elementor parent theme.
+2. Verify the affected page publicly and in Elementor editor.
+3. If parent-theme activation does not restore the page, restore `Before WEB-2B Coded Global Shell` and stop.
+
+## 18. Full rollback procedure
+
+### Primary rollback: theme switch
+
+1. In Staging Appearance → Themes, activate the existing Hello Elementor parent theme.
+2. Confirm Header #1323 and Footer #391 render from their unchanged `Entire Site` conditions.
+3. Verify Home, Shop, product, `/testing/`, Contact, Cart, Checkout, My Account, and a policy page.
+4. Verify menu, product search, rewards, account, side cart, and footer destinations.
+5. Clear only necessary Staging/Elementor caches.
+6. Record the child-theme version, failure, viewport/state, and rollback result.
+
+### Secondary rollback: backup restore
+
+Use `Before WEB-2B Coded Global Shell` only if switching to the parent theme does not restore the known baseline or if database-held settings were unexpectedly affected.
+
+### Rollback invariants
+
+- Do not delete the child theme during diagnosis; keep the failed package as evidence.
+- Do not delete Header #1323, Footer #391, or their conditions.
+- Do not publish or assign the draft `Pep Select Header — WEB-2B`.
+- Do not clear carts, customer sessions, orders, or plugin data.
+- Do not change Live.
+
+## 19. Explicit exclusions
+
+- No website, theme, Elementor, plugin, configuration, export, credential, or database change during this planning checkpoint.
+- No child-theme files created in this checkpoint.
+- No direct edits to the Hello Elementor parent theme.
+- No publication or display-condition assignment for `Pep Select Header — WEB-2B`.
+- No deletion, unpublishing, or condition change for Header #1323 or Footer #391 during parallel development.
 - No ElementsKit Lite or Pro restoration.
-- No homepage, Shop archive, canonical product-card, single-product, Cart, Checkout, My Account, rewards, Contact, FAQ, About, VerifyPass, or legal-page redesign beyond the minimum global-shell/search dependency described here.
-- No changes to products, prices, stock, variations, taxes, shipping, coupons, customers, orders, checkout, payment-link emails, fulfillment, rewards calculations, or side-cart calculations.
-- No final marketing copy, shipping promise, legal rewrite, FDA rewrite, policy-date correction, public tracking implementation, or support promise.
-- No advanced autocomplete, predictive search, fuzzy matching, recommendation engine, search analytics, mega menu, or unsupported dropdown before launch.
-- No combined product-and-COA backend search.
-- No Site Core design-system settings panel or speculative backend work.
-- No plugin/core/dependency updates.
-- No Live deployment.
+- No business logic in the child theme.
+- No product, price, variation, stock, tax, shipping, coupon, customer, order, checkout, payment, email, rewards, VerifyPass, COA, or side-cart logic changes.
+- No custom account/authentication implementation.
+- No combined product/COA backend search.
+- No advanced autocomplete, predictive search, fuzzy search, recommendations, search analytics, mega menu, or unsupported dropdown before launch.
+- No homepage, product-card, single-product, Cart, Checkout, My Account, Contact, FAQ, About, VerifyPass, or legal-page redesign beyond global-shell compatibility.
+- No final marketing, shipping, support, FDA, research-use, or legal copy rewrite.
+- No Site Core design-system panel or speculative backend work.
+- No dependency/plugin/core update campaign.
+- No Live deployment or production theme activation.
 
-## 21. Content and factual approvals separate from visual approval
+## 20. Items requiring Paulo’s approval before Staging activation
 
-The following are not visual decisions and must not be silently resolved in WEB-2B:
+- Desktop header hierarchy and whether navigation occupies its own row.
+- Logo display size and clear space without altering the source asset.
+- Whether a verified announcement bar is visually included; wording requires separate operational approval.
+- Header search width and tablet/mobile placement.
+- Order and presentation of rewards, account, cart, and menu controls.
+- Mobile drawer width, overlay, close control, link spacing, and customer-control placement.
+- Product-results presentation: compact list versus bounded small-card grid before WEB-2D defines the canonical product-card system.
+- Footer desktop grouping, tablet wrap order, and mobile grouping.
+- Whether the external developer credit remains visible.
+- Focus-ring appearance on Pep White and Pep Navy after contrast testing.
+- Approval to activate the child theme for the controlled Staging test window.
 
-- Whether the current free two-day shipping/$200 announcement is operationally accurate and should remain.
-- Whether “Track your order” should be renamed because it currently leads to `/my-account/orders/`.
-- Whether the external developer credit remains required.
-- Whether current support details, mailing address, copyright format, research-use language, and FDA disclaimer are factually/currently approved.
-- Whether the military/first-responder page label and route are canonical before WEB-2H.
-
-Until approval, preserve functional destinations and existing legal/compliance wording; omit unverified promotional claims from the new presentation rather than rewriting them.
-
-## 22. Items requiring Paulo’s visual approval before publishing
-
-- Final header hierarchy: logo/search/utilities arrangement and whether desktop navigation occupies its own row.
-- Logo display size and clear space at desktop, tablet, and mobile widths, without altering the source asset.
-- Whether the verified announcement bar is visually present; its wording requires separate operational approval.
-- Desktop search width and the compact-header versus full-row search presentation at tablet/mobile widths.
-- Visual treatment and order of rewards, account, cart, and menu controls, including which labels remain visible beside icons.
-- Mobile navigation presentation: drawer/dropdown width, overlay, link spacing, close treatment, and placement of account/rewards access.
-- Product-search results layout for WEB-2B: compact list versus bounded small-card grid, before WEB-2D defines the final product-card system.
-- Footer desktop column grouping and tablet wrap order.
-- Footer mobile treatment: always-visible grouped links versus a tested native Elementor accordion.
-- Final focus-ring appearance on white and Pep Navy surfaces, after contrast verification.
-
-Approval of these visual choices does not authorize final copy, business-logic changes, template-condition switching, or Live deployment.
+These approvals do not authorize final copy, business-logic changes, Live deployment, or removal of the preserved Elementor templates.
