@@ -4,7 +4,7 @@
 
 **Sources:** Elementor JSON exports in `site-exports/elementor/`, `WEB-1-elementor-audit.md`, `WEB-1-staging-findings.md`, and `WEB-2-rebuild-plan.md`
 
-**Environment impact:** None. No WordPress, Elementor, plugin, configuration, export, credential, or database content was changed.
+**Documentation update impact:** None. This repository document does not itself modify WordPress, Elementor, plugins, configuration, exports, credentials, or database content. Confirmed database-held Elementor settings implemented separately on Staging are recorded below.
 
 ## 1. Purpose and evidence limits
 
@@ -214,10 +214,8 @@ These blocks increase Elementor editor payload, make states difficult to update 
 
 The following require a read-only Staging inspection, approved brand source, or later visual decision. They must not be invented from the exports:
 
-- The exact contents of Elementor Global Colors, Global Fonts, Theme Style, and breakpoint settings.
+- The pre-WEB-2A contents of Elementor Global Colors, Global Fonts, Theme Style, and breakpoint settings were not included in the exports. The confirmed custom additions, unchanged System Colors/System Fonts and theme styles, and retained breakpoints are recorded under “Implemented on Staging”; other computed or inherited effects remain unconfirmed.
 - The production font files, licensed weights, loading method, and fallbacks actually delivered to browsers.
-- The authoritative brand navy where `#0A2540` and `#0A1E40` conflict.
-- Canonical semantic mappings for success, warning, error, information, stock, sale, COA/testing, and rewards statuses.
 - Exact account, cart, side-cart, checkout, Contact, FAQ, About, military/first responder, and policy-page visual values.
 - WooCommerce and third-party plugin control styles that are injected outside Elementor JSON, including YITH rewards, VerifyPass, side cart, bundle controls, checkout notices, and account tables.
 - Current computed link underlines, visited states, browser focus rings, autofill styles, validation states, and high-contrast behavior.
@@ -413,3 +411,50 @@ Implementation begins only after this audit and the approved design decisions re
 - Preserve the safety of customer information, purchasing, orders, checkout, and account systems
 - Editable WordPress design-system controls may be considered as a separate post-launch milestone
 - Do not add Site Core backend work to WEB-2A unless it is required for launch-critical functionality
+
+## Implemented on Staging
+
+### Added Elementor custom global color tokens
+
+- Pep Navy `#002A53`
+- Pep Dark Navy `#001D3A`
+- Pep Cyan `#17A1CF`
+- Pep Green `#16834A`
+- Pep Amber `#B46A00`
+- Pep Red `#C43D3D`
+- Pep Ink `#13283D`
+- Pep Slate `#5E6F80`
+- Pep Neutral `#7A8793`
+- Pep Border `#D7E1E9`
+- Pep Surface `#F3F8FC`
+- Pep Soft Gray `#F5F6F7`
+- Pep White `#FFFFFF`
+- Pep Cyan Soft `#E8F6FB`
+- Pep Green Soft `#EAF5EF`
+- Pep Amber Soft `#FFF4DF`
+- Pep Red Soft `#FBECEC`
+
+### Added Elementor custom global font styles
+
+- Pep Editorial: Georgia, `400`
+- Pep Editorial Bold: Georgia, `700`
+- Pep Interface: Plus Jakarta Sans, `400`
+- Pep Interface Semibold: Plus Jakarta Sans, `600`
+- Pep Technical: IBM Plex Mono, `500`
+
+### Global layout and compatibility settings
+
+- Changed Elementor global content width from `1140px` to `1200px`.
+- Left Elementor System Colors and System Fonts unchanged to avoid affecting legacy templates.
+- Left global container padding, gaps, buttons, and theme styles unchanged.
+- Retained breakpoints:
+  - Mobile: `767px`
+  - Tablet: `1024px`
+- Approved gutters will be applied only to outer containers in rebuilt templates.
+
+### Staging rollback backups
+
+- `Before WEB-2A Design System`
+- `After WEB-2A Global Foundations`
+
+These settings are foundational tokens only and have not yet been applied across existing templates.
