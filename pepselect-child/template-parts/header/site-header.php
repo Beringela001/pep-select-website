@@ -8,6 +8,8 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
+$logo_html = pepselect_child_get_header_logo_html();
 ?>
 <header id="pepselect-site-header" class="pepselect-site-header" data-pepselect-header-preview>
 	<div class="pepselect-header__announcement">
@@ -19,8 +21,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<div class="pepselect-header__main">
 		<div class="pepselect-header__inner pepselect-header__main-grid">
 			<div class="pepselect-header__brand">
-				<?php if ( has_custom_logo() ) : ?>
-					<?php echo get_custom_logo(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Core generates escaped custom-logo markup. ?>
+				<?php if ( '' !== $logo_html ) : ?>
+					<a class="pepselect-header__logo-link" href="<?php echo esc_url( home_url( '/' ) ); ?>" aria-label="<?php echo esc_attr__( 'Pep Select home', 'pepselect-child' ); ?>">
+						<?php echo $logo_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Core generates escaped attachment markup. ?>
+					</a>
 				<?php else : ?>
 					<a class="pepselect-header__site-name" href="<?php echo esc_url( home_url( '/' ) ); ?>">
 						<?php echo esc_html( get_bloginfo( 'name' ) ); ?>

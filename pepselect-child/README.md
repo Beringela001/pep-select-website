@@ -1,10 +1,10 @@
 # Pep Select child theme
 
-- Version: 0.2.0
+- Version: 0.2.1
 - Parent: Hello Elementor (`hello-elementor`)
 - Text domain: `pepselect-child`
 
-Pep Select is a lightweight presentation child theme for the controlled WEB-2 customer-facing rebuild. Version 0.2.0 adds the first coded header behind a private, administrator-only preview. It does not replace the public Elementor header, footer, search-results presentation, WooCommerce template, page template, or Elementor display condition.
+Pep Select is a lightweight presentation child theme for the controlled WEB-2 customer-facing rebuild. Version 0.2.1 keeps the first coded header behind a private, administrator-only preview and corrects its logo and supported rewards-balance integration. It does not replace the public Elementor header, footer, search-results presentation, WooCommerce template, page template, or Elementor display condition.
 
 ## Requirements and safe failure
 
@@ -26,7 +26,9 @@ Installing a ZIP does not activate a theme automatically. The child theme is alr
 - Adds no WooCommerce template override and does not modify WooCommerce behavior.
 - Adds `?pepselect_header_preview=1`, restricted to logged-in users with `manage_options`, for the coded-header review.
 - Loads coded-header CSS and JavaScript only during an authorized preview and sends no-cache headers for that response.
-- Uses the confirmed YITH rewards and Xootix side-cart shortcodes only when registered, with environment-neutral account/cart fallbacks.
+- Uses the confirmed Elementor Header #1323 Media Library logo attachment when no WordPress Custom Logo is set, without storing an environment URL.
+- Uses the officially documented YITH remaining-points shortcode only for logged-in users and only when registered; otherwise it shows the Rewards destination without a numeric balance.
+- Uses the confirmed Xootix side-cart shortcode only when registered, with an environment-neutral cart fallback.
 - Leaves ordinary requests, existing Elementor page content, Header #1323, Footer #391, and Elementor display conditions untouched.
 
 ## Structure
@@ -60,4 +62,4 @@ The `woocommerce/` directory is deliberately absent. Add an override only in its
 
 ## Rollback boundary
 
-The existing Hello Elementor parent theme and active Elementor Header #1323 and Footer #391 remain the rollback baseline. Version 0.2.0 changes no WordPress records or Elementor display conditions. Removing the preview query parameter immediately restores the ordinary Header #1323 request path; reactivating the parent theme remains the full theme-level rollback.
+The existing Hello Elementor parent theme and active Elementor Header #1323 and Footer #391 remain the rollback baseline. Version 0.2.1 changes no WordPress records or Elementor display conditions. Removing the preview query parameter immediately restores the ordinary Header #1323 request path; reactivating the parent theme remains the full theme-level rollback.

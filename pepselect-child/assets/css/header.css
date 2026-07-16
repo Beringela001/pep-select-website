@@ -73,6 +73,7 @@
 }
 
 .pepselect-header__brand .custom-logo-link,
+.pepselect-header__logo-link,
 .pepselect-header__site-name {
 	display: inline-flex;
 	align-items: center;
@@ -84,7 +85,8 @@
 	text-decoration: none;
 }
 
-.pepselect-header__brand .custom-logo {
+.pepselect-header__brand .custom-logo,
+.pepselect-header__logo-image {
 	display: block;
 	width: auto;
 	max-width: 180px;
@@ -330,7 +332,8 @@
 		padding-block: 12px;
 	}
 
-	.pepselect-header__brand .custom-logo {
+	.pepselect-header__brand .custom-logo,
+	.pepselect-header__logo-image {
 		max-width: 150px;
 		max-height: 52px;
 	}
@@ -382,7 +385,8 @@
 		font-size: 12px;
 	}
 
-	.pepselect-header__brand .custom-logo {
+	.pepselect-header__brand .custom-logo,
+	.pepselect-header__logo-image {
 		max-width: 120px;
 		max-height: 46px;
 	}
@@ -426,7 +430,8 @@
 		gap: 10px 8px;
 	}
 
-	.pepselect-header__brand .custom-logo {
+	.pepselect-header__brand .custom-logo,
+	.pepselect-header__logo-image {
 		max-width: 104px;
 	}
 

@@ -877,3 +877,12 @@ Version `0.2.0` adds the first coded WEB-2B header behind a private preview. Thi
 - Mobile CSS uses bounded widths, `min-width: 0`, `max-width: 100%`, no `100vw`, and no body scroll lock; no obvious body-level horizontal-overflow rule was found.
 - The ZIP contains one `pepselect-child/` root, uses forward-slash paths, contains no nested theme folder, matches the source files byte-for-byte, and reproduced the same files after temporary extraction.
 - This repository checkpoint did not upload version `0.2.0`, modify Staging or Live, or change WordPress, Elementor, plugins, configuration, credentials, or database content.
+
+## Header Preview Logo and Rewards Correction
+
+Version `0.2.1` corrects two narrow preview integrations without changing the public header or any Elementor condition.
+
+- The active Header #1323 export and Staging markup both identify WordPress Media Library attachment `595`, `Logo_Pepselect_Whitebackground-1.png`, as the current Pep Select logo. The coded preview now renders that attachment through WordPress image functions, prefers a future valid Custom Logo setting, stores no environment-specific image URL, and retains the accessible site-name fallback when neither attachment is available.
+- YITH's official documentation identifies `[yith_ywpar_points]` as the supported remaining-points display for the logged-in user. The preview uses that registered shortcode only for a logged-in user. It does not query YITH tables, instantiate undocumented classes, or default a missing balance to zero; unavailable or empty supported output leaves the functional Rewards link without a number.
+- Version `0.2.1` remains restricted to authorized `?pepselect_header_preview=1` requests. Header #1323 remains unchanged for ordinary visitors, and footer, search, cart, account, navigation, WooCommerce behavior, and business logic remain outside this correction.
+- Test package: `dist/pepselect-child-0.2.1.zip`; SHA256: `3A777CA03283F6DE577A7BC8C975C156B67A7318C91291C097DC9C4E9993C273`.

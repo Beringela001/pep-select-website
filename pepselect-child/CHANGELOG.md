@@ -2,6 +2,12 @@
 
 All notable changes to the Pep Select child theme are documented here.
 
+## 0.2.1 - 2026-07-16
+
+- Rendered the current Pep Select logo from WordPress Media Library attachment `595`, preferring a configured WordPress Custom Logo and retaining a site-name fallback.
+- Kept YITH as the rewards-balance source of truth through its documented `[yith_ywpar_points]` shortcode, with a label-only fallback when no supported output is available.
+- Preserved the administrator-only preview boundary and ordinary Elementor Header #1323 behavior.
+
 ## 0.2.0 - 2026-07-16
 
 - Added a coded announcement, logo, product search, rewards/account/cart controls, and five-link primary navigation.

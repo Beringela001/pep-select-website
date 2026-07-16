@@ -121,6 +121,38 @@ function pepselect_child_render_header_preview() {
 }
 
 /**
+ * Return the configured Pep Select logo as WordPress attachment markup.
+ *
+ * The Custom Logo setting takes precedence. Header #1323's confirmed Media
+ * Library attachment remains the environment-neutral fallback while the
+ * Custom Logo setting is empty.
+ *
+ * @return string
+ */
+function pepselect_child_get_header_logo_html() {
+	$custom_logo_id           = absint( get_theme_mod( 'custom_logo' ) );
+	$elementor_header_logo_id = 595;
+	$logo_id                  = wp_attachment_is_image( $custom_logo_id ) ? $custom_logo_id : $elementor_header_logo_id;
+
+	if ( ! wp_attachment_is_image( $logo_id ) ) {
+		return '';
+	}
+
+	return (string) wp_get_attachment_image(
+		$logo_id,
+		'full',
+		false,
+		array(
+			'alt'           => get_bloginfo( 'name' ),
+			'class'         => 'pepselect-header__logo-image',
+			'decoding'      => 'async',
+			'fetchpriority' => 'high',
+			'loading'       => 'eager',
+		)
+	);
+}
+
+/**
  * Return a published page URL, with an environment-neutral path fallback.
  *
  * @param string $slug Page slug.
@@ -217,11 +249,13 @@ function pepselect_child_get_cart_count() {
  * @return string
  */
 function pepselect_child_get_rewards_output() {
-	if ( ! shortcode_exists( 'yith_ywpar_points' ) ) {
+	if ( ! is_user_logged_in() || ! shortcode_exists( 'yith_ywpar_points' ) ) {
 		return '';
 	}
 
-	return trim( do_shortcode( '[yith_ywpar_points label="" show_worth="no"]' ) );
+	$rewards_output = trim( do_shortcode( '[yith_ywpar_points label="" show_worth="no"]' ) );
+
+	return '' === wp_strip_all_tags( $rewards_output ) ? '' : $rewards_output;
 }
 
 /**
