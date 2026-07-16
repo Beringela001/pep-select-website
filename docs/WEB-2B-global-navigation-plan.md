@@ -804,7 +804,7 @@ The first foundation-only WEB-2B source was created locally as version `0.1.0`. 
 - Presentation boundary: no header, footer, search, page, or Elementor template replacement was introduced
 - PHP validation: the PHP source passed a manual and structural static syntax review; `php -l` was unavailable because this local environment has no PHP CLI executable
 
-The package has not been installed or activated on Staging or Live. The active Hello Elementor parent theme, Elementor Header #1323, Footer #391, and their rollback behavior remain unchanged.
+At the time version `0.1.1` was packaged, it had not yet been installed or activated. Its subsequent Staging-only installation and activation are recorded below.
 
 ### Version 0.1.0 installation failure and 0.1.1 correction
 
@@ -813,3 +813,19 @@ The package has not been installed or activated on Staging or Live. The active H
 - The earlier validation incorrectly normalized backslashes to forward slashes before reporting the entry list, which concealed the packaging defect.
 - Version `0.1.1` uses explicitly constructed forward-slash entry names, contains one top-level `pepselect-child/` directory, and has been verified both directly from the archive and after temporary extraction.
 - No theme behavior, WordPress record, Elementor template, plugin, configuration, credential, database content, Staging setting, or Live environment was changed by this package repair.
+
+## Child Theme Installed and Activated on Staging
+
+- Pep Select child theme version `0.1.1` installed successfully on Staging.
+- WordPress correctly detected Hello Elementor `3.4.9` as the parent theme.
+- Live Preview loaded successfully before activation.
+- The child theme was activated only on Staging.
+- The existing Elementor homepage, Header #1323, Footer #391, navigation, products, and page content continued loading after activation.
+- No WooCommerce templates or business logic have been replaced yet.
+- Live remains untouched.
+- The existing Hello Elementor parent theme remains installed for immediate rollback.
+- The unpublished draft `Pep Select Header — WEB-2B` still has no display conditions and is not active.
+- Staging rollback backups now include:
+  - `Before WEB-2B Header Footer Rebuild`
+  - `After WEB-2B Child Theme Activation`
+- The failed version `0.1.0` package attempt is resolved by the successfully installed version `0.1.1` package. The packaging cause and correction remain documented in the preceding section and are not repeated here.
