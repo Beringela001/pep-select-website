@@ -1,6 +1,6 @@
-# WEB-2B — Coded Global Shell Implementation Plan
+# WEB-2B — Coded Customer-Facing Rebuild and Global Shell Plan
 
-**Scope:** Header, Navigation, Product Search, Account/Rewards/Cart Controls, and Footer
+**Scope:** Establish the modular Hello Elementor child-theme architecture for the complete customer-facing rebuild; implement the global shell first through WEB-2B
 
 **Checkpoint:** Planning only
 
@@ -13,7 +13,7 @@
 - `docs/WEB-2-rebuild-plan.md`
 - `docs/WEB-2A-design-system-audit.md`
 
-This document authorizes no WordPress, Elementor, theme, plugin, configuration, export, credential, database, or Live-environment change. It replaces the earlier manual Elementor header/footer implementation approach with a coded Hello Elementor child-theme plan.
+This document authorizes no WordPress, Elementor, theme, plugin, configuration, export, credential, database, or Live-environment change. It replaces the earlier manual Elementor implementation approach with a coded Hello Elementor child-theme strategy for the complete customer-facing WEB-2 rebuild.
 
 ## 1. Approved architecture decision
 
@@ -24,15 +24,24 @@ The approved approach is:
 - Do not publish or assign display conditions to the draft `Pep Select Header — WEB-2B`.
 - Preserve active Elementor Header #1323 and Footer #391, including their current `Entire Site` display conditions, until the coded replacements pass testing.
 - Build a lightweight Hello Elementor child theme in parallel on Staging.
-- Use the child theme to control the global site shell and presentation only:
+- Use the child theme to control customer-facing presentation, including:
   - Announcement bar
   - Desktop and mobile header
   - Navigation
   - Product search and results presentation
   - Account, rewards, and cart controls
   - Footer
+  - Homepage
+  - Shop archive
+  - Product-card system
+  - Single-product pages
+  - Cart and side-cart presentation
+  - Checkout presentation
+  - My Account presentation
+  - Contact, FAQ, About, military-discount, and legal-page layouts
   - Responsive global spacing and styling
-- Keep Elementor available for editable marketing and editorial page content.
+- Keep Elementor available only for limited editable marketing and editorial content where that remains useful.
+- Do not let Elementor own the critical global shell or core commerce presentation.
 - Do not move business logic into the theme.
 - Make the coded replacement independently reversible by switching back to the existing Hello Elementor parent theme.
 - Keep Live untouched.
@@ -49,9 +58,22 @@ The approved approach is:
 
 ### Architectural conclusion
 
-Header, navigation, product search, customer utilities, and footer are global, launch-critical presentation. A lightweight child theme gives them a versioned, reviewable, testable, and independently reversible home without placing customer or commerce logic in Elementor.
+The global shell, catalog, product, cart, checkout, account, and supporting-page presentation are launch-critical. A lightweight child theme gives them a versioned, reviewable, testable, and independently reversible home without placing customer or commerce logic in Elementor.
 
-Elementor remains appropriate for editable marketing sections and editorial page composition. It is no longer the planned owner of the WEB-2B global shell.
+Elementor remains available for limited editable marketing sections and editorial content. It is no longer the planned owner of the WEB-2B global shell or the core customer-facing commerce presentation.
+
+The successful Pep Select COA Archive development workflow is the model: define detailed requirements, implement a bounded coded system, install it in parallel on Staging, review real output, iterate from screenshots and observed behavior, verify responsive/accessibility states, package a versioned replacement, and preserve a direct rollback.
+
+Codex will implement each customer-facing system from:
+
+- Approved detailed requirements and acceptance criteria.
+- Approved visual references and screenshots.
+- Existing Staging behavior and integration evidence.
+- Explicit desktop, tablet, and mobile rules.
+- Accessibility, performance, and data-safety constraints.
+- Small reviewable commits/packages and iterative Paulo review.
+
+Codex must not infer final marketing/legal copy, redesign unrelated surfaces inside a milestone, or move business logic to make presentation easier.
 
 ## 3. Replacement and rollback strategy
 
@@ -128,8 +150,8 @@ No visual milestone may change prices, product relationships, stock, rewards rul
 | Layer | Owns in WEB-2B | Must not own |
 |---|---|---|
 | Hello Elementor parent theme | Stable parent framework and immediate fallback | Pep Select customizations or edited parent files |
-| Pep Select Hello child theme | Global shell markup; header/footer presentation; navigation rendering; product-search form/results presentation; responsive spacing; narrow WooCommerce presentation hooks/overrides when necessary | Customer/order data models, authentication, rewards calculations, cart calculations, COA queries, payment/shipping/email logic, secrets |
-| Elementor | Editable marketing and editorial page content | WEB-2B global shell, business logic, secrets, customer/order logic |
+| Pep Select Hello child theme | Complete customer-facing presentation: global shell, homepage, product/search/archive/card views, single-product presentation, cart/checkout/account presentation, supporting/legal layouts, responsive/accessibility styles, and narrow WooCommerce presentation hooks/overrides when necessary | Customer/order/product data models, authentication, rewards calculations, cart calculations, COA queries, payment/shipping/email logic, secrets |
+| Elementor | Limited editable marketing and editorial content where intentionally retained | Critical global shell, core commerce presentation, business logic, secrets, customer/order logic |
 | WordPress | Menus, theme activation, URLs, users, authentication, query and template APIs | Duplicated theme-specific data stores |
 | WooCommerce | Products, product search truth, prices, stock, cart, checkout, accounts, orders, taxes, shipping, emails | Duplicated commerce logic in the child theme |
 | YITH Points and Rewards | Rewards balance, rules, conversion, and coupons | Theme-calculated rewards values |
@@ -138,9 +160,36 @@ No visual milestone may change prices, product relationships, stock, rewards rul
 | VerifyPass | Identity verification and coupon handoff | Theme-created verification logic |
 | Pep Select Site Core | Durable site-specific business behavior only when separately approved and launch-critical | Design-system panel or speculative WEB-2B backend work |
 
-The child theme may call public WordPress, WooCommerce, YITH, side-cart, and COA integration points to render presentation. It must not duplicate, recalculate, or store the data those systems own.
+The child theme may call public WordPress, WooCommerce, YITH, side-cart, VerifyPass, and COA integration points to render presentation. It must not duplicate, recalculate, migrate, or store the data those systems own.
 
-## 7. Approved WEB-2A foundations
+## 7. Complete coded rebuild scope
+
+The modular child theme is the primary implementation layer for these customer-facing systems:
+
+1. Announcement bar.
+2. Desktop and mobile header.
+3. Primary navigation and mobile navigation panel.
+4. Footer.
+5. Homepage presentation.
+6. Shop/product archive.
+7. Reusable product-card system.
+8. Product search and search-results layout.
+9. Single-product pages.
+10. Cart and side-cart presentation.
+11. Checkout presentation.
+12. My Account presentation.
+13. Contact page layout and form presentation.
+14. FAQ layout and accessible interaction presentation.
+15. About page layout.
+16. Military-discount/first-responder layout and VerifyPass presentation.
+17. Legal-policy page layouts after approved copy exists.
+18. Responsive global styles, accessibility behavior, focus, motion, layering, and empty/loading/error states.
+
+Each system is a separate reviewable milestone or sub-milestone. A later surface must reuse approved child-theme tokens and components rather than create a second page-specific styling system.
+
+The current WooCommerce database and all working operational integrations remain in place. There is no customer, order, product, or operational-data migration in WEB-2.
+
+## 8. Approved WEB-2A foundations
 
 | Foundation | Coded-shell use |
 |---|---|
@@ -161,16 +210,16 @@ The child theme may call public WordPress, WooCommerce, YITH, side-cart, and COA
 
 The child theme should mirror these approved tokens as CSS custom properties. It must not create a design-system settings panel in Site Core during the prelaunch rebuild.
 
-## 8. Coded global-shell component structure
+## 9. Coded global-shell component structure
 
-### 8.1 Announcement bar
+### 9.1 Announcement bar
 
 - Render only if the exact operational statement is verified and approved.
 - Do not copy the current free two-day shipping/$200 claim by default.
 - Keep content within the `1200px` inner container and approved outer gutters.
 - Use semantic text/link markup and no decorative script or marquee dependency.
 
-### 8.2 Desktop header
+### 9.2 Desktop header
 
 - Semantic `<header>` landmark.
 - Existing Pep Select logo linked to the dynamic home URL.
@@ -182,7 +231,7 @@ The child theme should mirror these approved tokens as CSS custom properties. It
 - Required primary destinations: Home; Compounds / Shop; COAs → `/testing/`; FAQ; Contact.
 - No unsupported mega menu or prelaunch nested feature.
 
-### 8.3 Mobile header and navigation
+### 9.3 Mobile header and navigation
 
 - One visible menu toggle with a meaningful name and programmatic expanded state.
 - One coded navigation panel using the same WordPress menu, not a duplicated hard-coded list.
@@ -191,7 +240,7 @@ The child theme should mirror these approved tokens as CSS custom properties. It
 - Visible close control, Escape behavior, focus containment appropriate to the panel pattern, and focus return to the toggle.
 - Correct overlay ordering with the side-cart drawer.
 
-### 8.4 Product search and results
+### 9.4 Product search and results
 
 - Header and Shop search use one recognizable Pep Select pattern.
 - Header search may remain compact; Shop search may be wider.
@@ -200,7 +249,7 @@ The child theme should mirror these approved tokens as CSS custom properties. It
 - No fallthrough to the current oversized-image general WordPress search-results layout.
 - COA Archive search remains visually related but functionally separate and plugin-owned.
 
-### 8.5 Account, rewards, and cart controls
+### 9.5 Account, rewards, and cart controls
 
 - Use semantic links/buttons and documented public integration points.
 - Preserve logged-in/logged-out account behavior.
@@ -208,7 +257,7 @@ The child theme should mirror these approved tokens as CSS custom properties. It
 - Preserve empty/populated cart states, side-cart opening, and cart totals without recreating cart logic.
 - Icon-only controls require meaningful accessible names and at least a `44×44px` target where practical.
 
-### 8.6 Footer
+### 9.6 Footer
 
 - Semantic `<footer>` landmark.
 - Existing logo/branding.
@@ -219,7 +268,7 @@ The child theme should mirror these approved tokens as CSS custom properties. It
 - External developer credit remains flagged for Paulo's approval.
 - Mobile hierarchy reduces height through grouping and spacing, not hidden legal/support links.
 
-## 9. Navigation destination register
+## 10. Navigation destination register
 
 | Destination | Source/route | Decision |
 |---|---|---|
@@ -238,7 +287,7 @@ The child theme should mirror these approved tokens as CSS custom properties. It
 
 Use WordPress functions/menu records for internal destinations. Do not hard-code Kinsta, Staging, Hostinger, Peptides Divas, BioQuantum, or obsolete hosts/routes.
 
-## 10. Desktop, tablet, and mobile layouts
+## 11. Desktop, tablet, and mobile layouts
 
 ### Desktop: wider than `1024px`
 
@@ -270,7 +319,7 @@ Use WordPress functions/menu records for internal destinations. Do not hard-code
 7. Menu and side-cart overlays must not compete; one layer visually and interactively dominates at a time.
 8. Footer uses compact, always-discoverable groups. Legal/support text remains visible and readable through `320px`.
 
-## 11. Product search behavior decision tree
+## 12. Product search behavior decision tree
 
 ```text
 User starts a search
@@ -309,7 +358,7 @@ User starts a search
 
 Product and COA searches share approved visual tokens and interaction language, not a query implementation or data model.
 
-## 12. WordPress/WooCommerce implementation rules
+## 13. WordPress/WooCommerce implementation rules
 
 - Use WordPress template hierarchy, `get_header()`, `get_footer()`, semantic landmarks, WordPress menu APIs, and public URL functions.
 - Preserve `wp_head()`, `wp_body_open()`, `body_class()`, `wp_footer()`, and other required parent/theme/plugin integration points.
@@ -323,7 +372,7 @@ Product and COA searches share approved visual tokens and interaction language, 
 - Do not edit Hello Elementor parent files, WordPress core, WooCommerce core, or third-party plugin files.
 - Do not store secrets, credentials, environment URLs, or private identifiers in the theme.
 
-## 13. Proposed child-theme file structure
+## 14. Proposed child-theme file structure
 
 This is a proposed structure only. No files are created in this planning checkpoint.
 
@@ -333,17 +382,24 @@ pep-select-hello-child/
 ├── functions.php
 ├── header.php
 ├── footer.php
+├── front-page.php                         # Coded homepage shell when WEB-2C is approved
 ├── screenshot.png                         # Optional, approved branded theme thumbnail
 ├── README.md
 ├── assets/
 │   ├── css/
-│   │   └── pep-select-shell.css           # Tokens, shell, responsive, focus, search, footer
+│   │   ├── pep-select-foundations.css     # Approved tokens and global accessibility rules
+│   │   ├── pep-select-shell.css           # Header, navigation, search, footer
+│   │   ├── pep-select-commerce.css        # Archive, cards, product, cart, checkout, account
+│   │   └── pep-select-pages.css           # Homepage and supporting/legal layouts
 │   └── js/
-│       └── pep-select-navigation.js       # Menu state, Escape, focus return; no business logic
+│       ├── pep-select-navigation.js       # Menu state, Escape, focus return; no business logic
+│       └── pep-select-presentation.js     # Approved UI states only; no commerce/business logic
 ├── inc/
 │   ├── setup.php                          # Enqueues, supports, menu locations
 │   ├── shell-integrations.php             # Public YITH/side-cart presentation adapters
-│   └── search-presentation.php            # Product-search routing/presentation hooks only
+│   ├── search-presentation.php            # Product-search routing/presentation hooks only
+│   ├── woocommerce-presentation.php       # Narrow Woo hooks and template selection
+│   └── page-presentation.php              # Page-template registration/presentation helpers
 ├── template-parts/
 │   ├── header/
 │   │   ├── announcement.php
@@ -356,26 +412,85 @@ pep-select-hello-child/
 │   │   ├── link-groups.php
 │   │   ├── legal-disclaimers.php
 │   │   └── footer-bottom.php
+│   ├── components/
+│   │   ├── product-card.php
+│   │   ├── status-badge.php
+│   │   ├── notice.php
+│   │   └── empty-state.php
+│   ├── pages/
+│   │   ├── homepage.php
+│   │   ├── contact.php
+│   │   ├── faq.php
+│   │   ├── about.php
+│   │   ├── military-discount.php
+│   │   └── legal.php
 │   └── search/
 │       ├── product-result.php
 │       ├── product-empty.php
 │       └── product-error.php
+├── page-templates/
+│   └── README.md                           # Only approved coded page templates are added
 └── woocommerce/
-    └── product-searchform.php              # Optional; include only if a supported hook is insufficient
+    ├── product-searchform.php              # Optional; only if a supported hook is insufficient
+    ├── content-product.php                 # Optional product-card override after WEB-2D approval
+    ├── single-product/                     # Optional narrow overrides after WEB-2E approval
+    ├── cart/                               # Optional narrow overrides after WEB-2F approval
+    ├── checkout/                           # Optional narrow overrides after WEB-2F approval
+    └── myaccount/                          # Optional narrow overrides after WEB-2G approval
 ```
 
 ### File-boundary rules
 
 - `style.css` contains the required child-theme header and only minimal bootstrap styles.
 - `functions.php` is a small loader, not a monolithic implementation file.
-- CSS uses WEB-2A variables and remains scoped to global shell/search presentation.
-- JavaScript manages accessible menu presentation only; it does not fetch account, rewards, cart, order, or COA data.
+- CSS uses WEB-2A variables and is separated by foundation, shell, commerce, and page responsibility without duplicating tokens.
+- JavaScript manages accessible presentation only; it does not fetch, calculate, migrate, or store account, rewards, cart, checkout, order, product, VerifyPass, or COA data.
 - `inc/shell-integrations.php` adapts existing public plugin output for placement; it does not duplicate plugin logic.
 - `inc/search-presentation.php` may select product-result presentation through supported query/template hooks; it does not create a custom product database or recommendation engine.
-- The `woocommerce/` directory remains absent unless the implementation spike proves the override necessary.
+- Each file or directory under `woocommerce/` remains absent until its milestone proves a hook cannot meet the presentation requirement. Every override records the installed WooCommerce source version and receives a template-status review.
 - Do not add build tooling, package dependencies, frameworks, or a Site Core settings panel unless a separate launch-critical need is approved.
 
-## 14. Accessibility requirements
+### 14.1 Page-by-page coded implementation sequence
+
+The child theme grows through small packages and review gates. Do not implement all surfaces in one release.
+
+1. **Child-theme foundation and WEB-2B global shell**
+   - Tokens, base accessibility, header, mobile navigation, product search entry/results, account/rewards/cart controls, and footer.
+   - Activate only after parent-theme rollback and Elementor page compatibility are proven.
+2. **WEB-2D product-card system**
+   - Build one coded reusable card against WooCommerce data.
+   - Verify long names, prices, variations, stock, sale, missing image, and testing-status presentation without changing product records.
+3. **WEB-2D Shop archive**
+   - Apply the approved card to the Shop archive, product search, pagination, ordering, empty states, and responsive grids.
+   - Keep Archive #441 and Dark Loop #65 available until every consumer is migrated.
+4. **WEB-2C homepage**
+   - Build the coded homepage from approved visual references, screenshots, locked content, and verified claims.
+   - Reuse the approved global shell and product/COA components; preserve Home post ID 79 and Homepage #571 as rollback evidence until the coded front-page switch is approved.
+5. **WEB-2E single-product presentation**
+   - Add coded WooCommerce presentation through hooks first and narrow overrides only where necessary.
+   - Preserve product IDs, variations, stock, bundle behavior, add-to-cart, testing history, and side-cart handoff.
+6. **WEB-2F cart and side-cart presentation**
+   - Style native WooCommerce/cart-plugin output without changing totals, coupons, tax, shipping, or cart state.
+7. **WEB-2F checkout presentation**
+   - Style the verified four-step checkout and emailed Square payment-link handoff without changing validation, order creation, emails, or payment behavior.
+8. **WEB-2G My Account presentation**
+   - Style login, dashboard, orders, addresses, account editing, password reset, logout, and YITH rewards while preserving permissions and records.
+9. **WEB-2H Contact**
+   - Build the coded layout around the existing working form behavior; production mail authentication remains a separate configuration task.
+10. **WEB-2H FAQ**
+    - Present existing FAQ content with an accessible coded disclosure pattern; do not classify intermittent Staging rendering as deleted content.
+11. **WEB-2H About**
+    - Build the approved coded layout with verified claims and meaningful icons.
+12. **WEB-2H Military / First Responder**
+    - Build presentation around VerifyPass-supported behavior without changing identity verification, uploads, camera access, or coupon creation.
+13. **WEB-2I legal-policy layouts**
+    - Build readable coded layouts, but publish replacement content only after operational/legal approval.
+14. **WEB-2J integrated QA and launch candidate**
+    - Test the assembled child theme across pages, customer states, widths, accessibility, performance, and preserved integrations.
+
+For every item, Codex receives a bounded implementation brief containing exact scope, source screenshots/references, responsive behavior, states, data owner, likely files, acceptance criteria, tests, package/version rules, rollback, and a stop condition. Paulo reviews the real Staging output before the next item begins.
+
+## 15. Accessibility requirements
 
 ### Global shell
 
@@ -411,7 +526,7 @@ pep-select-hello-child/
 - Approximately `180ms` transitions do not shift layout; no shrink effects.
 - Reduced-motion mode removes nonessential movement while preserving clear states.
 
-## 15. Performance and stability safeguards
+## 16. Performance and stability safeguards
 
 - Keep ElementsKit Lite and Pro disabled.
 - Do not load Elementor to render the coded header/footer while the child theme is active.
@@ -427,7 +542,7 @@ pep-select-hello-child/
 - Verify that Elementor marketing pages still edit normally within the Staging 256 MB per-thread limit; the coded shell must not increase editor instability.
 - Stop if the child theme creates duplicate headers/footers, breaks required hooks, causes editor critical errors, or requires an undocumented private API.
 
-## 16. Step-by-step implementation sequence
+## 17. WEB-2B global-shell implementation sequence
 
 ### Phase 0 — preflight and recovery capture
 
@@ -513,9 +628,9 @@ pep-select-hello-child/
 6. Confirm Live was not modified.
 7. Stop before WEB-2C, WEB-2D, deployment, or legacy cleanup.
 
-## 17. Acceptance criteria and rollback by surface
+## 18. WEB-2B acceptance criteria and rollback by surface
 
-### 17.1 Desktop header
+### 18.1 Desktop header
 
 **Acceptance criteria**
 
@@ -533,7 +648,7 @@ pep-select-hello-child/
 3. Verify logo, menu, product search, rewards, account, and cart.
 4. Clear only necessary Staging caches and record the failure.
 
-### 17.2 Mobile navigation
+### 18.2 Mobile navigation
 
 **Acceptance criteria**
 
@@ -549,7 +664,7 @@ pep-select-hello-child/
 2. Verify Header #1323's native Elementor WordPress Menu mobile behavior returns.
 3. Confirm the side cart and account access remain reachable.
 
-### 17.3 Product search
+### 18.3 Product search
 
 **Acceptance criteria**
 
@@ -566,7 +681,7 @@ pep-select-hello-child/
 2. If the child theme remains active for a non-search test, disable only the child theme's optional product-search presentation module through its documented reversible configuration; do not alter product data.
 3. Verify Shop, product links, and COA Archive routes.
 
-### 17.4 Cart/account/rewards controls
+### 18.4 Cart/account/rewards controls
 
 **Acceptance criteria**
 
@@ -582,7 +697,7 @@ pep-select-hello-child/
 2. Verify Header #1323 restores the known rewards, account, and side-cart integration points.
 3. Confirm cart contents and customer session remain intact; do not clear customer data as a rollback step.
 
-### 17.5 Footer
+### 18.5 Footer
 
 **Acceptance criteria**
 
@@ -600,7 +715,7 @@ pep-select-hello-child/
 3. Verify policy, support, account/orders, military, and COA links.
 4. Note that the old `/coas/` link may return with Footer #391; this is a known fallback limitation, not permission to delete the template.
 
-### 17.6 Elementor page-content compatibility
+### 18.6 Elementor page-content compatibility
 
 **Acceptance criteria**
 
@@ -616,7 +731,7 @@ pep-select-hello-child/
 2. Verify the affected page publicly and in Elementor editor.
 3. If parent-theme activation does not restore the page, restore `Before WEB-2B Coded Global Shell` and stop.
 
-## 18. Full rollback procedure
+## 19. Full rollback procedure
 
 ### Primary rollback: theme switch
 
@@ -639,7 +754,7 @@ Use `Before WEB-2B Coded Global Shell` only if switching to the parent theme doe
 - Do not clear carts, customer sessions, orders, or plugin data.
 - Do not change Live.
 
-## 19. Explicit exclusions
+## 20. Explicit exclusions
 
 - No website, theme, Elementor, plugin, configuration, export, credential, or database change during this planning checkpoint.
 - No child-theme files created in this checkpoint.
@@ -652,13 +767,13 @@ Use `Before WEB-2B Coded Global Shell` only if switching to the parent theme doe
 - No custom account/authentication implementation.
 - No combined product/COA backend search.
 - No advanced autocomplete, predictive search, fuzzy search, recommendations, search analytics, mega menu, or unsupported dropdown before launch.
-- No homepage, product-card, single-product, Cart, Checkout, My Account, Contact, FAQ, About, VerifyPass, or legal-page redesign beyond global-shell compatibility.
+- No implementation of the later homepage, Shop/card, single-product, Cart/Checkout, My Account, supporting-page, or legal-layout milestones during the WEB-2B global-shell checkpoint. Those surfaces remain coded child-theme scope but require their own bounded approval, implementation, QA, package, and rollback gate.
 - No final marketing, shipping, support, FDA, research-use, or legal copy rewrite.
 - No Site Core design-system panel or speculative backend work.
 - No dependency/plugin/core update campaign.
 - No Live deployment or production theme activation.
 
-## 20. Items requiring Paulo’s approval before Staging activation
+## 21. Items requiring Paulo’s approval before Staging activation
 
 - Desktop header hierarchy and whether navigation occupies its own row.
 - Logo display size and clear space without altering the source asset.
