@@ -279,11 +279,11 @@ This section proposes categories and ownership only. It does not approve final v
 
 ## 8. Proposed WEB-2A implementation sequence
 
-Implementation begins only after this audit is reviewed and the unresolved visual decisions are approved.
+Implementation begins only after this audit and the approved design decisions recorded under “Approved WEB-2A Design Decisions” are reviewed for implementation.
 
 ### 1. Brand color tokens
 
-- Resolve conflicting current values against approved Pep Select brand assets.
+- Implement the approved Primary Pep Select Navy while retaining the conflicting export values only as current-state audit evidence.
 - Define primitive and semantic roles, including on-color text and status meanings.
 - Test every proposed foreground/background pairing, including translucent overlays.
 - Exclude BioQuantum, Peptides Divas, and unused-template colors unless independently approved as Pep Select values.
@@ -348,12 +348,68 @@ Implementation begins only after this audit is reviewed and the unresolved visua
 - Roll back by restoring the Elementor settings export or the named Staging backup if editor stability, inherited styling, or unrelated active templates regress.
 - Stop before WEB-2B or any active page/template redesign until WEB-2A is approved.
 
-## 9. Decisions Paulo must approve before implementation
+## Approved WEB-2A Design Decisions
 
-- Which exact deep navy is authoritative where the exports conflict between `#0A2540` and `#0A1E40`.
-- Whether Georgia remains the display/heading face, with Plus Jakarta Sans and IBM Plex Mono assigned distinct supporting roles, or whether the approved Pep Select font roles should be simplified.
-- Whether the canonical content maximum is based on `1200px`, `1250px`, or another verified brand/layout requirement, including the preferred desktop and mobile gutter density.
-- Whether Pep Select components should use a restrained small/medium radius family or retain the current mix of large `20px`–`24px` cards and pill controls.
-- Whether hover shrink/movement remains part of the brand interaction language; if retained, approve its visual intensity and reduced-motion alternative.
-- Which visual treatment should distinguish product availability, sale, rewards, and each COA/testing status after their meanings are confirmed.
-- Whether the header search and archive/COA search should intentionally remain different shapes or converge on one recognizable Pep Select search pattern.
+### 1. Primary brand navy
+
+- Primary Pep Select Navy: `#002A53`
+- Darker supporting navy shades may exist only as secondary surfaces when intentionally specified later.
+
+### 2. Typography roles
+
+- Georgia: editorial headings and brand statements
+- Plus Jakarta Sans: navigation, body copy, buttons, forms, product information, and general interface text
+- IBM Plex Mono: batch IDs, COA values, SKUs, and technical metadata
+
+### 3. Content width and gutters
+
+- Maximum content width: `1200px`
+- Desktop gutters: `32px`
+- Tablet gutters: `24px`
+- Mobile gutters: `20px`
+
+### 4. Border-radius system
+
+- Small: `8px`
+- Medium: `12px`
+- Large: `20px`
+- Pill: `999px`
+- Large rounding should be reserved for prominent feature sections rather than applied everywhere.
+
+### 5. Hover and motion
+
+- Use subtle color, border, shadow, or `1–2px` lift changes
+- Do not use shrink effects
+- Target transition duration: approximately `180ms`
+- Provide reduced-motion behavior
+
+### 6. Semantic status system
+
+- Available / Pass / Completed: green
+- Testing / Verification in Progress: cyan or teal
+- Pending / Expected / Waiting: amber
+- Failed / Error: red
+- Out of Stock / Not Tested / Not Applicable: neutral gray
+- Sale: primary navy badge with white text
+- Rewards: cyan or teal treatment
+- Status meaning must use text and/or icons, not color alone
+- Technical metadata should use IBM Plex Mono where appropriate
+
+### 7. Search appearance
+
+- Header, Shop, and COA Archive searches must use one recognizable Pep Select visual pattern
+- Use consistent shape, borders, typography, icon treatment, focus state, and interaction behavior
+- Header search may remain compact
+- Shop and COA searches may be wider
+- Product search must return products
+- COA search must return compounds and testing records
+- Do not retain the current oversized-image WordPress search-results layout
+
+### 8. Launch sequencing decision
+
+- Do not build a Pep Select Design System settings panel in Site Core during the prelaunch rebuild
+- Prioritize the customer-facing site and launch-critical commerce experience first
+- Use approved global styles during the rebuild
+- Preserve the safety of customer information, purchasing, orders, checkout, and account systems
+- Editable WordPress design-system controls may be considered as a separate post-launch milestone
+- Do not add Site Core backend work to WEB-2A unless it is required for launch-critical functionality
