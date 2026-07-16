@@ -788,3 +788,20 @@ Use `Before WEB-2B Coded Global Shell` only if switching to the parent theme doe
 - Approval to activate the child theme for the controlled Staging test window.
 
 These approvals do not authorize final copy, business-logic changes, Live deployment, or removal of the preserved Elementor templates.
+
+## 22. Child-theme foundation created
+
+The first foundation-only WEB-2B package has been created locally as version `0.1.0`.
+
+- Local theme path: `pepselect-child/`
+- Distributable ZIP: `dist/pepselect-child-0.1.0.zip`
+- ZIP SHA256: `680CF6E4D8334AB2313FFF2EAA49F6EC13E93A692CA093CEE492D743854302E3`
+- Parent declaration: Hello Elementor (`Template: hello-elementor`)
+- Package structure: one top-level `pepselect-child/` folder, with `style.css` and `functions.php` directly inside it
+- Local references: all child-theme files referenced by the bootstrap and enqueue code exist
+- URL and credential scan: no hard-coded Staging, Live, legacy-brand, or external URLs and no secrets or credentials were found
+- Commerce boundary: no `woocommerce/` directory, WooCommerce template override, business logic, customer-data access, tracking, analytics, remote request, or external dependency was introduced
+- Presentation boundary: no header, footer, search, page, or Elementor template replacement was introduced
+- PHP validation: the PHP source passed a manual and structural static syntax review; `php -l` was unavailable because this local environment has no PHP CLI executable
+
+The package has not been installed or activated on Staging or Live. The active Hello Elementor parent theme, Elementor Header #1323, Footer #391, and their rollback behavior remain unchanged.
