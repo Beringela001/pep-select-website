@@ -892,3 +892,9 @@ Version `0.2.1` corrects two narrow preview integrations without changing the pu
 Version `0.2.2` changes only coded-header preview styles at widths up to `767px`. It increases announcement readability, enlarges the logo, keeps My Account, cart, and menu controls at practical 44px targets with more space, places the full-width product search on its own 48px row, and keeps Rewards as a labeled link inside the collapsible navigation rather than the icon row. Bounded grid, action, logo, and search widths prevent header-level horizontal overflow without clipping the side-cart drawer. Desktop/tablet styling, JavaScript accessibility behavior, preview authorization, Elementor conditions, WooCommerce behavior, and Live remain unchanged.
 
 - Test package: `dist/pepselect-child-0.2.2.zip`; SHA256: `840FB0F630A8E8536925F9CD633B0D558156B324308E08206E1B16FD618DC726`.
+
+## Header Proportion and Mobile State Refinement
+
+Version `0.2.3` slightly increases desktop logo presence with layout-neutral visual scaling, reduces desktop product-search width, and compacts Rewards spacing while retaining the existing vertical padding, control heights, `1200px` inner-width token, and balanced account/cart actions. These proportion rules apply only above `1024px`. On mobile, the approved version `0.2.2` structure remains unchanged; Rewards now receives `is-current` and `aria-current="page"` only when its WooCommerce account endpoint matches the current route. Non-current hover treatment no longer uses the active-page cyan border or dark background, and keyboard focus remains independently visible through the existing focus outline.
+
+- Test package: `dist/pepselect-child-0.2.3.zip`; SHA256: `599C41193E598FE05372A02953C73A704328F5248A38327AA30F2F9D339A2934`.

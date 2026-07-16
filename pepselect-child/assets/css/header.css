@@ -325,6 +325,33 @@
 	outline-offset: 3px;
 }
 
+@media (min-width: 1025px) {
+	.pepselect-header__brand .custom-logo,
+	.pepselect-header__logo-image {
+		transform: scale(1.06);
+		transform-origin: left center;
+	}
+
+	.pepselect-header__search {
+		max-width: 520px;
+	}
+
+	.pepselect-header__actions {
+		gap: 6px;
+	}
+
+	.pepselect-header__action--rewards {
+		gap: 4px;
+		padding-inline: 8px;
+	}
+
+	.pepselect-header__rewards-value,
+	.pepselect-header__rewards-value p,
+	.pepselect-header__rewards-value strong {
+		font-size: 13px;
+	}
+}
+
 @media (max-width: 1024px) {
 	.pepselect-header__main-grid {
 		grid-template-columns: minmax(0, 1fr) auto;
@@ -438,7 +465,12 @@
 		display: list-item;
 	}
 
-	.pepselect-header__mobile-rewards .pepselect-header__nav-link {
+	.pepselect-header__nav-link:hover:not(.is-current) {
+		border-left-color: transparent;
+		background: rgb(255 255 255 / 8%);
+	}
+
+	.pepselect-header__nav-link.is-current {
 		border-left-color: var(--pep-color-cyan);
 		background: var(--pep-color-dark-navy);
 	}

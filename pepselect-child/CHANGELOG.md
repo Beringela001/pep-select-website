@@ -2,6 +2,13 @@
 
 All notable changes to the Pep Select child theme are documented here.
 
+## 0.2.3 - 2026-07-16
+
+- Increased desktop logo presence, reduced desktop search width, and compacted the desktop Rewards control without changing header height or the `1200px` inner-width foundation.
+- Made the mobile Rewards link route-aware and removed its unconditional active treatment.
+- Separated non-current mobile hover styling from the current-page cyan accent and dark background while preserving visible keyboard focus.
+- Preserved version `0.2.2` mobile structure, search, controls, tap targets, navigation behavior, reduced motion, and administrator-only preview isolation.
+
 ## 0.2.2 - 2026-07-16
 
 - Refined only the coded header's mobile layout at widths up to `767px`.
