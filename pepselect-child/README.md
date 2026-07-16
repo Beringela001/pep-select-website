@@ -1,10 +1,10 @@
 # Pep Select child theme
 
-- Version: 0.1.0
+- Version: 0.1.1
 - Parent: Hello Elementor (`hello-elementor`)
 - Text domain: `pepselect-child`
 
-Pep Select is a lightweight presentation child theme for the controlled WEB-2 customer-facing rebuild. Version 0.1.0 establishes only the inactive theme foundation. It does not provide a coded header, footer, search results, WooCommerce override, page template, or Elementor display condition.
+Pep Select is a lightweight presentation child theme for the controlled WEB-2 customer-facing rebuild. Version 0.1.1 establishes only the inactive theme foundation. It does not provide a coded header, footer, search results, WooCommerce override, page template, or Elementor display condition.
 
 ## Requirements and safe failure
 
@@ -50,4 +50,4 @@ The `woocommerce/` directory is deliberately absent. Add an override only in its
 
 ## Rollback boundary
 
-The existing Hello Elementor parent theme and active Elementor Header #1323 and Footer #391 remain the rollback baseline. Later Staging activation of this child theme must remain reversible by reactivating the parent theme. Version 0.1.0 changes no WordPress records or template display conditions.
+The existing Hello Elementor parent theme and active Elementor Header #1323 and Footer #391 remain the rollback baseline. Later Staging activation of this child theme must remain reversible by reactivating the parent theme. Version 0.1.1 changes no WordPress records or template display conditions.

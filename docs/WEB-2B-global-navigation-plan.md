@@ -791,11 +791,11 @@ These approvals do not authorize final copy, business-logic changes, Live deploy
 
 ## 22. Child-theme foundation created
 
-The first foundation-only WEB-2B package has been created locally as version `0.1.0`.
+The first foundation-only WEB-2B source was created locally as version `0.1.0`. Its initial distributable package failed WordPress installation and has been superseded by corrected version `0.1.1`.
 
 - Local theme path: `pepselect-child/`
-- Distributable ZIP: `dist/pepselect-child-0.1.0.zip`
-- ZIP SHA256: `680CF6E4D8334AB2313FFF2EAA49F6EC13E93A692CA093CEE492D743854302E3`
+- Corrected distributable ZIP: `dist/pepselect-child-0.1.1.zip`
+- ZIP SHA256: `A0D61ED1CDB6F7C5D91A6B0B5E5571828012142F2E748AB477C70195D123564B`
 - Parent declaration: Hello Elementor (`Template: hello-elementor`)
 - Package structure: one top-level `pepselect-child/` folder, with `style.css` and `functions.php` directly inside it
 - Local references: all child-theme files referenced by the bootstrap and enqueue code exist
@@ -805,3 +805,11 @@ The first foundation-only WEB-2B package has been created locally as version `0.
 - PHP validation: the PHP source passed a manual and structural static syntax review; `php -l` was unavailable because this local environment has no PHP CLI executable
 
 The package has not been installed or activated on Staging or Live. The active Hello Elementor parent theme, Elementor Header #1323, Footer #391, and their rollback behavior remain unchanged.
+
+### Version 0.1.0 installation failure and 0.1.1 correction
+
+- WordPress Staging rejected version `0.1.0` with: `The package could not be installed. The theme is missing the style.css stylesheet.`
+- The source `style.css` header was valid, but the Windows `Compress-Archive` package stored entry names with backslash bytes, such as `pepselect-child\style.css`, rather than portable ZIP paths such as `pepselect-child/style.css`.
+- The earlier validation incorrectly normalized backslashes to forward slashes before reporting the entry list, which concealed the packaging defect.
+- Version `0.1.1` uses explicitly constructed forward-slash entry names, contains one top-level `pepselect-child/` directory, and has been verified both directly from the archive and after temporary extraction.
+- No theme behavior, WordPress record, Elementor template, plugin, configuration, credential, database content, Staging setting, or Live environment was changed by this package repair.
