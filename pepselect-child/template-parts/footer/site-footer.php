@@ -1,6 +1,6 @@
 <?php
 /**
- * Administrator-only coded footer preview.
+ * Default coded site footer.
  *
  * @package PepSelectChild
  */

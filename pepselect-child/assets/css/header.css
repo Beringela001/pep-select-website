@@ -1,7 +1,7 @@
 /**
- * Pep Select coded header preview.
+ * Pep Select coded site header.
  *
- * Loaded only for an authorized ?pepselect_header_preview=1 request.
+ * Loaded only when the coded shell owns the front-end request.
  */
 
 .pepselect-header-preview .elementor-location-header,

@@ -1,6 +1,6 @@
 <?php
 /**
- * Administrator-only coded header preview.
+ * Coded site-shell request routing and header presentation.
  *
  * @package PepSelectChild
  */
@@ -40,21 +40,104 @@ function pepselect_child_preview_flag_is_set( $flag ) {
 }
 
 /**
+ * Determine whether the request is an authenticated Elementor editor preview.
+ *
+ * @return bool
+ */
+function pepselect_child_is_elementor_editor_request() {
+	if ( ! is_user_logged_in() || ! current_user_can( 'edit_posts' ) ) {
+		return false;
+	}
+
+	if ( did_action( 'elementor/loaded' ) && class_exists( '\\Elementor\\Plugin' ) ) {
+		$elementor = \Elementor\Plugin::$instance;
+
+		if ( isset( $elementor->editor ) && is_object( $elementor->editor ) && method_exists( $elementor->editor, 'is_edit_mode' ) && $elementor->editor->is_edit_mode() ) {
+			return true;
+		}
+	}
+
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only editor routing check; capability is required above.
+	$preview_id = isset( $_GET['elementor-preview'] ) ? absint( wp_unslash( $_GET['elementor-preview'] ) ) : 0;
+
+	return 0 < $preview_id;
+}
+
+/**
+ * Determine whether the current request supports the coded front-end shell.
+ *
+ * @return bool
+ */
+function pepselect_child_is_supported_frontend_shell_request() {
+	if ( is_admin() || wp_doing_ajax() || wp_doing_cron() ) {
+		return false;
+	}
+
+	if ( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
+		return false;
+	}
+
+	if ( defined( 'WP_CLI' ) && WP_CLI ) {
+		return false;
+	}
+
+	if ( ( isset( $GLOBALS['pagenow'] ) && 'wp-login.php' === $GLOBALS['pagenow'] ) || is_feed() ) {
+		return false;
+	}
+
+	if ( is_customize_preview() || pepselect_child_is_elementor_editor_request() ) {
+		return false;
+	}
+
+	return true;
+}
+
+/**
+ * Determine whether an administrator requested the preserved Elementor shell.
+ *
+ * @return bool
+ */
+function pepselect_child_is_legacy_shell_request() {
+	return pepselect_child_is_supported_frontend_shell_request() && pepselect_child_preview_flag_is_set( 'pepselect_legacy_shell' );
+}
+
+/**
+ * Determine whether the coded header and footer should own this request.
+ *
+ * @return bool
+ */
+function pepselect_child_should_render_coded_shell() {
+	return pepselect_child_is_supported_frontend_shell_request() && ! pepselect_child_is_legacy_shell_request();
+}
+
+/**
+ * Determine whether an authorized explicit shell-control flag is present.
+ *
+ * @return bool
+ */
+function pepselect_child_is_explicit_shell_control_request() {
+	return pepselect_child_preview_flag_is_set( 'pepselect_header_preview' )
+		|| pepselect_child_preview_flag_is_set( 'pepselect_footer_preview' )
+		|| pepselect_child_preview_flag_is_set( 'pepselect_shell_preview' )
+		|| pepselect_child_is_legacy_shell_request();
+}
+
+/**
  * Determine whether the current front-end request may show the coded header.
  *
  * @return bool
  */
 function pepselect_child_is_header_preview_request() {
-	return pepselect_child_preview_flag_is_set( 'pepselect_header_preview' ) || pepselect_child_preview_flag_is_set( 'pepselect_shell_preview' );
+	return pepselect_child_should_render_coded_shell();
 }
 
 /**
- * Register preview hooks without changing ordinary front-end requests.
+ * Register coded-header hooks.
  *
  * @return void
  */
 function pepselect_child_register_header_preview() {
-	add_action( 'template_redirect', 'pepselect_child_header_preview_no_cache' );
+	add_action( 'template_redirect', 'pepselect_child_shell_control_no_cache' );
 	add_filter( 'body_class', 'pepselect_child_header_preview_body_class' );
 	add_filter( 'elementor/theme/get_location_templates/template_id', 'pepselect_child_suppress_elementor_header_preview', 10, 2 );
 	add_action( 'wp_enqueue_scripts', 'pepselect_child_enqueue_header_preview_assets', 30 );
@@ -64,8 +147,8 @@ function pepselect_child_register_header_preview() {
 /**
  * Suppress Header #1323 through Elementor's documented location filter.
  *
- * The Hello Elementor fallback header is hidden by preview-only CSS. The
- * Elementor footer and all page-content locations remain untouched.
+ * The Hello Elementor fallback header is hidden by scoped CSS. Elementor page
+ * content remains untouched, and legacy/editor requests bypass suppression.
  *
  * @param int    $template_id Elementor Theme Builder template ID.
  * @param string $location    Elementor Theme Builder location when available.
@@ -80,18 +163,18 @@ function pepselect_child_suppress_elementor_header_preview( $template_id, $locat
 }
 
 /**
- * Prevent an administrator preview response from being stored in a page cache.
+ * Prevent explicit administrator shell-control responses from being cached.
  *
  * @return void
  */
-function pepselect_child_header_preview_no_cache() {
-	if ( pepselect_child_is_header_preview_request() ) {
+function pepselect_child_shell_control_no_cache() {
+	if ( pepselect_child_is_explicit_shell_control_request() ) {
 		nocache_headers();
 	}
 }
 
 /**
- * Add the preview body class used to hide the Elementor header for one request.
+ * Add the body class used to hide the Elementor or parent-theme header.
  *
  * @param string[] $classes Existing body classes.
  * @return string[]
@@ -105,7 +188,7 @@ function pepselect_child_header_preview_body_class( $classes ) {
 }
 
 /**
- * Load coded-header assets only for an authorized preview request.
+ * Load coded-header assets only when the coded shell owns the request.
  *
  * @return void
  */

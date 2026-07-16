@@ -1,10 +1,10 @@
 # Pep Select child theme
 
-- Version: 0.3.0
+- Version: 0.3.1
 - Parent: Hello Elementor (`hello-elementor`)
 - Text domain: `pepselect-child`
 
-Pep Select is a lightweight presentation child theme for the controlled WEB-2 customer-facing rebuild. Version 0.3.0 adds the first coded footer behind private, administrator-only footer and shell previews while retaining the independently selectable coded header preview. It does not replace the public Elementor header, footer, search-results presentation, WooCommerce template, page template, or Elementor display condition.
+Pep Select is a lightweight presentation child theme for the controlled WEB-2 customer-facing rebuild. Version 0.3.1 makes the approved coded header and footer the default presentation shell on supported front-end requests. Elementor continues to own page content, and its stored Header #1323, Footer #391, and display conditions remain unchanged for emergency rollback.
 
 ## Requirements and safe failure
 
@@ -24,15 +24,17 @@ Installing a ZIP does not activate a theme automatically. The child theme is alr
 - Bundles no font files. Georgia and system fallbacks remain available when Plus Jakarta Sans or IBM Plex Mono are not supplied by an approved site-level font source.
 - Adds no business logic, database access, migration, analytics, tracking, remote request, dependency, or administrative asset.
 - Adds no WooCommerce template override and does not modify WooCommerce behavior.
-- Adds `?pepselect_header_preview=1`, restricted to logged-in users with `manage_options`, for the coded-header review.
-- Adds `?pepselect_footer_preview=1` for the coded footer only and `?pepselect_shell_preview=1` for the coded header and footer together, under the same capability restriction.
-- Loads coded-header or coded-footer assets only during the corresponding authorized preview and sends no-cache headers for those responses.
+- Renders the coded header and footer by default on normal front-end requests while preserving Elementor page content between them.
+- Suppresses Elementor Header #1323 and Footer #391 only for requests where the coded shell is active; it does not change or delete their stored conditions.
+- Keeps `?pepselect_header_preview=1`, `?pepselect_footer_preview=1`, and `?pepselect_shell_preview=1` as administrator-only compatibility controls.
+- Adds administrator-only `?pepselect_legacy_shell=1` to restore the preserved Elementor shell for one request; explicit shell-control responses receive no-cache headers.
+- Bypasses coded-shell replacement in wp-admin, Elementor editor, Customizer, login, REST, AJAX, cron, feed, and CLI contexts.
 - Uses the confirmed Elementor Header #1323 Media Library logo attachment when no WordPress Custom Logo is set, without storing an environment URL.
 - Uses the confirmed Elementor Footer #391 Media Library logo attachment when no WordPress Custom Logo is set, without storing an environment URL.
 - Uses the officially documented YITH remaining-points shortcode only for logged-in users and only when registered; otherwise it shows the Rewards destination without a numeric balance.
 - Uses the confirmed Xootix side-cart shortcode only when registered, with an environment-neutral cart fallback.
-- Preserves current research-use statements, support email, footer destinations, exact published FDA disclaimer, and dynamic copyright year; removes developer credit only from the private coded preview.
-- Leaves ordinary requests, existing Elementor page content, Header #1323, Footer #391, and Elementor display conditions untouched.
+- Preserves current research-use statements, support email, footer destinations, exact published FDA disclaimer, and dynamic copyright year; the coded footer omits the external developer credit.
+- Leaves existing Elementor page content, Header #1323, Footer #391, and all Elementor display conditions stored and unchanged.
 
 ## Structure
 
@@ -71,4 +73,4 @@ The `woocommerce/` directory is deliberately absent. Add an override only in its
 
 ## Rollback boundary
 
-The existing Hello Elementor parent theme and active Elementor Header #1323 and Footer #391 remain the rollback baseline. Version 0.3.0 changes no WordPress records or Elementor display conditions. Removing the preview query parameters immediately restores ordinary Header #1323 and Footer #391 request paths; reactivating the parent theme remains the full theme-level rollback.
+The existing Hello Elementor parent theme and stored Elementor Header #1323 and Footer #391 remain the rollback baseline. Version 0.3.1 changes no WordPress records or Elementor display conditions. A logged-in administrator may use `?pepselect_legacy_shell=1` for a one-request shell check; reactivating the parent theme remains the immediate full rollback.

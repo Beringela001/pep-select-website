@@ -2,6 +2,13 @@
 
 All notable changes to the Pep Select child theme are documented here.
 
+## 0.3.1 - 2026-07-16
+
+- Made the approved coded header and footer the default shell on supported front-end requests while preserving all Elementor page content.
+- Added the administrator-only `?pepselect_legacy_shell=1` emergency route to restore Elementor Header #1323 and Footer #391 for one uncached request.
+- Excluded WordPress administration, Elementor editor, Customizer, login, REST, AJAX, cron, feed, and CLI contexts from coded-shell replacement.
+- Preserved the stored Elementor templates and conditions, Hello Elementor theme rollback, WooCommerce integrations, and all business logic.
+
 ## 0.3.0 - 2026-07-16
 
 - Added the first coded footer behind administrator-only `pepselect_footer_preview` and combined `pepselect_shell_preview` request flags.

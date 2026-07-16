@@ -1,6 +1,6 @@
 <?php
 /**
- * Administrator-only coded header preview.
+ * Default coded site header.
  *
  * @package PepSelectChild
  */

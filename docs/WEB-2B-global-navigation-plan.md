@@ -915,3 +915,17 @@ Version `0.3.0` adds the first coded WEB-2B footer behind private administrator 
 - No WooCommerce template, business logic, customer data, Elementor condition, WordPress record, plugin, configuration, Staging setting, or Live environment was changed.
 - Test package: `dist/pepselect-child-0.3.0.zip`; SHA256: `2792ED92425024F28068DCB1F5210B7E8375AEAACEFF33AD95AA31171C87D7A3`.
 - Package validation confirmed one `pepselect-child/` root, portable forward-slash entries, required theme files, no nested theme folder, successful temporary extraction, and byte-for-byte source matching across all `20` files.
+
+## Coded Shell Activated by Default
+
+Version `0.3.1` makes the approved coded header from `0.2.3` and coded footer from `0.3.0` the default site shell whenever the Pep Select child theme owns a supported front-end request. Elementor continues to render all page content between them.
+
+- Normal front-end requests render the coded header and footer and suppress Elementor Header #1323 and Footer #391 through the existing Theme Location filters.
+- A logged-in administrator with `manage_options` may append `?pepselect_legacy_shell=1` to restore Header #1323 and Footer #391 for that uncached request only. Unauthorized visitors remain on the coded shell.
+- Coded-shell replacement is bypassed in wp-admin, Elementor editor requests, WordPress Customizer previews, login screens, REST requests, AJAX requests, cron, feeds, and CLI contexts.
+- The earlier header, footer, and combined preview parameters remain accepted as administrator-only compatibility controls, but the coded shell no longer requires a query parameter.
+- Header #1323, Footer #391, their Elementor display conditions, and all Elementor page content remain stored and unchanged. No permanent setting or database value is added.
+- Hello Elementor remains installed as the immediate theme-level rollback.
+- Staging rollback backup: `Before WEB-2B Coded Shell Activation`.
+- Live remains untouched.
+- Test package: `dist/pepselect-child-0.3.1.zip`; SHA256: `B1D2E59482AA0BA2121E14D40B512D3063A9025A799941EC7EA6B61AFF7E81C1`.

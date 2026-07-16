@@ -1,6 +1,6 @@
 <?php
 /**
- * Administrator-only coded footer preview.
+ * Coded site-shell footer presentation.
  *
  * @package PepSelectChild
  */
@@ -15,16 +15,15 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @return bool
  */
 function pepselect_child_is_footer_preview_request() {
-	return pepselect_child_preview_flag_is_set( 'pepselect_footer_preview' ) || pepselect_child_preview_flag_is_set( 'pepselect_shell_preview' );
+	return pepselect_child_should_render_coded_shell();
 }
 
 /**
- * Register footer-preview hooks without changing ordinary front-end requests.
+ * Register coded-footer hooks.
  *
  * @return void
  */
 function pepselect_child_register_footer_preview() {
-	add_action( 'template_redirect', 'pepselect_child_footer_preview_no_cache' );
 	add_filter( 'body_class', 'pepselect_child_footer_preview_body_class' );
 	add_filter( 'elementor/theme/get_location_templates/template_id', 'pepselect_child_suppress_elementor_footer_preview', 10, 2 );
 	add_action( 'wp_enqueue_scripts', 'pepselect_child_enqueue_footer_preview_assets', 30 );
@@ -34,8 +33,8 @@ function pepselect_child_register_footer_preview() {
 /**
  * Suppress Footer #391 through Elementor's documented location filter.
  *
- * The Hello Elementor fallback footer is hidden by preview-only CSS. Header
- * and page-content locations remain untouched unless shell preview is active.
+ * The Hello Elementor fallback footer is hidden by scoped CSS. Elementor page
+ * content remains untouched, and legacy/editor requests bypass suppression.
  *
  * @param int    $template_id Elementor Theme Builder template ID.
  * @param string $location    Elementor Theme Builder location when available.
@@ -50,18 +49,7 @@ function pepselect_child_suppress_elementor_footer_preview( $template_id, $locat
 }
 
 /**
- * Prevent an administrator preview response from being stored in page cache.
- *
- * @return void
- */
-function pepselect_child_footer_preview_no_cache() {
-	if ( pepselect_child_is_footer_preview_request() ) {
-		nocache_headers();
-	}
-}
-
-/**
- * Add the body class that scopes footer-preview presentation.
+ * Add the body class that scopes coded-footer presentation.
  *
  * @param string[] $classes Existing body classes.
  * @return string[]
@@ -75,7 +63,7 @@ function pepselect_child_footer_preview_body_class( $classes ) {
 }
 
 /**
- * Load coded-footer styles only for an authorized preview request.
+ * Load coded-footer styles only when the coded shell owns the request.
  *
  * @return void
  */
