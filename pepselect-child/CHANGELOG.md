@@ -2,6 +2,13 @@
 
 All notable changes to the Pep Select child theme are documented here.
 
+## 0.2.2 - 2026-07-16
+
+- Refined only the coded header's mobile layout at widths up to `767px`.
+- Increased announcement readability and logo size, retained three 44px action controls, and expanded product search to a full-width 48px row.
+- Kept Rewards out of the mobile icon row and clearly labeled it inside the accessible collapsible navigation.
+- Preserved desktop/tablet styling, preview restrictions, navigation JavaScript, WooCommerce behavior, and Elementor conditions.
+
 ## 0.2.1 - 2026-07-16
 
 - Rendered the current Pep Select logo from WordPress Media Library attachment `595`, preferring a configured WordPress Custom Logo and retaining a site-name fallback.

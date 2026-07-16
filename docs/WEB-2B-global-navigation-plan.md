@@ -886,3 +886,9 @@ Version `0.2.1` corrects two narrow preview integrations without changing the pu
 - YITH's official documentation identifies `[yith_ywpar_points]` as the supported remaining-points display for the logged-in user. The preview uses that registered shortcode only for a logged-in user. It does not query YITH tables, instantiate undocumented classes, or default a missing balance to zero; unavailable or empty supported output leaves the functional Rewards link without a number.
 - Version `0.2.1` remains restricted to authorized `?pepselect_header_preview=1` requests. Header #1323 remains unchanged for ordinary visitors, and footer, search, cart, account, navigation, WooCommerce behavior, and business logic remain outside this correction.
 - Test package: `dist/pepselect-child-0.2.1.zip`; SHA256: `3A777CA03283F6DE577A7BC8C975C156B67A7318C91291C097DC9C4E9993C273`.
+
+## Mobile Header Preview Refinement
+
+Version `0.2.2` changes only coded-header preview styles at widths up to `767px`. It increases announcement readability, enlarges the logo, keeps My Account, cart, and menu controls at practical 44px targets with more space, places the full-width product search on its own 48px row, and keeps Rewards as a labeled link inside the collapsible navigation rather than the icon row. Bounded grid, action, logo, and search widths prevent header-level horizontal overflow without clipping the side-cart drawer. Desktop/tablet styling, JavaScript accessibility behavior, preview authorization, Elementor conditions, WooCommerce behavior, and Live remain unchanged.
+
+- Test package: `dist/pepselect-child-0.2.2.zip`; SHA256: `840FB0F630A8E8536925F9CD633B0D558156B324308E08206E1B16FD618DC726`.
