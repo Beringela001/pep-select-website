@@ -57,6 +57,19 @@ The beta.1 component-scoped logo and Rewards protections remain unchanged. Homep
 - One H1, logical section headings, meaningful product alt text, visible focus, sufficient contrast, text-backed status, and reduced-motion handling are required.
 - No external font, slider, animation, analytics, or tracking dependency is added.
 
+## Design-system evolution after creative-direction clarification
+
+WEB-2A remains the global foundation, while this homepage uses a small set of controlled page-level refinements recommended through UI/UX Pro Max and professional review:
+
+- The display scale expands beyond the earlier conservative range so the hero and major section headings establish a clearer commercial hierarchy.
+- Feature geometry adds local 24-32px radii and one asymmetric corner treatment for high-impact product imagery and conversion regions; ordinary controls retain the approved global radius system.
+- Section spacing now varies by narrative role instead of applying one uniform vertical interval everywhere.
+- The hero product stage and Quality Archive become immersive compositions rather than additional cards, reducing the repetitive, template-driven appearance.
+- Product cards use richer image surfaces, a restrained elevation scale, and stable 1-2px interaction movement to improve product focus without adding visual noise.
+- Navy and cyan remain the recognizable identity. Depth comes from tonal layering, real catalog imagery, and deliberate contrast rather than unrelated palettes, glassmorphism, or decorative gradients.
+
+These refinements improve hierarchy, product visibility, rhythm, and perceived polish without changing the logo, global shell, approved content boundaries, WooCommerce data ownership, COA Archive logic, preview security, or reduced-motion behavior.
+
 ## Rollback and review boundary
 
 Remove `?pepselect_home_preview=1` to return to the unchanged Elementor homepage. The preserved Elementor homepage, coded-shell rollback control, and Hello Elementor parent theme remain available.
