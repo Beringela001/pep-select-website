@@ -1,4 +1,4 @@
-# WEB-2 Controlled Front-End Rebuild Plan
+# WEB-2 Controlled Coded Customer-Facing Rebuild Plan
 
 Plan date: July 16, 2026
 
@@ -8,16 +8,20 @@ Status: Planning only; no implementation is authorized by this document
 
 ## 1. Purpose
 
-WEB-2 will rebuild the Pep Select presentation layer while preserving the working commerce, customer, testing, verification, and fulfillment systems underneath it.
+WEB-2 will rebuild the complete Pep Select customer-facing presentation through a lightweight Hello Elementor child theme while preserving the working commerce, customer, testing, verification, and fulfillment systems underneath it.
 
 The rebuild must proceed as a sequence of small, reversible milestones. Each replacement will be built and tested on Staging before its existing counterpart is retired. Live remains untouched until a separate, approved deployment milestone defines the exact promotion and rollback procedure.
+
+The successful Pep Select COA Archive development workflow is the delivery model: detailed requirements, bounded coded implementation, versioned packaging, Staging installation, real-output review, screenshot-led iteration, responsive/accessibility verification, and a preserved rollback.
+
+Codex will implement each customer-facing system from approved requirements, visual references, screenshots, responsive rules, state definitions, integration ownership, acceptance criteria, and iterative Paulo review. It must not infer final claims/legal copy, expand a milestone silently, or move business logic into the theme.
 
 This plan uses the completed WEB-1 reports as its source of truth:
 
 - `docs/WEB-1-elementor-audit.md`
 - `docs/WEB-1-staging-findings.md`
 
-WEB-2 does not approve visual designs, final page copy, legal advice, plugin removal, data migration, or production deployment.
+WEB-2 does not approve final visual designs, final page copy, legal advice, plugin removal, customer/product/order migration, operational-integration migration, or production deployment.
 
 ## 2. Non-negotiable preservation boundary
 
@@ -31,6 +35,8 @@ The rebuild must preserve:
 - The Pep Select COA Archive plugin, its records, and canonical `/testing/` routes.
 - Existing working checkout and fulfillment integrations.
 - Current legal and policy pages until replacement copy is approved.
+- The current WooCommerce database; no products, variations, inventory, customers, accounts, orders, coupons, or operational records are rebuilt or migrated.
+- The existing Hello Elementor parent theme and active Elementor templates as the immediate rollback until the coded replacement is fully approved.
 
 The following already-tested flows are treated as a preserved baseline: cart, four-step checkout, emailed Square payment-link orders, WooCommerce order statuses, customer order history, addresses, account editing, logout, password reset, reward-point conversion into coupons, and mobile side cart. They should not be retested repetitively unless a milestone changes their implementation or a neighboring change creates a credible regression risk.
 
@@ -40,6 +46,7 @@ No visual milestone may change prices, variation relationships, stock, coupons, 
 
 WEB-2 will plan and, after later milestone approval, rebuild or restyle:
 
+- Announcement bar
 - Header and navigation
 - Footer
 - Homepage
@@ -55,8 +62,11 @@ WEB-2 will plan and, after later milestone approval, rebuild or restyle:
 - About page
 - Military/first responder page
 - Legal-policy page layouts
+- Responsive global styles and accessibility behavior
 
-This scope is presentation work. Business behavior remains owned by WooCommerce or the dedicated plugin/service that currently provides it.
+The lightweight Hello Elementor child theme is the primary implementation layer for all of these customer-facing surfaces. Elementor may remain available for limited editable marketing and editorial content, but it will not own the critical global shell or core commerce presentation.
+
+This scope is presentation work. Business behavior remains owned by WordPress, WooCommerce, or the dedicated plugin/service that currently provides it. The child theme may consume supported public hooks, functions, shortcodes, endpoints, and template data; it must not duplicate, recalculate, migrate, or store the business data those systems own.
 
 ## 4. Architecture and delivery rules
 
@@ -64,25 +74,30 @@ This scope is presentation work. Business behavior remains owned by WooCommerce 
 
 | Layer | May own | Must not own |
 |---|---|---|
-| Elementor | Marketing and editorial page composition, approved headings and imagery, reusable visual sections, and Theme Builder presentation where visual administration is useful | Secrets, authentication, order lookup security, rate limiting, canonical product/order relationships, checkout logic, or durable integrations |
-| Child theme, if justified | Theme-coupled global styles, narrow WooCommerce presentation overrides, and theme-specific template hooks | Portable business logic or duplicated WooCommerce data |
+| Elementor | Limited editable marketing/editorial content where intentionally retained | Critical global shell, core commerce presentation, secrets, authentication, order lookup security, canonical product/order relationships, checkout logic, or durable integrations |
+| Pep Select Hello child theme | Complete customer-facing presentation: global shell, homepage, archive/cards/search, single product, cart/checkout/account presentation, supporting/legal layouts, global responsive/accessibility styles, WordPress/WooCommerce hooks, and minimal template overrides only when necessary | Portable business logic, customer/product/order data models, authentication, rewards/cart/COA calculations, payment/shipping/email logic, secrets, or duplicated WooCommerce data |
+| Hello Elementor parent theme | Stable parent framework and immediate theme-switch fallback | Direct Pep Select edits or custom business logic |
 | Pep Select Site Core plugin | Durable site-specific behavior, integration adapters, secure endpoints, dynamic account/header behavior, reusable shortcodes or blocks, and functionality that must survive a theme change | COA behavior that belongs in the dedicated COA plugin or copied plugin code |
 | Existing dedicated plugin | The feature it already owns, including Pep Select COA Archive, YITH rewards, VerifyPass, side cart, tracking, or checkout integrations | Unrelated page composition or general brand styling |
 | WooCommerce | Products, variations, stock, customers, orders, addresses, coupons, taxes, shipping, checkout, and account/order records | A duplicated parallel Pep Select commerce data model |
 
 ### 4.2 Required constraints
 
-- Do not build business logic into Elementor templates.
+- Stop manually constructing critical global or core-commerce components in Elementor.
+- Do not publish or assign display conditions to the draft `Pep Select Header — WEB-2B`.
+- Do not build business logic into Elementor templates or the child theme.
 - Do not restore ElementsKit Lite or ElementsKit Pro. ElementsKit Lite is the confirmed trigger for Staging Elementor editor memory exhaustion.
 - Do not reuse Peptides Divas, BioQuantum, Siat legacy COA templates, or copied competitor layouts or copy.
 - Do not edit WordPress core, WooCommerce core, or third-party plugin files.
 - Do not store credentials or secrets in Elementor, Git, JavaScript, or public markup.
-- Replace old templates only after the replacement passes desktop, tablet, mobile, accessibility, and relevant functional testing.
+- Use supported WordPress/WooCommerce hooks before copying templates. Add an override only when necessary, keep it narrow, record its installed source version, and review it after WooCommerce updates.
+- Replace old presentation only after the coded replacement passes desktop, tablet, mobile, accessibility, and relevant functional testing.
 - Preserve rollback points throughout the rebuild.
 - Do all work on Staging first.
 - Keep Live untouched until an approved deployment milestone.
 - Use environment-neutral internal links and assets. Do not hard-code Staging, Kinsta, Hostinger, Peptides Divas, BioQuantum, or obsolete URLs into replacements.
-- Record database-held Elementor, menu, and Theme Builder changes separately from code changes.
+- Preserve the Hello Elementor parent theme and active Elementor templates for immediate rollback while coded replacements are built in parallel.
+- Record database-held Elementor, menu, theme activation, and other WordPress changes separately from code changes.
 
 ### 4.3 Standard milestone gate
 
@@ -91,9 +106,10 @@ Before each implementation milestone:
 1. Confirm the Staging environment and current Git branch.
 2. Confirm a clean worktree.
 3. Create a named Kinsta manual Staging backup.
-4. Export every Elementor template that will be changed.
-5. Record current Theme Builder conditions, menu assignments, plugin ownership, and relevant settings.
-6. State the milestone scope and exclusions.
+4. Export every active Elementor template whose presentation will be replaced, without editing or deleting it.
+5. Record current Theme Builder conditions, active/parent/child theme versions, menu assignments, plugin ownership, WooCommerce template status, and relevant settings.
+6. Confirm the previous verified child-theme package and Hello Elementor parent fallback are recoverable.
+7. State the milestone scope, likely child-theme modules/files, integration boundaries, tests, rollback, and exclusions.
 
 After each milestone:
 
@@ -101,7 +117,24 @@ After each milestone:
 2. Test at 1440, 1280, 1024, 768, 480, 430, 390, 375, 360, and 320px where applicable.
 3. Check keyboard use, visible focus, semantic labels, touch targets, contrast, reduced motion, error states, and no horizontal page scrolling.
 4. Confirm that Live was not modified.
-5. Record the verified replacement, remaining risks, and rollback steps before moving forward.
+5. Record the verified child-theme version/package/hash, changed presentation modules, remaining risks, and page-level/theme-level rollback steps before moving forward.
+
+### 4.4 Modular child-theme architecture
+
+The child theme must remain one coherent presentation system with small modules rather than a collection of page-specific patches:
+
+| Module | Responsibility |
+|---|---|
+| Foundations | WEB-2A CSS variables, typography, containers, spacing, focus, motion, status, and responsive rules |
+| Global shell | Announcement, header, navigation, search entry/results, account/rewards/cart controls, and footer |
+| Shared components | Buttons, links, fields, notices, status badges, empty/loading/error states, product cards, and COA/evidence presentation adapters |
+| Commerce presentation | Shop/archive, single product, cart, side cart, checkout, and My Account through hooks first and narrow WooCommerce overrides only when necessary |
+| Page presentation | Homepage, Contact, FAQ, About, Military/First Responder, and legal layouts built from approved shared components |
+| Integration adapters | Presentation-only calls to public YITH, side-cart, VerifyPass, COA Archive, WooCommerce, and WordPress interfaces; no copied logic or data |
+| Accessible interaction | Small dependency-free scripts for navigation/disclosure/focus behavior only; no customer, commerce, rewards, order, or COA data handling |
+| Packaging | One versioned child-theme folder/ZIP, changelog, source-version record for overrides, hash, tests, and rollback notes per milestone |
+
+The detailed proposed file structure lives in `docs/WEB-2B-global-navigation-plan.md`. Later milestones extend that structure; they do not create separate themes or duplicate token systems.
 
 ## 5. Milestone plan
 
@@ -116,7 +149,7 @@ Define the approved visual, responsive, accessibility, and component foundations
 - Document exact approved color tokens after extracting the current Pep Select values rather than relying on approximate references.
 - Define typography roles, spacing, container widths, breakpoints, radii, borders, shadows, icon rules, focus styles, motion rules, and semantic status colors.
 - Define component specifications and states for buttons, links, inputs, search, product cards, COA/evidence cards, badges, alerts, empty states, navigation, drawers, tables, accordions, modals, and loading states.
-- Decide where global presentation tokens will live: Elementor global settings, a justified child-theme stylesheet, or another approved presentation layer.
+- Record Elementor global foundations and mirror the approved tokens into the coded child-theme presentation layer without creating a Site Core settings panel.
 - Produce a page/template inventory that maps every future component to its source of truth and owner.
 
 ### What must be preserved
@@ -131,7 +164,7 @@ Define the approved visual, responsive, accessibility, and component foundations
 - WEB-1 audit findings.
 - Approval of design tokens and component specifications.
 - Confirmation of current font files, brand assets, and exact production color values.
-- Decision on whether a child theme is genuinely required.
+- Approved decision to use the lightweight Hello Elementor child theme as the primary customer-facing presentation layer.
 
 ### Acceptance criteria
 
@@ -157,15 +190,17 @@ Documentation-only checkpoint and Git commit. If any Staging global setting must
 
 ### Objective
 
-Replace the fragile global shell with an accessible, Elementor-native or appropriately coded header/footer system that preserves account, rewards, cart, search, and legal navigation behavior without ElementsKit.
+Create the lightweight Hello Elementor child-theme foundation and replace the fragile global shell with coded, accessible header, navigation, product search/results, account/rewards/cart controls, and footer presentation.
 
 ### What will be changed
 
-- Rebuild the announcement bar, desktop header, mobile header/drawer, primary navigation, account access, rewards display, cart trigger, search interface, and footer presentation.
-- Continue using Elementor's native WordPress Menu widget or another approved native approach; do not reintroduce ElementsKit.
+- Create and package the modular Pep Select Hello child theme with approved WEB-2A tokens, global responsive/accessibility styles, semantic shell templates, and narrow integration adapters.
+- Build the announcement bar, desktop header, mobile header/drawer, WordPress navigation, account access, rewards display, cart trigger, product-search interface/results, and footer in code.
+- Render navigation through WordPress menu APIs; do not reintroduce ElementsKit or build a new Elementor global-shell template.
 - Repair header search and search-result presentation, including oversized imagery, result layout, loading, empty, one-result, many-result, long-title, and missing-image states.
 - Replace hard-coded environment URLs with WordPress-aware destinations.
 - Clarify footer navigation and responsive behavior, including the current order-history/tracking destination.
+- Leave the draft `Pep Select Header — WEB-2B` unpublished and without display conditions.
 
 ### What must be preserved
 
@@ -174,45 +209,49 @@ Replace the fragile global shell with an accessible, Elementor-native or appropr
 - `[xoo_wsc_cart]`/side-cart behavior or its verified integration point.
 - Account login state and password-reset access.
 - Current policy destinations and compliance text until approved replacements exist.
-- The working Staging native menu replacement in Header #1323 until the new header is verified.
+- Active Header #1323 and Footer #391, including their `Entire Site` conditions, while the child theme is built and reviewed.
+- Hello Elementor parent theme as the immediate theme-switch rollback.
+- Elementor rendering/editing for current page content.
 
 ### Dependencies
 
 - WEB-2A approved tokens and component specifications.
 - Ownership trace for rewards, side cart, account state, search query behavior, and any header shortcodes.
-- Current menu and Theme Builder condition exports.
+- Current menu, Theme Builder condition exports, Hello Elementor version, and verified parent-theme fallback.
 - Confirmation of the shipping announcement before reuse.
 
 ### Acceptance criteria
 
-- Header and footer work at every required width with no ElementsKit widget or metadata dependency required for rendering.
+- Child theme renders exactly one semantic header and footer at every required width, with no ElementsKit or Elementor Theme Builder shell rendering required while it is active.
 - Navigation, mobile drawer, search, account, rewards, and cart are keyboard operable with visible focus and meaningful accessible names.
 - Header and compound/product search results use consistent, bounded imagery and readable layouts.
 - Search handles loading, no results, one result, many results, long titles, and missing images.
 - Logged-out/logged-in, zero/nonzero rewards, and empty/populated cart states render correctly.
 - No hard-coded Staging, Kinsta, Hostinger, Peptides Divas, or BioQuantum links remain in the replacement.
-- Old global templates remain available for rollback until the new Theme Builder conditions are verified.
+- Parent-theme activation restores preserved Header #1323/Footer #391 and current Elementor page content.
+- Child-theme package, version, hash, static checks, Staging tests, and rollback evidence are recorded.
 
 ### Rollback checkpoint
 
-Create `Before WEB-2B Global Shell Replacement` backup, export Header #1323 and Footer #391, record menu assignments and display conditions, and retain the last verified templates until WEB-2B is approved.
+Create `Before WEB-2B Coded Global Shell`, export Header #1323/Footer #391, record their unchanged conditions, record the parent theme/version and menu assignments, and retain the previous verified child-theme package. Primary rollback is activation of the Hello Elementor parent theme; backup restore is secondary.
 
 ### Explicit exclusions
 
 - No rewards-rule redesign.
 - No public tracking implementation.
 - No checkout/cart business-logic change.
-- No homepage, archive, or product-template redesign beyond search-result dependencies required by this milestone.
+- No implementation of later homepage, archive/card, single-product, Cart/Checkout, My Account, supporting-page, or legal-layout modules during the WEB-2B shell checkpoint; they remain coded child-theme scope for their own milestones.
 
 ## WEB-2C — Homepage
 
 ### Objective
 
-Create an original Pep Select homepage presentation using approved components and verified claims while preserving product, search, COA, and commerce links.
+Create an original coded Pep Select homepage in the child theme using approved components and verified claims while preserving product, search, COA, and commerce links.
 
 ### What will be changed
 
-- Replace the current Homepage `571` composition section by section.
+- Build the homepage through a coded front-page template and reusable child-theme components from approved requirements, visual references, screenshots, responsive rules, and locked content.
+- Replace the current Homepage `571` presentation only after the coded page passes review.
 - Remove copied Peptides Divas testimonials, hidden-at-all-width remnants, duplicated inline styles, ambiguous CTAs, and unverified placeholder claims from the replacement.
 - Use the approved global header/footer and standardized product/COA components when available.
 - Establish intentional desktop, tablet, and mobile information hierarchy.
@@ -223,6 +262,7 @@ Create an original Pep Select homepage presentation using approved components an
 - Working shop, account, cart, checkout, and `/testing/` destinations.
 - Product and COA source data; homepage sections may present them but must not recreate their business logic.
 - Existing homepage export for rollback and historical evidence.
+- Existing Home post ID `79`, WordPress front-page setting, and Elementor Homepage #571 until the coded presentation is approved.
 
 ### Dependencies
 
@@ -230,7 +270,7 @@ Create an original Pep Select homepage presentation using approved components an
 - WEB-2B global shell and repaired search direction.
 - Approved homepage structure and separately approved final copy.
 - Verified evidence for every testing, catalog, shipping, process, and testimonial claim.
-- Stable product-card and COA-card specifications, even if their full archive milestone follows.
+- Stable coded product-card and COA-card specifications; implement WEB-2D card foundations before the homepage consumes them.
 
 ### Acceptance criteria
 
@@ -243,7 +283,7 @@ Create an original Pep Select homepage presentation using approved components an
 
 ### Rollback checkpoint
 
-Create `Before WEB-2C Homepage Replacement` backup, export the current Home page and replacement draft, and do not switch the static front-page assignment until approval.
+Create `Before WEB-2C Coded Homepage`, export/snapshot Home post ID 79 and Homepage #571, package the previous verified child theme, and keep a page-level fallback plus the Hello parent-theme fallback. Do not change the static front-page assignment unless the coded routing requires it and that change is separately approved.
 
 ### Explicit exclusions
 
@@ -256,12 +296,12 @@ Create `Before WEB-2C Homepage Replacement` backup, export the current Home page
 
 ### Objective
 
-Build one dependable product-card system and shop archive that preserve WooCommerce product truth while fixing shared Dark Loop and search-presentation problems.
+Build one coded child-theme product-card system and Shop archive that preserve WooCommerce product truth while replacing shared Dark Loop and broken search presentation.
 
 ### What will be changed
 
-- Build a replacement for shared Dark Loop template `65` in parallel rather than editing it in place.
-- Rebuild Products Archive #441 presentation, search field, grid, pagination/load-more, empty states, and responsive columns.
+- Build one reusable coded product-card component against native WooCommerce data, using hooks first and `content-product.php` override only if necessary.
+- Build the Shop/archive presentation in the child theme, including search field, grid, pagination/load-more, empty states, ordering compatibility, and responsive columns.
 - Define product-card display for title, image, price, variation/range context, stock status, testing status when available, and precise destination labels.
 - Exclude out-of-stock products from related-product presentation only if that behavior is explicitly approved and implemented through the correct WooCommerce query layer.
 - Remove negative-margin and overflow-dependent layout techniques from the replacement.
@@ -272,6 +312,7 @@ Build one dependable product-card system and shop archive that preserve WooComme
 - Existing loop `65` and Archive #441 until every consumer is migrated and tested.
 - `[product_stock_status]` behavior until its provider and replacement needs are understood.
 - Search, homepage, archive, and related-product consumers of loop `65` during parallel testing.
+- Products Archive #441 and Dark Loop #65 as immediate presentation rollback evidence until every coded consumer is verified.
 
 ### Dependencies
 
@@ -291,24 +332,24 @@ Build one dependable product-card system and shop archive that preserve WooComme
 
 ### Rollback checkpoint
 
-Create `Before WEB-2D Product Grid Replacement` backup, export Archive #441 and loop `65`, record all template IDs that reference `65`, and retain both old and new loops until migration is complete.
+Create `Before WEB-2D Coded Product Grid`, export Archive #441 and loop #65, record every consumer, preserve the previous child-theme package, and retain the Elementor templates unchanged. Roll back the module/package or activate the Hello parent theme.
 
 ### Explicit exclusions
 
 - No product-data cleanup, repricing, stock adjustment, SKU change, or variation restructuring.
 - No single-product template replacement.
 - No checkout, coupon, shipping, or tax change.
-- No deletion of loop `65` during initial implementation.
+- No deletion or condition change for Archive #441 or loop #65 during parallel implementation.
 
 ## WEB-2E — Single-product template
 
 ### Objective
 
-Replace Single Product #462 with a readable, responsive presentation that preserves native WooCommerce purchase behavior, bundle behavior, COA/testing history, and side-cart integration.
+Build a readable coded single-product presentation in the child theme that preserves native WooCommerce purchase behavior, bundle behavior, COA/testing history, and side-cart integration.
 
 ### What will be changed
 
-- Build a replacement single-product template in parallel.
+- Build the single-product presentation through WooCommerce hooks first and narrow installed-version template overrides only where necessary.
 - Improve mobile typography, bundle-option spacing, testing-history sizing, related-product length, button hierarchy, and drawer layering.
 - Align rewards language with points terminology; final wording requires approval.
 - Use canonical `/testing/` data/routes and the Pep Select COA Archive integration instead of legacy COA fields/templates.
@@ -321,6 +362,7 @@ Replace Single Product #462 with a readable, responsive presentation that preser
 - WooCommerce tabs and product metadata that remain approved.
 - Pep Select COA Archive records and `/testing/` routes.
 - Existing Single Product #462 until replacement conditions are proven.
+- Single Product #279 as unassigned historical/rollback evidence.
 
 ### Dependencies
 
@@ -341,7 +383,7 @@ Replace Single Product #462 with a readable, responsive presentation that preser
 
 ### Rollback checkpoint
 
-Create `Before WEB-2E Single Product Replacement` backup, export #462 and #279, record #462 display conditions, and retain #462 as an inactive rollback template after switching conditions.
+Create `Before WEB-2E Coded Single Product`, export #462/#279, record #462 conditions, preserve the previous child-theme package, and keep both Elementor templates unchanged until the coded product presentation passes all product states. Roll back the module/package or activate Hello parent.
 
 ### Explicit exclusions
 
@@ -354,11 +396,12 @@ Create `Before WEB-2E Single Product Replacement` backup, export #462 and #279, 
 
 ### Objective
 
-Apply the approved design system to cart, side cart, and checkout without changing the verified four-step checkout or emailed Square payment-link workflow.
+Apply the approved design system through coded child-theme presentation for cart, side cart, and checkout without changing the verified four-step checkout or emailed Square payment-link workflow.
 
 ### What will be changed
 
-- Restyle cart, side-cart drawer, checkout steps, fields, summaries, notices, validation, loading, and success/error presentation.
+- Style native WooCommerce, Side Cart WooCommerce, and Fluid Checkout output through scoped child-theme CSS/hooks first; use narrow template overrides only when necessary.
+- Present cart, side-cart drawer, checkout steps, fields, summaries, notices, validation, loading, and success/error states through coded components/styles.
 - Correct responsive spacing, typography, stacking, focus order, drawer scrim, z-index, and fixed-control conflicts.
 - Make the payment-link next step clear using separately approved transactional copy.
 
@@ -387,7 +430,7 @@ Apply the approved design system to cart, side cart, and checkout without changi
 
 ### Rollback checkpoint
 
-Create `Before WEB-2F Cart Checkout Styling` backup and record/export relevant Elementor, Fluid Checkout, side-cart, and theme presentation settings. Preserve the previous verified CSS/templates for immediate restoration.
+Create `Before WEB-2F Coded Cart Checkout`, record relevant Fluid Checkout/side-cart/WooCommerce settings and template status, preserve the previous verified child-theme package, and retain existing Elementor/plugin presentation as fallback. Roll back the module/package or activate Hello parent; do not alter cart/customer data.
 
 ### Explicit exclusions
 
@@ -399,11 +442,11 @@ Create `Before WEB-2F Cart Checkout Styling` backup and record/export relevant E
 
 ### Objective
 
-Create a coherent account experience around existing WooCommerce account data and YITH rewards behavior without changing authentication or reward rules.
+Create a coherent coded My Account presentation around existing WooCommerce account data and YITH rewards behavior without changing authentication or reward rules.
 
 ### What will be changed
 
-- Restyle account navigation, dashboard, orders, order details, addresses, account editing, login, password reset, logout, and reward/coupon presentation.
+- Style account navigation, dashboard, orders, order details, addresses, account editing, login, password reset, logout, and reward/coupon presentation through child-theme hooks/CSS and narrow overrides only when necessary.
 - Align visible terminology around points and coupons; do not use conflicting cash-back language.
 - Define responsive tables and mobile stacked records, empty states, errors, and long identifiers.
 
@@ -431,7 +474,7 @@ Create a coherent account experience around existing WooCommerce account data an
 
 ### Rollback checkpoint
 
-Create `Before WEB-2G Account Styling` backup and preserve current WooCommerce/YITH templates and settings. Record every overridden account endpoint/template before activation.
+Create `Before WEB-2G Coded Account`, preserve current WooCommerce/YITH templates/settings and the previous child-theme package, and record every overridden My Account template/source version. Roll back the module/package or activate Hello parent without migrating or clearing customer data.
 
 ### Explicit exclusions
 
@@ -444,14 +487,14 @@ Create `Before WEB-2G Account Styling` backup and preserve current WooCommerce/Y
 
 ### Objective
 
-Rebuild Contact, FAQ, About, and Military/First Responder presentation using approved components while preserving working form and VerifyPass behavior.
+Build coded child-theme layouts for Contact, FAQ, About, and Military/First Responder using approved components while preserving working form and VerifyPass behavior.
 
 ### What will be changed
 
-- Contact: rebuild layout and form presentation; replace obsolete “Request an order link” messaging only after approved copy is supplied.
-- FAQ: replace ElementsKit-dependent or unstable accordion presentation with an accessible native solution; treat content as present, not deleted.
-- About: correct excessive whitespace, replace five plain navy circles with meaningful approved icons, and include only verified claims.
-- Military/First Responder: integrate VerifyPass through a VerifyPass-supported embedded or modal experience when technically supported.
+- Contact: build a coded page layout and style the existing working form provider; replace obsolete “Request an order link” messaging only after approved copy is supplied.
+- FAQ: build an accessible coded disclosure/accordion presentation; treat content as present, not deleted.
+- About: build the coded layout, correct excessive whitespace, replace five plain navy circles with meaningful approved icons, and include only verified claims.
+- Military/First Responder: build the coded layout around VerifyPass-supported embedded or modal behavior when technically supported.
 - Resolve the duplicate military-discount page only after the canonical replacement and route are verified.
 
 ### What must be preserved
@@ -480,7 +523,7 @@ Rebuild Contact, FAQ, About, and Military/First Responder presentation using app
 
 ### Rollback checkpoint
 
-Create `Before WEB-2H Supporting Pages` backup and export each current page/form before replacing it. Preserve the working popup-based VerifyPass path until embedded/modal verification is fully approved.
+Create `Before WEB-2H Coded Supporting Pages`, export/snapshot every current page/form, preserve the previous child-theme package, and retain the working popup VerifyPass path until the coded experience passes. Roll back each page module/package or activate Hello parent.
 
 ### Explicit exclusions
 
@@ -493,11 +536,11 @@ Create `Before WEB-2H Supporting Pages` backup and export each current page/form
 
 ### Objective
 
-Implement approved legal and policy copy in consistent, readable layouts after operational and legal facts have been verified.
+Implement approved legal and policy copy in consistent, readable coded child-theme layouts after operational and legal facts have been verified.
 
 ### What will be changed
 
-- Apply approved content to Privacy Policy, Terms & Conditions, Refund & Shipping Policy, and RUO Disclaimer layouts.
+- Build reusable coded legal-page presentation and apply approved content to Privacy Policy, Terms & Conditions, Refund & Shipping Policy, and RUO Disclaimer layouts.
 - Replace `Last updated: [DATE]` placeholders with approved dates.
 - Reflect the emailed Square payment-link workflow and production refund process.
 - Retain Google sign-in language only if enabled at launch.
@@ -525,7 +568,7 @@ Implement approved legal and policy copy in consistent, readable layouts after o
 
 ### Rollback checkpoint
 
-Create `Before WEB-2I Policy Publication` backup and export/snapshot every current policy page. Keep previous approved text available for immediate restoration.
+Create `Before WEB-2I Coded Policy Publication`, export/snapshot every current policy page, preserve the previous child-theme package, and keep previous approved text/layout available for immediate page-level or parent-theme restoration.
 
 ### Explicit exclusions
 
@@ -544,12 +587,13 @@ Verify the assembled WEB-2 presentation on Staging, close cross-page regressions
 - Fix only defects discovered in the approved WEB-2 surfaces.
 - Consolidate remaining duplicated presentation CSS and remove replacement-only dead assets after dependency checks.
 - Replace hard-coded environment URLs in approved replacement surfaces.
-- Prepare final template/export inventory, test evidence, deployment checklist, and rollback instructions.
+- Prepare the final child-theme package/version/hash, optional WooCommerce override inventory, preserved Elementor export inventory, test evidence, deployment checklist, and rollback instructions.
 
 ### What must be preserved
 
 - All systems in the non-negotiable preservation boundary.
 - Historical exports and last verified rollback packages.
+- Hello Elementor parent theme and active/historical Elementor templates as rollback until a dedicated deployment/retirement milestone approves otherwise.
 - Live environment until a separate deployment milestone is approved.
 - Working integrations and routes, especially WooCommerce, Square payment-link email flow, COA Archive `/testing/`, YITH rewards, VerifyPass, side cart, checkout, account, and fulfillment.
 
@@ -566,16 +610,16 @@ Verify the assembled WEB-2 presentation on Staging, close cross-page regressions
 - Keyboard navigation, visible focus, semantic headings/labels, modal escape, no traps, status text beyond color, contrast, touch targets, validation association, reduced motion, and meaningful action names pass review.
 - Logged-out, logged-in, empty, loading, success, validation error, server error, no-results, one-result, many-results, long-name, and missing-image states are verified where relevant.
 - No body-level horizontal scrolling, obscured actions, oversized search images, broken drawers, or floating-control collisions remain.
-- Elementor editor use stays within the 256 MB per-thread Staging constraint during representative edits; memory and thread events are reviewed.
-- No ElementsKit dependency exists in active replacement templates.
+- Representative retained Elementor editorial content remains editable within the 256 MB per-thread Staging constraint; memory and thread events are reviewed.
+- No ElementsKit dependency exists in active child-theme presentation or retained launch-critical content.
 - Performance review covers image dimensions/formats, lazy loading below the fold, font loading, layout shift, unnecessary scripts/widgets, and duplicated inline CSS.
 - Targeted regression tests confirm preserved integrations still work where WEB-2 touched their presentation.
-- Launch package includes exact files/templates/settings, backup name, smoke tests, failure indicators, and rollback steps.
+- Launch package includes exact child-theme files/version/hash, template overrides/source versions, settings, backup name, smoke tests, failure indicators, and page-level/parent-theme rollback steps.
 - Live has not been modified.
 
 ### Rollback checkpoint
 
-Create `WEB-2 Final Staging Candidate` backup, export all active replacement templates and global settings, retain the previous verified packages, and document a page-by-page rollback map.
+Create `WEB-2 Final Staging Candidate`, export retained Elementor templates/global settings, retain the previous verified child-theme package and Hello parent theme, and document a page-by-page plus full theme-switch rollback map.
 
 ### Explicit exclusions
 
@@ -590,32 +634,37 @@ Create `WEB-2 Final Staging Candidate` backup, export all active replacement tem
 
 | Legacy item | Current concern | Required replacement or evidence | Removal gate | Until then |
 |---|---|---|---|---|
-| ElementsKit Lite | Confirmed Elementor editor memory trigger on Staging | Native Elementor or appropriately coded replacements for every direct widget | All active templates contain no required ElementsKit widgets; editor/public QA passes | Keep disabled on Staging; do not restore |
-| ElementsKit Pro | Adds the same legacy dependency family and is not required for the native header replacement | Same dependency inventory as Lite | No active dependency and rollback verified | Keep disabled on Staging; do not restore |
+| ElementsKit Lite | Confirmed Elementor editor memory trigger on Staging | Coded child-theme replacements for launch-critical presentation plus safe retained editorial content | No active customer-facing coded system or retained launch-critical content requires ElementsKit; editor/public QA passes | Keep disabled on Staging; do not restore |
+| ElementsKit Pro | Adds the same legacy dependency family and is not required for the coded rebuild | Same dependency inventory as Lite | No active dependency and rollback verified | Keep disabled on Staging; do not restore |
 | Old `/coas/` page | Obsolete route/presentation beside canonical Pep Select COA Archive `/testing/` routes | Canonical `/testing/` navigation, redirects, and equivalent user access | Links, redirects, search, historical records, and SEO behavior verified | Preserve page/route evidence; do not delete |
 | Old `coa`/COAs custom post type | Legacy data model referenced by old Elementor search/single templates | Confirm all required records exist in Pep Select COA Archive and map correctly | Record counts, attachments, statuses, relationships, routes, and rollback verified | Preserve all records and registration source |
 | Old COA ACF field group | Legacy product/COA fields embedded in old templates | Current plugin-owned fields and presentation verified for every product/batch | Field values exported/mapped; no active consumer remains | Preserve field group and values |
 | Elementor Single Post #510 | Old COA single template using `[coa_table]` | Pep Select COA Archive `/testing/` single-record presentation | Display condition removed only after all statuses/routes work | Preserve template export and condition record |
 | COA loop template #485 | Old `coa` search-result card | Current testing search/result component using plugin-owned data/routes | Homepage/header/search consumers migrated and all result states pass | Preserve template and ID references |
 | Unused Single Product #279 | Unassigned legacy product template with placeholders, ACF, `[recent_batches]`, and inquiry flow | WEB-2E replacement and proof that no products/conditions reference #279 | Theme Builder, shortcode, ACF, and data dependency checks pass | Preserve inactive template/export |
-| Current Single Product #462 | Active product presentation to be replaced | WEB-2E approved replacement | Product coverage and targeted commerce regression tests pass | Preserve as active, then inactive rollback template |
+| Current Single Product #462 | Active product presentation to be replaced | WEB-2E coded child-theme product presentation | Product coverage and targeted commerce regression tests pass | Preserve active/rollback template and export until dedicated retirement approval |
 | Shared Dark Loop #65 | Shared by search, archive, homepage, and related products | WEB-2D product-card replacement plus consumer migration map | Every consumer migrated and verified | Preserve active template and export |
-| Products Archive #441 | Current archive presentation | WEB-2D archive replacement | Search, products, prices, stock, pagination, and responsive QA pass | Preserve active condition and export |
-| Homepage #571 | Contains copied/inherited content and hidden remnants | WEB-2C original approved homepage | Static-page switch, links, components, and responsive QA pass | Preserve current assignment/export |
+| Products Archive #441 | Current archive presentation | WEB-2D coded child-theme archive | Search, products, prices, stock, pagination, and responsive QA pass | Preserve active condition/export as parent-theme rollback |
+| Homepage #571 | Contains copied/inherited content and hidden remnants | WEB-2C original coded child-theme homepage | Routing, links, components, claims, and responsive QA pass | Preserve Home ID 79/current assignment/export as rollback evidence |
 | Peptides Divas template #77 | Unrelated brand and copied content | None; historical evidence only | Confirm unassigned, unlinked, and not embedded | Preserve export; never reuse |
 | BioQuantum templates #409 and #413 | Unrelated brand, emails, Hostinger assets, form, and claims | None; historical evidence only | Confirm unassigned, unlinked, and not embedded | Preserve exports; never reuse |
 | Siat legacy COA templates/assets | Legacy brand/system not approved for Pep Select rebuild | Current COA Archive presentation | Inventory and active-reference check pass | Preserve evidence; never use as design source |
 | Sample Page | Default/unused WordPress content candidate | No replacement needed if confirmed unused | Unpublished/unlinked/no dependency and backup verified | Preserve until cleanup approval |
 | Duplicate military-discount page | Competing route/content risk | One canonical WEB-2H Military/First Responder page and verified redirects | Navigation, VerifyPass, SEO, and redirects pass | Preserve both pages until canonical route approved |
 | Hard-coded Kinsta/Hostinger/Peptides Divas URLs | Environment and legacy portability risk | Dynamic/canonical internal URLs and locally owned approved assets | Link crawl and Staging/public checks pass | Preserve old templates for rollback |
-| Old header/footer templates | Global dependency and rollback risk | WEB-2B approved replacements | Theme Builder conditions, menus, account, rewards, cart, search, and legal links pass | Preserve active or inactive rollback copies |
+| Elementor Header #1323/Footer #391 | Global dependency and immediate parent-theme rollback | WEB-2B coded child-theme shell | Child theme passes shell/content QA and parent-theme activation restores both templates | Preserve templates and unchanged conditions until a dedicated post-approval retirement milestone |
+| Draft `Pep Select Header — WEB-2B` | Abandoned manual Elementor path | None; the coded child theme is the approved path | Confirm unpublished and no conditions | Never publish or assign conditions; preserve only as draft evidence until cleanup approval |
 | Current legal pages | Placeholder dates and unverified language | WEB-2I approved policy content | Owner/legal approval and operational verification complete | Keep current pages active |
 
 ## 7. Risk register
 
 | Risk | Evidence/impact | Control | Owner/checkpoint |
 |---|---|---|---|
-| Elementor memory usage | Home editor exceeded the 256 MB per-thread limit; Kinsta recorded 15 memory and 28 thread-limit events | Keep ElementsKit disabled; minimize widget/add-on load; edit/test in bounded templates; monitor representative editor sessions | Every Elementor milestone; final WEB-2J review |
+| Elementor memory usage | Home editor exceeded the 256 MB per-thread limit; Kinsta recorded 15 memory and 28 thread-limit events | Stop manual construction of critical components; keep ElementsKit disabled; retain Elementor only for bounded editorial content; monitor representative editor sessions | Retained editorial pages; final WEB-2J review |
+| Child-theme activation conflict | Active Elementor Theme Builder shell could duplicate or override coded shell | Child `header.php`/`footer.php` must render exactly one shell without editing #1323/#391; verify parent-theme switch restores them; stop if unsupported/private APIs are needed | WEB-2B and every package activation |
+| WooCommerce override drift | Copied templates can become outdated after WooCommerce changes | Prefer hooks; add overrides only when necessary; record installed source versions; review template status after updates | WEB-2D–2G and WEB-2J |
+| Elementor content compatibility | Coded theme could break existing editorial pages, forms, canvas/full-width layouts, or editor loading | Preserve required WordPress/Elementor hooks and content templates; test representative public/editor views after every theme package | Every milestone; WEB-2J |
+| Milestone scope expansion | A full coded rebuild could become one large unreviewable release | One surface/system per bounded brief, package, screenshot review, responsive QA, and rollback gate | Every milestone |
 | Shared Dark Loop dependencies | Template `65` serves header search, archive, homepage, and related products | Build parallel replacement; keep consumer map; migrate one context at a time; do not delete early | WEB-2D with checks in 2B, 2C, and 2E |
 | Broken search results | Header and product/compound searches show broken layouts and oversized images | Treat search as a dedicated WEB-2B repair; use bounded cards and full result-state QA | WEB-2B, regression in WEB-2D/J |
 | Staging FAQ inconsistency | Staging intermittently shows headings without accordion content; Live content exists | Do not classify content as deleted; replace widget presentation without ElementsKit; preserve content and test repeated loads | WEB-2H and WEB-2J |
@@ -631,30 +680,38 @@ Create `WEB-2 Final Staging Candidate` backup, export all active replacement tem
 | Contact email deliverability | Staging mail lands in Spam from Kinsta sender | Keep form behavior; plan authenticated production sender and correct Reply-To separately | WEB-2H and deployment planning |
 | Premature cleanup | Old templates may contain active conditions, shortcode, ACF, route, or rollback dependencies | Apply legacy-removal gates; never delete during replacement build | Every milestone |
 
-## 8. Template replacement order
+## 8. Modular coded implementation order
 
-This order minimizes shared-dependency and commerce risk:
+This page-by-page order minimizes shared-dependency and commerce risk. Milestone identifiers remain unchanged even when a shared component prerequisite is implemented before a page that has an earlier letter.
 
-1. **Freeze and document the baseline.** Record active Theme Builder conditions, menu assignments, routes, plugin ownership, and exports. Keep ElementsKit disabled.
-2. **Complete WEB-2A foundations.** Approve tokens, responsive rules, components, and ownership before touching active templates.
-3. **Build new product and COA card specifications without switching consumers.** These are shared prerequisites, not active replacements yet.
-4. **Replace header/footer and repair search in WEB-2B.** Keep old global templates available; confirm rewards, account, cart, menus, and search states.
-5. **Create the parallel product-loop replacement in WEB-2D.** Test it in an isolated preview before changing archive or other consumers.
-6. **Replace the shop archive consumer.** Migrate Archive #441 first because it offers the clearest full-grid test surface.
-7. **Replace the homepage in WEB-2C using the verified global shell and card components.** Do not reuse Homepage #571 content by default.
-8. **Replace Single Product #462 in WEB-2E.** Preserve all WooCommerce and COA behavior; keep #462 as rollback and #279 inactive.
-9. **Migrate related-product and remaining search consumers from Dark Loop #65.** Confirm no active reference remains before retirement.
-10. **Restyle cart/checkout, then account/rewards.** These follow stable product-to-cart behavior and do not change their underlying integrations.
-11. **Replace supporting pages and VerifyPass presentation.** Preserve working form and verification behavior during parallel testing.
-12. **Implement approved legal/policy content.** Keep existing pages active until final content approval.
-13. **Run WEB-2J full QA and only then evaluate legacy retirement.** Removal occurs item by item using the register, never as a bulk cleanup.
+1. **Freeze and document the baseline.** Record parent/active theme, Elementor conditions, menu assignments, routes, integrations, WooCommerce template status, screenshots, and exports. Keep ElementsKit disabled.
+2. **Use the completed WEB-2A foundations.** Mirror approved tokens into child-theme CSS variables; do not build a Site Core settings panel.
+3. **WEB-2B — child-theme foundation and global shell.** Build announcement, desktop/mobile header, navigation, product-search entry/results, account/rewards/cart controls, footer, global responsive/accessibility styles, and parent-theme rollback.
+4. **WEB-2D — coded product-card system.** Build and review one reusable card against native WooCommerce data before any page consumes it.
+5. **WEB-2D — coded Shop archive and product-search results.** Apply the approved card to archive/search states, pagination, ordering, and responsive grids while preserving #441/#65.
+6. **WEB-2C — coded homepage.** Build from approved requirements, visual references, screenshots, locked copy, verified claims, and the approved shell/cards; preserve Home ID 79/#571.
+7. **WEB-2E — coded single-product presentation.** Use Woo hooks first and narrow overrides only where necessary; preserve #462/#279 and every purchase/COA integration.
+8. **Migrate remaining Dark Loop #65 consumers.** Move related products and any remaining search/home contexts only after their coded replacements pass.
+9. **WEB-2F — coded cart and side-cart presentation.** Preserve all calculations and drawer behavior.
+10. **WEB-2F — coded checkout presentation.** Preserve the four-step flow, order creation, emails, and Square payment-link workflow.
+11. **WEB-2G — coded My Account/rewards presentation.** Preserve customer identities, privacy, endpoints, records, and YITH rules.
+12. **WEB-2H — coded Contact layout/form presentation.** Preserve submission fields and delivery behavior.
+13. **WEB-2H — coded FAQ layout.** Preserve content and use an accessible disclosure pattern.
+14. **WEB-2H — coded About layout.** Use only verified claims and approved icons.
+15. **WEB-2H — coded Military/First Responder layout.** Preserve VerifyPass identity, uploads/camera access, and coupon creation.
+16. **WEB-2I — coded legal-policy layouts.** Keep existing pages active until approved operational/legal copy is ready.
+17. **WEB-2J — integrated child-theme QA and launch candidate.** Verify all pages, states, integrations, package versions, override sources, performance, accessibility, and both page-level and parent-theme rollback.
+18. **Evaluate legacy retirement only after WEB-2J.** Apply the register item by item; never bulk-delete or remove the parent-theme fallback during the prelaunch rebuild.
+
+For each item, Codex receives a detailed implementation brief with exact scope, visual references/screenshots, responsive rules, data owner, likely modules/files, required states, tests, acceptance criteria, package/version rules, rollback, and stop condition. Paulo reviews real Staging output before the next item proceeds.
 
 ## 9. Overall WEB-2 definition of done
 
 WEB-2 is complete only when all of the following are true:
 
 - WEB-2A through WEB-2J are accepted or explicitly documented as deferred with owner approval.
-- All in-scope presentation surfaces use the approved Pep Select design system and original, approved content.
+- All in-scope customer-facing presentation surfaces are delivered through the approved modular Pep Select Hello child theme, use the approved design system, and contain original approved content.
+- Elementor owns only intentionally retained limited editorial content, not the critical global shell or core commerce presentation.
 - No active replacement requires ElementsKit Lite or Pro.
 - No active replacement uses Peptides Divas, BioQuantum, Siat legacy COA, or copied competitor composition/copy.
 - WooCommerce products, variations, inventory, customers, orders, coupons, taxes, shipping, checkout, emails, and fulfillment remain intact.
@@ -663,25 +720,27 @@ WEB-2 is complete only when all of the following are true:
 - Pep Select COA Archive records and `/testing/` routes remain canonical and intact.
 - Search results render correctly with controlled imagery and complete loading/empty/error/result states.
 - All rebuilt surfaces pass the required width matrix and accessibility baseline.
-- Elementor editor performance is acceptable within Staging's 256 MB per-thread limit for representative editing tasks, with no repeat ElementsKit-triggered failure.
+- Representative retained Elementor editorial content remains editable within Staging's 256 MB per-thread limit, with no repeat ElementsKit-triggered failure.
 - Hard-coded Staging/live-host/legacy URLs have been removed from active replacement surfaces.
 - Every retained testing, shipping, catalog, product, testimonial, policy, and operational claim has an approved source.
 - Current legal pages are not replaced until approved content is ready.
 - Every retired legacy item has passed its register gate and retains a documented rollback path.
-- A final Staging backup, template/export package, test record, smoke-test list, failure indicators, and rollback instructions exist.
+- The final child-theme package/version/hash, WooCommerce override/source-version inventory, Staging backup, preserved Elementor exports, test record, smoke-test list, failure indicators, and page-level/parent-theme rollback instructions exist.
+- Switching back to the unchanged Hello Elementor parent theme restores the preserved pre-rebuild presentation baseline.
 - Live remains untouched throughout WEB-2; production promotion is handled only by a separately approved deployment milestone.
 
 ## 10. Recommended immediate implementation milestone
 
-Begin with **WEB-2A — Design system and global foundations**.
+Begin implementation with **WEB-2B — coded child-theme foundation and global shell**.
 
-This is the safest first implementation milestone because it changes no customer flow, product data, plugin behavior, or active template assignment. It creates the shared decisions required to prevent each later page from inventing its own typography, spacing, CSS, icons, responsive behavior, and component states.
+WEB-2A is complete: approved tokens and Elementor global foundations are documented. WEB-2B is the safest next milestone because it establishes the versioned child-theme architecture, parent-theme rollback, global accessibility/responsive rules, and supported integration boundaries that every later coded page will reuse.
 
-The first WEB-2A checkpoint should produce only:
+The first WEB-2B implementation checkpoint should produce only:
 
-1. An exact current-token inventory.
-2. A proposed token and component specification for review.
-3. A source-of-truth/ownership map for global styles and reusable components.
-4. A Staging implementation prompt with strict scope, non-goals, likely files/settings, tests, rollback steps, acceptance criteria, and a stop condition.
+1. One lightweight Hello Elementor child-theme package with approved tokens and modular foundations.
+2. The coded announcement/header/navigation/search/customer-controls/footer shell.
+3. Verified Elementor editorial-page compatibility.
+4. Static/package validation, responsive/accessibility/integration test evidence, version/hash, and a parent-theme rollback record.
+5. No later page module beyond the minimum search-results dependency needed by the global shell.
 
-Do not begin WEB-2B or publish global settings until WEB-2A is reviewed and approved.
+Do not begin WEB-2C/2D page implementation until the child-theme foundation, global shell, parent-theme rollback, and current Elementor-content compatibility are reviewed and approved.

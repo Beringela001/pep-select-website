@@ -1,0 +1,70 @@
+/**
+ * Pep Select design foundations.
+ *
+ * Version: 0.3.1
+ * Scope: approved WEB-2A tokens only. Existing templates are not restyled here.
+ */
+
+:root {
+	/* Brand and semantic color primitives. */
+	--pep-color-navy: #002A53;
+	--pep-color-dark-navy: #001D3A;
+	--pep-color-cyan: #17A1CF;
+	--pep-color-green: #16834A;
+	--pep-color-amber: #B46A00;
+	--pep-color-red: #C43D3D;
+	--pep-color-ink: #13283D;
+	--pep-color-slate: #5E6F80;
+	--pep-color-neutral: #7A8793;
+	--pep-color-border: #D7E1E9;
+	--pep-color-surface: #F3F8FC;
+	--pep-color-soft-gray: #F5F6F7;
+	--pep-color-white: #FFFFFF;
+	--pep-color-cyan-soft: #E8F6FB;
+	--pep-color-green-soft: #EAF5EF;
+	--pep-color-amber-soft: #FFF4DF;
+	--pep-color-red-soft: #FBECEC;
+
+	/* Typography roles. Approved fonts are not bundled by this theme. */
+	--pep-font-editorial: Georgia, "Times New Roman", Times, serif;
+	--pep-font-interface: "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+	--pep-font-technical: "IBM Plex Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+	--pep-font-weight-regular: 400;
+	--pep-font-weight-medium: 500;
+	--pep-font-weight-semibold: 600;
+	--pep-font-weight-bold: 700;
+
+	/* Layout. */
+	--pep-content-max-width: 1200px;
+	--pep-gutter-desktop: 32px;
+	--pep-gutter-tablet: 24px;
+	--pep-gutter-mobile: 20px;
+	--pep-layout-gutter: var(--pep-gutter-desktop);
+
+	/* Shape. */
+	--pep-radius-small: 8px;
+	--pep-radius-medium: 12px;
+	--pep-radius-large: 20px;
+	--pep-radius-pill: 999px;
+
+	/* Motion. Components may opt in; shrink interactions are not permitted. */
+	--pep-motion-duration: 180ms;
+}
+
+@media (max-width: 1024px) {
+	:root {
+		--pep-layout-gutter: var(--pep-gutter-tablet);
+	}
+}
+
+@media (max-width: 767px) {
+	:root {
+		--pep-layout-gutter: var(--pep-gutter-mobile);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	:root {
+		--pep-motion-duration: 0.01ms;
+	}
+}

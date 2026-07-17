@@ -1,0 +1,15 @@
+/*
+Theme Name: Pep Select
+Description: Lightweight Hello Elementor child theme for the Pep Select customer-facing presentation layer.
+Author: Pep Select
+Template: hello-elementor
+Version: 0.3.1
+Requires at least: 6.4
+Requires PHP: 7.4
+Text Domain: pepselect-child
+*/
+
+/*
+ * Presentation styles are loaded from assets/css/ by inc/setup.php.
+ * Keep this file limited to WordPress theme metadata and bootstrap notes.
+ */
