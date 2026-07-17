@@ -2,7 +2,7 @@
 
 ## Current direction
 
-The compliance-led beta.1 homepage concept was technically successful and visually rejected. WEB-2C beta.2 supersedes that structure with a product-first storefront. Products, pricing, and catalog access now lead the experience; batch traceability remains the strongest proof point and detailed COA material is concentrated later on the page.
+The beta.2 product-first implementation remains the technical and architectural foundation. Beta.3 corrects its emotionally flat, instructional hero and makes "What's Behind the Label Matters" the homepage emotional anchor. Products, pricing, and catalog access remain near the top; detailed Quality Archive material remains concentrated later on the page.
 
 The homepage remains an administrator-only preview pending Paulo's visual approval. Orbitrex informed only high-level commercial principles such as an immersive hero, early products, alternating visual environments, compact FAQ, and concentrated credibility. No competitor copy, graphics, assets, statistics, branded terminology, or exact composition is reproduced.
 
@@ -14,16 +14,16 @@ The primary visitor values clear product information, current pricing, availabil
 
 ## Conversion hierarchy
 
-- Primary action: `Explore Compounds`
-- Strongest secondary action: `Review COAs`
-- Supporting actions: individual `View Compound` links, `Review Batch Documentation`, `Open the Quality Archive`, and `Read All FAQs`
+- Primary action: `Explore the Lineup`
+- Strongest secondary action: `See the Receipts`, with accessible Quality Archive context
+- Supporting actions: individual `View Compound` links, `Review Batch Records`, `Open the Quality Archive`, and `Read All FAQs`
 
 ## Product-first section order
 
 | Order | Section | Purpose | Dynamic or verified source |
 |---|---|---|---|
 | 1 | Product-first hero | Identify the category, show real products and current commerce data, and present the primary catalog action. | Up to three eligible WooCommerce products with real images; canonical title, price, stock state, product URL, Shop URL, and `/testing/`. |
-| 2 | Confidence strip | Reinforce four factual capabilities without unsupported metrics. | Approved labels only: live catalog pricing, current stock visibility, available batch records, and direct support. |
+| 2 | Confidence strip | Reinforce four factual capabilities without unsupported metrics. | Approved labels only: live catalog pricing, current availability, batch records when available, and direct support. |
 | 3 | Featured compounds | Put four current products near the top for ready-to-browse visitors. | Published, visible, purchasable, in-stock WooCommerce products; Featured first, then latest eligible products. |
 | 4 | Why Pep Select | Explain the focused catalog and documentation path without turning proof into every section's subject. | Approved copy plus one available WooCommerce product image; no invented standards or coverage claims. |
 | 5 | Batch identity | Connect a catalog product visually to the identifier concept without presenting invented record values. | Product image when available; explanatory identifier labels and neutral availability text only. |
@@ -41,7 +41,7 @@ The primary visitor values clear product information, current pricing, availabil
 
 ## Evidence and compliance boundary
 
-The Quality Archive owns COA visibility, public terminology, current/history selection, sorting, records, and routes. Its stable 0.4.0 source exposes no supported generic homepage-preview interface, so beta.2 provides archive navigation rather than duplicating plugin logic or inventing records.
+The Quality Archive owns COA visibility, public terminology, current/history selection, sorting, records, and routes. Its stable 0.4.0 source exposes no supported generic homepage-preview interface, so beta.3 provides archive navigation rather than duplicating plugin logic or inventing records.
 
 The page makes no universal-testing, purity, quality-guarantee, comparative, health, medical, dosing, administration, or human-use claims. Current WooCommerce prices and stock states may appear only as live product data.
 

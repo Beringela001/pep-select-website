@@ -11,8 +11,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 $signals = array(
 	__( 'Live catalog pricing', 'pepselect-child' ),
-	__( 'Current stock visibility', 'pepselect-child' ),
-	__( 'Available batch records', 'pepselect-child' ),
+	__( 'Current availability', 'pepselect-child' ),
+	__( 'Batch records when available', 'pepselect-child' ),
 	__( 'Direct support', 'pepselect-child' ),
 );
 ?>

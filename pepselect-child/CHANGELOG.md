@@ -2,6 +2,13 @@
 
 All notable changes to the Pep Select child theme are documented here.
 
+## 0.4.0-beta.3 - 2026-07-16
+
+- Retained the beta.2 homepage architecture, private preview gate, WooCommerce product selection, and COA Archive boundaries.
+- Reframed the hero around the approved behind-the-label idea using the evidence-safe fallback paragraph and conversational archive CTA.
+- Strengthened the existing dynamic hero composition and featured-product cards without adding dependencies or template overrides.
+- Reduced repeated technical language across the supporting sections while preserving the verified FAQ and identity labels.
+
 ## 0.4.0-beta.2 - 2026-07-16
 
 - Replaced the visually rejected compliance-led homepage preview with a product-first storefront while preserving the administrator-only front-page gate.

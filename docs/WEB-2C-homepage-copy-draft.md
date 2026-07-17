@@ -2,30 +2,30 @@
 
 ## Approval status
 
-This beta.2 product-first copy supersedes the visually rejected beta.1 compliance-led concept. It is implemented only in the private administrator preview and remains unpublished pending Paulo's visual approval.
+Beta.3 retains the technically successful beta.2 product-first structure while replacing its emotionally flat, instructional hero. "What's Behind the Label Matters" is now the homepage emotional anchor. The preview remains private and unpublished pending Paulo's visual approval.
 
 ## Section 1: Product-first hero
 
-- Eyebrow: `PEP SELECT RESEARCH COMPOUNDS`
-- Heading: `Choose the compound.` / `See the record.`
-- Supporting copy: `A focused catalog of research compounds with clear product details, current pricing, and available batch documentation within reach.`
-- Primary CTA: `Explore Compounds`
-- Secondary CTA: `Review COAs`
-- Supporting signals: `Live catalog pricing`; `Current stock visibility`; `Available batch records`; `Direct support`
-- Dynamic product card: canonical product title, current price, current stock state, and `View Compound`
+- Eyebrow: `RESEARCH WITHOUT THE RUNAROUND`
+- Heading: `The label is the easy part.` / `What's behind it matters.`
+- Supporting copy: `You shouldn't need five tabs and a leap of faith to explore a research compound. Pep Select keeps current product details and available batch documentation close at hand—so the information is easier to find when you want it.`
+- Primary CTA: `Explore the Lineup`
+- Secondary CTA: `See the Receipts`, with an accessible Quality Archive label
+- Micro-proof: `Current compounds`; `Visible batch status`; `No documentation scavenger hunt`
+- Dynamic product card: canonical product title, current price, and `View Compound`
 
 ## Section 2: Confidence strip
 
 - `Live catalog pricing`
-- `Current stock visibility`
-- `Available batch records`
+- `Current availability`
+- `Batch records when available`
 - `Direct support`
 
 ## Section 3: Featured compounds
 
 - Eyebrow: `CURRENTLY IN THE CATALOG`
-- Heading: `Start with what you came for.`
-- Supporting copy: `Browse current compounds with live pricing and availability.`
+- Heading: `Start with what caught your eye.`
+- Supporting copy: `The details are already waiting.`
 - Section CTA: `Explore All Compounds`
 - Product CTA: `View Compound`
 - Dynamic fields: canonical title, image, current price, current stock state, and product URL
@@ -34,24 +34,25 @@ This beta.2 product-first copy supersedes the visually rejected beta.1 complianc
 
 - Eyebrow: `WHY PEP SELECT`
 - Heading: `Less guessing.` / `More to go on.`
-- Supporting copy: `We keep product details, batch status, and available documentation close to the compound—not buried behind broad promises.`
-- `Focused catalog` — `A deliberate selection that is easier to review.`
-- `Clear product details` — `Strength, availability, price, and documentation paths in one place.`
-- `Records within reach` — `Open the Quality Archive when you want the batch-level detail.`
+- Supporting copy: `The compound gets your attention. Clear product details and available records help you take the closer look.`
+- `Focused lineup` — `A focused catalog that is easier to explore.`
+- `Details where you expect them` — `Current product information stays close to the compound.`
+- `The deeper dive is there` — `Open the Quality Archive when you want the available batch-level detail.`
 
 ## Section 5: Batch identity
 
-- Heading: `The vial should never be the whole story.`
-- Supporting copy: `Compound. Strength. Batch. Cap. Crimp. Status. Read the identifiers together when the record is available.`
-- CTA: `Review Batch Documentation`
+- Heading: `Nice label.` / `Now show me the batch.`
+- Supporting copy: `When a record is available, the vial identifiers and batch details should connect without making you play detective.`
+- CTA: `Review Batch Records`
 - Explanatory labels: `Compound`; `Labeled Strength`; `Batch Number`; `Cap Color`; `Crimp Color`; `Current Status`
 - Availability text: `Recorded when available`
 
 ## Section 6: Quality Archive
 
 - Eyebrow: `PEP SELECT QUALITY ARCHIVE`
-- Heading: `Match the vial.` / `Match the batch.`
-- Supporting copy: `Search by compound, follow current and historical records, and open the full batch page for the details available on file.`
+- Heading: `See what the label can't tell you.`
+- Supporting copy: `Search by compound, follow current and previous records, and open the documentation available for each release.`
+- Secondary signature: `Match the vial. Match the batch.`
 - Primary CTA: `Open the Quality Archive`
 - Action labels: `Search by compound`; `Follow batch history`; `Open the full record`
 
@@ -69,10 +70,10 @@ Source: the supported FAQ subset in `site-exports/elementor/saved-page-pepselect
 
 ## Section 8: Final CTA
 
-- Heading: `Find the compound.` / `Keep the record close.`
-- Supporting copy: `Explore the current catalog, or go directly to the Pep Select Quality Archive.`
+- Heading: `Found the compound?` / `Check what's behind it.`
+- Supporting copy: `Explore the current lineup, or take the deeper dive inside the Pep Select Quality Archive.`
 - Primary CTA: `Explore Compounds`
-- Secondary CTA: `Review COAs`
+- Secondary CTA: `See the Receipts`, with an accessible Quality Archive label
 
 ## Dynamic and compliance rules
 

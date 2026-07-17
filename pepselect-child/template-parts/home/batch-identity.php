@@ -23,9 +23,9 @@ $identifiers = array(
 <section class="pepselect-home__section pepselect-home__identity" aria-labelledby="pepselect-identity-title">
 	<div class="pepselect-home__inner pepselect-home__identity-grid">
 		<div class="pepselect-home__identity-copy">
-			<h2 id="pepselect-identity-title"><?php esc_html_e( 'The vial should never be the whole story.', 'pepselect-child' ); ?></h2>
-			<p class="pepselect-home__lead"><?php esc_html_e( 'Compound. Strength. Batch. Cap. Crimp. Status. Read the identifiers together when the record is available.', 'pepselect-child' ); ?></p>
-			<a class="pepselect-home__button pepselect-home__button--primary" href="<?php echo esc_url( $testing_url ); ?>"><?php esc_html_e( 'Review Batch Documentation', 'pepselect-child' ); ?></a>
+			<h2 id="pepselect-identity-title"><span><?php esc_html_e( 'Nice label.', 'pepselect-child' ); ?></span><em><?php esc_html_e( 'Now show me the batch.', 'pepselect-child' ); ?></em></h2>
+			<p class="pepselect-home__lead"><?php esc_html_e( 'When a record is available, the vial identifiers and batch details should connect without making you play detective.', 'pepselect-child' ); ?></p>
+			<a class="pepselect-home__button pepselect-home__button--primary" href="<?php echo esc_url( $testing_url ); ?>"><?php esc_html_e( 'Review Batch Records', 'pepselect-child' ); ?></a>
 		</div>
 
 		<div class="pepselect-home__identity-composition">

@@ -1,10 +1,10 @@
 # Pep Select child theme
 
-- Version: 0.4.0-beta.2
+- Version: 0.4.0-beta.3
 - Parent: Hello Elementor (`hello-elementor`)
 - Text domain: `pepselect-child`
 
-Pep Select is a lightweight presentation child theme for the controlled WEB-2 customer-facing rebuild. Version 0.4.0-beta.2 redesigns the private WEB-2C homepage as a product-first storefront while the approved coded header and footer remain the default presentation shell. The existing Elementor homepage remains unchanged for normal requests.
+Pep Select is a lightweight presentation child theme for the controlled WEB-2 customer-facing rebuild. Version 0.4.0-beta.3 refines the private WEB-2C product-first homepage around a more conversational hero and stronger featured-product presentation while the approved coded header and footer remain the default presentation shell. The existing Elementor homepage remains unchanged for normal requests.
 
 ## Requirements and safe failure
 

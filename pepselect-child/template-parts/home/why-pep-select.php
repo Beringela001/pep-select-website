@@ -12,15 +12,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 $product = isset( $args['visual_product'] ) && is_a( $args['visual_product'], 'WC_Product' ) ? $args['visual_product'] : null;
 $items   = array(
 	array(
-		'title' => __( 'Focused catalog', 'pepselect-child' ),
-		'copy'  => __( 'A deliberate selection that is easier to review.', 'pepselect-child' ),
+		'title' => __( 'Focused lineup', 'pepselect-child' ),
+		'copy'  => __( 'A focused catalog that is easier to explore.', 'pepselect-child' ),
 	),
 	array(
-		'title' => __( 'Clear product details', 'pepselect-child' ),
-		'copy'  => __( 'Strength, availability, price, and documentation paths in one place.', 'pepselect-child' ),
+		'title' => __( 'Details where you expect them', 'pepselect-child' ),
+		'copy'  => __( 'Current product information stays close to the compound.', 'pepselect-child' ),
 	),
 	array(
-		'title' => __( 'Records within reach', 'pepselect-child' ),
+		'title' => __( 'The deeper dive is there', 'pepselect-child' ),
 		'copy'  => __( 'Open the Quality Archive when you want the batch-level detail.', 'pepselect-child' ),
 	),
 );
@@ -57,7 +57,7 @@ $items   = array(
 				<span><?php esc_html_e( 'Less guessing.', 'pepselect-child' ); ?></span>
 				<em><?php esc_html_e( 'More to go on.', 'pepselect-child' ); ?></em>
 			</h2>
-			<p class="pepselect-home__lead"><?php esc_html_e( 'We keep product details, batch status, and available documentation close to the compound—not buried behind broad promises.', 'pepselect-child' ); ?></p>
+			<p class="pepselect-home__lead"><?php esc_html_e( 'The compound gets your attention. Clear product details and available records help you take the closer look.', 'pepselect-child' ); ?></p>
 			<ol class="pepselect-home__editorial-list">
 				<?php foreach ( $items as $item ) : ?>
 					<li>

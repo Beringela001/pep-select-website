@@ -18,8 +18,8 @@ $products      = isset( $product_state['products'] ) ? array_slice( (array) $pro
 		<div class="pepselect-home__section-heading">
 			<div>
 				<p class="pepselect-home__eyebrow"><?php esc_html_e( 'Currently in the Catalog', 'pepselect-child' ); ?></p>
-				<h2 id="pepselect-products-title"><?php esc_html_e( 'Start with what you came for.', 'pepselect-child' ); ?></h2>
-				<p><?php esc_html_e( 'Browse current compounds with live pricing and availability.', 'pepselect-child' ); ?></p>
+				<h2 id="pepselect-products-title"><?php esc_html_e( 'Start with what caught your eye.', 'pepselect-child' ); ?></h2>
+				<p><?php esc_html_e( 'The details are already waiting.', 'pepselect-child' ); ?></p>
 			</div>
 			<a class="pepselect-home__text-link" href="<?php echo esc_url( $shop_url ); ?>"><?php esc_html_e( 'Explore All Compounds', 'pepselect-child' ); ?></a>
 		</div>

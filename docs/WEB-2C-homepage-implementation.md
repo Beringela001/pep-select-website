@@ -1,14 +1,14 @@
 # WEB-2C Coded Homepage Private Preview
 
-Theme version: `0.4.0-beta.2`
+Theme version: `0.4.0-beta.3`
 
 Status: Local private-preview implementation only. Not packaged, installed, activated, or published by this checkpoint.
 
 ## Direction change
 
-The beta.1 compliance-led eight-section concept was technically successful and visually rejected. Beta.2 replaces its report-like presentation with a product-first storefront: real products and pricing appear in the hero and near the top, while detailed COA guidance is concentrated later in one Quality Archive feature.
+Beta.3 retains the technically successful beta.2 structure, private preview gate, and dynamic product integrations. The beta.2 hero was creatively rejected as emotionally flat and too instructional. "What's Behind the Label Matters" now governs the homepage tone, while products remain near the top and detailed COA guidance stays concentrated in the later Quality Archive feature.
 
-Orbitrex informed only broad commercial principles. No competitor copy, assets, graphics, dimensions, statistics, terminology, or exact composition was reproduced.
+The tone is more conversational and inviting without weakening the research-use or evidence boundaries. Orbitrex informed only broad commercial principles. No competitor copy, assets, graphics, dimensions, statistics, terminology, or exact composition was reproduced.
 
 ## Private preview gate
 
@@ -42,7 +42,7 @@ The accordion uses semantic buttons, `aria-expanded`, controlled regions, native
 
 ## COA boundary
 
-The stable Pep Select COA Archive 0.4.0 source remains authoritative and unchanged. It exposes no supported generic homepage-preview interface. Beta.2 therefore links to `/testing/` and communicates verified archive actions without querying raw records, mapping statuses, recreating sorting, instantiating private services, or simulating laboratory data.
+The stable Pep Select COA Archive 0.4.0 source remains authoritative and unchanged. It exposes no supported generic homepage-preview interface. Beta.3 therefore links to `/testing/` and communicates verified archive actions without querying raw records, mapping statuses, recreating sorting, instantiating private services, or simulating laboratory data.
 
 ## Header isolation and safeguards
 

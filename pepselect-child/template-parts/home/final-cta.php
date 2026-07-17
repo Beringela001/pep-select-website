@@ -17,14 +17,14 @@ $testing_url = isset( $args['testing_url'] ) ? $args['testing_url'] : home_url( 
 		<div class="pepselect-home__final-panel">
 			<div>
 				<h2 id="pepselect-final-title">
-					<span><?php esc_html_e( 'Find the compound.', 'pepselect-child' ); ?></span>
-					<em><?php esc_html_e( 'Keep the record close.', 'pepselect-child' ); ?></em>
+					<span><?php esc_html_e( 'Found the compound?', 'pepselect-child' ); ?></span>
+					<em><?php echo wp_kses_post( __( 'Check what&rsquo;s behind it.', 'pepselect-child' ) ); ?></em>
 				</h2>
-				<p><?php esc_html_e( 'Explore the current catalog, or go directly to the Pep Select Quality Archive.', 'pepselect-child' ); ?></p>
+				<p><?php esc_html_e( 'Explore the current lineup, or take the deeper dive inside the Pep Select Quality Archive.', 'pepselect-child' ); ?></p>
 			</div>
 			<div class="pepselect-home__actions">
 				<a class="pepselect-home__button pepselect-home__button--cyan" href="<?php echo esc_url( $shop_url ); ?>"><?php esc_html_e( 'Explore Compounds', 'pepselect-child' ); ?></a>
-				<a class="pepselect-home__button pepselect-home__button--outline-light" href="<?php echo esc_url( $testing_url ); ?>"><?php esc_html_e( 'Review COAs', 'pepselect-child' ); ?></a>
+				<a class="pepselect-home__button pepselect-home__button--outline-light" href="<?php echo esc_url( $testing_url ); ?>" aria-label="<?php esc_attr_e( 'View Pep Select Quality Archive and batch documentation', 'pepselect-child' ); ?>"><?php esc_html_e( 'See the Receipts', 'pepselect-child' ); ?></a>
 			</div>
 		</div>
 	</div>

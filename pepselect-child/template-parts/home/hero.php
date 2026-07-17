@@ -14,31 +14,21 @@ $testing_url   = isset( $args['testing_url'] ) ? $args['testing_url'] : home_url
 $hero_products = isset( $args['hero_products'] ) ? array_values( (array) $args['hero_products'] ) : array();
 $hero_count    = count( $hero_products );
 $lead_product  = isset( $hero_products[0] ) && is_a( $hero_products[0], 'WC_Product' ) ? $hero_products[0] : null;
-$signals       = array(
-	__( 'Live catalog pricing', 'pepselect-child' ),
-	__( 'Current stock visibility', 'pepselect-child' ),
-	__( 'Available batch records', 'pepselect-child' ),
-	__( 'Direct support', 'pepselect-child' ),
-);
 ?>
 <section class="pepselect-home__section pepselect-home__hero" aria-labelledby="pepselect-home-title">
 	<div class="pepselect-home__inner pepselect-home__hero-grid">
 		<div class="pepselect-home__hero-copy">
-			<p class="pepselect-home__eyebrow pepselect-home__eyebrow--dark"><?php esc_html_e( 'Pep Select Research Compounds', 'pepselect-child' ); ?></p>
+			<p class="pepselect-home__eyebrow pepselect-home__eyebrow--dark"><?php esc_html_e( 'Research Without the Runaround', 'pepselect-child' ); ?></p>
 			<h1 id="pepselect-home-title">
-				<span><?php esc_html_e( 'Choose the compound.', 'pepselect-child' ); ?></span>
-				<em><?php esc_html_e( 'See the record.', 'pepselect-child' ); ?></em>
+				<span><?php esc_html_e( 'The label is the easy part.', 'pepselect-child' ); ?></span>
+				<em><?php echo wp_kses_post( __( 'What&rsquo;s behind it matters.', 'pepselect-child' ) ); ?></em>
 			</h1>
-			<p class="pepselect-home__lead"><?php esc_html_e( 'A focused catalog of research compounds with clear product details, current pricing, and available batch documentation within reach.', 'pepselect-child' ); ?></p>
+			<p class="pepselect-home__lead"><?php echo wp_kses_post( __( 'You shouldn&rsquo;t need five tabs and a leap of faith to explore a research compound. Pep Select keeps current product details and available batch documentation close at hand&mdash;so the information is easier to find when you want it.', 'pepselect-child' ) ); ?></p>
 			<div class="pepselect-home__actions">
-				<a class="pepselect-home__button pepselect-home__button--cyan" href="<?php echo esc_url( $shop_url ); ?>"><?php esc_html_e( 'Explore Compounds', 'pepselect-child' ); ?></a>
-				<a class="pepselect-home__button pepselect-home__button--outline-light" href="<?php echo esc_url( $testing_url ); ?>"><?php esc_html_e( 'Review COAs', 'pepselect-child' ); ?></a>
+				<a class="pepselect-home__button pepselect-home__button--cyan" href="<?php echo esc_url( $shop_url ); ?>"><?php esc_html_e( 'Explore the Lineup', 'pepselect-child' ); ?></a>
+				<a class="pepselect-home__button pepselect-home__button--outline-light" href="<?php echo esc_url( $testing_url ); ?>" aria-label="<?php esc_attr_e( 'View Pep Select Quality Archive and batch documentation', 'pepselect-child' ); ?>"><?php esc_html_e( 'See the Receipts', 'pepselect-child' ); ?></a>
 			</div>
-			<ul class="pepselect-home__hero-signals" aria-label="<?php esc_attr_e( 'Catalog information available on Pep Select', 'pepselect-child' ); ?>">
-				<?php foreach ( $signals as $signal ) : ?>
-					<li><?php echo esc_html( $signal ); ?></li>
-				<?php endforeach; ?>
-			</ul>
+			<p class="pepselect-home__hero-proof"><span><?php esc_html_e( 'Current compounds', 'pepselect-child' ); ?></span><i aria-hidden="true">&middot;</i><span><?php esc_html_e( 'Visible batch status', 'pepselect-child' ); ?></span><i aria-hidden="true">&middot;</i><span><?php esc_html_e( 'No documentation scavenger hunt', 'pepselect-child' ); ?></span></p>
 		</div>
 
 		<div class="pepselect-home__hero-stage" data-product-count="<?php echo esc_attr( (string) $hero_count ); ?>">
@@ -78,7 +68,6 @@ $signals       = array(
 
 				<?php if ( $lead_product ) : ?>
 					<div class="pepselect-home__hero-product-card">
-						<p class="pepselect-home__stock-state"><?php echo esc_html( $lead_product->is_in_stock() ? __( 'In stock', 'woocommerce' ) : __( 'Out of stock', 'woocommerce' ) ); ?></p>
 						<h2><?php echo esc_html( $lead_product->get_name() ); ?></h2>
 						<?php if ( '' !== trim( wp_strip_all_tags( $lead_product->get_price_html() ) ) ) : ?>
 							<div class="pepselect-home__product-price"><?php echo wp_kses_post( $lead_product->get_price_html() ); ?></div>
