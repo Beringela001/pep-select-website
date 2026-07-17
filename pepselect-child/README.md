@@ -1,10 +1,10 @@
 # Pep Select child theme
 
-- Version: 0.3.1
+- Version: 0.4.0-beta.1
 - Parent: Hello Elementor (`hello-elementor`)
 - Text domain: `pepselect-child`
 
-Pep Select is a lightweight presentation child theme for the controlled WEB-2 customer-facing rebuild. Version 0.3.1 makes the approved coded header and footer the default presentation shell on supported front-end requests. Elementor continues to own page content, and its stored Header #1323, Footer #391, and display conditions remain unchanged for emergency rollback.
+Pep Select is a lightweight presentation child theme for the controlled WEB-2 customer-facing rebuild. Version 0.4.0-beta.1 adds the coded WEB-2C homepage behind an administrator-only front-page preview while the approved coded header and footer remain the default presentation shell. The existing Elementor homepage remains unchanged for normal requests.
 
 ## Requirements and safe failure
 
@@ -35,6 +35,9 @@ Installing a ZIP does not activate a theme automatically. The child theme is alr
 - Uses the confirmed Xootix side-cart shortcode only when registered, with an environment-neutral cart fallback.
 - Preserves current research-use statements, support email, footer destinations, exact published FDA disclaimer, and dynamic copyright year; the coded footer omits the external developer credit.
 - Leaves existing Elementor page content, Header #1323, Footer #391, and all Elementor display conditions stored and unchanged.
+- Adds `?pepselect_home_preview=1` as a capability-gated coded homepage preview on the WordPress front page only; unauthorized and ordinary requests continue to use the existing homepage.
+- Queries featured and fallback products through WooCommerce public APIs without template overrides or stored-data changes.
+- Uses an action-only COA Archive fallback because version 0.4.0 exposes no supported generic homepage-preview projection.
 
 ## Structure
 
@@ -44,14 +47,18 @@ pepselect-child/
 |   |-- css/
 |   |   |-- foundations.css
 |   |   |-- footer.css
-|   |   `-- header.css
+|   |   |-- header.css
+|   |   `-- homepage.css
 |   `-- js/
 |       |-- header.js
 |       `-- README.md
 |-- inc/
 |   |-- footer-preview.php
 |   |-- header-preview.php
+|   |-- homepage-preview.php
 |   `-- setup.php
+|-- templates/
+|   `-- front-page-preview.php
 |-- template-parts/
 |   |-- footer/
 |   |   |-- disclaimer.php
@@ -61,6 +68,16 @@ pepselect-child/
 |   |   |-- actions.php
 |   |   |-- navigation.php
 |   |   `-- site-header.php
+|   |-- home/
+|   |   |-- featured-products.php
+|   |   |-- final-cta.php
+|   |   |-- hero.php
+|   |   |-- identifiers.php
+|   |   |-- product-card.php
+|   |   |-- research-support.php
+|   |   |-- status-guide.php
+|   |   |-- testing-preview.php
+|   |   `-- transparency.php
 |   `-- README.md
 |-- CHANGELOG.md
 |-- functions.php
@@ -73,4 +90,4 @@ The `woocommerce/` directory is deliberately absent. Add an override only in its
 
 ## Rollback boundary
 
-The existing Hello Elementor parent theme and stored Elementor Header #1323 and Footer #391 remain the rollback baseline. Version 0.3.1 changes no WordPress records or Elementor display conditions. A logged-in administrator may use `?pepselect_legacy_shell=1` for a one-request shell check; reactivating the parent theme remains the immediate full rollback.
+The existing Elementor homepage, Hello Elementor parent theme, and stored Elementor Header #1323 and Footer #391 remain the rollback baseline. Remove `?pepselect_home_preview=1` to return to the unchanged homepage. A logged-in administrator may use `?pepselect_legacy_shell=1` for a one-request shell check; reactivating the parent theme remains the immediate full rollback.

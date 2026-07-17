@@ -2,6 +2,15 @@
 
 All notable changes to the Pep Select child theme are documented here.
 
+## 0.4.0-beta.1 - 2026-07-16
+
+- Added the coded eight-section WEB-2C homepage behind the administrator-only `?pepselect_home_preview=1` front-page gate.
+- Preserved the existing Elementor homepage for normal and unauthorized requests and retained the coded WEB-2B shell.
+- Added WooCommerce API-based featured-product selection and a reusable homepage product-card foundation without template overrides.
+- Added a safe COA Archive fallback because the stable plugin exposes no supported generic homepage-preview interface.
+- Isolated coded-header logo and Rewards presentation from page-specific Elementor and WooCommerce styles.
+- Added responsive homepage styles, visible focus, practical touch targets, and reduced-motion handling without JavaScript.
+
 ## 0.3.1 - 2026-07-16
 
 - Made the approved coded header and footer the default shell on supported front-end requests while preserving all Elementor page content.

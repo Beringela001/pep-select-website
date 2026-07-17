@@ -15,6 +15,75 @@
 	box-sizing: border-box;
 }
 
+/*
+ * Component isolation: the coded shell must retain the same geometry on
+ * Elementor, WooCommerce, COA, product, archive, and ordinary page contexts.
+ */
+#pepselect-site-header .pepselect-header__logo-link {
+	flex: 0 0 auto;
+	width: 180px;
+	height: 60px;
+	max-width: 100%;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	line-height: 1;
+}
+
+#pepselect-site-header .pepselect-header__brand img.pepselect-header__logo-image,
+#pepselect-site-header .pepselect-header__brand img.custom-logo {
+	display: block;
+	width: 180px;
+	height: 60px;
+	max-width: 100%;
+	max-height: 60px;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	object-fit: contain;
+	object-position: left center;
+	transform: none;
+}
+
+#pepselect-site-header .pepselect-header__action--rewards {
+	flex: 0 0 auto;
+	min-width: 44px;
+	height: 44px;
+	min-height: 44px;
+	margin: 0;
+	border: 1px solid transparent;
+	font-family: var(--pep-font-interface);
+	font-size: 14px;
+	font-weight: var(--pep-font-weight-semibold);
+	line-height: 1.2;
+	vertical-align: middle;
+	appearance: none;
+}
+
+#pepselect-site-header .pepselect-header__action--rewards .pepselect-header__action-label,
+#pepselect-site-header .pepselect-header__action--rewards .pepselect-header__rewards-value,
+#pepselect-site-header .pepselect-header__action--rewards .pepselect-header__rewards-value * {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	color: inherit;
+	background: transparent;
+	font: inherit;
+	line-height: 1.2;
+	vertical-align: middle;
+}
+
+#pepselect-site-header .pepselect-header__action--rewards:hover {
+	border-color: var(--pep-color-border);
+	color: var(--pep-color-dark-navy);
+	background: var(--pep-color-surface);
+}
+
+#pepselect-site-header button {
+	font-family: var(--pep-font-interface);
+	appearance: none;
+}
+
 .pepselect-site-header {
 	position: relative;
 	z-index: 100;
@@ -326,12 +395,6 @@
 }
 
 @media (min-width: 1025px) {
-	.pepselect-header__brand .custom-logo,
-	.pepselect-header__logo-image {
-		transform: scale(1.06);
-		transform-origin: left center;
-	}
-
 	.pepselect-header__search {
 		max-width: 520px;
 	}
@@ -353,6 +416,14 @@
 }
 
 @media (max-width: 1024px) {
+	#pepselect-site-header .pepselect-header__logo-link,
+	#pepselect-site-header .pepselect-header__brand img.pepselect-header__logo-image,
+	#pepselect-site-header .pepselect-header__brand img.custom-logo {
+		width: 150px;
+		height: 52px;
+		max-height: 52px;
+	}
+
 	.pepselect-header__main-grid {
 		grid-template-columns: minmax(0, 1fr) auto;
 		gap: 12px 16px;
@@ -408,6 +479,14 @@
 }
 
 @media (max-width: 767px) {
+	#pepselect-site-header .pepselect-header__logo-link,
+	#pepselect-site-header .pepselect-header__brand img.pepselect-header__logo-image,
+	#pepselect-site-header .pepselect-header__brand img.custom-logo {
+		width: 144px;
+		height: 52px;
+		max-height: 52px;
+	}
+
 	.pepselect-header__announcement {
 		padding-block: 8px;
 		font-size: 13px;
@@ -505,6 +584,14 @@
 }
 
 @media (max-width: 360px) {
+	#pepselect-site-header .pepselect-header__logo-link,
+	#pepselect-site-header .pepselect-header__brand img.pepselect-header__logo-image,
+	#pepselect-site-header .pepselect-header__brand img.custom-logo {
+		width: 116px;
+		height: 44px;
+		max-height: 44px;
+	}
+
 	.pepselect-header__main-grid {
 		gap: 12px 8px;
 	}
