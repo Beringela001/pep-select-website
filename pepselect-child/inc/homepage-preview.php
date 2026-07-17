@@ -89,6 +89,14 @@ function pepselect_child_enqueue_home_preview_assets() {
 		array( 'pepselect-child-foundations' ),
 		pepselect_child_asset_version( 'assets/css/homepage.css' )
 	);
+
+	wp_enqueue_script(
+		'pepselect-child-home-preview',
+		get_stylesheet_directory_uri() . '/assets/js/homepage.js',
+		array(),
+		pepselect_child_asset_version( 'assets/js/homepage.js' ),
+		true
+	);
 }
 
 /**
@@ -116,18 +124,20 @@ function pepselect_child_filter_homepage_products( $products ) {
 }
 
 /**
- * Return four to six qualifying products using the approved selection rule.
+ * Return the product-first homepage selection through WooCommerce APIs.
  *
- * Featured products are used first. When fewer than four qualify, the latest
- * other eligible products fill only the positions needed to reach four.
+ * Featured products lead the candidate pool. Other current products fill any
+ * remaining positions. The storefront receives at most four products, while
+ * the hero receives at most three candidates with real product images.
  *
- * @return array{available:bool,products:array<int,WC_Product>}
+ * @return array{available:bool,products:array<int,WC_Product>,hero_products:array<int,WC_Product>}
  */
 function pepselect_child_get_homepage_products() {
 	if ( ! class_exists( 'WooCommerce' ) || ! function_exists( 'wc_get_products' ) ) {
 		return array(
-			'available' => false,
-			'products'  => array(),
+			'available'     => false,
+			'products'      => array(),
+			'hero_products' => array(),
 		);
 	}
 
@@ -143,39 +153,62 @@ function pepselect_child_get_homepage_products() {
 		)
 	);
 
-	$products = array_slice( pepselect_child_filter_homepage_products( $featured ), 0, 6 );
-
-	if ( count( $products ) < 4 ) {
-		$excluded_ids = array_map(
+	$featured      = pepselect_child_filter_homepage_products( $featured );
+	$excluded_ids  = array_map(
+		static function ( $product ) {
+			return $product->get_id();
+		},
+		$featured
+	);
+	$fallback      = wc_get_products(
+		array(
+			'status'       => 'publish',
+			'limit'        => 12,
+			'stock_status' => 'instock',
+			'exclude'      => $excluded_ids,
+			'orderby'      => 'date',
+			'order'        => 'DESC',
+			'return'       => 'objects',
+		)
+	);
+	$candidates    = array_merge( $featured, pepselect_child_filter_homepage_products( $fallback ) );
+	$hero_products = array_values(
+		array_filter(
+			$candidates,
 			static function ( $product ) {
-				return $product->get_id();
-			},
-			$products
-		);
-
-		$fallback = wc_get_products(
-			array(
-				'status'       => 'publish',
-				'limit'        => 12,
-				'stock_status' => 'instock',
-				'exclude'      => $excluded_ids,
-				'orderby'      => 'date',
-				'order'        => 'DESC',
-				'return'       => 'objects',
-			)
-		);
-
-		foreach ( pepselect_child_filter_homepage_products( $fallback ) as $product ) {
-			$products[] = $product;
-
-			if ( 4 <= count( $products ) ) {
-				break;
+				return 0 < $product->get_image_id();
 			}
-		}
-	}
+		)
+	);
 
 	return array(
-		'available' => true,
-		'products'  => array_slice( array_values( $products ), 0, 6 ),
+		'available'     => true,
+		'products'      => array_slice( $candidates, 0, 4 ),
+		'hero_products' => array_slice( $hero_products, 0, 3 ),
+	);
+}
+
+/**
+ * Return the supported FAQ subset sourced from Elementor Homepage #571.
+ *
+ * The obsolete order-link item is deliberately excluded. The batch-search
+ * answer is updated only to name the verified canonical archive destination.
+ *
+ * @return array<int,array{question:string,answer:string}>
+ */
+function pepselect_child_get_homepage_faqs() {
+	return array(
+		array(
+			'question' => __( 'What are Pep Select compounds intended for?', 'pepselect-child' ),
+			'answer'   => __( 'Research use only.', 'pepselect-child' ),
+		),
+		array(
+			'question' => __( 'Do all products include COAs?', 'pepselect-child' ),
+			'answer'   => __( 'Where available, documentation is associated with individual batches.', 'pepselect-child' ),
+		),
+		array(
+			'question' => __( 'Can I verify a batch?', 'pepselect-child' ),
+			'answer'   => __( 'Yes. Use the Quality Archive to search by compound and open available batch records.', 'pepselect-child' ),
+		),
 	);
 }

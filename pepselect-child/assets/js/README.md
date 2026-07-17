@@ -1,5 +1,5 @@
 # JavaScript directory
 
-Version 0.4.0-beta.1 retains `header.js`, a dependency-free presentation script loaded only when the coded shell owns the front-end request. The private coded homepage adds no JavaScript.
+Version 0.4.0-beta.2 retains `header.js` and adds `homepage.js`. Both scripts are dependency-free and component-scoped. `homepage.js` loads only for the authorized private homepage preview and controls the FAQ accordion's expanded state and keyboard navigation.
 
-The script controls the mobile navigation's expanded state, closes it with Escape, restores focus to the toggle after an Escape close, closes after mobile navigation, and resets its state when resizing to desktop. It does not lock page scrolling or call customer, commerce, rewards, side-cart, analytics, tracking, or remote-request interfaces.
+The header script controls the mobile navigation's expanded state, closes it with Escape, restores focus to the toggle after an Escape close, closes after mobile navigation, and resets its state when resizing to desktop. Neither script calls customer, commerce, rewards, side-cart, analytics, tracking, or remote-request interfaces.

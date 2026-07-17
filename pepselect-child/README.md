@@ -1,10 +1,10 @@
 # Pep Select child theme
 
-- Version: 0.4.0-beta.1
+- Version: 0.4.0-beta.2
 - Parent: Hello Elementor (`hello-elementor`)
 - Text domain: `pepselect-child`
 
-Pep Select is a lightweight presentation child theme for the controlled WEB-2 customer-facing rebuild. Version 0.4.0-beta.1 adds the coded WEB-2C homepage behind an administrator-only front-page preview while the approved coded header and footer remain the default presentation shell. The existing Elementor homepage remains unchanged for normal requests.
+Pep Select is a lightweight presentation child theme for the controlled WEB-2 customer-facing rebuild. Version 0.4.0-beta.2 redesigns the private WEB-2C homepage as a product-first storefront while the approved coded header and footer remain the default presentation shell. The existing Elementor homepage remains unchanged for normal requests.
 
 ## Requirements and safe failure
 
@@ -36,8 +36,9 @@ Installing a ZIP does not activate a theme automatically. The child theme is alr
 - Preserves current research-use statements, support email, footer destinations, exact published FDA disclaimer, and dynamic copyright year; the coded footer omits the external developer credit.
 - Leaves existing Elementor page content, Header #1323, Footer #391, and all Elementor display conditions stored and unchanged.
 - Adds `?pepselect_home_preview=1` as a capability-gated coded homepage preview on the WordPress front page only; unauthorized and ordinary requests continue to use the existing homepage.
-- Queries featured and fallback products through WooCommerce public APIs without template overrides or stored-data changes.
-- Uses an action-only COA Archive fallback because version 0.4.0 exposes no supported generic homepage-preview projection.
+- Queries featured and fallback products through WooCommerce public APIs for the hero and four-product storefront without template overrides or stored-data changes.
+- Uses an action-only Quality Archive feature because COA Archive version 0.4.0 exposes no supported generic homepage-preview projection.
+- Loads a dependency-free, preview-only FAQ controller for semantic accordion state and keyboard navigation.
 
 ## Structure
 
@@ -51,6 +52,7 @@ pepselect-child/
 |   |   `-- homepage.css
 |   `-- js/
 |       |-- header.js
+|       |-- homepage.js
 |       `-- README.md
 |-- inc/
 |   |-- footer-preview.php
@@ -69,15 +71,15 @@ pepselect-child/
 |   |   |-- navigation.php
 |   |   `-- site-header.php
 |   |-- home/
+|   |   |-- batch-identity.php
+|   |   |-- coa-feature.php
+|   |   |-- confidence-strip.php
 |   |   |-- featured-products.php
 |   |   |-- final-cta.php
+|   |   |-- faq.php
 |   |   |-- hero.php
-|   |   |-- identifiers.php
 |   |   |-- product-card.php
-|   |   |-- research-support.php
-|   |   |-- status-guide.php
-|   |   |-- testing-preview.php
-|   |   `-- transparency.php
+|   |   `-- why-pep-select.php
 |   `-- README.md
 |-- CHANGELOG.md
 |-- functions.php

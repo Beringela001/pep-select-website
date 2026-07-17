@@ -2,6 +2,15 @@
 
 All notable changes to the Pep Select child theme are documented here.
 
+## 0.4.0-beta.2 - 2026-07-16
+
+- Replaced the visually rejected compliance-led homepage preview with a product-first storefront while preserving the administrator-only front-page gate.
+- Added a dark product hero using live WooCommerce images, prices, stock states, and links without hard-coded product data.
+- Moved four dynamically selected compounds near the top and redesigned the reusable homepage product card.
+- Concentrated batch identity and Quality Archive guidance into two later sections without duplicating COA records, statuses, or sorting logic.
+- Added a compact accessible FAQ using supported existing content and omitted the obsolete order-link item.
+- Preserved the coded header and footer, component isolation, responsive behavior, reduced motion, and WooCommerce/COA ownership boundaries.
+
 ## 0.4.0-beta.1 - 2026-07-16
 
 - Added the coded eight-section WEB-2C homepage behind the administrator-only `?pepselect_home_preview=1` front-page gate.
