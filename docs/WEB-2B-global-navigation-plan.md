@@ -929,3 +929,26 @@ Version `0.3.1` makes the approved coded header from `0.2.3` and coded footer fr
 - Staging rollback backup: `Before WEB-2B Coded Shell Activation`.
 - Live remains untouched.
 - Test package: `dist/pepselect-child-0.3.1.zip`; SHA256: `B1D2E59482AA0BA2121E14D40B512D3063A9025A799941EC7EA6B61AFF7E81C1`.
+
+## Coded Shell Activated and Verified on Staging
+
+- Pep Select child theme version `0.3.1` is active on Staging.
+- The approved coded header and footer now load automatically on ordinary front-end requests without preview parameters.
+- Existing Elementor page content remains intact between the coded header and footer.
+- Elementor Header #1323 and Footer #391 remain stored and unchanged.
+- Administrator-only emergency rollback works through `?pepselect_legacy_shell=1`.
+- Logged-in administrators using that parameter receive the legacy Elementor header and footer.
+- Logged-out visitors cannot activate legacy-shell mode and continue receiving the coded shell.
+- The normal homepage was visually verified on desktop.
+- The coded header was previously verified on desktop and mobile.
+- The coded footer was previously verified on desktop and mobile.
+- The Certificate of Analysis footer link correctly opens `/testing/`.
+- Existing WooCommerce, rewards, account, cart, product search, Elementor page content, and side-cart behavior remain available.
+- Live remains untouched.
+
+Staging rollback backups:
+
+- `Before WEB-2B Coded Shell Activation`
+- `After WEB-2B Coded Shell Activation`
+
+The floating side-cart button can overlap footer and disclaimer content on mobile. That presentation issue is deferred to the cart and side-cart presentation milestone.
