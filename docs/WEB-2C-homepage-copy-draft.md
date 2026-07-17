@@ -1,6 +1,6 @@
 # WEB-2C Homepage Copy Draft
 
-This is a review draft, not approved publication copy. Text labeled as internal notes, dynamic requirements, or `[VERIFY CLAIM]` must never appear as customer-facing copy.
+This document separates Paulo-approved public copy from proposed supporting copy, dynamic requirements, source-verification results, and internal implementation notes. Only text labeled approved public copy is approved for publication.
 
 # 1. Page Objective
 
@@ -16,49 +16,19 @@ Help research purchasers identify Pep Select as a source of research compounds, 
 | Primary CTA | `Explore Compounds` |
 | Strongest secondary CTA | `Review COAs` |
 
-# 3. Hero Concepts
+# 3. Approved Hero
 
-## Option A: Signature mission (recommended)
+**Approved public eyebrow:** Research Compounds
 
-**Optional eyebrow:** Research Compounds
+**Approved public headline:** Match the vial. Match the batch.
 
-**Headline:** Match the vial. Match the batch.
+**Approved public supporting paragraph:** Pep Select is built around clear identifiers, current batch status, and access to available testing history. Explore the catalog, or review the records first.
 
-**Supporting paragraph:** Pep Select provides research compounds for laboratory research and analytical work, with clear product details and access to available batch documentation and testing history. Explore the catalog or review the records first.
+**Approved primary CTA:** Explore Compounds
 
-**Primary CTA:** Explore Compounds
+**Approved secondary CTA:** Review COAs
 
-**Secondary CTA:** Review COAs
-
-**Internal rationale:** The approved signature line leads, while the eyebrow and first sentence identify the product category without delay. The paragraph presents both visitor paths and limits documentation language to records that are available.
-
-## Option B: Category first
-
-**Optional eyebrow:** Pep Select
-
-**Headline:** Research compounds with the record in view.
-
-**Supporting paragraph:** Browse current compounds, check factual product details, and review available batch documentation through the Pep Select COA Archive.
-
-**Primary CTA:** Explore Compounds
-
-**Secondary CTA:** Review COAs
-
-**Internal rationale:** This option names the category in the headline and moves the signature line into the next section. It is direct, but less distinctive than Option A.
-
-## Option C: Evidence-first choice
-
-**Optional eyebrow:** For Laboratory Research and Analytical Work
-
-**Headline:** Start with the compound. Check the record.
-
-**Supporting paragraph:** Pep Select gives research purchasers two clear paths: explore available compounds or examine current and historical testing records before moving forward.
-
-**Primary CTA:** Explore Compounds
-
-**Secondary CTA:** Review COAs
-
-**Internal rationale:** This option emphasizes choice and evidence without claiming that every catalog item has the same documentation or testing outcome.
+**Internal rationale:** The eyebrow identifies the product category, the signature line states the mission, and the paragraph directs visitors to the catalog or records without claiming universal testing or documentation coverage.
 
 # 4. Complete Eight-Section Draft
 
@@ -66,11 +36,11 @@ Help research purchasers identify Pep Select as a source of research compounds, 
 
 **Internal section purpose:** Identify the offering, establish the documentation-led mission, and serve purchase-ready and evidence-first visitors in the first viewport.
 
-**Proposed public eyebrow:** Research Compounds
+**Approved public eyebrow:** Research Compounds
 
-**Proposed public heading:** Match the vial. Match the batch.
+**Approved public heading:** Match the vial. Match the batch.
 
-**Proposed public supporting copy:** Pep Select provides research compounds for laboratory research and analytical work, with clear product details and access to available batch documentation and testing history. Explore the catalog or review the records first.
+**Approved public supporting copy:** Pep Select is built around clear identifiers, current batch status, and access to available testing history. Explore the catalog, or review the records first.
 
 **CTA or link text:**
 
@@ -85,7 +55,7 @@ Help research purchasers identify Pep Select as a source of research compounds, 
 
 **Internal section purpose:** Make batch traceability concrete for visitors who understand evidence but may not know the documentation system.
 
-**Proposed public heading:** The identifiers should lead to the record.
+**Approved public heading:** Every identifier should point to the same record.
 
 **Proposed public supporting copy:** Start with what the Pep Select vial shows. Compound, labeled strength, batch number, cap, crimp, and packaging identity help distinguish one batch from another. The matching record can show its current testing status and available laboratory documentation.
 
@@ -104,15 +74,15 @@ Help research purchasers identify Pep Select as a source of research compounds, 
 
 **Required dynamic content:** Record-owned values for each displayed identifier; omit a field when the owning system has no value rather than filling it with invented text.
 
-**Internal evidence notes:** Confirm that each listed packaging field exists in the COA Archive and maps to the intended record before publication. `[VERIFY CLAIM]`
+**Internal evidence notes:** The COA Archive source is not present in this repository. The Identifier-to-record mapping decision below governs every proposed field; none may be treated as confirmed plugin data until verified.
 
 ## Section 3: COA and testing-history preview
 
 **Internal section purpose:** Show enough evidence to support evaluation, disclose that outcomes vary, and route visitors to the complete archive.
 
-**Proposed public heading:** Read the current record. Keep the history in view.
+**Approved public heading:** Read the current record. Keep the history in view.
 
-**Proposed public supporting copy:** Testing records can document favorable results, work in progress, incomplete information, no test for a listed scope, or a failed outcome. Read the status and test details for the specific batch. The complete record belongs in the COA Archive.
+**Proposed public supporting copy:** Open a specific batch record to review the status and test details the COA Archive provides. Continue to the archive for available reports and historical detail.
 
 **CTA or link text:**
 
@@ -130,13 +100,13 @@ Help research purchasers identify Pep Select as a source of research compounds, 
 - Laboratory when available
 - Canonical link to the complete record
 
-**Internal evidence notes:** The preview must render the plugin-owned status without converting every completed record into a pass. Confirm the supported query, sorting, field labels, and handling of current versus historical records. `[VERIFY CLAIM]`
+**Internal evidence notes:** The Archive preview behavior and Status terminology decisions below govern this section. Full testing records and historical detail stay in `/testing/`.
 
 ## Section 4: Featured compounds
 
 **Internal section purpose:** Give purchase-ready visitors a concise, factual route into the current catalog after the documentation path has been established.
 
-**Proposed public heading:** Current research compounds
+**Approved public heading:** Current research compounds
 
 **Proposed public supporting copy:** Browse in-stock compounds from the current Pep Select catalog. Product details, availability, and prices come from the product record.
 
@@ -153,46 +123,35 @@ Help research purchasers identify Pep Select as a source of research compounds, 
 
 **Internal section purpose:** Help visitors read status labels without treating a workflow state as a laboratory conclusion.
 
-**Proposed public heading:** Read the status before the claim.
+**Approved public heading:** Status before conclusions.
 
-**Proposed public supporting copy:** A status tells you where a specific record stands. Open the record for the test scope, stated result, and available documentation.
-
-**Proposed public status explanations:**
-
-| Status family | Public explanation |
-|---|---|
-| Approved or Completed | The recorded review or test has reached its documented endpoint. Open the record to see the scope and stated outcome. |
-| Testing or Verification in Progress | Work is underway. No final outcome should be inferred. |
-| Pending | Required information or the next recorded step remains outstanding. |
-| Failed | The documented test or verification did not meet its recorded criterion. Read the complete record for scope and result. |
-| Not Tested | No test is recorded for the listed scope. |
-| Not Applicable | The listed test or status does not apply to this record. |
+**Proposed public supporting copy:** Open the batch record to review its displayed status and available test details. Do not treat a workflow label as a conclusion about a test or batch.
 
 **CTA or link text:** View Testing History
 
 **Required dynamic content:** Exact plugin-owned status label, semantic status treatment, and canonical record or archive link.
 
-**Internal evidence notes:** Confirm every label and explanation against the Pep Select COA Archive. Do not publish this provisional mapping until the plugin owner confirms the exact meaning of Approved, Completed, Testing, Verification in Progress, Pending, Failed, Not Tested, and Not Applicable. `[VERIFY CLAIM]`
+**Internal evidence notes:** No exact public status label or meaning was source-verified. Do not publish homepage-authored labels or definitions. Render only the plugin-owned label after its supported interface is confirmed.
 
 ## Section 6: Transparency in practice
 
 **Internal section purpose:** Explain the value of accurate record states without making unsupported promises about release controls or report publication.
 
-**Proposed public heading:** A record should say what is known.
+**Approved public heading:** A record should show what happened.
 
-**Proposed public supporting copy:** Pep Select organizes available batch information by identifier and status so researchers can distinguish one documented record from another. Pending, incomplete, not-tested, and failed outcomes must remain distinct from a pass. Review the record tied to the batch instead of relying on a broad assurance.
+**Proposed public supporting copy:** Review the status and available documentation attached to the batch record. Keep each statement tied to that record, without extending it to every batch or release.
 
 **CTA or link text:** Review COAs
 
 **Required dynamic content:** Batch identifiers, current plugin-owned status, and canonical links to available documentation.
 
-**Internal evidence notes:** Do not state that failed reports remain public, failed batches cannot be sold, reports are complete and unedited, every release receives the same testing scope, or every batch receives third-party testing until an operational owner supplies evidence. `[VERIFY CLAIM]`
+**Internal evidence notes:** The approved heading is a transparency principle. Do not state that failed reports remain public, failed batches cannot be sold, reports are complete and unedited, every release receives the same testing scope, or every batch receives third-party testing until an operational owner supplies evidence.
 
 ## Section 7: Research-use boundaries and support
 
 **Internal section purpose:** State the intended research context and give visitors a calm route to practical help.
 
-**Proposed public heading:** For laboratory research and analytical work.
+**Approved public heading:** For laboratory research and analytical work.
 
 **Proposed public supporting copy:** Pep Select compounds are presented for legitimate laboratory research and analytical purposes. Review the FAQ for common ordering and documentation questions, or contact Pep Select support when you need help with a product, order, or record.
 
@@ -203,13 +162,13 @@ Help research purchasers identify Pep Select as a source of research compounds, 
 
 **Required dynamic content:** Canonical FAQ and Contact URLs.
 
-**Internal evidence notes:** Confirm the final research-use statement with the approved launch language. Confirm the support topics and route against current operations. `[VERIFY CLAIM]`
+**Internal evidence notes:** Keep the approved research-use boundary and supported FAQ and Contact paths. Do not add human-use implications.
 
 ## Section 8: Final decision path
 
 **Internal section purpose:** Repeat the approved choices after the visitor has seen the catalog and documentation framework.
 
-**Proposed public heading:** Start with the compound or start with the record.
+**Approved public heading:** Start with the compound or start with the record.
 
 **Proposed public supporting copy:** Browse current research compounds, or review available COAs and testing history before you continue.
 
@@ -245,7 +204,9 @@ Do not use people, syringes, body or wellness imagery, transformations, administ
 - Current stock state
 - Canonical product URL
 
-## COA Archive-owned content
+## Proposed COA Archive-owned preview content
+
+These are homepage requirements pending plugin-source or supported-interface verification, not confirmed fields:
 
 - Compound
 - Batch number
@@ -268,57 +229,65 @@ Do not use people, syringes, body or wellness imagery, transformations, administ
 | No recent COA records | Hide the empty preview list and retain `Review COAs` to the complete archive. Do not imply that records do not exist unless the archive confirms that state. |
 | Unavailable laboratory name | Omit the laboratory field or use the plugin's confirmed unavailable-state label; do not guess the laboratory. |
 
+## COA Archive source-verification result
+
+The Pep Select COA Archive plugin source is not available in this repository. A targeted tracked-file and PHP/JavaScript search found only the legacy Elementor COA loop export and the child theme's canonical `/testing/` link. Neither source defines the current plugin's statuses, fields, sorting, record visibility, full-record routes, or retrieval interface.
+
+| Verification target | Result |
+|---|---|
+| Exact public status labels | Not source-verified |
+| Exact public status meanings | Not source-verified |
+| Compound, strength, batch, cap, crimp, packaging, test type, test date, laboratory, and report-link fields | Not source-verified |
+| Fields that may be missing | Not source-verified |
+| Current-versus-historical sorting | Not source-verified |
+| Public display of failed records | Not source-verified |
+| Public display of pending or in-progress records | Not source-verified |
+| Archive URL | `/testing/` is the approved canonical project route; plugin-source confirmation was unavailable |
+| Full-record URL pattern | Not source-verified |
+| Homepage-preview retrieval without duplicated business logic | Not source-verified |
+
+**Implementation note, not public copy:** Inspect the installed plugin source or a documented public interface before implementation. The homepage may consume plugin-owned output but must not recreate COA status, visibility, record-selection, or testing rules in the child theme.
+
 # 7. Compliance and Evidence Review
 
-| Proposed statement or claim category | Status | Required source or evidence | Recommended action |
+## Consolidated evidence decisions
+
+| Evidence category | Current status | What must be confirmed | Draft action |
 |---|---|---|---|
-| Pep Select provides research compounds for laboratory research and analytical work | Supported | Approved product-marketing context | Use as the category and use boundary. |
-| “Match the vial. Match the batch.” | Supported | Paulo's approved core line | Use prominently as the signature mission. |
-| Access to available batch documentation and testing history | Supported | Confirmed COA Archive capability and `/testing/` route | Keep “available”; render record-specific facts dynamically. |
-| Four to six current in-stock products with real prices | Supported | WooCommerce product, stock, and price data | Render dynamically; never type prices into page copy. |
-| Packaging identifiers map to the intended COA record | Requires verification | COA Archive schema, record mapping, and operational owner | Confirm every displayed field and relationship before publication. `[VERIFY CLAIM]` |
-| Provisional status names and explanations | Requires verification | COA Archive source definitions and plugin owner | Replace draft terminology with exact supported labels and meanings. `[VERIFY CLAIM]` |
-| Failed reports remain public or failed batches are blocked from sale | Requires verification | Approved operating policy and representative records | Omit until verified; never turn intent into a factual claim. `[VERIFY CLAIM]` |
-| Reports are published completely and unedited | Requires verification | Publication policy, data flow, and record review | Omit until verified. `[VERIFY CLAIM]` |
-| Every release receives the same testing scope or every batch receives third-party testing | Prohibited without evidence | Batch-level laboratory records and approved operational policy | Do not publish as a universal claim. `[VERIFY CLAIM]` |
-| “Affordable,” “lower-priced,” or “better value” | Requires verification | Approved pricing analysis with defined comparison basis and date | Show current prices instead; omit comparison language. `[VERIFY CLAIM]` |
-| Medical, therapeutic, performance, personal-use, administration, or human/animal-use implications | Prohibited | Not applicable | Exclude from copy, metadata, CTAs, testimonials, and imagery. |
-| Purity percentages, guarantees, rankings, customer counts, or superiority claims | Prohibited without specific approved evidence | Current source record and approval for the exact statement | Omit; do not invent proof. |
+| Identifier-to-record mapping | `[VERIFY CLAIM]` | Plugin-owned fields and their mapping to the intended record | Keep the message, but do not render an identifier until the field and relationship are confirmed. |
+| Status terminology | `[VERIFY CLAIM]` | Exact public labels and exact meanings from the COA Archive | Provisional definitions were removed. Render only verified plugin-owned labels. |
+| Archive preview behavior | `[VERIFY CLAIM]` | Supported fields, optionality, sorting, failed/pending visibility, full-record URLs, and retrieval interface | Use only confirmed behavior. Keep complete reports and historical detail in `/testing/`. |
+| Operational transparency and testing scope | `[VERIFY CLAIM]` | Failed-record retention, sale controls, report completeness/editing, testing scope, and third-party coverage | Keep stronger operational statements omitted until evidence exists. |
+| Pricing accessibility | Resolved for this draft | Current WooCommerce product and price data | Show actual current prices only. Omit affordability, value, lowest-price, and unsupported premium comparisons. |
+| Research-use and support language | Supported direction | Approved research-use wording plus canonical FAQ and Contact paths | Keep concise research-use wording and supported routes; exclude human-use implications. |
 
-# 8. Recommended Draft
+## Standing compliance exclusions
 
-## Recommended hero
+- Do not publish medical, therapeutic, performance, personal-use, administration, or human/animal-use implications.
+- Do not publish purity percentages, guarantees, rankings, customer counts, or superiority claims without specific approved evidence.
+- Do not infer shared batch identity from matching cap, crimp, label, vial, or packaging appearance.
 
-Use **Option A: Signature mission**.
+# 8. Approved Draft Summary
+
+## Approved hero
 
 - Eyebrow: Research Compounds
 - Headline: Match the vial. Match the batch.
-- Supporting paragraph: Pep Select provides research compounds for laboratory research and analytical work, with clear product details and access to available batch documentation and testing history. Explore the catalog or review the records first.
+- Supporting paragraph: Pep Select is built around clear identifiers, current batch status, and access to available testing history. Explore the catalog, or review the records first.
 - Primary CTA: Explore Compounds
 - Secondary CTA: Review COAs
 
-## Recommended key supporting lines
+## Approved public headings
 
-- The identifiers should lead to the record.
-- Read the current record. Keep the history in view.
-- Read the status before the claim.
-- A record should say what is known.
-- Start with the compound or start with the record.
+1. Match the vial. Match the batch.
+2. Every identifier should point to the same record.
+3. Read the current record. Keep the history in view.
+4. Current research compounds
+5. Status before conclusions.
+6. A record should show what happened.
+7. For laboratory research and analytical work.
+8. Start with the compound or start with the record.
 
-## Lines requiring Paulo's specific approval
+## Remaining consolidated verification decisions
 
-- The complete Option A supporting paragraph
-- “The identifiers should lead to the record.”
-- “Read the current record. Keep the history in view.”
-- “Read the status before the claim.”
-- “A record should say what is known.”
-- “Start with the compound or start with the record.”
-
-## Remaining verification items
-
-- Confirm that compound, strength, batch, cap, crimp, packaging, status, and laboratory-documentation fields map to the intended record. `[VERIFY CLAIM]`
-- Confirm the exact COA Archive status names and public meanings. `[VERIFY CLAIM]`
-- Confirm supported current/historical sorting, searching, and preview behavior. `[VERIFY CLAIM]`
-- Confirm whether failed records remain public and whether failed batches are blocked from sale. `[VERIFY CLAIM]`
-- Confirm whether reports are published completely and unedited. `[VERIFY CLAIM]`
-- Confirm the final research-use language and supported Contact/FAQ topics. `[VERIFY CLAIM]`
+The four unresolved evidence categories are Identifier-to-record mapping, Status terminology, Archive preview behavior, and Operational transparency and testing scope. Their single governing flags appear in the consolidated evidence table; they are not repeated throughout the draft.

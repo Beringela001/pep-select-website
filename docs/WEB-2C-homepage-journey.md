@@ -71,14 +71,14 @@ Use eight homepage sections.
 
 | Order | Section | Purpose | Required evidence or dynamic data |
 |---|---|---|---|
-| 1 | Hero and primary actions | Identify Pep Select as a source of research compounds and present `Explore Compounds` plus strongest secondary `Review COAs`. | Canonical Shop and `/testing/` URLs; approved research-use framing; evidence source for every factual statement. Do not lead with an unverified price claim. |
-| 2 | Match the vial to the batch | Explain in plain language how compound, labeled strength, batch number, cap color, crimp color, packaging identity, testing status, and available laboratory documentation connect a Pep Select vial to a record. | Confirmed data fields and relationships from the COA Archive and operating process; `[VERIFY CLAIM]` for any universal coverage statement. |
-| 3 | COA and testing-history preview | Preview available evidence in a scannable form, then route visitors to complete current and historical testing records without using the obsolete COA custom post type. | Pep Select COA Archive output and `/testing/` route; supported query behavior; sourced compound, batch number, cap/crimp identity when recorded, record status, test type, date, and laboratory when available; empty and error states. |
-| 4 | Featured compounds | Give ready-to-browse visitors four to six dynamically selected in-stock products with factual price visibility. | Dynamic WooCommerce title, Pep Select-owned image, current price, stock state, and canonical link; WEB-2D product-card foundation; missing-image and empty states. |
-| 5 | Documentation and status guide | Help visitors interpret documented states without treating every status as a pass. | Exact terminology supported by the COA Archive; text or icons in addition to color; no inferred laboratory result. |
-| 6 | Transparency in practice | Focus on visible records, accurate statuses, documentation access, and distinguishing one Pep Select batch from another. | Plugin-owned records and status data; `[VERIFY CLAIM]` for any statement about publication completeness, failed-report retention, release controls, testing scope, or universal third-party testing. |
-| 7 | Research-use boundaries and support | State the research-use boundary and provide concise paths to FAQ and Contact Support. | Approved current research-use language; canonical FAQ and Contact routes; no medical, personal-use, or animal-use implications. |
-| 8 | Final decision path | Repeat the primary catalog action and provide the secondary documentation path after the visitor has reviewed the page. | Canonical Shop and `/testing/` routes; no new claims, urgency, scarcity, guarantees, or unsupported reassurance. |
+| 1 | Match the vial. Match the batch. | Identify Pep Select as a source of research compounds and present `Explore Compounds` plus strongest secondary `Review COAs`. | Canonical Shop and `/testing/` URLs; approved research-use framing; evidence source for every factual statement. Do not lead with an unverified price claim. |
+| 2 | Every identifier should point to the same record. | Explain in plain language how compound, labeled strength, batch number, cap color, crimp color, packaging identity, testing status, and available laboratory documentation may connect a Pep Select vial to a record. | The plugin source is not present in this repository. Retain `[VERIFY CLAIM]` for every identifier until its field and mapping are confirmed. |
+| 3 | Read the current record. Keep the history in view. | Preview available evidence in a scannable form, then route visitors to complete records and historical detail without using the obsolete COA custom post type. | `/testing/` is the approved canonical archive route. Preview fields, sorting, visibility, and full-record URL behavior remain unverified from source. |
+| 4 | Current research compounds | Give ready-to-browse visitors four to six dynamically selected in-stock products with factual price visibility. | Dynamic WooCommerce title, Pep Select-owned image, current price, stock state, and canonical link; WEB-2D product-card foundation; missing-image and empty states. |
+| 5 | Status before conclusions. | Help visitors read the plugin-owned public status without treating a workflow label as a laboratory conclusion. | Do not publish homepage-authored status names or definitions until the exact public labels and meanings are verified from the COA Archive. |
+| 6 | A record should show what happened. | State the approved transparency principle without asserting unconfirmed failed-record retention, release controls, report completeness, or universal testing scope. | Stronger operational statements remain omitted or `[VERIFY CLAIM]` until supported. |
+| 7 | For laboratory research and analytical work. | State the research-use boundary and provide concise paths to FAQ and Contact Support. | Approved current research-use language; canonical FAQ and Contact routes; no medical, personal-use, or animal-use implications. |
+| 8 | Start with the compound or start with the record. | Repeat the primary catalog action and provide the secondary documentation path after the visitor has reviewed the page. | Canonical Shop and `/testing/` routes; no new claims, urgency, scarcity, guarantees, or unsupported reassurance. |
 
 ### Avatar review conclusions
 
@@ -169,5 +169,15 @@ These are global-shell regression requirements for implementation and QA. They d
 - Use only Pep Select-owned product and vial imagery. Prefer a clean studio family of Pep Select vials in a light-blue environment; avoid people and generic laboratory stock photography.
 - Use Transparency in Practice instead of an operating-standards section. Flag every unconfirmed operational statement with `[VERIFY CLAIM]`.
 - Keep complete testing records in the Pep Select COA Archive rather than overcrowding the homepage.
+- Use the approved hero exactly: eyebrow `Research Compounds`; headline `Match the vial. Match the batch.`; supporting paragraph “Pep Select is built around clear identifiers, current batch status, and access to available testing history. Explore the catalog, or review the records first.”
+- Use the eight approved public headings shown in the section-order table.
 
 The remaining decisions concern exact draft wording and verified data behavior, not the approved journey structure.
+
+## Targeted COA source-verification result
+
+The Pep Select COA Archive plugin source is not available in this repository. A targeted tracked-file and PHP/JavaScript search found only the legacy Elementor COA loop export and a child-theme link to `/testing/`; neither defines the plugin's data model or public interface.
+
+Therefore, this checkpoint could not verify exact public status labels or meanings, field availability or optionality, current-versus-historical sorting, failed or pending record visibility, full-record URL patterns, or a supported homepage-preview API. `/testing/` remains the approved canonical archive destination from the existing project record, but that does not verify the plugin's internal retrieval behavior.
+
+Implementation must inspect the installed plugin source or confirmed public interface before rendering COA preview data. The homepage must consume plugin-owned data without recreating status, record-selection, or testing business logic in the theme.
