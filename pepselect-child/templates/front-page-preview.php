@@ -1,6 +1,6 @@
 <?php
 /**
- * Administrator-only coded homepage preview.
+ * Public coded homepage.
  *
  * @package PepSelectChild
  */

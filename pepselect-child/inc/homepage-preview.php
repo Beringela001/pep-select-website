@@ -1,6 +1,6 @@
 <?php
 /**
- * Private coded-homepage preview routing and presentation data.
+ * Public coded-homepage routing and presentation data.
  *
  * @package PepSelectChild
  */
@@ -10,41 +10,28 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Determine whether the authorized coded homepage preview owns this request.
+ * Determine whether the coded homepage owns this request.
  *
  * @return bool
  */
 function pepselect_child_is_home_preview_request() {
 	return pepselect_child_is_supported_frontend_shell_request()
-		&& is_front_page()
-		&& pepselect_child_preview_flag_is_set( 'pepselect_home_preview' );
+		&& is_front_page();
 }
 
 /**
- * Register the private homepage preview hooks.
+ * Register the coded homepage hooks.
  *
  * @return void
  */
 function pepselect_child_register_homepage_preview() {
-	add_action( 'template_redirect', 'pepselect_child_home_preview_no_cache', 5 );
 	add_filter( 'template_include', 'pepselect_child_home_preview_template', 99 );
 	add_filter( 'body_class', 'pepselect_child_home_preview_body_class' );
 	add_action( 'wp_enqueue_scripts', 'pepselect_child_enqueue_home_preview_assets', 40 );
 }
 
 /**
- * Prevent an authorized private homepage preview from being cached.
- *
- * @return void
- */
-function pepselect_child_home_preview_no_cache() {
-	if ( pepselect_child_is_home_preview_request() ) {
-		nocache_headers();
-	}
-}
-
-/**
- * Select the coded front-page template only for an authorized preview.
+ * Select the coded front-page template for supported front-page requests.
  *
  * @param string $template Resolved WordPress template.
  * @return string
@@ -60,7 +47,7 @@ function pepselect_child_home_preview_template( $template ) {
 }
 
 /**
- * Add the homepage component scope class for an authorized preview.
+ * Add the homepage component scope class on the coded front page.
  *
  * @param string[] $classes Existing body classes.
  * @return string[]
@@ -74,7 +61,7 @@ function pepselect_child_home_preview_body_class( $classes ) {
 }
 
 /**
- * Enqueue homepage presentation only for the authorized preview.
+ * Enqueue homepage presentation only on the coded front page.
  *
  * @return void
  */
