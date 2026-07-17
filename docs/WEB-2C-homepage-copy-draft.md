@@ -1,6 +1,6 @@
 # WEB-2C Homepage Copy Draft
 
-This document separates Paulo-approved public copy from proposed supporting copy, dynamic requirements, source-verification results, and internal implementation notes. Only text labeled approved public copy is approved for publication.
+This document records Paulo-approved public copy, dynamic requirements, source-verification results, and internal implementation notes. Only text labeled approved public copy is approved for publication.
 
 # 1. Page Objective
 
@@ -57,9 +57,9 @@ Help research purchasers identify Pep Select as a source of research compounds, 
 
 **Approved public heading:** Every identifier should point to the same record.
 
-**Proposed public supporting copy:** Start with what the Pep Select vial shows. Compound, labeled strength, batch number, cap, crimp, and packaging identity help distinguish one batch from another. The matching record can show its current testing status and available laboratory documentation.
+**Approved public supporting copy:** The record behind a vial may include its labeled strength, batch number, cap, crimp, current status, and available documentation. Read the identifiers together, not one in isolation.
 
-**Proposed public identifier labels:**
+**Approved public identifier labels:**
 
 - Compound
 - Labeled Strength
@@ -74,7 +74,7 @@ Help research purchasers identify Pep Select as a source of research compounds, 
 
 **Required dynamic content:** Record-owned values for each displayed identifier; omit a field when the owning system has no value rather than filling it with invented text.
 
-**Internal evidence notes:** The plugin has public compound, labeled-strength, batch-number, cap, crimp, batch-image, status, laboratory, and document fields. Availability is conditional by workflow stage and record completeness. Use only plugin-owned output, omit absent values, and never describe a compound image or placeholder as exact batch packaging.
+**Internal evidence notes:** The plugin has public compound, labeled-strength, batch-number, cap, crimp, batch-image, status, laboratory, and document fields. Availability is conditional by workflow stage and record completeness. Use only plugin-owned output, omit absent values, never imply every field exists for every batch, and never describe a compound image or placeholder as exact batch packaging.
 
 ## Section 3: COA and testing-history preview
 
@@ -82,7 +82,7 @@ Help research purchasers identify Pep Select as a source of research compounds, 
 
 **Approved public heading:** Read the current record. Keep the history in view.
 
-**Proposed public supporting copy:** Open a specific batch record to review the status and test details the COA Archive provides. Continue to the archive for available reports and historical detail.
+**Approved public supporting copy:** Open a specific batch record to review the status and test details the COA Archive provides. Continue to the archive for available reports and historical detail.
 
 **CTA or link text:**
 
@@ -105,7 +105,7 @@ Help research purchasers identify Pep Select as a source of research compounds, 
 
 **Approved public heading:** Current research compounds
 
-**Proposed public supporting copy:** Browse in-stock compounds from the current Pep Select catalog. Product details, availability, and prices come from the product record.
+**Approved public supporting copy:** Browse in-stock compounds from the current Pep Select catalog. Product details, availability, and prices come from the product record.
 
 **CTA or link text:**
 
@@ -122,7 +122,7 @@ Help research purchasers identify Pep Select as a source of research compounds, 
 
 **Approved public heading:** Status before conclusions.
 
-**Proposed public supporting copy:** Open the batch record to review its displayed status and available test details. Do not treat a workflow label as a conclusion about a test or batch.
+**Approved public supporting copy:** A status tells you where the record stands. Open the batch page for the details and documentation behind it.
 
 **CTA or link text:** View Testing History
 
@@ -136,13 +136,13 @@ Help research purchasers identify Pep Select as a source of research compounds, 
 
 **Approved public heading:** A record should show what happened.
 
-**Proposed public supporting copy:** Review the status and available documentation attached to the batch record. Keep each statement tied to that record, without extending it to every batch or release.
+**Approved public supporting copy:** Review the status and available documentation, then keep every conclusion tied to that specific batch.
 
 **CTA or link text:** Review COAs
 
 **Required dynamic content:** Batch identifiers, current plugin-owned status, and canonical links to available documentation.
 
-**Internal evidence notes:** The approved heading is a transparency principle. Do not state that failed reports remain public, failed batches cannot be sold, reports are complete and unedited, every release receives the same testing scope, or every batch receives third-party testing until an operational owner supplies evidence.
+**Internal evidence notes:** The approved heading is a transparency principle. Do not state that every failed record is public, every record is permanently retained, every failed batch was blocked from sale, every report is complete and unedited, or every release receives identical testing until an operational owner supplies evidence.
 
 ## Section 7: Research-use boundaries and support
 
@@ -150,7 +150,7 @@ Help research purchasers identify Pep Select as a source of research compounds, 
 
 **Approved public heading:** For laboratory research and analytical work.
 
-**Proposed public supporting copy:** Pep Select compounds are presented for legitimate laboratory research and analytical purposes. Review the FAQ for common ordering and documentation questions, or contact Pep Select support when you need help with a product, order, or record.
+**Approved public supporting copy:** Pep Select compounds are presented for legitimate laboratory research and analytical purposes. Review the FAQ for common ordering and documentation questions, or contact Pep Select support when you need help with a product, order, or record.
 
 **CTA or link text:**
 
@@ -167,7 +167,7 @@ Help research purchasers identify Pep Select as a source of research compounds, 
 
 **Approved public heading:** Start with the compound or start with the record.
 
-**Proposed public supporting copy:** Browse current research compounds, or review available COAs and testing history before you continue.
+**Approved public supporting copy:** Browse current research compounds, or review available COAs and testing history before you continue.
 
 **CTA or link text:**
 
@@ -262,9 +262,9 @@ Verification used the clean extracted 0.4.0 source at `C:\Users\paulo\Documents\
 - Do not publish purity percentages, guarantees, rankings, customer counts, or superiority claims without specific approved evidence.
 - Do not infer shared batch identity from matching cap, crimp, label, vial, or packaging appearance.
 
-# 8. Approved Draft Summary
+# 8. Final Approved Copy Summary
 
-## Approved hero
+## Final approved hero
 
 - Eyebrow: Research Compounds
 - Headline: Match the vial. Match the batch.
@@ -272,7 +272,7 @@ Verification used the clean extracted 0.4.0 source at `C:\Users\paulo\Documents\
 - Primary CTA: Explore Compounds
 - Secondary CTA: Review COAs
 
-## Approved public headings
+## Final approved public headings
 
 1. Match the vial. Match the batch.
 2. Every identifier should point to the same record.
