@@ -74,7 +74,7 @@ Help research purchasers identify Pep Select as a source of research compounds, 
 
 **Required dynamic content:** Record-owned values for each displayed identifier; omit a field when the owning system has no value rather than filling it with invented text.
 
-**Internal evidence notes:** The COA Archive source is not present in this repository. The Identifier-to-record mapping decision below governs every proposed field; none may be treated as confirmed plugin data until verified.
+**Internal evidence notes:** The plugin has public compound, labeled-strength, batch-number, cap, crimp, batch-image, status, laboratory, and document fields. Availability is conditional by workflow stage and record completeness. Use only plugin-owned output, omit absent values, and never describe a compound image or placeholder as exact batch packaging.
 
 ## Section 3: COA and testing-history preview
 
@@ -91,13 +91,10 @@ Help research purchasers identify Pep Select as a source of research compounds, 
 
 **Required dynamic content:**
 
-- Compound
-- Batch number
-- Cap and crimp identity when recorded
-- Current record status
-- Test type
-- Test date
-- Laboratory when available
+- Compound and labeled strength
+- Public batch number when available
+- Plugin-owned public status label
+- Test date for a completed record, or expected report date for an eligible incoming record
 - Canonical link to the complete record
 
 **Internal evidence notes:** The Archive preview behavior and Status terminology decisions below govern this section. Full testing records and historical detail stay in `/testing/`.
@@ -131,7 +128,7 @@ Help research purchasers identify Pep Select as a source of research compounds, 
 
 **Required dynamic content:** Exact plugin-owned status label, semantic status treatment, and canonical record or archive link.
 
-**Internal evidence notes:** No exact public status label or meaning was source-verified. Do not publish homepage-authored labels or definitions. Render only the plugin-owned label after its supported interface is confirmed.
+**Internal evidence notes:** Stored outcomes and workflow stages are source-verified, but public labels can be configured and vary by template context. Do not publish a homepage-authored translation table. Render the public label supplied by the approved plugin-owned preview interface.
 
 ## Section 6: Transparency in practice
 
@@ -206,17 +203,13 @@ Do not use people, syringes, body or wellness imagery, transformations, administ
 
 ## Proposed COA Archive-owned preview content
 
-These are homepage requirements pending plugin-source or supported-interface verification, not confirmed fields:
+The source confirms these fields can support a minimal homepage projection, but a supported generic homepage-preview interface does not yet exist:
 
-- Compound
-- Batch number
-- Cap and crimp identity when recorded
-- Current record status
-- Test type
-- Test date
-- Laboratory when available
+- Compound and labeled strength
+- Public batch number when available
+- Plugin-owned public status label
+- Test date for completed records or expected report date for eligible incoming records
 - Canonical complete-record URL
-- Supported current and historical record behavior
 
 ## Fallback behavior
 
@@ -231,22 +224,24 @@ These are homepage requirements pending plugin-source or supported-interface ver
 
 ## COA Archive source-verification result
 
-The Pep Select COA Archive plugin source is not available in this repository. A targeted tracked-file and PHP/JavaScript search found only the legacy Elementor COA loop export and the child theme's canonical `/testing/` link. Neither source defines the current plugin's statuses, fields, sorting, record visibility, full-record routes, or retrieval interface.
+Verification used the clean extracted 0.4.0 source at `C:\Users\paulo\Documents\Pep Select COA Page\pepselect-coa-archive` (external project commit `5ab62eb0387956ac7999d44a74c642d10f490fc8`). The stable release ZIP remained read-only.
 
-| Verification target | Result |
+| Verification target | Verified result |
 |---|---|
-| Exact public status labels | Not source-verified |
-| Exact public status meanings | Not source-verified |
-| Compound, strength, batch, cap, crimp, packaging, test type, test date, laboratory, and report-link fields | Not source-verified |
-| Fields that may be missing | Not source-verified |
-| Current-versus-historical sorting | Not source-verified |
-| Public display of failed records | Not source-verified |
-| Public display of pending or in-progress records | Not source-verified |
-| Archive URL | `/testing/` is the approved canonical project route; plugin-source confirmation was unavailable |
-| Full-record URL pattern | Not source-verified |
-| Homepage-preview retrieval without duplicated business logic | Not source-verified |
+| Stored overall status | `pending`, `approved`, or `failed` |
+| Stored workflow stages | `vendor-vetting`, `waiting-on-vendor`, `submitted-to-lab`, `in-testing`, or `complete` |
+| Default public workflow labels | `Vetting Vendor`, `Waiting on Vendor`, `Submitted to Laboratory`, `Verification in Progress`, and `Complete` |
+| Default public outcome labels | `Full-QC Documented` for approved and `Did Not Pass Release Review` for failed; labels are configurable and other templates use context-specific wording |
+| Public record visibility | Eligible incoming pending records and eligible completed approved or failed records can be public; failed-only compounds are hidden from the main archive by default but failed records can appear in compound history |
+| Current and historical behavior | Approved records sort current first, then by test/publication date; incoming records sort by expected date and workflow priority; failed records sort newest first; compound history exposes latest, previous, and incoming groups |
+| Available fields | Compound, labeled strength, batch number, cap/crimp colors, exact or fallback imagery, status/stage, report type, test date, expected date, laboratory, analytical result fields, and report links exist |
+| Optional or conditional fields | Batch identity, expected date, laboratory, report URL, and analytical fields depend on stage, outcome, and saved evidence; missing values must be omitted rather than inferred |
+| Public routes | `/testing/`, `/testing/{compound-slug}/`, and `/testing/{compound-slug}/{batch-slug}/` |
+| Existing integration surfaces | `[pepselect_coa_archive]`, `[pepselect_compound_history]`, `[pepselect_coa_report]`, and `[pepselect_product_coa_carousel]` exist; internal repository/router/view-model logic centralizes selection and labels; WordPress REST metadata is too limited for the preview, and no supported generic homepage-preview shortcode, custom REST endpoint, or public helper was found |
 
-**Implementation note, not public copy:** Inspect the installed plugin source or a documented public interface before implementation. The homepage may consume plugin-owned output but must not recreate COA status, visibility, record-selection, or testing rules in the child theme.
+`Full-QC`, `Purity`, `Purity + Identity`, and `Partial QC` are computed public report-type labels, not a stored report-type field. Testing scope is represented by individual result categories and methods. The homepage should not expose those detailed results by default.
+
+**Implementation note, not public copy:** Add or approve a narrow COA-plugin-owned homepage projection that returns the minimal fields above. Do not instantiate internal plugin services from the theme or recreate visibility, status, selection, sorting, or route logic.
 
 # 7. Compliance and Evidence Review
 
@@ -254,9 +249,9 @@ The Pep Select COA Archive plugin source is not available in this repository. A 
 
 | Evidence category | Current status | What must be confirmed | Draft action |
 |---|---|---|---|
-| Identifier-to-record mapping | `[VERIFY CLAIM]` | Plugin-owned fields and their mapping to the intended record | Keep the message, but do not render an identifier until the field and relationship are confirmed. |
-| Status terminology | `[VERIFY CLAIM]` | Exact public labels and exact meanings from the COA Archive | Provisional definitions were removed. Render only verified plugin-owned labels. |
-| Archive preview behavior | `[VERIFY CLAIM]` | Supported fields, optionality, sorting, failed/pending visibility, full-record URLs, and retrieval interface | Use only confirmed behavior. Keep complete reports and historical detail in `/testing/`. |
+| Identifier-to-record mapping | Plugin capability verified; operational claim unresolved | Plugin fields exist, but confirm that physical-label operations populate them consistently | Render only values returned for the exact public record; omit missing values and do not infer packaging identity. |
+| Status terminology | Plugin capability verified | Public labels are plugin-owned and configurable | Render the approved interface's public label; do not hard-code stored values or definitions in homepage copy. |
+| Archive preview behavior | Plugin behavior verified; integration pending | Approve a narrow plugin-owned homepage interface and empty/error behavior | Use the verified minimal projection. Keep complete reports and historical detail in `/testing/`. |
 | Operational transparency and testing scope | `[VERIFY CLAIM]` | Failed-record retention, sale controls, report completeness/editing, testing scope, and third-party coverage | Keep stronger operational statements omitted until evidence exists. |
 | Pricing accessibility | Resolved for this draft | Current WooCommerce product and price data | Show actual current prices only. Omit affordability, value, lowest-price, and unsupported premium comparisons. |
 | Research-use and support language | Supported direction | Approved research-use wording plus canonical FAQ and Contact paths | Keep concise research-use wording and supported routes; exclude human-use implications. |
@@ -290,4 +285,4 @@ The Pep Select COA Archive plugin source is not available in this repository. A 
 
 ## Remaining consolidated verification decisions
 
-The four unresolved evidence categories are Identifier-to-record mapping, Status terminology, Archive preview behavior, and Operational transparency and testing scope. Their single governing flags appear in the consolidated evidence table; they are not repeated throughout the draft.
+Plugin capability, public terminology, record visibility, sorting, fields, and routes are verified from the 0.4.0 source. Remaining decisions are: approve a plugin-owned homepage-preview interface and empty/error behavior; confirm that operational label-to-record practices support the proposed traceability wording; and verify any public claims about testing coverage, failed-batch sale controls, record retention, report integrity, or uniform testing scope.
