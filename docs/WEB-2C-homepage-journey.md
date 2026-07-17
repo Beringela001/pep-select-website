@@ -21,11 +21,26 @@ Researchers and laboratory purchasers seeking clear compound information, batch 
 
 The homepage must not address patients, consumers, personal experimenters, or people seeking health or performance outcomes.
 
+### Internal customer-avatar review
+
+Jordan Reyes is an internal decision lens, not a public persona or a source of public-facing copy. The avatar represents an analytical purchaser who is not necessarily a laboratory specialist, expects to spend approximately $150–$400 per order, and needs enough plain-language evidence to make an informed next step.
+
+| Evaluation area | Journey implication |
+|---|---|
+| Visitor psychology | Make the path easy to scan, define technical status language, and let evidence precede reassurance. |
+| Likely objections | Address vague sourcing, inflated pricing, unsupported claims, and blind-trust marketing through specific records, visible facts, and restrained language. |
+| Reading level | Explain documentation relationships in plain language; reserve dense technical detail for the COA Archive. |
+| Trust requirements | Surface batch traceability, available third-party testing records, professional support, and a dependable ordering path without implying universal coverage. |
+| CTA hierarchy | Keep catalog exploration primary for purchase-ready visitors and make COA review the strongest secondary path for evidence-first visitors. |
+| Pricing context | Show current WooCommerce prices where products appear. Treat pricing accessibility as supporting territory, not an unsupported comparative claim. |
+
 ## 3. Primary conversion action
 
 **Recommended primary CTA: `Explore Compounds`.**
 
 This is the clearest path to the WooCommerce catalog, supports the site's commercial purpose, and uses approved CTA language. It should lead to the canonical Shop destination and remain visible in the first viewport. Documentation context and a COA path should sit beside it so the action does not imply unsupported product assurances.
+
+The avatar review strengthens this recommendation: a visitor ready to evaluate a $150–$400 order needs a direct catalog path, while the adjacent documentation path answers skepticism without obstructing product discovery. The primary CTA does not change.
 
 Paulo must approve this as the homepage's single primary conversion action before copywriting begins.
 
@@ -34,6 +49,8 @@ Paulo must approve this as the homepage's single primary conversion action befor
 **Recommended secondary CTA: `Review COAs`.**
 
 This should lead to the canonical `/testing/` experience owned by the Pep Select COA Archive. It supports visitors who need evidence before browsing or purchasing and must remain visually secondary to `Explore Compounds` without being hidden.
+
+The avatar review confirms this should be the strongest secondary CTA. It directly answers the need to verify batch documentation and testing history before relying on marketing language.
 
 ## 5. Questions the homepage must answer
 
@@ -54,14 +71,23 @@ Use eight homepage sections.
 
 | Order | Section | Purpose | Required evidence or dynamic data |
 |---|---|---|---|
-| 1 | Orientation and primary actions | Identify Pep Select as a research-compound store, establish documentation-led positioning, and present `Explore Compounds` plus secondary `Review COAs`. | Canonical Shop and `/testing/` URLs; approved research-use framing; evidence source for every factual statement. |
-| 2 | Documentation and traceability | Explain what visitors can inspect and how product, batch, packaging, testing status, and available documentation relate. | Confirmed data fields and relationships from the COA Archive and operating process; exact status definitions; `[VERIFY CLAIM]` for any universal coverage statement. |
-| 3 | COA and testing-history access | Give evidence-seeking visitors a direct route to current and historical testing records without using the obsolete COA custom post type. | Pep Select COA Archive output and `/testing/` route; supported query behavior; current/historical, empty, unavailable, pending, and error states. |
-| 4 | Featured compounds | Give ready-to-browse visitors a concise view of selected current products. | WooCommerce product title, image, price, stock state, canonical link, and approved selection rule; WEB-2D product-card foundation; missing-image and empty states. |
+| 1 | Orientation and primary actions | Identify Pep Select as a research-compound store, establish documentation-led positioning, and present `Explore Compounds` plus secondary `Review COAs`. | Canonical Shop and `/testing/` URLs; approved research-use framing; evidence source for every factual statement. Do not lead with an unverified price claim. |
+| 2 | Documentation and traceability | Explain in plain language what visitors can inspect and how product, batch, packaging, testing status, and available documentation relate. | Confirmed data fields and relationships from the COA Archive and operating process; exact status definitions; `[VERIFY CLAIM]` for any universal coverage statement. |
+| 3 | COA and testing-history access | Preview available evidence in a scannable form, then route visitors to current and historical testing records without using the obsolete COA custom post type. | Pep Select COA Archive output and `/testing/` route; supported query behavior; sourced compound or batch identifier, record status, test type, date, and laboratory only where available; current/historical, empty, unavailable, pending, and error states. |
+| 4 | Featured compounds | Give ready-to-browse visitors a concise view of selected current products and factual price visibility. | WooCommerce product title, image, current price, stock state, canonical link, and approved selection rule; WEB-2D product-card foundation; missing-image and empty states. Prefer in-stock products unless an approved rule requires otherwise. |
 | 5 | Documentation/status guide | Help visitors interpret the labels and record states they may encounter without treating every status as a pass. | Approved semantic status definitions and source fields; text or icons in addition to color; no inferred laboratory result. |
 | 6 | Verified operating standards | Explain only the selection, documentation, review, or release steps Pep Select can substantiate. Omit the section if the process cannot be verified. | Named operational owner and evidence for each step; current policy or record; no claim that every release follows a process unless confirmed. |
 | 7 | Research-use and decision support | State the research-use boundary and provide concise paths to FAQ and Contact for ordering, documentation, or support questions. | Approved current research-use language; canonical FAQ and Contact routes; current ordering/support workflow; no medical or personal-use implications. |
 | 8 | Final decision path | Repeat the primary catalog action and provide the secondary documentation path after the visitor has reviewed the page. | Canonical Shop and `/testing/` routes; no new claims, urgency, scarcity, guarantees, or unsupported reassurance. |
+
+### Avatar review conclusions
+
+1. `Explore Compounds` should remain the primary CTA; the avatar review does not justify changing it.
+2. `Review COAs` should remain the strongest secondary CTA and should be visible alongside the primary action where space permits.
+3. The eight-section order should remain. Documentation and COA access already appear before featured products, resolving evidence and sourcing objections early enough without delaying the catalog path.
+4. Pricing accessibility should become a supporting homepage message territory. Use actual WooCommerce prices and evidence-backed value context; claims such as affordable, lower-priced, or better value require `[VERIFY CLAIM]`.
+5. Before the archive handoff, show only a scannable testing summary: record availability or status, the relevant compound or batch identifier, and sourced test metadata when available. Keep raw reports, dense history, and full current/historical records in `/testing/`.
+6. The CTA hierarchy, eight-section order, COA-before-products sequence, and testing-detail boundary now have evidence-based recommendations. Paulo still approves publishing decisions and the unresolved evidence or visual choices listed below.
 
 ## 9. Claims requiring verification
 
@@ -104,8 +130,8 @@ The export contains 15 top-level containers, 62 widgets, repeated inline badge C
 1. Identify Pep Select and the research-use context.
 2. Show `Explore Compounds` and `Review COAs` as comfortable, distinct tap targets.
 3. Explain documentation and traceability without a marquee or decorative interruption.
-4. Provide the COA/testing-history path before a long product list.
-5. Show a limited featured-product set using the approved responsive card system.
+4. Provide a concise COA/testing summary and archive path before a long product list.
+5. Show a limited featured-product set with current price visibility using the approved responsive card system.
 6. Explain status meanings with text, not color alone.
 7. Include verified standards only if they remain concise on mobile.
 8. Keep research-use, FAQ, Contact, and final actions visible without a long accordion.
@@ -114,11 +140,11 @@ Mobile must avoid horizontal overflow, tiny technical text, excessive stacked sp
 
 ## 12. Acceptance criteria before copywriting begins
 
-- Paulo approves `Explore Compounds` as the primary CTA and `Review COAs` as the secondary CTA.
-- Paulo approves the eight-section journey and mobile priority.
+- Paulo ratifies `Explore Compounds` as the primary CTA and `Review COAs` as the strongest secondary CTA.
+- Paulo ratifies the retained eight-section journey, COA-before-products order, and mobile priority.
 - Every planned factual claim has an evidence source, owner, and approval state; unresolved statements use `[VERIFY CLAIM]` or are removed.
-- COA Archive owners confirm the supported current/historical record behavior, status definitions, search route, and empty/error states.
-- The featured-product selection rule and treatment of out-of-stock products are approved.
+- COA Archive owners confirm the supported current/historical record behavior, exact homepage preview fields, status definitions, search route, and empty/error states.
+- The featured-product selection rule, factual price display, and treatment of out-of-stock products are approved.
 - WEB-2D product-card dependencies and homepage data ownership are agreed before product cards are built.
 - The operating-standards section is either supported by current policy/records or removed.
 - Any retained image has approved provenance, purpose, crop, and alt-text direction.
@@ -136,9 +162,10 @@ These are global-shell regression requirements for implementation and QA. They d
 
 ## Decisions requiring Paulo's approval
 
-- Confirm `Explore Compounds` as the primary homepage CTA.
-- Approve the eight-section order and whether COA access should remain before featured compounds.
-- Approve the featured-product selection rule, including out-of-stock handling.
+- Ratify the recommended CTA hierarchy: `Explore Compounds` primary and `Review COAs` strongest secondary.
+- Ratify the retained eight-section order with COA access before featured compounds.
+- Approve the featured-product selection rule, including the recommendation to feature in-stock products and show current WooCommerce prices.
+- Approve any public pricing-accessibility language after its evidence and exact wording are available; otherwise use factual product prices only.
 - Decide whether a verified operating-standards section belongs on the homepage.
 - Approve or reject the existing laboratory image as a candidate asset.
-- Confirm how much current and historical testing information should appear on the homepage versus `/testing/`.
+- Confirm with the COA Archive owner which sourced summary fields may appear on the homepage; keep complete current and historical records in `/testing/`.
