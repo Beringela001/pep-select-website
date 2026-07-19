@@ -73,7 +73,11 @@ function pepselect_child_get_faq_sections() {
 				),
 				array(
 					'question' => __( 'How does cash back work?', 'pepselect-child' ),
-					'answer'   => __( 'You earn 3% cash back on every order: 3 points for every $1 you spend, where 100 points is worth $1. You can redeem once your balance reaches 500 points ($5). Your balance shows in your account.', 'pepselect-child' ),
+					'answer'   => __( 'You earn 3% cash back on every order: 3 points for every $1 you spend, where 100 points is worth $1. Once your balance reaches 500 points ($5), you can turn it into a code from your account and enter that code in the discount field at checkout. Your balance shows in your account.', 'pepselect-child' ),
+				),
+				array(
+					'question' => __( 'I lost my cash-back redeem code. What do I do?', 'pepselect-child' ),
+					'answer'   => __( 'Email us at support@pepselect.com and we will help you recover it. Include the email address on your account so we can find your record.', 'pepselect-child' ),
 				),
 			),
 		),

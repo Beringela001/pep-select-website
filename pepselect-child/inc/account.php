@@ -144,7 +144,7 @@ function pepselect_child_get_cashback_history( $limit = 20 ) {
 
 		$out[] = array(
 			'date'        => $date_out,
-			'description' => pepselect_child_cashback_reason_label( $desc ),
+			'description' => pepselect_child_cashback_reason_label( $desc, $points ),
 			'points'      => $points,
 			'dollars'     => $points * (float) PEPSELECT_CASHBACK_DOLLARS_PER_POINT,
 			'sort'        => $timestamp ? $timestamp : 0,
@@ -172,27 +172,72 @@ function pepselect_child_get_cashback_history( $limit = 20 ) {
  * @param string $reason Raw reason.
  * @return string
  */
-function pepselect_child_cashback_reason_label( $reason ) {
-	$reason = trim( wp_strip_all_tags( (string) $reason ) );
+/**
+ * Reframe raw YITH reason strings into calm, customer-facing cash-back labels.
+ * Strips gamification wording. Matches both the human-readable phrases YITH
+ * shows and its internal action codes (underscored). When the reason is
+ * unrecognized, the sign of the points amount is used to infer a sensible
+ * label so a row is never left as a generic placeholder.
+ *
+ * @param string $reason Raw reason text or action code.
+ * @param int    $points Points amount for this entry (may be negative).
+ * @return string
+ */
+function pepselect_child_cashback_reason_label( $reason, $points = 0 ) {
+	$reason = strtolower( trim( wp_strip_all_tags( (string) $reason ) ) );
 
-	if ( '' === $reason ) {
-		return __( 'Account activity', 'pepselect-child' );
-	}
-
-	if ( false !== stripos( $reason, 'order completed' ) || false !== stripos( $reason, 'order' ) ) {
-		return __( 'Earned on an order', 'pepselect-child' );
-	}
-
-	if ( false !== stripos( $reason, 'coupon' ) || false !== stripos( $reason, 'redeem' ) ) {
+	// Spends / redemptions (usually negative).
+	if (
+		false !== strpos( $reason, 'coupon' ) ||
+		false !== strpos( $reason, 'redeem' ) ||
+		false !== strpos( $reason, 'discount' ) ||
+		false !== strpos( $reason, 'used' )
+	) {
 		return __( 'Applied to an order', 'pepselect-child' );
 	}
 
-	if ( false !== stripos( $reason, 'daily login' ) || false !== stripos( $reason, 'target achieved' ) || false !== stripos( $reason, 'registration' ) || false !== stripos( $reason, 'register' ) ) {
+	// Earned on a purchase.
+	if (
+		false !== strpos( $reason, 'order' ) ||
+		false !== strpos( $reason, 'purchase' ) ||
+		false !== strpos( $reason, 'payment' )
+	) {
+		return __( 'Earned on an order', 'pepselect-child' );
+	}
+
+	// Account bonuses (login streaks, registration, reviews, birthday, etc.).
+	if (
+		false !== strpos( $reason, 'daily' ) ||
+		false !== strpos( $reason, 'login' ) ||
+		false !== strpos( $reason, 'target' ) ||
+		false !== strpos( $reason, 'regist' ) ||
+		false !== strpos( $reason, 'sign up' ) ||
+		false !== strpos( $reason, 'signup' ) ||
+		false !== strpos( $reason, 'review' ) ||
+		false !== strpos( $reason, 'birthday' ) ||
+		false !== strpos( $reason, 'bonus' )
+	) {
 		return __( 'Account bonus', 'pepselect-child' );
 	}
 
-	if ( false !== stripos( $reason, 'refund' ) || false !== stripos( $reason, 'cancel' ) ) {
+	// Adjustments.
+	if (
+		false !== strpos( $reason, 'refund' ) ||
+		false !== strpos( $reason, 'cancel' ) ||
+		false !== strpos( $reason, 'expire' ) ||
+		false !== strpos( $reason, 'admin' ) ||
+		false !== strpos( $reason, 'manual' )
+	) {
 		return __( 'Adjustment', 'pepselect-child' );
+	}
+
+	// Unrecognized: infer from the sign so no row shows a bare placeholder.
+	if ( (int) $points < 0 ) {
+		return __( 'Applied to an order', 'pepselect-child' );
+	}
+
+	if ( (int) $points > 0 ) {
+		return __( 'Cash back earned', 'pepselect-child' );
 	}
 
 	return __( 'Account activity', 'pepselect-child' );

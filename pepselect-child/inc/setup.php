@@ -22,6 +22,7 @@ require_once get_stylesheet_directory() . '/inc/faq-page.php';
 require_once get_stylesheet_directory() . '/inc/contact-page.php';
 require_once get_stylesheet_directory() . '/inc/military-page.php';
 require_once get_stylesheet_directory() . '/inc/account.php';
+require_once get_stylesheet_directory() . '/inc/checkout.php';
 
 /**
  * Determine whether the required Hello Elementor parent theme is available.

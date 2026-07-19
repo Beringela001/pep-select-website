@@ -1,0 +1,237 @@
+/*
+ * Checkout and cart presentation (M7).
+ *
+ * Restyles Fluid Checkout's accordion substeps, the coupon field, and the
+ * payment explanation to Pep Select's design, forces the Place Order button
+ * from the plugin purple to brand cyan, and lightly polishes the block cart.
+ * Fluid Checkout, WooCommerce Blocks, and gateway logic are untouched.
+ */
+
+/* --- Place Order button: purple (#7F54B3) → brand cyan --- */
+#place_order,
+.fc-place-order-button,
+button#place_order.fc-place-order-button {
+	background: var(--pep-color-cyan) !important;
+	border: 0 !important;
+	border-radius: var(--pep-radius-pill) !important;
+	color: var(--pep-color-white) !important;
+	font-family: var(--pep-font-interface) !important;
+	font-weight: 700 !important;
+	letter-spacing: 0.01em;
+	padding: 15px 32px !important;
+	transition: background-color 160ms ease, transform 160ms ease;
+}
+
+#place_order:hover,
+.fc-place-order-button:hover {
+	background: var(--pep-color-navy) !important;
+	transform: translateY(-1px);
+}
+
+/* Cart block "Proceed to checkout" button → cyan too. */
+.wc-block-cart__submit-button,
+.wc-block-components-button.contained {
+	background: var(--pep-color-cyan) !important;
+	border-radius: var(--pep-radius-pill) !important;
+	font-weight: 700 !important;
+}
+
+.wc-block-cart__submit-button:hover {
+	background: var(--pep-color-navy) !important;
+}
+
+/* --- Fluid Checkout accordion substeps --- */
+.fc-step__substep {
+	border: 1px solid var(--pep-color-border);
+	border-radius: var(--pep-radius-medium);
+	margin-bottom: 12px;
+	background: var(--pep-color-white);
+	overflow: hidden;
+}
+
+.fc-step__substep-title {
+	color: var(--pep-color-navy) !important;
+	font-family: var(--pep-font-interface);
+	font-size: 13px;
+	font-weight: 700;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+}
+
+.fc-step__substep-text,
+.fc-step__substep-text-content {
+	color: var(--pep-color-slate);
+	font-size: 15px;
+}
+
+/* The "Change" edit links → brand cyan, no pink. */
+.fc-step__substep .fc-step__substep-edit,
+.fc-step__substep a[class*="edit"],
+.fc-step__substep-edit {
+	color: var(--pep-color-cyan) !important;
+	font-weight: 600;
+	text-decoration: none !important;
+}
+
+.fc-step__substep-edit:hover {
+	color: var(--pep-color-navy) !important;
+}
+
+/* Completed-step check icons → cyan/green rather than plugin purple. */
+.fc-step__substep-title::before,
+.fc-step__substep .fc-icon {
+	color: var(--pep-color-cyan) !important;
+}
+
+/* Progress bar at top → brand green/cyan instead of plugin default. */
+.fc-progress-bar__current,
+[class*="fc-progress"] [class*="current"],
+.fc-checkout-progress-bar__bar-current {
+	background: var(--pep-color-cyan) !important;
+}
+
+/* --- Coupon field: give it a clear label + tidy the input --- */
+.fc-coupon-code::before,
+.checkout_coupon::before {
+	content: "Have a discount or reward code?";
+	display: block;
+	margin-bottom: 8px;
+	color: var(--pep-color-navy);
+	font-family: var(--pep-font-interface);
+	font-size: 14px;
+	font-weight: 600;
+}
+
+.fc-coupon-code input[type="text"],
+#coupon_code {
+	border: 1px solid var(--pep-color-border) !important;
+	border-radius: var(--pep-radius-small) !important;
+	padding: 11px 14px !important;
+	font-family: var(--pep-font-interface);
+	font-size: 15px;
+}
+
+.fc-coupon-code input:focus,
+#coupon_code:focus {
+	outline: none;
+	border-color: var(--pep-color-cyan) !important;
+	box-shadow: 0 0 0 3px rgb(23 161 207 / 15%);
+}
+
+.fc-coupon-code button,
+button[name="apply_coupon"] {
+	background: var(--pep-color-navy) !important;
+	border: 0 !important;
+	border-radius: var(--pep-radius-small) !important;
+	color: var(--pep-color-white) !important;
+	font-weight: 700 !important;
+}
+
+/* --- Payment explanation copy --- */
+.pepselect-pay {
+	display: grid;
+	gap: 12px;
+}
+
+/* Make the whole payment-method box an amber attention panel so the pay-by-link
+ * instructions stand out from the calm page without reading as an error. */
+.payment_box.payment_method_bacs,
+li.wc_payment_method.payment_method_bacs .payment_box {
+	border: 1px solid var(--pep-color-amber) !important;
+	border-left: 4px solid var(--pep-color-amber) !important;
+	border-radius: var(--pep-radius-medium) !important;
+	background: rgb(180 106 0 / 6%) !important;
+}
+
+/* Neutralize the little pointer triangle WooCommerce adds above payment_box. */
+.payment_box.payment_method_bacs::before {
+	border-bottom-color: rgb(180 106 0 / 6%) !important;
+}
+
+.pepselect-pay__intro {
+	margin: 0;
+	color: var(--pep-color-navy);
+	font-size: 15px;
+	font-weight: 600;
+	line-height: 1.6;
+}
+
+.pepselect-pay__exact {
+	margin: 0;
+	padding: 14px 16px;
+	border: 1px solid var(--pep-color-amber);
+	border-radius: var(--pep-radius-medium);
+	background: var(--pep-color-white);
+	color: var(--pep-color-ink);
+	font-size: 15px;
+	line-height: 1.6;
+}
+
+.pepselect-pay__amount {
+	color: var(--pep-color-amber);
+	font-family: var(--pep-font-technical);
+	font-weight: 700;
+}
+
+.pepselect-pay__line {
+	margin: 0;
+	color: var(--pep-color-slate);
+	font-size: 14px;
+	line-height: 1.55;
+}
+
+.pepselect-pay__hold {
+	color: var(--pep-color-neutral);
+}
+
+/* Order-received reminder banner (amber to match the checkout attention panel). */
+.pepselect-pay-reminder {
+	margin: 24px 0;
+	padding: 18px 20px;
+	border: 1px solid var(--pep-color-amber);
+	border-left: 4px solid var(--pep-color-amber);
+	border-radius: var(--pep-radius-medium);
+	background: rgb(180 106 0 / 6%);
+}
+
+.pepselect-pay-reminder p {
+	margin: 0;
+	color: var(--pep-color-ink);
+	font-size: 15px;
+	line-height: 1.6;
+}
+
+/* --- Block cart polish --- */
+.wc-block-cart-items__row {
+	border-bottom: 1px solid var(--pep-color-border);
+}
+
+.wc-block-cart__totals-title,
+.wp-block-woocommerce-cart-order-summary-block {
+	font-family: var(--pep-font-interface);
+}
+
+.wc-block-components-product-name {
+	color: var(--pep-color-navy) !important;
+	font-weight: 600;
+	text-decoration: none !important;
+}
+
+.wc-block-formatted-money-amount,
+.wc-block-components-totals-item__value {
+	color: var(--pep-color-navy);
+	font-family: var(--pep-font-technical);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	#place_order,
+	.fc-place-order-button,
+	.wc-block-cart__submit-button {
+		transition: none !important;
+	}
+
+	#place_order:hover,
+	.fc-place-order-button:hover {
+		transform: none;
+	}
+}

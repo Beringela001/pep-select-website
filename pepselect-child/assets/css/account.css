@@ -156,8 +156,14 @@
 	border: 1px solid var(--pep-color-border);
 	border-radius: var(--pep-radius-large);
 	background: var(--pep-color-white);
-	text-decoration: none;
+	text-decoration: none !important;
+	color: inherit;
 	transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.pepselect-account__stat:hover,
+.pepselect-account__stat:focus {
+	text-decoration: none !important;
 }
 
 .pepselect-account__stat:hover {
@@ -178,6 +184,7 @@
 	font-weight: 600;
 	letter-spacing: 0.06em;
 	text-transform: uppercase;
+	text-decoration: none;
 }
 
 .pepselect-account__stat-value {
@@ -186,6 +193,7 @@
 	font-weight: 800;
 	letter-spacing: -0.02em;
 	line-height: 1.1;
+	text-decoration: none;
 }
 
 .pepselect-account__stat-value--sm {
@@ -196,6 +204,7 @@
 	color: var(--pep-color-neutral);
 	font-size: 13px;
 	line-height: 1.4;
+	text-decoration: none;
 }
 
 /* Quick-link list. */
@@ -216,7 +225,8 @@
 	border: 1px solid var(--pep-color-border);
 	border-radius: var(--pep-radius-medium);
 	background: var(--pep-color-white);
-	text-decoration: none;
+	text-decoration: none !important;
+	color: inherit;
 	transition: border-color 160ms ease, box-shadow 160ms ease;
 }
 
@@ -1028,10 +1038,24 @@
 
 /* Hide WooCommerce's "My account" page title on the logged-out login view;
  * the card's own "Sign in" heading gives the context. Logged-in account pages
- * keep their title. */
+ * keep their title. Also collapse the space the title container reserved so no
+ * white bar remains above the full-width login band. */
 .woocommerce-account:not(.logged-in) .entry-title,
 .woocommerce-account:not(.logged-in) .page-title,
 body.woocommerce-account:not(.logged-in) h1.entry-title {
+	display: none;
+}
+
+/* Remove top padding/margin the content wrapper reserves above the login band
+ * once the title is gone, so the soft-blue band meets the header cleanly. */
+.woocommerce-account:not(.logged-in) .page-content,
+.woocommerce-account:not(.logged-in) .site-main,
+.woocommerce-account:not(.logged-in) .entry-content {
+	margin-top: 0 !important;
+	padding-top: 0 !important;
+}
+
+.woocommerce-account:not(.logged-in) .entry-header {
 	display: none;
 }
 
@@ -1081,4 +1105,234 @@ body.woocommerce-account:not(.logged-in) h1.entry-title {
 
 .pepselect-login .woocommerce-privacy-policy-text a {
 	color: var(--pep-color-cyan);
+}
+
+/*
+ * YITH native points content, restyled (Path 1).
+ *
+ * We render YITH's own my-points output (history tab + Manage Points tab with
+ * the convert-to-coupon form and generated-code table) inside our cash-back
+ * page and skin it to the Pep Select palette. YITH owns all logic; this is
+ * purely presentation. Selectors target YITH's real classes.
+ */
+.pepselect-cashback__engine {
+	margin-top: 40px;
+}
+
+/* Hide YITH's own balance summary; our branded balance card already shows it. */
+.pepselect-cashback__engine .ywpar_myaccount_entry_info,
+.pepselect-cashback__engine > .ywpar-wrapper > h2:first-of-type {
+	display: none;
+}
+
+.pepselect-cashback__engine .ywpar-wrapper {
+	font-family: var(--pep-font-interface);
+	color: var(--pep-color-ink);
+}
+
+/* Tab header. */
+.pepselect-cashback__engine .ywpar_tabs_header ul {
+	display: flex;
+	gap: 8px;
+	margin: 0 0 20px;
+	padding: 0;
+	border-bottom: 1px solid var(--pep-color-border);
+	list-style: none;
+}
+
+.pepselect-cashback__engine .ywpar_tabs_links {
+	padding: 10px 18px;
+	margin-bottom: -1px;
+	border: 0;
+	border-bottom: 2px solid transparent;
+	background: none;
+	color: var(--pep-color-slate);
+	font-size: 14px;
+	font-weight: 600;
+	letter-spacing: 0.02em;
+	cursor: pointer;
+}
+
+.pepselect-cashback__engine .ywpar_tabs_links[aria-selected="true"] {
+	color: var(--pep-color-navy);
+	border-bottom-color: var(--pep-color-cyan);
+}
+
+/* Points history + coupon tables. */
+.pepselect-cashback__engine table.ywpar_points_rewards {
+	width: 100%;
+	border-collapse: separate;
+	border-spacing: 0;
+	border: 1px solid var(--pep-color-border);
+	border-radius: var(--pep-radius-medium);
+	overflow: hidden;
+	font-size: 14px;
+}
+
+.pepselect-cashback__engine table.ywpar_points_rewards thead th {
+	padding: 12px 16px;
+	background: var(--pep-color-surface);
+	border-bottom: 1px solid var(--pep-color-border);
+	color: var(--pep-color-slate);
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	text-align: left;
+}
+
+.pepselect-cashback__engine table.ywpar_points_rewards tbody td {
+	padding: 14px 16px;
+	border-bottom: 1px solid var(--pep-color-border);
+	color: var(--pep-color-navy);
+	vertical-align: middle;
+}
+
+.pepselect-cashback__engine table.ywpar_points_rewards tbody tr:last-child td {
+	border-bottom: 0;
+}
+
+.pepselect-cashback__engine .ywpar_points_rewards-order a {
+	color: var(--pep-color-cyan);
+	font-family: var(--pep-font-technical);
+	text-decoration: none !important;
+}
+
+.pepselect-cashback__engine .ywpar_plus {
+	color: var(--pep-color-green);
+	font-weight: 700;
+	margin-right: 4px;
+}
+
+.pepselect-cashback__engine .ywpar_minus {
+	color: var(--pep-color-slate);
+	font-weight: 700;
+	margin-right: 4px;
+}
+
+/* Convert-to-coupon form. */
+.pepselect-cashback__engine #share_points h3 {
+	color: var(--pep-color-navy);
+	font-size: 18px;
+	font-weight: 700;
+	margin: 0 0 8px;
+}
+
+.pepselect-cashback__engine #share_points > p {
+	color: var(--pep-color-slate);
+	font-size: 15px;
+	margin: 0 0 18px;
+}
+
+.pepselect-cashback__engine #ywpar-share-points {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 10px;
+	padding: 20px;
+	border: 1px solid var(--pep-color-border);
+	border-radius: var(--pep-radius-medium);
+	background: var(--pep-color-surface);
+	margin-bottom: 24px;
+}
+
+.pepselect-cashback__engine #ywpar-share-points span {
+	color: var(--pep-color-ink);
+	font-size: 15px;
+}
+
+.pepselect-cashback__engine #ywpar_share_points_to_share {
+	width: 110px;
+	padding: 10px 12px;
+	border: 1px solid var(--pep-color-border);
+	border-radius: var(--pep-radius-small);
+	font-family: var(--pep-font-technical);
+	font-size: 15px;
+}
+
+.pepselect-cashback__engine #ywpar_share_points_to_share:focus {
+	outline: none;
+	border-color: var(--pep-color-cyan);
+	box-shadow: 0 0 0 3px rgb(23 161 207 / 15%);
+}
+
+.pepselect-cashback__engine #ywpar-share-points__submit {
+	padding: 11px 26px;
+	border: 0;
+	border-radius: var(--pep-radius-pill);
+	background: var(--pep-color-cyan);
+	color: var(--pep-color-white);
+	font-family: var(--pep-font-interface);
+	font-size: 15px;
+	font-weight: 700;
+	cursor: pointer;
+	transition: background-color 140ms ease;
+}
+
+.pepselect-cashback__engine #ywpar-share-points__submit:hover {
+	background: var(--pep-color-navy);
+}
+
+.pepselect-cashback__engine .ywpar-share-points-error .error {
+	display: none;
+	color: var(--pep-color-red);
+	font-size: 13px;
+}
+
+/* "Your coupons" table code cell + copy control. */
+.pepselect-cashback__engine .your-coupons {
+	margin-top: 8px;
+}
+
+.pepselect-cashback__engine #ywpar-copy-to-clipboard-wrapper {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.pepselect-cashback__engine .ywpar-copy-to-clipboard__field {
+	width: 140px;
+	padding: 8px 10px;
+	border: 1px solid var(--pep-color-border);
+	border-radius: var(--pep-radius-small);
+	font-family: var(--pep-font-technical);
+	font-size: 13px;
+	background: var(--pep-color-white);
+}
+
+.pepselect-cashback__engine .ywpar-copy-to-clipboard__copy {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 8px 12px;
+	border: 1px solid var(--pep-color-cyan);
+	border-radius: var(--pep-radius-small);
+	color: var(--pep-color-cyan);
+	font-size: 13px;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.pepselect-cashback__engine .ywpar-copy-to-clipboard__copy:hover {
+	background: var(--pep-color-cyan-soft);
+}
+
+/* Used / unused status badges. */
+.pepselect-cashback__engine .ywpar-share-status {
+	display: inline-block;
+	padding: 4px 12px;
+	border-radius: var(--pep-radius-pill);
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: 0.02em;
+}
+
+.pepselect-cashback__engine .ywpar-share-status.not-used {
+	background: rgb(22 131 74 / 10%);
+	color: var(--pep-color-green);
+}
+
+.pepselect-cashback__engine .ywpar-share-status.used {
+	background: var(--pep-color-surface);
+	color: var(--pep-color-slate);
 }

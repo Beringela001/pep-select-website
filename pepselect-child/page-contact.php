@@ -60,6 +60,11 @@ get_header();
 								?>
 							</span>
 						</li>
+						<li>
+							<span class="pepselect-contact__hub-detail">
+								<?php esc_html_e( 'Lost a cash-back redeem code? Email us and we will help you recover it.', 'pepselect-child' ); ?>
+							</span>
+						</li>
 					</ul>
 					<p class="pepselect-contact__hub-direct">
 						<?php

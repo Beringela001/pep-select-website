@@ -1,11 +1,12 @@
 <?php
 /**
- * Cash back account page (Pep Select custom).
+ * Cash back account page (Pep Select).
  *
- * Renders the customer's cash-back balance, how it works, and history, all in
- * dollars. Data comes from YITH via theme helpers (points x $0.01); YITH stays
- * the engine and auto-applies balances at checkout, so this page is display
- * only. No gamification (rank, daily-login labels) and no coupon sharing.
+ * Keeps a branded balance card and "how it works" header, then renders YITH's
+ * own points content below (points history, the convert-to-coupon form, and the
+ * generated-coupon table with used/unused status). YITH owns all the logic and
+ * security (nonces, conversion, code generation); this page only reskins it, so
+ * the feature set stays whatever YITH provides and nothing is reimplemented.
  *
  * @package PepSelectChild
  */
@@ -20,18 +21,25 @@ $pepselect_cashback = function_exists( 'pepselect_child_get_cashback_display' ) 
 	'balance_formatted' => '$0.00',
 );
 
-$pepselect_history = function_exists( 'pepselect_child_get_cashback_history' ) ? pepselect_child_get_cashback_history( 20 ) : array();
+// Capture YITH's native my-points output (balance summary + history tab +
+// Manage Points tab with the convert form and coupon-code table).
+$pepselect_yith_output = '';
+if ( has_action( 'woocommerce_account_my-points_endpoint' ) ) {
+	ob_start();
+	do_action( 'woocommerce_account_my-points_endpoint' );
+	$pepselect_yith_output = ob_get_clean();
+}
 ?>
 <div class="pepselect-cashback">
 	<header class="pepselect-cashback__head">
 		<h1 class="pepselect-account__title"><?php esc_html_e( 'Cash back', 'pepselect-child' ); ?></h1>
-		<p class="pepselect-account__lead"><?php esc_html_e( 'Earn 3% back on every order. Your balance applies automatically at checkout.', 'pepselect-child' ); ?></p>
+		<p class="pepselect-account__lead"><?php esc_html_e( 'Earn 3% back on every order. Turn your balance into a code and apply it at checkout.', 'pepselect-child' ); ?></p>
 	</header>
 
 	<div class="pepselect-cashback__balance">
 		<span class="pepselect-cashback__balance-label"><?php esc_html_e( 'Available balance', 'pepselect-child' ); ?></span>
 		<span class="pepselect-cashback__balance-value"><?php echo esc_html( $pepselect_cashback['balance_formatted'] ); ?></span>
-		<span class="pepselect-cashback__balance-note"><?php esc_html_e( 'Applied to your order total at checkout.', 'pepselect-child' ); ?></span>
+		<span class="pepselect-cashback__balance-note"><?php esc_html_e( 'Redeem it for a code to use at checkout.', 'pepselect-child' ); ?></span>
 	</div>
 
 	<section class="pepselect-cashback__how" aria-labelledby="pepselect-cashback-how-title">
@@ -54,36 +62,16 @@ $pepselect_history = function_exists( 'pepselect_child_get_cashback_history' ) ?
 			<li class="pepselect-cashback__step">
 				<span class="pepselect-cashback__step-number" aria-hidden="true">03</span>
 				<div>
-					<span class="pepselect-cashback__step-title"><?php esc_html_e( 'It applies at checkout', 'pepselect-child' ); ?></span>
-					<span class="pepselect-cashback__step-note"><?php esc_html_e( 'Once your balance reaches $5, it applies to your order total at checkout.', 'pepselect-child' ); ?></span>
+					<span class="pepselect-cashback__step-title"><?php esc_html_e( 'Turn it into a code', 'pepselect-child' ); ?></span>
+					<span class="pepselect-cashback__step-note"><?php esc_html_e( 'Once your balance reaches $5, open Manage Points below to create a code, then enter it in the discount field at checkout.', 'pepselect-child' ); ?></span>
 				</div>
 			</li>
 		</ol>
 	</section>
 
-	<section class="pepselect-cashback__history" aria-labelledby="pepselect-cashback-history-title">
-		<h2 id="pepselect-cashback-history-title" class="pepselect-cashback__history-title"><?php esc_html_e( 'Activity', 'pepselect-child' ); ?></h2>
-
-		<?php if ( ! empty( $pepselect_history ) ) : ?>
-			<ul class="pepselect-cashback__rows">
-				<?php foreach ( $pepselect_history as $row ) : ?>
-					<?php
-					$is_credit = $row['points'] >= 0;
-					$amount    = ( $is_credit ? '+' : '-' ) . wp_strip_all_tags( wc_price( abs( $row['dollars'] ) ) );
-					?>
-					<li class="pepselect-cashback__row">
-						<span class="pepselect-cashback__row-main">
-							<span class="pepselect-cashback__row-desc"><?php echo esc_html( $row['description'] ); ?></span>
-							<span class="pepselect-cashback__row-date"><?php echo esc_html( $row['date'] ); ?></span>
-						</span>
-						<span class="pepselect-cashback__row-amount <?php echo $is_credit ? 'is-credit' : 'is-debit'; ?>"><?php echo esc_html( $amount ); ?></span>
-					</li>
-				<?php endforeach; ?>
-			</ul>
-		<?php else : ?>
-			<div class="pepselect-cashback__empty">
-				<p><?php esc_html_e( 'No cash-back activity yet. Place an order to start earning.', 'pepselect-child' ); ?></p>
-			</div>
-		<?php endif; ?>
-	</section>
+	<?php if ( '' !== trim( (string) $pepselect_yith_output ) ) : ?>
+		<section class="pepselect-cashback__engine" aria-label="<?php esc_attr_e( 'Points and coupon codes', 'pepselect-child' ); ?>">
+			<?php echo $pepselect_yith_output; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+		</section>
+	<?php endif; ?>
 </div>
