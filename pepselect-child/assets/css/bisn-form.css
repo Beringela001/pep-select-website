@@ -1,0 +1,92 @@
+/**
+ * Design-system styling for the theme-owned Back In Stock Notifier form.
+ * Loads with the coded shell so the form is dressed everywhere it renders:
+ * the archive notify dialog today, product pages ahead of milestone M4.
+ */
+
+.pepselect-bisn {
+	font-family: var(--pep-font-interface);
+}
+
+.pepselect-bisn__title {
+	margin: 0 0 12px;
+	color: var(--pep-color-navy);
+	font-size: 16px;
+	font-weight: var(--pep-font-weight-semibold);
+}
+
+.pepselect-bisn__input {
+	width: 100%;
+	min-height: 46px;
+	margin-bottom: 12px;
+	padding: 8px 16px;
+	border: 1px solid var(--pep-color-border);
+	border-radius: var(--pep-radius-medium);
+	color: var(--pep-color-ink);
+	background: var(--pep-color-surface);
+	font: inherit;
+}
+
+.pepselect-bisn__input:focus {
+	border-color: var(--pep-color-cyan);
+	background: var(--pep-color-white);
+	outline: 3px solid var(--pep-color-cyan);
+	outline-offset: 2px;
+}
+
+.pepselect-bisn .cwg-agreetext,
+.pepselect-bisn label {
+	display: flex;
+	gap: 8px;
+	align-items: flex-start;
+	margin-bottom: 14px;
+	color: var(--pep-color-slate);
+	font-size: 13px;
+	line-height: 1.45;
+	text-align: left;
+}
+
+.pepselect-bisn input[type="checkbox"] {
+	flex: 0 0 auto;
+	width: 18px;
+	height: 18px;
+	margin-top: 1px;
+	accent-color: var(--pep-color-navy);
+}
+
+.pepselect-bisn a {
+	color: var(--pep-color-cyan);
+}
+
+.pepselect-bisn__submit,
+.pepselect-bisn__submit:hover,
+.pepselect-bisn__submit:focus,
+.pepselect-bisn__submit:active {
+	width: 100%;
+	min-height: 46px;
+	padding: 10px 18px;
+	border: 0;
+	border-radius: var(--pep-radius-medium);
+	color: var(--pep-color-white);
+	background: var(--pep-color-navy);
+	box-shadow: none;
+	font-family: var(--pep-font-interface);
+	font-size: 15px;
+	font-weight: var(--pep-font-weight-semibold);
+	cursor: pointer;
+	appearance: none;
+}
+
+.pepselect-bisn__submit:hover {
+	background: var(--pep-color-dark-navy);
+}
+
+.pepselect-bisn__output {
+	margin-top: 10px;
+	font-size: 14px;
+}
+
+/* Inside the notify dialog our lead line does the talking. */
+.pepselect-notify-dialog .pepselect-bisn__title {
+	display: none;
+}

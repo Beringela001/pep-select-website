@@ -1,0 +1,114 @@
+/**
+ * Compounds archive and product search results layout (WEB-2D).
+ */
+
+.pepselect-compounds {
+	background: var(--pep-color-white);
+	font-family: var(--pep-font-interface);
+}
+
+.pepselect-compounds__section {
+	padding-block: 72px 96px;
+}
+
+.pepselect-compounds__inner {
+	width: min(100%, calc(var(--pep-content-max-width) + (2 * var(--pep-layout-gutter))));
+	margin: 0 auto;
+	padding-inline: var(--pep-layout-gutter);
+}
+
+.pepselect-compounds__heading {
+	max-width: 760px;
+	margin-bottom: 56px;
+}
+
+.pepselect-compounds__eyebrow {
+	margin-bottom: 14px;
+	color: var(--pep-color-cyan);
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: 0.13em;
+	text-transform: uppercase;
+}
+
+.pepselect-compounds__heading h1 {
+	margin-bottom: 18px;
+	color: var(--pep-color-navy);
+	font-size: clamp(40px, 6vw, 64px);
+	font-weight: var(--pep-font-weight-bold);
+	letter-spacing: -0.01em;
+	line-height: 1.05;
+}
+
+.pepselect-compounds__heading h1 em {
+	color: var(--pep-color-cyan);
+	font-family: var(--pep-font-editorial);
+	font-style: italic;
+	font-weight: var(--pep-font-weight-bold);
+}
+
+.pepselect-compounds__lead {
+	max-width: 560px;
+	color: var(--pep-color-slate);
+	font-size: 18px;
+	line-height: 1.65;
+}
+
+.pepselect-compounds__grid {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 28px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.pepselect-compounds__grid > li {
+	min-width: 0;
+}
+
+
+
+
+
+.pepselect-compounds__empty {
+	max-width: 520px;
+	padding: 44px 0;
+}
+
+.pepselect-compounds__empty p {
+	margin-bottom: 16px;
+	color: var(--pep-color-slate);
+	font-size: 17px;
+}
+
+.pepselect-compounds__empty-link {
+	color: var(--pep-color-navy);
+	font-weight: var(--pep-font-weight-semibold);
+	text-decoration: underline;
+	text-underline-offset: 4px;
+}
+
+@media (max-width: 1024px) {
+	.pepselect-compounds__grid {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+@media (max-width: 767px) {
+	.pepselect-compounds__section {
+		padding-block: 48px 64px;
+	}
+
+	.pepselect-compounds__grid {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 14px;
+	}
+
+}
+
+@media (max-width: 400px) {
+	.pepselect-compounds__grid {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}

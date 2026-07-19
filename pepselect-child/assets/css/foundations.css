@@ -47,6 +47,17 @@
 	--pep-radius-large: 20px;
 	--pep-radius-pill: 999px;
 
+	/*
+	 * Homepage hero image framing controls.
+	 * Adjust these values to reframe the hero image without touching any template:
+	 *   --pep-hero-image-fit:      cover (fills, may crop) or contain (shows all).
+	 *   --pep-hero-image-position: horizontal% vertical% focal point, e.g. 60% 40%.
+	 *   --pep-hero-image-zoom:     1 = normal; 1.15 = zoom in 15%.
+	 */
+	--pep-hero-image-fit: cover;
+	--pep-hero-image-position: 50% 50%;
+	--pep-hero-image-zoom: 1;
+
 	/* Motion. Components may opt in; shrink interactions are not permitted. */
 	--pep-motion-duration: 180ms;
 }

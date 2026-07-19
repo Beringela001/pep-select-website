@@ -1,0 +1,250 @@
+/*
+ * Contact page presentation.
+ *
+ * Same utility-page signature as FAQ and track-order: a small label as the
+ * page title, left-aligned, in a split layout (intro + support hub left, form
+ * card right). The form is coded on our tokens, not Elementor. Colors, radii,
+ * and type come from foundations.css.
+ */
+
+.pepselect-contact {
+	background: var(--pep-color-white);
+	font-family: var(--pep-font-interface);
+}
+
+.pepselect-contact__section {
+	padding-block: 72px 96px;
+}
+
+.pepselect-contact__inner {
+	width: min(100%, calc(var(--pep-content-max-width) + (2 * var(--pep-layout-gutter))));
+	margin: 0 auto;
+	padding-inline: var(--pep-layout-gutter);
+}
+
+.pepselect-contact__grid {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+	gap: 72px;
+	align-items: start;
+}
+
+/* Left column: heading + support hub. */
+.pepselect-contact__eyebrow {
+	margin-bottom: 14px;
+	color: var(--pep-color-cyan);
+	font-size: 17px;
+	font-weight: 700;
+	letter-spacing: 0.13em;
+	text-transform: uppercase;
+}
+
+.pepselect-contact__lead {
+	max-width: 42ch;
+	color: var(--pep-color-slate);
+	font-size: 17px;
+	line-height: 1.6;
+}
+
+.pepselect-contact__hub {
+	margin-top: 40px;
+	padding-top: 32px;
+	border-top: 1px solid var(--pep-color-border);
+}
+
+.pepselect-contact__hub-title {
+	margin-bottom: 20px;
+	color: var(--pep-color-navy);
+	font-size: 15px;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+}
+
+.pepselect-contact__hub-list {
+	display: grid;
+	gap: 16px;
+	margin: 0 0 24px;
+	padding: 0;
+	list-style: none;
+}
+
+.pepselect-contact__hub-detail {
+	color: var(--pep-color-slate);
+	font-size: 15px;
+	line-height: 1.6;
+}
+
+.pepselect-contact__hub-detail a,
+.pepselect-contact__hub-direct a {
+	color: var(--pep-color-navy);
+	font-weight: 600;
+	text-decoration: underline;
+	text-underline-offset: 2px;
+}
+
+.pepselect-contact__hub-detail a:hover,
+.pepselect-contact__hub-direct a:hover {
+	color: var(--pep-color-cyan);
+}
+
+.pepselect-contact__hub-direct {
+	margin: 0;
+	color: var(--pep-color-slate);
+	font-size: 15px;
+	line-height: 1.55;
+}
+
+/* Right column: form card. */
+.pepselect-contact__form-col {
+	background: var(--pep-color-surface);
+	border: 1px solid var(--pep-color-border);
+	border-radius: var(--pep-radius-large);
+	padding: 32px;
+}
+
+.pepselect-contact__field-row {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 18px;
+}
+
+.pepselect-contact__field {
+	display: grid;
+	gap: 8px;
+	margin-bottom: 18px;
+}
+
+.pepselect-contact__field-row .pepselect-contact__field {
+	margin-bottom: 18px;
+}
+
+.pepselect-contact__field label {
+	color: var(--pep-color-navy);
+	font-size: 14px;
+	font-weight: 600;
+	letter-spacing: 0.01em;
+}
+
+.pepselect-contact__req {
+	color: var(--pep-color-cyan);
+}
+
+.pepselect-contact__field input,
+.pepselect-contact__field textarea {
+	width: 100%;
+	padding: 12px 14px;
+	border: 1px solid var(--pep-color-border);
+	border-radius: var(--pep-radius-small);
+	background: var(--pep-color-white);
+	color: var(--pep-color-ink);
+	font-family: var(--pep-font-interface);
+	font-size: 16px;
+	line-height: 1.5;
+	transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.pepselect-contact__field input:focus,
+.pepselect-contact__field textarea:focus {
+	outline: none;
+	border-color: var(--pep-color-cyan);
+	box-shadow: 0 0 0 3px rgb(23 161 207 / 15%);
+}
+
+.pepselect-contact__field textarea {
+	resize: vertical;
+	min-height: 140px;
+}
+
+.pepselect-contact__submit {
+	width: 100%;
+	margin-top: 6px;
+	padding: 14px 22px;
+	border: 0;
+	border-radius: var(--pep-radius-pill);
+	background: var(--pep-color-cyan);
+	color: var(--pep-color-white);
+	font-family: var(--pep-font-interface);
+	font-size: 16px;
+	font-weight: 700;
+	letter-spacing: 0.01em;
+	cursor: pointer;
+	transition: background-color 160ms ease, transform 160ms ease;
+}
+
+.pepselect-contact__submit:hover {
+	background: var(--pep-color-navy);
+	transform: translateY(-1px);
+}
+
+.pepselect-contact__submit:active {
+	transform: translateY(0);
+}
+
+/* Honeypot: kept in the DOM for bots, removed from view for humans. */
+.pepselect-contact__hp {
+	position: absolute;
+	left: -9999px;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+}
+
+/* Result notices. */
+.pepselect-contact__notice {
+	margin-bottom: 22px;
+	padding: 16px 18px;
+	border-radius: var(--pep-radius-medium);
+	font-size: 15px;
+	line-height: 1.55;
+}
+
+.pepselect-contact__notice p {
+	margin: 0;
+}
+
+.pepselect-contact__notice--success {
+	border: 1px solid var(--pep-color-green);
+	background: var(--pep-color-green-soft);
+	color: var(--pep-color-green);
+}
+
+.pepselect-contact__notice--error {
+	border: 1px solid var(--pep-color-red);
+	background: var(--pep-color-red-soft);
+	color: var(--pep-color-red);
+}
+
+@media (max-width: 1024px) {
+	.pepselect-contact__grid {
+		grid-template-columns: 1fr;
+		gap: 40px;
+	}
+}
+
+@media (max-width: 767px) {
+	.pepselect-contact__section {
+		padding-block: 48px 64px;
+	}
+
+	.pepselect-contact__form-col {
+		padding: 22px;
+	}
+
+	.pepselect-contact__field-row {
+		grid-template-columns: 1fr;
+		gap: 0;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.pepselect-contact__submit,
+	.pepselect-contact__field input,
+	.pepselect-contact__field textarea {
+		transition: none;
+	}
+
+	.pepselect-contact__submit:hover {
+		transform: none;
+	}
+}

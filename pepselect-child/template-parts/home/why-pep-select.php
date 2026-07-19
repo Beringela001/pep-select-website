@@ -9,18 +9,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$product = isset( $args['visual_product'] ) && is_a( $args['visual_product'], 'WC_Product' ) ? $args['visual_product'] : null;
-$items   = array(
+$product     = isset( $args['visual_product'] ) && is_a( $args['visual_product'], 'WC_Product' ) ? $args['visual_product'] : null;
+$testing_url = isset( $args['testing_url'] ) ? $args['testing_url'] : home_url( '/testing/' );
+$items       = array(
 	array(
-		'title' => __( 'Focused lineup', 'pepselect-child' ),
+		'title' => __( 'Selected first', 'pepselect-child' ),
 		'copy'  => __( 'A focused catalog that is easier to explore.', 'pepselect-child' ),
 	),
 	array(
-		'title' => __( 'Details where you expect them', 'pepselect-child' ),
+		'title' => __( 'Filed to the batch', 'pepselect-child' ),
 		'copy'  => __( 'Current product information stays close to the compound.', 'pepselect-child' ),
 	),
 	array(
-		'title' => __( 'The deeper dive is there', 'pepselect-child' ),
+		'title' => __( 'Nothing rushed at you', 'pepselect-child' ),
 		'copy'  => __( 'Open the Quality Archive when you want the batch-level detail.', 'pepselect-child' ),
 	),
 );
@@ -45,7 +46,6 @@ $items   = array(
 					); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- WordPress generates escaped responsive image markup.
 					?>
 				</a>
-				<figcaption><?php echo esc_html( sprintf( __( 'Catalog image: %s', 'pepselect-child' ), $product->get_name() ) ); ?></figcaption>
 			<?php else : ?>
 				<div class="pepselect-home__visual-fallback"><span><?php esc_html_e( 'Pep Select Research Compounds', 'pepselect-child' ); ?></span></div>
 			<?php endif; ?>
@@ -54,10 +54,10 @@ $items   = array(
 		<div class="pepselect-home__editorial-copy">
 			<p class="pepselect-home__eyebrow"><?php esc_html_e( 'Why Pep Select', 'pepselect-child' ); ?></p>
 			<h2 id="pepselect-why-title">
-				<span><?php esc_html_e( 'Less guessing.', 'pepselect-child' ); ?></span>
-				<em><?php esc_html_e( 'More to go on.', 'pepselect-child' ); ?></em>
+				<span><?php esc_html_e( 'Everyone has a COA.', 'pepselect-child' ); ?></span>
+				<em><?php esc_html_e( 'Ours have a permanent address.', 'pepselect-child' ); ?></em>
 			</h2>
-			<p class="pepselect-home__lead"><?php esc_html_e( 'The compound gets your attention. Clear product details and available records help you take the closer look.', 'pepselect-child' ); ?></p>
+			<p class="pepselect-home__lead"><?php esc_html_e( 'One document can be shown to anyone. We file records batch by batch, publicly, forever.', 'pepselect-child' ); ?></p>
 			<ol class="pepselect-home__editorial-list">
 				<?php foreach ( $items as $item ) : ?>
 					<li>
@@ -68,6 +68,7 @@ $items   = array(
 					</li>
 				<?php endforeach; ?>
 			</ol>
+			<a class="pepselect-home__button pepselect-home__button--primary" href="<?php echo esc_url( $testing_url ); ?>" aria-label="<?php esc_attr_e( 'Open the Pep Select Quality Archive and batch documentation', 'pepselect-child' ); ?>"><?php esc_html_e( 'Open the Quality Archive', 'pepselect-child' ); ?></a>
 		</div>
 	</div>
 </section>

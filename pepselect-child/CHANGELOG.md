@@ -2,6 +2,190 @@
 
 All notable changes to the Pep Select child theme are documented here.
 
+## 0.8.0-beta.8 - 2026-07-18
+
+- Rewrote Research context for nine compounds from a fresh sourced research pass, tying each bullet to the area of genuine research interest (skin and pigmentation, appetite and body-weight biology, wound healing, exercise capacity, mitochondrial energy) with its underlying study, while holding the mechanism-only, no-human-use register. PT-141, TB-500, and BPC-157 keep their prior bullets pending a tighter source pass, since verifiable primary studies were not confirmed for them.
+- Moved the CAS number into the top of the View the sources disclosure, above the citations, so the legitimacy signal stays available without cluttering the main view.
+
+## 0.8.0-beta.7 - 2026-07-18
+
+- Removed the Specifications block (CAS, Formula, Form) from the compound description per direction; the description now flows from the summary paragraph into Research context.
+- Rewrote all twelve compounds' Research context bullets into plainer, curiosity-driven language pointing toward the area of research interest, while holding the mechanism-only, no-human-use register. GHK-Cu's third bullet moved from MMP/TIMP matrix regulation to its antioxidant and repair-signaling activity. The four widely known human pharmaceuticals stay most conservative.
+- Research context now renders full width in a balanced two-column list on desktop, single column on mobile.
+
+## 0.8.0-beta.6 - 2026-07-18
+
+- Forced the add to cart button to brand cyan (navy hover) over the plugin/Elementor purple default that was overriding it, across every state.
+- Locked the View the sources toggle against the Elementor global button hover that turned it magenta.
+- Image card and buy card now stretch to equal height, with the product image centered in its card.
+- Related "More from the selection" cards rendered smaller than primary shop cards so they read as secondary content.
+- Related products become a horizontal snap carousel on mobile, matching the homepage, with compact cards.
+
+## 0.8.0-beta.5 - 2026-07-18
+
+- Split the hero into two separate cards: a compact image card (smaller, contained) and a buy card holding the compound identity, pricing, and add to cart.
+- Compound title is now large Georgia serif matching the COA hero treatment; applies to every compound.
+- Add to cart recolored to brand cyan (navy on hover), replacing the default purple.
+- Removed the short description above the price and the SKU/category/tag meta below add to cart.
+- Rewards message restyled as a standalone pill above the pricing.
+- Removed the duplicate testing-history heading: the COA carousel shortcode prints its own styled heading, so the theme no longer prints a second one above it.
+- Image lightbox: clicking the image or expand control opens a floating, appropriately sized image over a dimmed backdrop (notify-dialog language) instead of the hover zoom.
+- Related section eyebrow kept as Keep exploring; heading changed from You may also like to More from the selection. Related cards use the shared front-page card component and stylesheet so they match exactly.
+- Nudged the COA carousel cards toward a more vertical proportion with less dead space.
+
+## 0.8.0-beta.4 - 2026-07-18
+
+- Redesigned the single compound page in the COA card layout: full-width soft band background, a breadcrumb, a hero card pairing the gallery (sized, contained, no longer oversized) with the buy area, the description in its own card, and COA-consistent section headings (cyan eyebrow over a serif h2) for Independent testing history and a You may also like related grid capped at three. The coded template now renders every section directly rather than through hooks, keeping the layout compact and card-based to reduce scrolling.
+- All commerce renderers remain native WooCommerce (quantity discounts, add to cart, points, gallery); the COA history carousel keeps its shortcode in the testing-history card.
+
+## 0.8.0-beta.3 - 2026-07-18
+
+- Fixed the compound description block rendering inside the narrow product summary column (crushing the text into a strip over the price): the block now renders in a full-width zone below the summary, and related products and up-sells were re-sequenced to follow it.
+- Restored the COA history carousel: it was placed by the legacy Elementor template that the coded template replaced, so it is now rendered explicitly via the [pepselect_product_coa_carousel] shortcode in its original position below the compound block. Plugin untouched.
+
+## 0.8.0-beta.2 - 2026-07-18
+
+- Fixed the coded compound page not appearing: the legacy Elementor Theme Builder single-product template was rendering these pages and never firing WooCommerce hooks, so the coded block had nothing to attach to. The theme now seizes the single-product template via template_include at the same late priority used by the archive and homepage, runs WooCommerce native single-product output (all commerce renderers fire), and declines Elementor Theme Builder override for the single location.
+
+## 0.8.0-beta.1 - 2026-07-18
+
+Milestone M4: single compound page (WEB-2E). Archive M3 is final at 0.7.0-beta.9.
+
+- Added the coded compound description block on single product pages, replacing the default WooCommerce tabbed description. Renders the approved hybrid-register content: mechanism-only description with inline cyan reference superscripts, a Specifications table (CAS, Formula, Form), Research context bullets, a collapsed "View the sources" disclosure, and locked Intended Use and FDA disclaimer blocks. Products without a library entry fall back to the standard description with the legal blocks still enforced.
+- Added the approved twelve-compound content library (descriptions, specifications, research context, and sources) keyed by normalized compound name. Three entries carry data flags for manual resolution: TB-500 specifications pending the fragment COA, and SS-31/GHK-Cu source DOIs pending verification.
+- All commerce renderers are preserved untouched: add to cart, quantity discounts, points messaging, verification, and the product gallery keep their WooCommerce structure. The COA history carousel keeps its position through the plugin's existing shortcode after the product summary.
+
+## 0.7.0-beta.9 - 2026-07-18
+
+- Confirmation copy revised: "Once [compound] comes back in stock, we will notify you at [email]".
+
+## 0.7.0-beta.8 - 2026-07-18
+
+- Simplified card status bands to a single state: every pending batch, at the vendor or at the laboratory, now reads "Restocking Soon" on the calm cyan tone; the finer distinction belongs to the product page. 
+- Versioned the status-map cache key with the theme version so label and mapping changes take effect immediately on release instead of waiting out the transient (the cause of "More coming" lingering after the beta.7 install).
+
+## 0.7.0-beta.7 - 2026-07-18
+
+- Rebalanced the card ratio: shorter media box, larger typography. Desktop titles at 30px serif, prices at 26px, stock status at 16px semibold, larger strength pills; mobile titles at 22px and prices at 21px with buttons unchanged.
+- Reordered the card body per direction: strength pill, compound name, status band, availability, price, action. Status band sits between name and availability, availability sits directly above price, with a consistent spacing rhythm and recalculated symmetry slots.
+- Renamed the incoming-stock band from "More coming" to "Restocking Soon".
+- Guaranteed identical card rendering on every page: all card typography now carries component-scoped specificity so page-level heading and paragraph rules (the source of the homepage/shop mismatch) can no longer restyle it, and the small-viewport card scale moved into the shared card stylesheet.
+
+## 0.7.0-beta.6 - 2026-07-18
+
+- Added a clear confirmation state to the notify dialog: on the plugin's own success event, the form swaps to a "You're all set." view echoing the subscriber's email, with a Continue shopping action leading to the product page. Errors keep the form visible with the plugin's inline message.
+
+## 0.7.0-beta.5 - 2026-07-18
+
+- Added the theme-owned Back In Stock Notifier form template through the plugin's documented override mechanism (theme folder back-in-stock-notifier-for-woocommerce/default-form.php). All functional plumbing from the original is preserved: the field classes its JavaScript binds to, hidden product, variation, and security fields, the response container, and every extension hook, including the ones that render the consent row. Bootstrap presentation is replaced with design-system markup.
+- Added form styling that loads with the coded shell, dressing the form everywhere it renders: the archive notify dialog now, product pages ahead of milestone M4. The plugin Status page should now report the subscribe form template as loaded from theme.
+
+## 0.7.0-beta.4 - 2026-07-18
+
+- Rebuilt the notify experience as the originally envisioned enlarged card: the notify action opens a centered dialog carrying the product image, strength, name, an invitation line, and the waitlist form, over a dimmed backdrop. Native dialog semantics provide the focus trap and Escape handling; backdrop click and the close control dismiss; browsers without dialog support fall through to the product page.
+- Removed the in-card overlay panel and its styles; the plugin-skeleton neutralization moved into the dialog scope.
+
+## 0.7.0-beta.3 - 2026-07-18
+
+- Fixed notify panels rendering open and refusing to close: the panel display rule now yields to the hidden attribute, so panels start closed and the close control works.
+- Hardened the panel close button on all interactive states against retained Elementor global button styles.
+- Neutralized the waitlist plugin's unstyled Bootstrap-panel skeleton inside the card panel with scoped overrides (duplicate heading hidden, fields and consent row dressed in design tokens) pending the proper theme template override for the form.
+
+## 0.7.0-beta.2 - 2026-07-18
+
+- Archive heading grew into the editorial treatment: larger scale with "the standard." carried in the cyan serif accent, wider heading block, and a larger lead.
+- The full catalog now loads on one page; pagination removed.
+- Grid is three columns on desktop and two on tablet and mobile.
+- Cards align symmetrically across the row: uniform title and status slots keep prices and actions on shared horizontal lines whether or not a card carries a status band; actions are slimmer at a fixed 44px with the shortened "Notify when available" label on one line.
+- Notify now opens an in-place panel over the card carrying the waitlist plugin's real subscribe form for that product (rendered via its shortcode, submitted through the plugin's own handler); Escape or the close control dismisses, one panel open at a time, and the action falls back to the product page if the plugin is ever absent.
+
+## 0.7.0-beta.1 - 2026-07-18
+
+Milestone M3: compounds archive (WEB-2D). Footer M2 is final at 0.6.0-beta.3.
+
+- Added the coded compounds archive template serving the shop page, product taxonomies, and product searches through a late template_include route, replacing the legacy Elementor loop and archive templates on these views. Product searches now honor the search term, show a result count, and offer a browse-everything path when nothing matches. Twelve products per page with design-system pagination.
+- Archive heading carries the approved copy: "Compounds / Selection is the standard. / Pep Select carries what passes our review and nothing else. The details sit on every card."
+- Rebuilt the shared compound card with the approved editorial typography: serif title, strength pill, "Available" and "Out of Stock" stock language, serif price, and an outlined Learn more action. Out-of-stock products swap the action for "Notify me when available", linking to the product page's back-in-stock form. The homepage grid uses the same component, and card styles moved to a shared stylesheet.
+- Added a read-only bridge to the COA Archive plugin: pending batches surface on cards as status bands, with vendor stages reading "More coming" and laboratory stages reading "Waiting on lab test". Expected dates are deliberately not displayed, results are transient-cached for five minutes, and no plugin data is written.
+- Order-tracking page: heading block centered, label restored to cyan and enlarged, form card centered.
+
+## 0.6.0-beta.3 - 2026-07-18
+
+- Redesigned the order-tracking page away from the centered competitor-style composition: the small Order Tracking label is now the page heading, followed directly by the description, in a left-aligned split layout with the form card on the right, mirroring the homepage FAQ section language. The large two-tone title is removed.
+
+## 0.6.0-beta.2 - 2026-07-18
+
+- Added a coded page template for /track-your-order/: centered eyebrow, navy headline with cyan serif accent, and lead copy, with the WooCommerce shortcode remaining the authoritative page content. Form fields stack full width inside the card, the submit button spans the card, and the plugin's default intro line is hidden in favor of the page lead.
+
+## 0.6.0-beta.1 - 2026-07-18
+
+Milestone M2: footer. Header M1 is final at 0.5.0-beta.2.
+
+- Removed the Explore link group (All products, About us, FAQ) as duplicate navigation; the footer now carries the Support and Legal groups only, per the trust-floor rationale.
+- Retargeted "Track your order" from the login-gated account orders endpoint to the guest-friendly /track-your-order/ page when it exists, with a safe fallback to the account endpoint until that page is published, so the link never 404s.
+- Added design-system styling for the WooCommerce order-tracking shortcode form used by the guest tracking page.
+- Compressed the mobile footer: the two remaining groups sit side by side, the FDA disclaimer drops one size step with tightened leading (content unchanged), and the bottom bar tightens. Desktop link columns cap their width and align right.
+- Fixed an invalid gap-right property in the small-viewport rules (now column-gap).
+
+## 0.5.0-beta.2 - 2026-07-18
+
+- Added live compound search suggestions to the header: typing two or more characters queries a new read-only REST endpoint against live WooCommerce data and lists up to eight matching compounds with their strength tag, out-of-stock compounds included with a subtle note. Suggestions support mouse, touch, and full keyboard navigation (arrows, Enter, Escape) with an accessible combobox/listbox pattern; selecting one opens its product page. Enter without a selection still submits the standard search.
+- Hardened the search pill radius under the header ID scope so retained Elementor global input styles can no longer flatten the rounded ends.
+- Root cause recorded for the broken results page: the legacy Elementor product archive template ignores the search term and renders the full catalog; the coded compounds archive in milestone M3 replaces it.
+
+## 0.5.0-beta.1 - 2026-07-18
+
+Milestone M1: header. Homepage WEB-2C is complete and committed at 0.4.0-beta.8.
+
+- Enlarged the header logo (224x72 desktop, 168x56 tablet, mobile unchanged at 144x52).
+- Restyled the search as a single fully rounded pill and retired the visible magnifier submit button; the form still submits on Enter, and the submit control remains in the accessibility tree, reappearing on keyboard focus.
+- Centered the search pill on the page axis with a symmetric three-column header grid so it aligns with the centered primary navigation.
+- Compacted the rewards action to the star icon plus the YITH points balance; the visible "Rewards" label is removed while the accessible name remains. Logged-out visitors see the star only, linking to the rewards page.
+- Verified, no change required: the coded header already forces the COAs navigation item to the canonical /testing/ route, resolving the /coas/ destination bug recorded in the COA Archive plugin handoff.
+
+## 0.4.0-beta.8 - 2026-07-18
+
+- Allowed the coded shell to render inside the WordPress Customizer preview so Homepage Hero controls preview against the real homepage; the Elementor editor exclusion and the admin legacy-shell parameter are unchanged.
+- Rebuilt the hero as a light composition: the family image bleeds to the section edge and dissolves behind the copy through a gradient mask, with navy headline text, cyan serif accent, opened serif leading, and navy button variants. Removed the now-obsolete frame corner control from the Customizer; image, fit, position, and zoom controls remain.
+- Applied approved round-3 copy: hero lead rewritten without the em dash, "Explore Our Selection" CTA, "The Current Selection / A short list, on purpose." featured heading set, Direction C "Everyone has a COA." Why-section set with items Selected first, Filed to the batch, and Nothing rushed at you, and the "records stay online forever" policy stated as approved.
+- Replaced the homepage FAQ with the five-question set under "The questions we hear most.", including verified shipping facts, the Square payment-link flow, and the damaged-or-incorrect-order policy summarized from the published Refund and Shipping Policy.
+- Placed the Why Pep Select section on the soft cyan band to restore the alternating section rhythm.
+- Fixed non-concentric corners: card and editorial photos now carry an inner radius parallel to their rounded containers, media boxes lock to a 4:5 aspect so cover cropping stays negligible, and the editorial visual uses uniform feature-radius corners.
+
+## 0.4.0-beta.7 - 2026-07-17
+
+- Added a Homepage Hero section to the WordPress Customizer with an image picker and live-preview slider controls for horizontal position, vertical position, zoom (100-160%), frame corner roundness (0-48px), and an image-fit choice.
+- Saved values are stored as theme mods, bounded and sanitized server-side, and rendered as CSS custom properties attached to the homepage stylesheet; templates remain untouched and the parent-theme rollback stays clean.
+- A Customizer-chosen image takes precedence over the coded default candidates; clearing the control returns to the approved PS-laying_fam family image chain.
+- Slider changes render instantly in the Customizer preview through a postMessage bridge; choosing a different image refreshes the preview.
+
+## 0.4.0-beta.6 - 2026-07-17
+
+- Removed the hero micro-proof line and rebalanced the hero CTA spacing.
+- Pointed the hero at the approved PS-laying_fam family image, resolved through the current environment's uploads URL with ordered fallbacks (scaled file, original file, previous approved image, branded panel).
+- Made all four hero-frame corners the uniform feature radius, retiring the asymmetric corner accent.
+- Added documented hero image framing controls to foundations.css (--pep-hero-image-fit, --pep-hero-image-position, --pep-hero-image-zoom) so the image can be reframed inside the rounded frame without template changes; overrides also work from the WordPress Customizer Additional CSS panel.
+
+## 0.4.0-beta.5 - 2026-07-17
+
+- Replaced the hero product composition with a single approved family image resolved from the Media Library by stored file path, with a branded image-ready fallback; removed the floating product tiles and the direct-purchase product card.
+- Vertically centered the hero CTA row with equal breathing room between the lead paragraph and the micro-proof line.
+- Removed the confidence strip, batch identity, Quality Archive, and final CTA sections from the homepage render; template files remain in the repository for the legacy-retirement register. The homepage now flows hero, featured compounds, Why Pep Select, FAQ.
+- Added a single "Open the Quality Archive" action to the Why Pep Select section so the archive keeps one clear mid-page route after the section consolidation.
+- Rebuilt featured-compound selection: in-stock priority compounds fill slots in order (GLP-3 R, GLP-2 T, GHK-CU, NAD+, TB-500, BPC-157), and remaining slots rotate daily through the rest of the eligible catalog with a date-seeded shuffle that stays cache-stable within a day.
+- Added a strength badge to the storefront product card sourced from the product_tag taxonomy, mirroring the legacy loop card; products without a strength tag render no badge.
+- Removed the visible "Catalog image" caption from the Why Pep Select photo while keeping accessible alt text.
+- Restyled the FAQ as individual bordered cards and declared explicit palette backgrounds and colors on every accordion button state so retained Elementor global button styles can no longer bleed an off-palette highlight into the open item.
+- Tightened the homepage section rhythm across desktop, tablet, and mobile breakpoints.
+
+## 0.4.0-beta.4 - 2026-07-17
+
+- Fixed hero product photos rendering as hard white rectangles on the dark stage: opaque catalog photography now displays as intentional rounded white tiles with a border and elevation instead of the transparent-cutout treatment the previous CSS assumed.
+- Hid the third stacked hero photo, whose opaque background merged with the floating product card into a single malformed white surface, and retuned the second tile (including the two-product variant) so the card zone stays clear.
+- Separated the floating hero product card from adjacent white tiles with the standard border token and a slightly stronger shadow, and softened the stage ground blur now that tiles carry their own elevation.
+- Applied the same rounded-tile treatment to the batch identity photo inside the dark composition and corrected the image-fallback text color for contrast on the new white surface.
+- No template, copy, markup, or data changes; all edits are scoped to `assets/css/homepage.css`.
+
 ## 0.4.0-beta.3 - 2026-07-16
 
 - Retained the beta.2 homepage architecture, private preview gate, WooCommerce product selection, and COA Archive boundaries.

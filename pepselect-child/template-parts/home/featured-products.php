@@ -17,11 +17,11 @@ $products      = isset( $product_state['products'] ) ? array_slice( (array) $pro
 	<div class="pepselect-home__inner">
 		<div class="pepselect-home__section-heading">
 			<div>
-				<p class="pepselect-home__eyebrow"><?php esc_html_e( 'Currently in the Catalog', 'pepselect-child' ); ?></p>
-				<h2 id="pepselect-products-title"><?php esc_html_e( 'Start with what caught your eye.', 'pepselect-child' ); ?></h2>
-				<p><?php esc_html_e( 'The details are already waiting.', 'pepselect-child' ); ?></p>
+				<p class="pepselect-home__eyebrow"><?php esc_html_e( 'The Current Selection', 'pepselect-child' ); ?></p>
+				<h2 id="pepselect-products-title"><?php esc_html_e( 'A short list, on purpose.', 'pepselect-child' ); ?></h2>
+				<p><?php esc_html_e( 'Every compound here was selected before it was stocked, with strength and available batch records in plain view.', 'pepselect-child' ); ?></p>
 			</div>
-			<a class="pepselect-home__text-link" href="<?php echo esc_url( $shop_url ); ?>"><?php esc_html_e( 'Explore All Compounds', 'pepselect-child' ); ?></a>
+			<a class="pepselect-home__text-link" href="<?php echo esc_url( $shop_url ); ?>"><?php esc_html_e( 'Browse the Full Selection', 'pepselect-child' ); ?></a>
 		</div>
 
 		<?php if ( $products ) : ?>

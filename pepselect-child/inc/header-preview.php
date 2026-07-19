@@ -85,7 +85,7 @@ function pepselect_child_is_supported_frontend_shell_request() {
 		return false;
 	}
 
-	if ( is_customize_preview() || pepselect_child_is_elementor_editor_request() ) {
+	if ( pepselect_child_is_elementor_editor_request() ) {
 		return false;
 	}
 
@@ -198,10 +198,25 @@ function pepselect_child_enqueue_header_preview_assets() {
 	}
 
 	wp_enqueue_style(
+		'pepselect-child-bisn-form',
+		get_stylesheet_directory_uri() . '/assets/css/bisn-form.css',
+		array( 'pepselect-child-foundations' ),
+		pepselect_child_asset_version( 'assets/css/bisn-form.css' )
+	);
+
+	wp_enqueue_style(
 		'pepselect-child-header-preview',
 		get_stylesheet_directory_uri() . '/assets/css/header.css',
 		array( 'pepselect-child-foundations' ),
 		pepselect_child_asset_version( 'assets/css/header.css' )
+	);
+
+	wp_enqueue_script(
+		'pepselect-child-header-search',
+		get_stylesheet_directory_uri() . '/assets/js/header-search.js',
+		array(),
+		pepselect_child_asset_version( 'assets/js/header-search.js' ),
+		true
 	);
 
 	wp_enqueue_script(
@@ -355,13 +370,26 @@ function pepselect_child_get_cart_count() {
  * @return string
  */
 function pepselect_child_get_rewards_output() {
-	if ( ! is_user_logged_in() || ! shortcode_exists( 'yith_ywpar_points' ) ) {
+	if ( ! is_user_logged_in() ) {
 		return '';
 	}
 
-	$rewards_output = trim( do_shortcode( '[yith_ywpar_points label="" show_worth="no"]' ) );
+	// Prefer the dollar cash-back display (YITH points x $0.01). This shows the
+	// amount redeemable, e.g. "$4.88", instead of an abstract points count.
+	if ( function_exists( 'pepselect_child_get_cashback_display' ) ) {
+		$cashback = pepselect_child_get_cashback_display();
 
-	return '' === wp_strip_all_tags( $rewards_output ) ? '' : $rewards_output;
+		return '<span class="pepselect-header__rewards-amount">' . esc_html( $cashback['balance_formatted'] ) . '</span>';
+	}
+
+	// Fallback to the YITH shortcode only if the helper is unavailable.
+	if ( shortcode_exists( 'yith_ywpar_points' ) ) {
+		$rewards_output = trim( do_shortcode( '[yith_ywpar_points label="" show_worth="no"]' ) );
+
+		return '' === wp_strip_all_tags( $rewards_output ) ? '' : $rewards_output;
+	}
+
+	return '';
 }
 
 /**

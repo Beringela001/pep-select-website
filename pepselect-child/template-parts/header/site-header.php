@@ -32,7 +32,7 @@ $logo_html = pepselect_child_get_header_logo_html();
 				<?php endif; ?>
 			</div>
 
-			<form class="pepselect-header__search" role="search" method="get" action="<?php echo esc_url( home_url( '/' ) ); ?>">
+			<form class="pepselect-header__search" role="search" method="get" action="<?php echo esc_url( home_url( '/' ) ); ?>" data-suggest-endpoint="<?php echo esc_url( rest_url( 'pepselect-child/v1/compound-search' ) ); ?>">
 				<label class="screen-reader-text" for="pepselect-header-product-search">
 					<?php esc_html_e( 'Search products', 'pepselect-child' ); ?>
 				</label>

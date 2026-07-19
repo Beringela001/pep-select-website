@@ -1,0 +1,1084 @@
+/*
+ * Account area presentation.
+ *
+ * A two-column layout: a left navigation rail and a content pane, wrapping
+ * WooCommerce's native account markup. The rail restyles
+ * .woocommerce-MyAccount-navigation; the pane restyles
+ * .woocommerce-MyAccount-content. Dashboard stat cards and quick links follow
+ * the reference flow in Pep Select's language. Tokens from foundations.css.
+ */
+
+/* Page frame. */
+.woocommerce-account .woocommerce {
+	width: min(100%, calc(var(--pep-content-max-width) + (2 * var(--pep-layout-gutter))));
+	margin: 0 auto;
+	padding: 64px var(--pep-layout-gutter) 96px;
+	font-family: var(--pep-font-interface);
+}
+
+.woocommerce-account .woocommerce::after {
+	content: "";
+	display: table;
+	clear: both;
+}
+
+/* Two-column grid: nav rail + content. Parent WooCommerce/Hello Elementor
+ * sets explicit widths (~30%/68%) and floats on these; override to auto and
+ * pin explicit grid columns so the rail is always left and sized by the track. */
+.woocommerce-account .woocommerce-MyAccount-navigation,
+.woocommerce-account .woocommerce-MyAccount-content {
+	float: none !important;
+	width: auto !important;
+	max-width: none !important;
+}
+
+@media (min-width: 861px) {
+	.woocommerce-account:not(.logged-in) .woocommerce {
+		display: block;
+	}
+
+	.woocommerce-account.logged-in .woocommerce {
+		display: grid;
+		grid-template-columns: 260px minmax(0, 1fr);
+		gap: 56px;
+		align-items: start;
+	}
+
+	.woocommerce-account.logged-in .woocommerce-MyAccount-navigation {
+		grid-column: 1;
+	}
+
+	.woocommerce-account.logged-in .woocommerce-MyAccount-content {
+		grid-column: 2;
+		min-width: 0;
+	}
+}
+
+/* Navigation rail. */
+.pepselect-account__nav {
+	position: sticky;
+	top: 24px;
+}
+
+.pepselect-account__nav-title {
+	margin: 0 0 16px;
+	padding-left: 14px;
+	color: var(--pep-color-navy);
+	font-size: 20px;
+	font-weight: 700;
+	letter-spacing: -0.01em;
+}
+
+.pepselect-account__nav ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	display: grid;
+	gap: 2px;
+}
+
+.pepselect-account__nav li {
+	margin: 0;
+}
+
+.pepselect-account__nav a {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 11px 14px;
+	border-radius: var(--pep-radius-small);
+	color: var(--pep-color-slate);
+	font-size: 15px;
+	font-weight: 600;
+	text-decoration: none;
+	transition: background-color 140ms ease, color 140ms ease;
+}
+
+.pepselect-account__nav a:hover {
+	background: var(--pep-color-surface);
+	color: var(--pep-color-navy);
+}
+
+.pepselect-account__nav .is-active a,
+.pepselect-account__nav li.is-active > a {
+	background: var(--pep-color-cyan-soft);
+	color: var(--pep-color-navy);
+}
+
+.pepselect-account__nav-icon {
+	display: inline-flex;
+	flex-shrink: 0;
+	color: currentColor;
+}
+
+.pepselect-account__nav-icon svg {
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 1.8;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+.pepselect-account__nav .is-active .pepselect-account__nav-icon,
+.pepselect-account__nav li.is-active .pepselect-account__nav-icon {
+	color: var(--pep-color-cyan);
+}
+
+/* Content pane headings. */
+.pepselect-account__title {
+	margin: 0 0 8px;
+	color: var(--pep-color-navy);
+	font-size: clamp(1.6rem, 3vw, 2rem);
+	font-weight: 700;
+	letter-spacing: -0.01em;
+}
+
+.pepselect-account__lead {
+	margin: 0 0 32px;
+	color: var(--pep-color-slate);
+	font-size: 16px;
+	line-height: 1.6;
+}
+
+/* Dashboard stat cards. */
+.pepselect-account__stats {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 18px;
+	margin-bottom: 32px;
+}
+
+.pepselect-account__stat {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	padding: 22px;
+	border: 1px solid var(--pep-color-border);
+	border-radius: var(--pep-radius-large);
+	background: var(--pep-color-white);
+	text-decoration: none;
+	transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.pepselect-account__stat:hover {
+	border-color: var(--pep-color-cyan);
+	box-shadow: 0 8px 22px rgb(0 42 83 / 8%);
+	transform: translateY(-1px);
+}
+
+.pepselect-account__stat--accent {
+	border-color: transparent;
+	background: linear-gradient(155deg, var(--pep-color-cyan-soft) 0%, var(--pep-color-white) 100%);
+	border: 1px solid var(--pep-color-cyan);
+}
+
+.pepselect-account__stat-label {
+	color: var(--pep-color-slate);
+	font-size: 13px;
+	font-weight: 600;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+}
+
+.pepselect-account__stat-value {
+	color: var(--pep-color-navy);
+	font-size: 30px;
+	font-weight: 800;
+	letter-spacing: -0.02em;
+	line-height: 1.1;
+}
+
+.pepselect-account__stat-value--sm {
+	font-size: 22px;
+}
+
+.pepselect-account__stat-note {
+	color: var(--pep-color-neutral);
+	font-size: 13px;
+	line-height: 1.4;
+}
+
+/* Quick-link list. */
+.pepselect-account__links {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	display: grid;
+	gap: 12px;
+}
+
+.pepselect-account__links a {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	padding: 18px 22px;
+	border: 1px solid var(--pep-color-border);
+	border-radius: var(--pep-radius-medium);
+	background: var(--pep-color-white);
+	text-decoration: none;
+	transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.pepselect-account__links a:hover {
+	border-color: var(--pep-color-cyan);
+	box-shadow: 0 6px 18px rgb(0 42 83 / 6%);
+}
+
+.pepselect-account__link-body {
+	display: grid;
+	gap: 3px;
+}
+
+.pepselect-account__link-title {
+	color: var(--pep-color-navy);
+	font-size: 16px;
+	font-weight: 700;
+}
+
+.pepselect-account__link-note {
+	color: var(--pep-color-slate);
+	font-size: 14px;
+	line-height: 1.5;
+}
+
+.pepselect-account__link-arrow {
+	color: var(--pep-color-cyan);
+	font-size: 24px;
+	line-height: 1;
+	flex-shrink: 0;
+}
+
+/* Header rewards pill: show the dollar cash-back amount cleanly. */
+.pepselect-header__rewards-amount {
+	font-weight: 700;
+}
+
+@media (max-width: 860px) {
+	.woocommerce-account .woocommerce {
+		padding-top: 40px;
+	}
+
+	.pepselect-account__nav {
+		position: static;
+		margin-bottom: 32px;
+	}
+
+	.pepselect-account__stats {
+		grid-template-columns: 1fr;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.pepselect-account__stat,
+	.pepselect-account__links a,
+	.pepselect-account__nav a {
+		transition: none;
+	}
+
+	.pepselect-account__stat:hover {
+		transform: none;
+	}
+}
+
+/*
+ * Cash back page.
+ *
+ * A prominent dollar balance card, a short "how it works" sequence (numbering
+ * earned — it is a real flow), and a dollar-framed activity list. No gamified
+ * rank, no coupon codes. Data is fed by YITH via theme helpers.
+ */
+.pepselect-cashback__head {
+	margin-bottom: 28px;
+}
+
+.pepselect-cashback__balance {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	padding: 32px;
+	margin-bottom: 32px;
+	border: 1px solid var(--pep-color-cyan);
+	border-radius: var(--pep-radius-large);
+	background: linear-gradient(155deg, var(--pep-color-cyan-soft) 0%, var(--pep-color-white) 100%);
+}
+
+.pepselect-cashback__balance-label {
+	color: var(--pep-color-slate);
+	font-size: 13px;
+	font-weight: 600;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+}
+
+.pepselect-cashback__balance-value {
+	color: var(--pep-color-navy);
+	font-size: 44px;
+	font-weight: 800;
+	letter-spacing: -0.02em;
+	line-height: 1;
+}
+
+.pepselect-cashback__balance-note {
+	color: var(--pep-color-slate);
+	font-size: 15px;
+}
+
+/* How it works. */
+.pepselect-cashback__how {
+	margin-bottom: 36px;
+}
+
+.pepselect-cashback__how-title,
+.pepselect-cashback__history-title {
+	margin: 0 0 18px;
+	color: var(--pep-color-navy);
+	font-size: 15px;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+}
+
+.pepselect-cashback__steps {
+	display: grid;
+	gap: 18px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.pepselect-cashback__step {
+	display: grid;
+	grid-template-columns: 40px minmax(0, 1fr);
+	gap: 18px;
+	align-items: start;
+}
+
+.pepselect-cashback__step-number {
+	font-family: var(--pep-font-technical);
+	font-size: 18px;
+	font-weight: 600;
+	color: var(--pep-color-cyan);
+	line-height: 1.4;
+}
+
+.pepselect-cashback__step-title {
+	display: block;
+	color: var(--pep-color-navy);
+	font-size: 16px;
+	font-weight: 700;
+	margin-bottom: 2px;
+}
+
+.pepselect-cashback__step-note {
+	display: block;
+	color: var(--pep-color-slate);
+	font-size: 15px;
+	line-height: 1.55;
+}
+
+/* Activity list. */
+.pepselect-cashback__rows {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	border: 1px solid var(--pep-color-border);
+	border-radius: var(--pep-radius-medium);
+	overflow: hidden;
+}
+
+.pepselect-cashback__row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	padding: 16px 20px;
+	background: var(--pep-color-white);
+}
+
+.pepselect-cashback__row:not(:last-child) {
+	border-bottom: 1px solid var(--pep-color-border);
+}
+
+.pepselect-cashback__row-main {
+	display: grid;
+	gap: 2px;
+}
+
+.pepselect-cashback__row-desc {
+	color: var(--pep-color-navy);
+	font-size: 15px;
+	font-weight: 600;
+}
+
+.pepselect-cashback__row-date {
+	color: var(--pep-color-neutral);
+	font-size: 13px;
+}
+
+.pepselect-cashback__row-amount {
+	font-family: var(--pep-font-technical);
+	font-size: 15px;
+	font-weight: 600;
+	flex-shrink: 0;
+}
+
+.pepselect-cashback__row-amount.is-credit {
+	color: var(--pep-color-green);
+}
+
+.pepselect-cashback__row-amount.is-debit {
+	color: var(--pep-color-slate);
+}
+
+.pepselect-cashback__empty {
+	padding: 40px 24px;
+	border: 1px solid var(--pep-color-border);
+	border-radius: var(--pep-radius-medium);
+	text-align: center;
+}
+
+.pepselect-cashback__empty p {
+	margin: 0;
+	color: var(--pep-color-slate);
+	font-size: 15px;
+}
+
+@media (max-width: 767px) {
+	.pepselect-cashback__balance {
+		padding: 24px;
+	}
+
+	.pepselect-cashback__balance-value {
+		font-size: 36px;
+	}
+}
+
+/*
+ * Orders, Addresses, and Account details.
+ *
+ * These restyle WooCommerce's native account markup with CSS only, so all
+ * form logic, nonces, and endpoints stay untouched. Classes are WooCommerce's
+ * standard ones (.woocommerce-orders-table, .woocommerce-Address,
+ * .woocommerce-EditAccountForm).
+ */
+
+/* Section intro paragraphs WooCommerce prints above content. */
+.woocommerce-account .woocommerce-MyAccount-content > p:first-child {
+	color: var(--pep-color-slate);
+	font-size: 16px;
+	line-height: 1.6;
+	margin-bottom: 28px;
+}
+
+/* --- Orders table --- */
+.woocommerce-orders-table {
+	width: 100%;
+	border-collapse: separate;
+	border-spacing: 0;
+	border: 1px solid var(--pep-color-border);
+	border-radius: var(--pep-radius-medium);
+	overflow: hidden;
+	font-size: 15px;
+}
+
+.woocommerce-orders-table thead th {
+	padding: 14px 18px;
+	background: var(--pep-color-surface);
+	border-bottom: 1px solid var(--pep-color-border);
+	color: var(--pep-color-slate);
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	text-align: left;
+}
+
+.woocommerce-orders-table tbody td {
+	padding: 16px 18px;
+	border-bottom: 1px solid var(--pep-color-border);
+	color: var(--pep-color-navy);
+	vertical-align: middle;
+}
+
+.woocommerce-orders-table tbody tr:last-child td {
+	border-bottom: 0;
+}
+
+.woocommerce-orders-table tbody tr:hover td {
+	background: var(--pep-color-surface);
+}
+
+.woocommerce-orders-table__cell-order-number a {
+	color: var(--pep-color-navy);
+	font-family: var(--pep-font-technical);
+	font-weight: 600;
+	text-decoration: none;
+}
+
+.woocommerce-orders-table__cell-order-number a:hover {
+	color: var(--pep-color-cyan);
+}
+
+/* Status pill. */
+.woocommerce-orders-table__cell-order-status {
+	font-weight: 600;
+}
+
+.woocommerce-orders-table__cell-order-status mark,
+.woocommerce-orders-table__cell-order-status {
+	background: none;
+}
+
+.woocommerce-orders-table__cell-order-status::before {
+	content: "";
+	display: inline-block;
+	width: 8px;
+	height: 8px;
+	margin-right: 8px;
+	border-radius: 50%;
+	background: var(--pep-color-green);
+	vertical-align: middle;
+}
+
+/* Action buttons. */
+.woocommerce-orders-table__cell-order-actions a.button,
+.woocommerce-orders-table .button {
+	display: inline-block;
+	padding: 8px 16px;
+	border: 1px solid var(--pep-color-border);
+	border-radius: var(--pep-radius-pill);
+	background: var(--pep-color-white);
+	color: var(--pep-color-navy);
+	font-size: 13px;
+	font-weight: 600;
+	text-decoration: none;
+	transition: border-color 140ms ease, color 140ms ease;
+}
+
+.woocommerce-orders-table__cell-order-actions a.button:hover,
+.woocommerce-orders-table .button:hover {
+	border-color: var(--pep-color-cyan);
+	color: var(--pep-color-cyan);
+}
+
+/* --- Addresses --- */
+.woocommerce-account .woocommerce-Addresses {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 24px;
+	margin-top: 8px;
+}
+
+/* WooCommerce adds clearfix ::before/::after; in a grid these become phantom
+ * grid items and stagger the cards. Remove them from the grid flow. */
+.woocommerce-account .woocommerce-Addresses::before,
+.woocommerce-account .woocommerce-Addresses::after {
+	display: none;
+}
+
+.woocommerce-account .woocommerce-Address {
+	width: auto !important;
+	float: none !important;
+	padding: 24px;
+	border: 1px solid var(--pep-color-border);
+	border-radius: var(--pep-radius-large);
+	background: var(--pep-color-white);
+}
+
+.woocommerce-account .woocommerce-Address-title {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	margin-bottom: 14px;
+}
+
+.woocommerce-account .woocommerce-Address-title h2,
+.woocommerce-account .woocommerce-Address-title h3 {
+	margin: 0;
+	color: var(--pep-color-navy);
+	font-size: 16px;
+	font-weight: 700;
+}
+
+.woocommerce-account .woocommerce-Address-title a.edit {
+	color: var(--pep-color-cyan);
+	font-size: 14px;
+	font-weight: 600;
+	text-decoration: none;
+}
+
+.woocommerce-account .woocommerce-Address address {
+	color: var(--pep-color-slate);
+	font-size: 15px;
+	font-style: normal;
+	line-height: 1.7;
+}
+
+/* --- Shared form styling (Account details + Address edit) --- */
+.woocommerce-account .woocommerce-EditAccountForm,
+.woocommerce-account .woocommerce-address-fields {
+	max-width: 620px;
+}
+
+.woocommerce-account .woocommerce-EditAccountForm fieldset {
+	margin-top: 28px;
+	padding: 24px;
+	border: 1px solid var(--pep-color-border);
+	border-radius: var(--pep-radius-large);
+}
+
+.woocommerce-account .woocommerce-EditAccountForm legend {
+	padding: 0 8px;
+	color: var(--pep-color-navy);
+	font-size: 14px;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+}
+
+.woocommerce-account .woocommerce-form-row label,
+.woocommerce-account .woocommerce-address-fields label {
+	display: block;
+	margin-bottom: 6px;
+	color: var(--pep-color-navy);
+	font-size: 14px;
+	font-weight: 600;
+}
+
+.woocommerce-account .woocommerce-form-row input,
+.woocommerce-account .woocommerce-form-row select,
+.woocommerce-account .woocommerce-address-fields input,
+.woocommerce-account .woocommerce-address-fields select {
+	width: 100%;
+	padding: 11px 14px;
+	border: 1px solid var(--pep-color-border);
+	border-radius: var(--pep-radius-small);
+	background: var(--pep-color-white);
+	color: var(--pep-color-ink);
+	font-family: var(--pep-font-interface);
+	font-size: 16px;
+	transition: border-color 140ms ease, box-shadow 140ms ease;
+}
+
+.woocommerce-account .woocommerce-form-row input:focus,
+.woocommerce-account .woocommerce-form-row select:focus,
+.woocommerce-account .woocommerce-address-fields input:focus,
+.woocommerce-account .woocommerce-address-fields select:focus {
+	outline: none;
+	border-color: var(--pep-color-cyan);
+	box-shadow: 0 0 0 3px rgb(23 161 207 / 15%);
+}
+
+.woocommerce-account .woocommerce-form-row {
+	margin-bottom: 18px;
+}
+
+.woocommerce-account .woocommerce-form-row--first {
+	width: calc(50% - 9px);
+	float: left;
+	margin-right: 18px;
+}
+
+.woocommerce-account .woocommerce-form-row--last {
+	width: calc(50% - 9px);
+	float: left;
+}
+
+.woocommerce-account .woocommerce-EditAccountForm::after,
+.woocommerce-account .woocommerce-address-fields::after {
+	content: "";
+	display: table;
+	clear: both;
+}
+
+.woocommerce-account .woocommerce-form-row .password-input {
+	width: 100%;
+}
+
+/* Primary submit buttons on account forms. */
+.woocommerce-account .woocommerce-EditAccountForm button[type="submit"],
+.woocommerce-account .woocommerce-address-fields button[type="submit"],
+.woocommerce-account .woocommerce-Address a.button {
+	display: inline-block;
+	margin-top: 8px;
+	padding: 13px 28px;
+	border: 0;
+	border-radius: var(--pep-radius-pill);
+	background: var(--pep-color-cyan);
+	color: var(--pep-color-white);
+	font-family: var(--pep-font-interface);
+	font-size: 15px;
+	font-weight: 700;
+	cursor: pointer;
+	text-decoration: none;
+	transition: background-color 140ms ease, transform 140ms ease;
+}
+
+.woocommerce-account .woocommerce-EditAccountForm button[type="submit"]:hover,
+.woocommerce-account .woocommerce-address-fields button[type="submit"]:hover {
+	background: var(--pep-color-navy);
+	transform: translateY(-1px);
+}
+
+@media (max-width: 767px) {
+	.woocommerce-account .woocommerce-Addresses {
+		grid-template-columns: 1fr;
+	}
+
+	.woocommerce-account .woocommerce-form-row--first,
+	.woocommerce-account .woocommerce-form-row--last {
+		width: 100%;
+		float: none;
+		margin-right: 0;
+	}
+
+	.woocommerce-orders-table {
+		font-size: 14px;
+	}
+}
+
+/* --- Beta 3 polish: button colors + form accent links --- */
+
+/* "Order again" and any default WooCommerce buttons in account content → cyan pill. */
+.woocommerce-account .woocommerce-MyAccount-content a.button,
+.woocommerce-account .woocommerce-MyAccount-content button.button,
+.woocommerce-account .woocommerce-MyAccount-content .woocommerce-Button {
+	display: inline-block;
+	padding: 11px 24px;
+	border: 0;
+	border-radius: var(--pep-radius-pill);
+	background: var(--pep-color-cyan);
+	color: var(--pep-color-white);
+	font-family: var(--pep-font-interface);
+	font-size: 14px;
+	font-weight: 700;
+	text-decoration: none;
+	transition: background-color 140ms ease, transform 140ms ease;
+}
+
+.woocommerce-account .woocommerce-MyAccount-content a.button:hover,
+.woocommerce-account .woocommerce-MyAccount-content button.button:hover,
+.woocommerce-account .woocommerce-MyAccount-content .woocommerce-Button:hover {
+	background: var(--pep-color-navy);
+	transform: translateY(-1px);
+}
+
+/* The Orders table "View" action keeps the lighter outline style (secondary). */
+.woocommerce-account .woocommerce-orders-table__cell-order-actions a.button {
+	padding: 8px 16px;
+	border: 1px solid var(--pep-color-border);
+	background: var(--pep-color-white);
+	color: var(--pep-color-navy);
+	font-size: 13px;
+}
+
+.woocommerce-account .woocommerce-orders-table__cell-order-actions a.button:hover {
+	border-color: var(--pep-color-cyan);
+	background: var(--pep-color-white);
+	color: var(--pep-color-cyan);
+	transform: none;
+}
+
+/* WooCommerce's red "+" toggle links (Add apartment / Add phone) → brand cyan. */
+.woocommerce-account .woocommerce-address-fields a,
+.woocommerce-account .woocommerce-MyAccount-content .show-password-input,
+.woocommerce-account .woocommerce-input-wrapper a {
+	color: var(--pep-color-cyan);
+}
+
+.woocommerce-account .woocommerce-address-fields a:hover {
+	color: var(--pep-color-navy);
+}
+
+/*
+ * Login / Register page.
+ *
+ * A centered card with the Google button (Nextend) at the top, an "or"
+ * divider, then the WooCommerce login/register forms on our tokens. Nextend's
+ * button markup is restyled to our palette. Field logic stays native.
+ */
+.pepselect-login {
+	background: var(--pep-color-surface);
+	font-family: var(--pep-font-interface);
+	padding-block: 72px 96px;
+	/* Break out of any constrained content wrapper so the band is full-width. */
+	width: 100vw;
+	margin-left: calc(50% - 50vw);
+	margin-right: calc(50% - 50vw);
+}
+
+.pepselect-login__inner {
+	width: min(100%, 960px);
+	margin: 0 auto;
+	padding-inline: var(--pep-layout-gutter);
+}
+
+.pepselect-login__panel {
+	width: 100%;
+	max-width: 860px;
+	margin: 0 auto;
+	padding: clamp(28px, 4vw, 48px);
+	background: var(--pep-color-white);
+	border: 1px solid var(--pep-color-border);
+	border-radius: var(--pep-radius-large);
+	box-shadow: 0 24px 60px rgb(0 42 83 / 6%);
+	box-sizing: border-box;
+}
+
+.pepselect-login__head {
+	text-align: center;
+	margin-bottom: 28px;
+}
+
+.pepselect-login__title {
+	margin: 0 0 8px;
+	color: var(--pep-color-navy);
+	font-size: clamp(1.6rem, 3vw, 2rem);
+	font-weight: 800;
+	letter-spacing: -0.02em;
+}
+
+.pepselect-login__lead {
+	margin: 0;
+	color: var(--pep-color-slate);
+	font-size: 16px;
+}
+
+/* Google (Nextend) button area. */
+.pepselect-login__social {
+	max-width: 420px;
+	margin: 0 auto 8px;
+}
+
+.pepselect-login__social .nsl-container {
+	margin: 0 !important;
+}
+
+.pepselect-login__social .nsl-container .nsl-button,
+.pepselect-login__social a.nsl-button {
+	width: 100% !important;
+	border-radius: var(--pep-radius-pill) !important;
+	overflow: hidden;
+}
+
+/* Divider. */
+.pepselect-login__divider {
+	max-width: 420px;
+	margin: 20px auto 24px;
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	color: var(--pep-color-neutral);
+	font-size: 13px;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+}
+
+.pepselect-login__divider::before,
+.pepselect-login__divider::after {
+	content: "";
+	flex: 1;
+	height: 1px;
+	background: var(--pep-color-border);
+}
+
+/* Forms grid: login + register side by side, stack on mobile.
+ * Two columns by default (registration is enabled); the single-column case is
+ * handled by the width cap and the register column simply being absent. */
+.pepselect-login__forms {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 40px;
+	width: 100%;
+	max-width: 760px;
+	margin: 0 auto;
+	box-sizing: border-box;
+}
+
+/* When only the login column exists (registration off), narrow and center. */
+.pepselect-login__forms:not(:has(.pepselect-login__col--register)) {
+	grid-template-columns: 1fr;
+	max-width: 400px;
+}
+
+.pepselect-login__col-title {
+	margin: 0 0 20px;
+	color: var(--pep-color-navy);
+	font-size: 15px;
+	font-weight: 700;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+}
+
+.pepselect-login__form .form-row {
+	margin-bottom: 18px;
+}
+
+.pepselect-login__form label {
+	display: block;
+	margin-bottom: 6px;
+	color: var(--pep-color-navy);
+	font-size: 14px;
+	font-weight: 600;
+}
+
+.pepselect-login__form input[type="text"],
+.pepselect-login__form input[type="email"],
+.pepselect-login__form input[type="password"] {
+	width: 100%;
+	padding: 12px 14px;
+	border: 1px solid var(--pep-color-border);
+	border-radius: var(--pep-radius-small);
+	background: var(--pep-color-white);
+	color: var(--pep-color-ink);
+	font-family: var(--pep-font-interface);
+	font-size: 16px;
+	transition: border-color 140ms ease, box-shadow 140ms ease;
+}
+
+.pepselect-login__form input:focus {
+	outline: none;
+	border-color: var(--pep-color-cyan);
+	box-shadow: 0 0 0 3px rgb(23 161 207 / 15%);
+}
+
+.pepselect-login__form .woocommerce-form-login__rememberme {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	color: var(--pep-color-slate);
+	font-size: 14px;
+	margin-bottom: 16px;
+}
+
+.pepselect-login__form button[type="submit"] {
+	width: 100%;
+	padding: 13px 24px;
+	border: 0;
+	border-radius: var(--pep-radius-pill);
+	background: var(--pep-color-cyan);
+	color: var(--pep-color-white);
+	font-family: var(--pep-font-interface);
+	font-size: 15px;
+	font-weight: 700;
+	cursor: pointer;
+	transition: background-color 140ms ease, transform 140ms ease;
+}
+
+.pepselect-login__form button[type="submit"]:hover {
+	background: var(--pep-color-navy);
+	transform: translateY(-1px);
+}
+
+.pepselect-login__form .lost_password {
+	margin-top: 14px;
+	font-size: 14px;
+}
+
+.pepselect-login__form .lost_password a {
+	color: var(--pep-color-cyan);
+	text-decoration: none;
+}
+
+.pepselect-login__form .lost_password a:hover {
+	color: var(--pep-color-navy);
+}
+
+.pepselect-login__hint {
+	color: var(--pep-color-slate);
+	font-size: 14px;
+	line-height: 1.55;
+}
+
+/* Register column separated by a rule on desktop. */
+@media (min-width: 721px) {
+	.pepselect-login__col--register {
+		padding-left: 40px;
+		border-left: 1px solid var(--pep-color-border);
+	}
+}
+
+@media (max-width: 720px) {
+	.pepselect-login__forms,
+	.pepselect-login__forms:not(:has(.pepselect-login__col--register)) {
+		grid-template-columns: 1fr;
+		max-width: 400px;
+	}
+
+	.pepselect-login__col--register {
+		padding-left: 0;
+		border-left: 0;
+		padding-top: 32px;
+		border-top: 1px solid var(--pep-color-border);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.pepselect-login__form button[type="submit"],
+	.pepselect-login__form input {
+		transition: none;
+	}
+
+	.pepselect-login__form button[type="submit"]:hover {
+		transform: none;
+	}
+}
+
+/* Hide WooCommerce's "My account" page title on the logged-out login view;
+ * the card's own "Sign in" heading gives the context. Logged-in account pages
+ * keep their title. */
+.woocommerce-account:not(.logged-in) .entry-title,
+.woocommerce-account:not(.logged-in) .page-title,
+body.woocommerce-account:not(.logged-in) h1.entry-title {
+	display: none;
+}
+
+/* Nextend's real Google button (Pro, placed via WooCommerce integration).
+ * Constrain and center it above the forms; keep Nextend's own branding. */
+.pepselect-login .nsl-container {
+	max-width: 420px;
+	margin: 0 auto 8px !important;
+}
+
+.pepselect-login .nsl-container .nsl-container-buttons {
+	margin: 0 !important;
+}
+
+.pepselect-login .nsl-container .nsl-button {
+	width: 100% !important;
+	border-radius: var(--pep-radius-pill) !important;
+	overflow: hidden;
+}
+
+/* Nextend renders an "or" divider itself in some layouts; if not, this stays
+ * hidden harmlessly. Stretch columns to equal height. */
+.pepselect-login__forms {
+	align-items: stretch;
+}
+
+.pepselect-login__col {
+	display: flex;
+	flex-direction: column;
+}
+
+/* If Nextend wraps the form area, let it grow so both cards match height. */
+.pepselect-login__col .woocommerce-form,
+.pepselect-login__col form {
+	flex: 1 1 auto;
+}
+
+/* Shrink WooCommerce's registration privacy notice to the minimum: one small,
+ * muted line so the register column is not visually heavier than login. */
+.pepselect-login .woocommerce-privacy-policy-text,
+.pepselect-login .woocommerce-privacy-policy-text p {
+	margin: 6px 0 0;
+	color: var(--pep-color-neutral);
+	font-size: 11px;
+	line-height: 1.4;
+}
+
+.pepselect-login .woocommerce-privacy-policy-text a {
+	color: var(--pep-color-cyan);
+}

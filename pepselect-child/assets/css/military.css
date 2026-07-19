@@ -1,0 +1,209 @@
+/*
+ * Military & First Responder page presentation.
+ *
+ * A centered hero introduces the program, then a single elevated card holds
+ * the three-step process and the VerifyPass action. The hero title uses our
+ * interface display face with a cyan second line (our signature), NOT the
+ * serif-italic centered hero that reads as a competitor's look. The 01/02/03
+ * numbering is a real sequence, so it is earned. The VerifyPass button is
+ * authored HTML in the page content; we override its inline styles to the
+ * brand cyan pill without touching its behavior.
+ */
+
+.pepselect-military {
+	background: var(--pep-color-white);
+	font-family: var(--pep-font-interface);
+}
+
+.pepselect-military__inner {
+	width: min(100%, calc(var(--pep-content-max-width) + (2 * var(--pep-layout-gutter))));
+	margin: 0 auto;
+	padding-inline: var(--pep-layout-gutter);
+}
+
+/* Hero. */
+.pepselect-military__hero {
+	padding-block: 88px 40px;
+	text-align: center;
+	background: linear-gradient(180deg, var(--pep-color-cyan-soft) 0%, var(--pep-color-white) 100%);
+}
+
+.pepselect-military__eyebrow {
+	margin: 0 0 18px;
+	color: var(--pep-color-cyan);
+	font-size: 14px;
+	font-weight: 700;
+	letter-spacing: 0.18em;
+	text-transform: uppercase;
+}
+
+.pepselect-military__title {
+	max-width: 20ch;
+	margin: 0 auto 22px;
+	font-family: var(--pep-font-interface);
+	font-weight: 800;
+	font-size: clamp(2.2rem, 5vw, 3.4rem);
+	line-height: 1.08;
+	letter-spacing: -0.02em;
+}
+
+.pepselect-military__title span {
+	display: block;
+	color: var(--pep-color-navy);
+}
+
+.pepselect-military__title em {
+	display: block;
+	font-style: normal;
+	color: var(--pep-color-cyan);
+}
+
+.pepselect-military__lead {
+	max-width: 52ch;
+	margin: 0 auto;
+	color: var(--pep-color-slate);
+	font-size: 18px;
+	line-height: 1.6;
+}
+
+/* Body: single elevated card. */
+.pepselect-military__body {
+	padding-block: 24px 96px;
+}
+
+.pepselect-military__card {
+	max-width: 720px;
+	padding: clamp(28px, 5vw, 48px);
+	border: 1px solid var(--pep-color-border);
+	border-radius: var(--pep-radius-large);
+	background: var(--pep-color-white);
+	box-shadow: 0 24px 60px rgb(0 42 83 / 8%);
+}
+
+.pepselect-military__steps {
+	display: grid;
+	gap: 26px;
+	margin: 0 0 34px;
+	padding: 0;
+	list-style: none;
+}
+
+.pepselect-military__step {
+	display: grid;
+	grid-template-columns: 44px minmax(0, 1fr);
+	gap: 20px;
+	align-items: start;
+}
+
+.pepselect-military__step:not(:last-child) {
+	padding-bottom: 26px;
+	border-bottom: 1px solid var(--pep-color-border);
+}
+
+.pepselect-military__step-number {
+	font-family: var(--pep-font-technical);
+	font-size: 20px;
+	font-weight: 600;
+	line-height: 1.3;
+	color: var(--pep-color-cyan);
+	letter-spacing: 0.02em;
+}
+
+.pepselect-military__step-title {
+	margin: 0 0 6px;
+	color: var(--pep-color-navy);
+	font-family: var(--pep-font-interface);
+	font-size: 18px;
+	font-weight: 700;
+	line-height: 1.35;
+}
+
+.pepselect-military__step-body p {
+	margin: 0;
+	color: var(--pep-color-slate);
+	font-size: 16px;
+	line-height: 1.6;
+}
+
+/* Action: button + fine print, centered. */
+.pepselect-military__action {
+	text-align: center;
+}
+
+.pepselect-military__verify {
+	margin-bottom: 16px;
+}
+
+/*
+ * The authored VerifyPass button carries its own inline styles (a lighter
+ * blue, small radius). Override them to the brand cyan pill. Behavior and
+ * onclick are untouched; this is presentation only, scoped to this page.
+ */
+.pepselect-military__verify button {
+	align-items: center !important;
+	display: inline-flex !important;
+	justify-content: center !important;
+	box-sizing: border-box !important;
+	height: auto !important;
+	min-height: 0 !important;
+	padding: 15px 34px !important;
+	border: 0 !important;
+	border-radius: var(--pep-radius-pill) !important;
+	background: var(--pep-color-cyan) !important;
+	color: var(--pep-color-white) !important;
+	font-family: var(--pep-font-interface) !important;
+	font-size: 16px !important;
+	font-weight: 700 !important;
+	letter-spacing: 0.01em !important;
+	line-height: 1 !important;
+	vertical-align: middle !important;
+	white-space: nowrap !important;
+	text-transform: none !important;
+	cursor: pointer !important;
+	transition: background-color 160ms ease, transform 160ms ease !important;
+}
+
+.pepselect-military__verify button:hover {
+	background: var(--pep-color-navy) !important;
+	transform: translateY(-1px);
+}
+
+.pepselect-military__verify button:active {
+	transform: translateY(0);
+}
+
+.pepselect-military__verify p {
+	margin: 0;
+}
+
+.pepselect-military__fineprint {
+	margin: 0;
+	color: var(--pep-color-neutral);
+	font-size: 13px;
+	line-height: 1.5;
+}
+
+@media (max-width: 767px) {
+	.pepselect-military__hero {
+		padding-block: 56px 28px;
+	}
+
+	.pepselect-military__body {
+		padding-block: 20px 64px;
+	}
+
+	.pepselect-military__step {
+		grid-template-columns: 36px minmax(0, 1fr);
+		gap: 14px;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.pepselect-military__verify button {
+		transition: none !important;
+	}
+
+	.pepselect-military__verify button:hover {
+		transform: none;
+	}
+}

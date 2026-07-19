@@ -135,21 +135,37 @@ function pepselect_child_get_orders_url() {
 }
 
 /**
+ * Return the guest order-tracking URL.
+ *
+ * Prefers the published /track-your-order/ page carrying the WooCommerce
+ * order-tracking shortcode, so guests can check an order with only an order
+ * number and billing email. Falls back to the account orders endpoint until
+ * that page exists, so the footer never links to a 404.
+ *
+ * @return string
+ */
+function pepselect_child_get_track_order_url() {
+	$page = get_page_by_path( 'track-your-order' );
+
+	if ( $page instanceof WP_Post && 'publish' === $page->post_status ) {
+		return (string) get_permalink( $page );
+	}
+
+	return pepselect_child_get_orders_url();
+}
+
+/**
  * Return the three footer navigation groups from current approved routes.
  *
  * @return array<string,array<int,array<string,string>>>
  */
 function pepselect_child_get_footer_link_groups() {
 	return array(
-		__( 'Explore', 'pepselect-child' ) => array(
-			array( 'label' => __( 'All products', 'pepselect-child' ), 'url' => pepselect_child_get_shop_url() ),
-			array( 'label' => __( 'About us', 'pepselect-child' ), 'url' => pepselect_child_get_page_url( 'about-us' ) ),
-			array( 'label' => __( 'FAQ', 'pepselect-child' ), 'url' => pepselect_child_get_page_url( 'faq' ) ),
-		),
 		__( 'Support', 'pepselect-child' ) => array(
 			array( 'label' => __( 'Contact us', 'pepselect-child' ), 'url' => pepselect_child_get_page_url( 'contact' ) ),
+			array( 'label' => __( 'FAQ', 'pepselect-child' ), 'url' => pepselect_child_get_faq_url() ),
 			array( 'label' => __( 'Certificate of Analysis', 'pepselect-child' ), 'url' => home_url( '/testing/' ) ),
-			array( 'label' => __( 'Track your order', 'pepselect-child' ), 'url' => pepselect_child_get_orders_url() ),
+			array( 'label' => __( 'Track your order', 'pepselect-child' ), 'url' => pepselect_child_get_track_order_url() ),
 			array( 'label' => __( 'Military & First responder discount', 'pepselect-child' ), 'url' => pepselect_child_get_page_url( 'military-discount' ) ),
 		),
 		__( 'Legal', 'pepselect-child' ) => array(

@@ -1,0 +1,234 @@
+/*
+ * FAQ page presentation.
+ *
+ * Header follows the Pep Select utility-page signature: a small label as the
+ * page title, left-aligned, in a split layout (heading left, questions right
+ * on desktop). The accordion reuses the homepage FAQ visual language so the
+ * two read as one system. Colors, radii, and type come from foundations.css.
+ */
+
+.pepselect-faq {
+	background: var(--pep-color-white);
+	font-family: var(--pep-font-interface);
+}
+
+.pepselect-faq__section {
+	padding-block: 72px 96px;
+}
+
+.pepselect-faq__inner {
+	width: min(100%, calc(var(--pep-content-max-width) + (2 * var(--pep-layout-gutter))));
+	margin: 0 auto;
+	padding-inline: var(--pep-layout-gutter);
+}
+
+/* Split layout: heading column left, questions column right. */
+.pepselect-faq__grid {
+	display: grid;
+	grid-template-columns: minmax(240px, 0.66fr) minmax(0, 1.34fr);
+	gap: 80px;
+	align-items: start;
+}
+
+.pepselect-faq__heading {
+	position: sticky;
+	top: 30px;
+	max-width: 34ch;
+}
+
+.pepselect-faq__eyebrow {
+	margin-bottom: 14px;
+	color: var(--pep-color-cyan);
+	font-size: 17px;
+	font-weight: 700;
+	letter-spacing: 0.13em;
+	text-transform: uppercase;
+}
+
+.pepselect-faq__lead {
+	color: var(--pep-color-slate);
+	font-size: 17px;
+	line-height: 1.6;
+}
+
+.pepselect-faq__lead-link {
+	color: var(--pep-color-navy);
+	font-weight: 600;
+	text-decoration: underline;
+	text-underline-offset: 2px;
+}
+
+.pepselect-faq__lead-link:hover {
+	color: var(--pep-color-cyan);
+}
+
+/* Sectioned questions. */
+.pepselect-faq__content {
+	display: grid;
+	gap: 48px;
+}
+
+.pepselect-faq__group-title {
+	margin-bottom: 18px;
+	padding-bottom: 12px;
+	border-bottom: 1px solid var(--pep-color-border);
+	color: var(--pep-color-navy);
+	font-family: var(--pep-font-interface);
+	font-size: 15px;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+}
+
+.pepselect-faq__accordion {
+	display: grid;
+	gap: 14px;
+}
+
+/*
+ * Each question is a bordered card. Every interactive state declares an
+ * explicit palette background and color so retained Elementor global button
+ * styles cannot bleed into the coded accordion. Mirrors the homepage FAQ.
+ */
+.pepselect-faq__accordion-item {
+	overflow: hidden;
+	border: 1px solid var(--pep-color-border);
+	border-radius: var(--pep-radius-medium);
+	background: var(--pep-color-white);
+	transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.pepselect-faq__accordion-item:hover {
+	border-color: var(--pep-color-cyan);
+	box-shadow: 0 6px 18px rgb(0 42 83 / 8%);
+}
+
+.pepselect-faq__accordion-item h3 {
+	margin-bottom: 0;
+}
+
+.pepselect-faq .pepselect-faq__accordion-item button,
+.pepselect-faq .pepselect-faq__accordion-item button:hover,
+.pepselect-faq .pepselect-faq__accordion-item button:focus,
+.pepselect-faq .pepselect-faq__accordion-item button:active,
+.pepselect-faq .pepselect-faq__accordion-item button[aria-expanded="true"] {
+	border: 0;
+	border-radius: 0;
+	color: var(--pep-color-navy);
+	background: var(--pep-color-white);
+	box-shadow: none;
+	text-transform: none;
+	appearance: none;
+}
+
+.pepselect-faq__accordion-item button {
+	display: grid;
+	width: 100%;
+	min-height: 68px;
+	grid-template-columns: minmax(0, 1fr) 28px;
+	gap: 20px;
+	align-items: center;
+	padding: 18px 22px;
+	font-family: var(--pep-font-interface);
+	font-size: 16px;
+	font-weight: 600;
+	line-height: 1.35;
+	text-align: left;
+	cursor: pointer;
+}
+
+.pepselect-faq .pepselect-faq__accordion-item button:hover {
+	color: var(--pep-color-dark-navy);
+}
+
+.pepselect-faq__accordion-icon {
+	position: relative;
+	display: block;
+	width: 26px;
+	height: 26px;
+	border: 1px solid var(--pep-color-border);
+	border-radius: 50%;
+	transition: border-color 180ms ease, transform 180ms ease;
+}
+
+.pepselect-faq__accordion-icon::before,
+.pepselect-faq__accordion-icon::after {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 10px;
+	height: 2px;
+	background: var(--pep-color-navy);
+	content: "";
+	transform: translate(-50%, -50%);
+}
+
+.pepselect-faq__accordion-icon::after {
+	transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.pepselect-faq__accordion-item button[aria-expanded="true"] .pepselect-faq__accordion-icon {
+	border-color: var(--pep-color-cyan);
+	transform: rotate(45deg);
+}
+
+.pepselect-faq__accordion-panel {
+	padding: 0 54px 22px 22px;
+	color: var(--pep-color-slate);
+}
+
+.pepselect-faq__accordion-panel p {
+	margin: 0;
+	font-size: 16px;
+	line-height: 1.65;
+}
+
+.pepselect-faq__accordion-panel p + p {
+	margin-top: 12px;
+}
+
+.pepselect-faq__accordion-panel a {
+	color: var(--pep-color-navy);
+	font-weight: 600;
+	text-decoration: underline;
+	text-underline-offset: 2px;
+}
+
+.pepselect-faq__accordion-panel a:hover {
+	color: var(--pep-color-cyan);
+}
+
+.pepselect-faq__accordion-panel[hidden] {
+	display: none;
+}
+
+@media (max-width: 1024px) {
+	.pepselect-faq__grid {
+		grid-template-columns: 1fr;
+		gap: 40px;
+	}
+
+	.pepselect-faq__heading {
+		position: static;
+		max-width: none;
+	}
+}
+
+@media (max-width: 767px) {
+	.pepselect-faq__section {
+		padding-block: 48px 64px;
+	}
+
+	.pepselect-faq__content {
+		gap: 40px;
+	}
+
+	.pepselect-faq__accordion-item button {
+		font-size: 15px;
+		padding: 16px 18px;
+	}
+
+	.pepselect-faq__accordion-panel {
+		padding: 0 22px 20px 18px;
+	}
+}

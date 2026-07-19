@@ -12,6 +12,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 require_once get_stylesheet_directory() . '/inc/header-preview.php';
 require_once get_stylesheet_directory() . '/inc/footer-preview.php';
 require_once get_stylesheet_directory() . '/inc/homepage-preview.php';
+require_once get_stylesheet_directory() . '/inc/customizer-hero.php';
+require_once get_stylesheet_directory() . '/inc/compound-search.php';
+require_once get_stylesheet_directory() . '/inc/compound-status.php';
+require_once get_stylesheet_directory() . '/inc/archive-compounds.php';
+require_once get_stylesheet_directory() . '/inc/compound-content.php';
+require_once get_stylesheet_directory() . '/inc/single-product.php';
+require_once get_stylesheet_directory() . '/inc/faq-page.php';
+require_once get_stylesheet_directory() . '/inc/contact-page.php';
+require_once get_stylesheet_directory() . '/inc/military-page.php';
+require_once get_stylesheet_directory() . '/inc/account.php';
 
 /**
  * Determine whether the required Hello Elementor parent theme is available.

@@ -1,0 +1,431 @@
+/**
+ * Unified compound card, shared by the homepage grid and the compounds
+ * archive. Typography follows the approved editorial treatment; corners
+ * are concentric with the card frame.
+ */
+
+.pepselect-card {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	overflow: hidden;
+	border: 1px solid var(--pep-color-border);
+	border-radius: 24px;
+	background: var(--pep-color-white);
+	transition: box-shadow 180ms var(--pep-home-ease, ease), transform 180ms var(--pep-home-ease, ease);
+}
+
+.pepselect-card:hover {
+	box-shadow: 0 14px 34px rgb(0 42 83 / 12%);
+	transform: translateY(-2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.pepselect-card,
+	.pepselect-card:hover {
+		transform: none;
+		transition: none;
+	}
+}
+
+.pepselect-card__media {
+	display: grid;
+	aspect-ratio: 7 / 8;
+	padding: 10px;
+	background: linear-gradient(180deg, var(--pep-color-surface), var(--pep-color-cyan-soft));
+	place-items: center;
+}
+
+.pepselect-card__media img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	border-radius: 14px;
+	object-fit: cover;
+}
+
+.pepselect-card__body {
+	display: flex;
+	flex: 1 1 auto;
+	flex-direction: column;
+	align-items: flex-start;
+	padding: 18px 20px 20px;
+}
+
+.pepselect-card .pepselect-card__strength {
+	display: inline-flex;
+	align-items: center;
+	padding: 6px 14px;
+	margin-bottom: 12px;
+	border: 1px solid var(--pep-color-border);
+	border-radius: var(--pep-radius-pill);
+	color: var(--pep-color-navy);
+	background: var(--pep-color-surface);
+	font-family: var(--pep-font-technical);
+	font-size: 13px;
+	font-weight: 600;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+}
+
+.pepselect-card {
+	position: relative;
+}
+
+.pepselect-card .pepselect-card__title {
+	min-height: 2.3em;
+	margin: 0 0 10px;
+	color: var(--pep-color-navy);
+	font-family: var(--pep-font-editorial);
+	font-size: 30px;
+	font-weight: var(--pep-font-weight-bold);
+	line-height: 1.15;
+}
+
+.pepselect-card .pepselect-card__title a {
+	color: var(--pep-color-navy);
+	font-family: inherit;
+	text-decoration: none;
+}
+
+.pepselect-card .pepselect-card__title a:hover {
+	color: var(--pep-color-cyan);
+}
+
+.pepselect-card__status {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	align-items: flex-start;
+	justify-content: flex-end;
+	min-height: 76px;
+	margin-bottom: 12px;
+}
+
+.pepselect-card .pepselect-card__stock {
+	margin: 0;
+	font-family: var(--pep-font-interface);
+	font-size: 16px;
+	font-weight: var(--pep-font-weight-semibold);
+}
+
+.pepselect-card__stock--available {
+	color: var(--pep-color-green);
+}
+
+.pepselect-card__stock--out {
+	color: var(--pep-color-red);
+}
+
+.pepselect-card .pepselect-card__band {
+	display: inline-flex;
+	align-items: center;
+	padding: 5px 12px;
+	margin: 0;
+	border-radius: var(--pep-radius-small);
+	font-family: var(--pep-font-interface);
+	font-size: 13px;
+	font-weight: var(--pep-font-weight-semibold);
+}
+
+.pepselect-card__band--testing {
+	color: var(--pep-color-amber);
+	background: var(--pep-color-amber-soft);
+}
+
+.pepselect-card__band--incoming {
+	color: var(--pep-color-navy);
+	background: var(--pep-color-cyan-soft);
+}
+
+.pepselect-card .pepselect-card__price {
+	margin: 0 0 16px;
+	color: var(--pep-color-navy);
+	font-family: var(--pep-font-editorial);
+	font-size: 26px;
+	font-weight: var(--pep-font-weight-bold);
+	line-height: 1.1;
+}
+
+.pepselect-card__price del {
+	margin-right: 8px;
+	color: var(--pep-color-neutral);
+	font-weight: 400;
+}
+
+.pepselect-card__action {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: 44px;
+	margin-top: auto;
+	padding: 0 16px;
+	white-space: nowrap;
+	border: 1px solid var(--pep-color-cyan);
+	border-radius: var(--pep-radius-medium);
+	color: var(--pep-color-navy);
+	background: var(--pep-color-white);
+	font-family: var(--pep-font-interface);
+	font-size: 15px;
+	font-weight: var(--pep-font-weight-semibold);
+	text-decoration: none;
+	transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease;
+}
+
+.pepselect-card__action:hover {
+	border-color: var(--pep-color-navy);
+	color: var(--pep-color-white);
+	background: var(--pep-color-navy);
+}
+
+.pepselect-card__action--notify {
+	border-color: var(--pep-color-border);
+	color: var(--pep-color-slate);
+	font-size: 14px;
+}
+
+.pepselect-card__action--notify:hover {
+	border-color: var(--pep-color-navy);
+	color: var(--pep-color-white);
+	background: var(--pep-color-navy);
+}
+
+/*
+ * Enlarged back-in-stock dialog: the card grows into a centered modal with
+ * the product identity and the waitlist plugin form. The plugin stylesheet
+ * does not load here, so its Bootstrap skeleton is neutralized in scope;
+ * the theme template override will replace that scaffolding.
+ */
+.pepselect-notify-dialog {
+	width: min(92vw, 460px);
+	padding: 28px;
+	border: 1px solid var(--pep-color-border);
+	border-radius: 24px;
+	background: var(--pep-color-white);
+	box-shadow: 0 30px 80px rgb(0 29 58 / 30%);
+}
+
+.pepselect-notify-dialog::backdrop {
+	background: rgb(0 29 58 / 45%);
+}
+
+.pepselect-notify-dialog__close,
+.pepselect-notify-dialog__close:hover,
+.pepselect-notify-dialog__close:focus,
+.pepselect-notify-dialog__close:active {
+	position: absolute;
+	top: 14px;
+	right: 14px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 36px;
+	height: 36px;
+	padding: 0;
+	border: 1px solid var(--pep-color-border);
+	border-radius: 50%;
+	color: var(--pep-color-navy);
+	background: var(--pep-color-white);
+	box-shadow: none;
+	font-size: 19px;
+	line-height: 1;
+	cursor: pointer;
+	appearance: none;
+}
+
+.pepselect-notify-dialog__close:hover {
+	border-color: var(--pep-color-cyan);
+}
+
+.pepselect-notify-dialog__identity {
+	display: flex;
+	gap: 16px;
+	align-items: center;
+	margin-bottom: 14px;
+}
+
+.pepselect-notify-dialog__identity img {
+	width: 84px;
+	height: 84px;
+	border: 1px solid var(--pep-color-border);
+	border-radius: 16px;
+	object-fit: cover;
+}
+
+.pepselect-notify-dialog__title {
+	margin: 6px 0 0;
+	color: var(--pep-color-navy);
+	font-family: var(--pep-font-editorial);
+	font-size: 24px;
+	font-weight: var(--pep-font-weight-bold);
+	line-height: 1.15;
+}
+
+.pepselect-notify-dialog__lead {
+	margin: 0 0 18px;
+	color: var(--pep-color-slate);
+	font-family: var(--pep-font-interface);
+	font-size: 15px;
+	line-height: 1.55;
+}
+
+.pepselect-notify-dialog .panel-heading,
+.pepselect-notify-dialog .cwginstock-panel-heading,
+.pepselect-notify-dialog h4 {
+	display: none;
+}
+
+.pepselect-notify-dialog .panel,
+.pepselect-notify-dialog .panel-body,
+.pepselect-notify-dialog .cwginstock-panel-body {
+	padding: 0;
+	border: 0;
+	background: transparent;
+	box-shadow: none;
+}
+
+.pepselect-notify-dialog .form-control,
+.pepselect-notify-dialog input[type="email"],
+.pepselect-notify-dialog input[type="text"] {
+	width: 100%;
+	min-height: 46px;
+	margin-bottom: 12px;
+	padding: 8px 16px;
+	border: 1px solid var(--pep-color-border);
+	border-radius: var(--pep-radius-medium);
+	background: var(--pep-color-surface);
+	font: inherit;
+}
+
+.pepselect-notify-dialog .cwg-agreetext,
+.pepselect-notify-dialog label {
+	display: flex;
+	gap: 8px;
+	align-items: flex-start;
+	margin-bottom: 14px;
+	color: var(--pep-color-slate);
+	font-family: var(--pep-font-interface);
+	font-size: 13px;
+	line-height: 1.45;
+	text-align: left;
+}
+
+.pepselect-notify-dialog input[type="checkbox"] {
+	flex: 0 0 auto;
+	width: 18px;
+	height: 18px;
+	margin-top: 1px;
+	accent-color: var(--pep-color-navy);
+}
+
+.pepselect-notify-dialog a {
+	color: var(--pep-color-cyan);
+}
+
+.pepselect-notify-dialog [class*="col-"] {
+	width: 100%;
+	padding: 0;
+}
+
+.pepselect-notify-dialog button[type="submit"],
+.pepselect-notify-dialog input[type="submit"],
+.pepselect-notify-dialog .cwginstock_subscribe {
+	width: 100%;
+	min-height: 46px;
+	padding: 10px 18px;
+	border: 0;
+	border-radius: var(--pep-radius-medium);
+	color: var(--pep-color-white);
+	background: var(--pep-color-navy);
+	font-family: var(--pep-font-interface);
+	font-weight: var(--pep-font-weight-semibold);
+	cursor: pointer;
+	white-space: normal;
+}
+
+@media (max-width: 480px) {
+	.pepselect-notify-dialog {
+		width: 94vw;
+		padding: 22px 18px;
+	}
+}
+
+/* Confirmation view after a successful subscription. */
+.pepselect-notify-dialog__form-view[hidden],
+.pepselect-notify-dialog__success[hidden] {
+	display: none;
+}
+
+.pepselect-notify-dialog__success-title {
+	margin: 6px 0 10px;
+	color: var(--pep-color-navy);
+	font-family: var(--pep-font-interface);
+	font-size: 26px;
+	font-weight: var(--pep-font-weight-bold);
+}
+
+.pepselect-notify-dialog__success-copy {
+	margin: 0 0 20px;
+	color: var(--pep-color-slate);
+	font-family: var(--pep-font-interface);
+	font-size: 15px;
+	line-height: 1.55;
+}
+
+.pepselect-notify-dialog__success-copy strong {
+	color: var(--pep-color-navy);
+	overflow-wrap: anywhere;
+}
+
+.pepselect-notify-dialog__continue,
+.pepselect-notify-dialog__continue:hover,
+.pepselect-notify-dialog__continue:focus {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	min-height: 46px;
+	padding: 10px 18px;
+	border: 0;
+	border-radius: var(--pep-radius-medium);
+	color: var(--pep-color-white);
+	background: var(--pep-color-navy);
+	font-family: var(--pep-font-interface);
+	font-size: 15px;
+	font-weight: var(--pep-font-weight-semibold);
+	text-decoration: none;
+}
+
+.pepselect-notify-dialog__continue:hover {
+	background: var(--pep-color-dark-navy);
+}
+
+/* Shared small-viewport card scale, identical on every page. */
+@media (max-width: 767px) {
+	.pepselect-card__body {
+		padding: 14px 14px 16px;
+	}
+
+	.pepselect-card .pepselect-card__title {
+		min-height: 2.2em;
+		font-size: 22px;
+	}
+
+	.pepselect-card .pepselect-card__price {
+		font-size: 21px;
+	}
+
+	.pepselect-card .pepselect-card__stock {
+		font-size: 15px;
+	}
+
+	.pepselect-card .pepselect-card__strength {
+		padding: 5px 12px;
+		font-size: 12px;
+	}
+
+	.pepselect-card__status {
+		min-height: 66px;
+	}
+}

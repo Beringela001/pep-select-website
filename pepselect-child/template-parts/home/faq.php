@@ -15,7 +15,7 @@ $faqs    = isset( $args['faqs'] ) ? array_slice( (array) $args['faqs'], 0, 5 ) :
 <section class="pepselect-home__section pepselect-home__faq" aria-labelledby="pepselect-faq-title">
 	<div class="pepselect-home__inner pepselect-home__faq-grid">
 		<div class="pepselect-home__faq-heading">
-			<h2 id="pepselect-faq-title"><?php esc_html_e( 'Questions before you order?', 'pepselect-child' ); ?></h2>
+			<h2 id="pepselect-faq-title"><?php esc_html_e( 'The questions we hear most.', 'pepselect-child' ); ?></h2>
 			<a class="pepselect-home__text-link" href="<?php echo esc_url( $faq_url ); ?>"><?php esc_html_e( 'Read All FAQs', 'pepselect-child' ); ?></a>
 		</div>
 
