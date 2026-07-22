@@ -2,6 +2,12 @@
 
 All notable changes to the Pep Select child theme are documented here.
 
+## 0.16.0-beta.6 - 2026-07-22
+
+- Replaced the native YITH points message on the single compound page with a coded cash-back pill that reads the earn rate live from Points & Rewards (global rate or any per-product/category override), converts it to an effective percentage against price, and hides itself when Points & Rewards is inactive or the product earns nothing. The pill keeps the theme's existing cyan treatment; the native YITH message is suppressed via filter and CSS to avoid duplication.
+- Built the Buy 4, Get 1 Free pill (gift icon, "Buy 4, get the 5th free") in the theme's amber treatment, matching the on-hold email. It is gated behind `pepselect_product_has_b4g1()`, which returns false until YITH Dynamic Pricing is installed, so it renders nowhere for now.
+- Both pills sit in a wrapping flex row hooked into `woocommerce_single_product_summary` above the pricing, B4G1 first when present and cash-back second. The row is only emitted when at least one pill qualifies, so a lone cash-back pill leaves no empty gap.
+
 ## 0.8.0-beta.8 - 2026-07-18
 
 - Rewrote Research context for nine compounds from a fresh sourced research pass, tying each bullet to the area of genuine research interest (skin and pigmentation, appetite and body-weight biology, wound healing, exercise capacity, mitochondrial energy) with its underlying study, while holding the mechanism-only, no-human-use register. PT-141, TB-500, and BPC-157 keep their prior bullets pending a tighter source pass, since verifiable primary studies were not confirmed for them.

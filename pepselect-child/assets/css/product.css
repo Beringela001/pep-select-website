@@ -520,21 +520,58 @@
 	}
 }
 
-/* Points/rewards message rendered as a standalone pill above the pricing. */
+/*
+ * Product promotion pills: a wrapping flex row above the pricing holding the
+ * B4G1 pill (when present) and the cash-back pill. The row is only emitted when
+ * at least one pill qualifies, so a lone pill leaves no empty gap.
+ */
+.pepselect-product-pills {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin: 0 0 18px;
+}
+
+.pepselect-pill {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 8px 16px;
+	border: 1px solid transparent;
+	border-radius: var(--pep-radius-pill);
+	font-size: 13px;
+	font-weight: var(--pep-font-weight-semibold);
+	line-height: 1.2;
+}
+
+.pepselect-pill__icon {
+	flex: 0 0 auto;
+}
+
+/* Cash-back pill keeps the theme's established cyan pill treatment. */
+.pepselect-cashback-pill {
+	border-color: var(--pep-color-cyan);
+	background: var(--pep-color-cyan-soft);
+	color: var(--pep-color-navy);
+}
+
+/* B4G1 pill mirrors the on-hold email's amber treatment. */
+.pepselect-b4g1-pill {
+	border-color: var(--pep-color-amber);
+	background: var(--pep-color-amber-soft);
+	color: var(--pep-color-amber);
+}
+
+/*
+ * Suppress YITH's native on-product earn message. The coded cash-back pill
+ * above is the single source of truth for the rate; a filter also disables it
+ * in PHP, and this rule guards versions that hook it through other paths.
+ */
 .pepselect-compound-page__summary .ywpar_message_cart,
 .pepselect-compound-page__summary .ywpar-message,
 .pepselect-compound-page__summary .yith-par-message,
 .pepselect-compound-page__summary p.ywpar_earn_points {
-	display: inline-flex;
-	align-items: center;
-	margin: 0 0 18px;
-	padding: 8px 16px;
-	border: 1px solid var(--pep-color-cyan);
-	border-radius: var(--pep-radius-pill);
-	background: var(--pep-color-cyan-soft);
-	color: var(--pep-color-navy);
-	font-size: 13px;
-	font-weight: var(--pep-font-weight-semibold);
+	display: none;
 }
 
 /* --- Lightbox: floating image, notify-dialog language --- */
