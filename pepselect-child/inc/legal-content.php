@@ -113,7 +113,7 @@ function pepselect_child_get_legal_documents() {
 				),
 				array(
 					'type' => 'paragraph',
-					'html' => 'Orders are typically processed within 1–2 business days of confirmed payment. Transit times provided by carriers are estimates and are outside our control. Risk of loss and title pass to you when the package is delivered to the carrier. PepSelect is not responsible for delays caused by carriers, weather, customs, or other circumstances beyond our control. Full details are set out in our Refund &amp; Shipping Policy, which is incorporated into these Terms.',
+					'html' => 'Processing and dispatch times are set out in our Refund &amp; Shipping Policy. Transit times provided by carriers are estimates and are outside our control. Risk of loss and title pass to you when the package is delivered to the carrier. PepSelect is not responsible for delays caused by carriers, weather, customs, or other circumstances beyond our control. Full details are set out in our Refund &amp; Shipping Policy, which is incorporated into these Terms.',
 				),
 				array(
 					'type'  => 'heading',
@@ -501,7 +501,7 @@ function pepselect_child_get_legal_documents() {
 				),
 				array(
 					'type' => 'paragraph',
-					'html' => 'Orders are typically processed and handed to the carrier within 1–2 business days of confirmed payment. Once your order ships, you will receive tracking information by email. Delivery estimates begin when the carrier takes possession of the package; transit times, delays, and final delivery are the responsibility of the carrier and are outside our control. We currently ship within the United States only.',
+					'html' => 'Once your order ships, you will receive tracking information by email. Delivery estimates begin when the carrier takes possession of the package; transit times, delays, and final delivery are the responsibility of the carrier and are outside our control. We currently ship within the United States only.',
 				),
 				array(
 					'type'  => 'heading',

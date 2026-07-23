@@ -4,6 +4,11 @@ All notable changes to the Pep Select child theme are documented here.
 
 **Live version: 0.17.0-beta.1** — deployed to production (www.pepselect.com) on 2026-07-23. Everything from 0.16.0-beta.6 onward is on Live, not Staging only: the product B4G1 and cash-back pills (both captured and restyled from YITH plugin output), the live-updating dollar cart pill with the cart hang fixed, the reworked cash-back page (3 stat cards, 4 how-it-works cards, referral code and share link via `[ywpar_referral_link user_id="auto"]`), the restyled coupon form, the removed "Cart" heading, and quantity plus add-to-cart on one row.
 
+## 0.18.0-beta.3 - 2026-07-23
+
+- Removed the conflicting "1–2 business days" processing claim from the Terms & Conditions (Shipping & Risk of Loss) and the Refund & Shipping Policy, so the same-day cutoff copy is the single statement of processing and dispatch time. The Terms now point to the Refund & Shipping Policy for those times, and the policy paragraph begins at the tracking sentence. Risk-of-loss language, refund terms, carrier options, and the free-shipping threshold are unchanged.
+- Shortened the homepage FAQ shipping answer to the cutoff, the holiday note, and the free two-day threshold, dropping the carrier list. The full FAQ answer keeps the carrier options.
+
 ## 0.18.0-beta.2 - 2026-07-23
 
 - Completed the shipping-cutoff copy and made it consistent everywhere it appears. The published wording stated only the before-10:00 AM same-day case; it now states the full schedule: orders before 10:00 AM ET Monday through Thursday ship the same day, orders after that cutoff on those days ship the next day, orders placed Friday through Sunday ship on Monday, and holidays can shift these times when carrier services are closed. The Shipping section of the Refund & Shipping Policy carries this as its own paragraph and is the authoritative statement; the full FAQ answer and the homepage FAQ answer carry the same four facts. The shipping-options facts (USPS Priority, FedEx two-day and next-day, free FedEx two-day at a $200 subtotal), the 50-states-plus-DC coverage, and every other policy statement are unchanged.
