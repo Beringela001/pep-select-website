@@ -21,6 +21,13 @@
 - Use Graphify only when dependency, architecture, or data-flow relationships genuinely require graph analysis.
 - Do not build a Graphify graph for simple searches, isolated files, or straightforward edits.
 
+## Build Artifacts
+- Write every installable build ZIP, theme or plugin, to the `dist/` folder at the repository root.
+- Name it `<package>-<version>.zip`, for example `dist/pepselect-child-0.17.0-beta.3.zip`.
+- Never write build artifacts to the repository root, the theme folder, or anywhere else.
+- Print the ZIP's SHA-256 after every build.
+- Do not commit the contents of `dist/`.
+
 ## Safety Boundaries
 - Live remains untouched unless Paulo explicitly authorizes a deployment milestone.
 - Preserve WooCommerce products, customers, orders, checkout, payments, shipping, rewards, VerifyPass, and COA business logic.
