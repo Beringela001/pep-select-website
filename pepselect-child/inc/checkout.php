@@ -119,6 +119,14 @@ function pepselect_child_enqueue_checkout_assets() {
 			array( 'pepselect-child-foundations' ),
 			pepselect_child_asset_version( 'assets/css/checkout.css' )
 		);
+
+		wp_enqueue_script(
+			'pepselect-child-cart-rewards',
+			get_stylesheet_directory_uri() . '/assets/js/cart-rewards.js',
+			array(),
+			pepselect_child_asset_version( 'assets/js/cart-rewards.js' ),
+			true
+		);
 	}
 }
 add_action( 'wp_enqueue_scripts', 'pepselect_child_enqueue_checkout_assets', 40 );

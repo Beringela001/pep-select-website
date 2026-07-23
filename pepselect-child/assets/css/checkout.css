@@ -235,3 +235,25 @@ li.wc_payment_method.payment_method_bacs .payment_box {
 		transform: none;
 	}
 }
+
+/* Rewards note restyled from YITH's cart/checkout points banner (see
+   assets/js/cart-rewards.js): the trophy banner becomes the cyan cash-back
+   pill, expressed in dollars to match the cash-back framing site-wide. */
+.pepselect-rewards-note {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	margin: 0 0 16px;
+	padding: 8px 16px;
+	border: 1px solid var(--pep-color-cyan);
+	border-radius: var(--pep-radius-pill);
+	background: var(--pep-color-cyan-soft);
+	color: var(--pep-color-navy);
+	font-size: 13px;
+	font-weight: var(--pep-font-weight-semibold);
+	line-height: 1.2;
+}
+
+.pepselect-rewards-note .pepselect-pill__icon {
+	flex: 0 0 auto;
+}

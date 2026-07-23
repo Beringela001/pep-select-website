@@ -2,6 +2,10 @@
 
 All notable changes to the Pep Select child theme are documented here.
 
+## 0.16.0-beta.9 - 2026-07-22
+
+- Restyled YITH Points & Rewards' cart/checkout points banner into the cyan cash-back pill. Because the cart is a client-rendered WooCommerce block cart, this uses a browser script (`assets/js/cart-rewards.js`) that reads YITH's own rendered "you will earn N Points" text (plugin stays the source of truth), drops the trophy, converts points to dollars to match the cash-back framing site-wide (100 points = $1.00, so 2280 points = $22.80), and applies the cash-back pill styling. Keyed on the rendered text, not a plugin class, so it is version-agnostic and a no-op when the banner is absent (e.g. logged-out). Enqueued on cart and checkout.
+
 ## 0.16.0-beta.8 - 2026-07-22
 
 - Quantity input and Add to cart now sit on one row (desktop and mobile): quantity fixed at ~64px, the button fills the remaining width, both the same height and vertically aligned. The empty space below is left untouched for the later current-batch display.
