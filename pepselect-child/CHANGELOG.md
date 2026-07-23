@@ -2,6 +2,11 @@
 
 All notable changes to the Pep Select child theme are documented here.
 
+## 0.16.0-beta.16 - 2026-07-22
+
+- Referral link now renders. YITH's `get_referral_link()` defaults `user_id` to 0 and only outputs when it resolves to a real user, so the shortcode is called as `[ywpar_referral_link user_id="auto"]`. Its output (`#ywpar_referral_link_sc`) is captured and restyled into a copyable field with a Copy button plus the full share link, and YITH's raw block is collapsed only once the values have been read from it.
+- Removed the referral reflection diagnostic and its raw dump; the referral section now renders only when YITH returns real output.
+
 ## 0.16.0-beta.15 - 2026-07-22
 
 - Removed all network and timer work from the cart pill. YITH injects its cart banner client-side from its own blocks bundle, so the previous refresh (re-fetching the cart page and re-parsing it) could never find the banner and only triggered the slow cart request repeatedly, making the pill appear late and then flicker. The pill now mirrors YITH's banner directly: one cheap DOM scan, coalesced to at most once per animation frame, with no fetch, no document parsing, and no timers. Live updates come from YITH re-rendering its own banner.

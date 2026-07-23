@@ -121,11 +121,18 @@
 	}
 
 	function init() {
-		var root = document.querySelector( '[data-pepselect-referral]' );
+		// YITH's shortcode renders #ywpar_referral_link_sc (print_user_referral_field);
+		// fall back to the section wrapper if that id changes.
+		var root =
+			document.querySelector( '#ywpar_referral_link_sc' ) ||
+			document.querySelector( '[data-pepselect-referral]' );
 
 		if ( ! root ) {
 			return;
 		}
+
+		// Keep the styled wrapper as the hide target when we read the inner node.
+		var hideTarget = root.closest( '[data-pepselect-referral]' ) || root;
 
 		var found = harvest( root );
 
@@ -145,11 +152,11 @@
 			host.appendChild( copyField( 'Your share link', found.link, 'pepselect-referral-link' ) );
 		}
 
-		root.parentNode.insertBefore( host, root );
+		hideTarget.parentNode.insertBefore( host, hideTarget );
 
 		// YITH's raw block is now represented by the fields above, so collapse it
 		// rather than showing the same code twice.
-		root.hidden = true;
+		hideTarget.hidden = true;
 	}
 
 	if ( 'loading' !== document.readyState ) {

@@ -46,9 +46,11 @@ $pepselect_slots = function_exists( 'pepselect_child_split_yith_points_output' )
 	);
 
 // Referral code/link comes from YITH's own shortcode, which is not part of the
-// my-points endpoint output.
+// my-points endpoint output. YITH's get_referral_link() defaults user_id to 0
+// and only outputs when it resolves to a real user, so user_id="auto" is
+// required for it to render for the logged-in customer.
 $pepselect_referral_shortcode = shortcode_exists( 'ywpar_referral_link' );
-$pepselect_referral_html      = $pepselect_referral_shortcode ? trim( do_shortcode( '[ywpar_referral_link]' ) ) : '';
+$pepselect_referral_html      = $pepselect_referral_shortcode ? trim( do_shortcode( '[ywpar_referral_link user_id="auto"]' ) ) : '';
 
 if ( '' === $pepselect_referral_html && '' !== trim( (string) $pepselect_slots['referral'] ) ) {
 	$pepselect_referral_html = $pepselect_slots['referral'];
@@ -112,7 +114,7 @@ $pepselect_steps = array(
 		</ol>
 	</section>
 
-	<?php if ( $pepselect_referral_shortcode || '' !== $pepselect_referral_html ) : ?>
+	<?php if ( '' !== $pepselect_referral_html ) : ?>
 		<section class="pepselect-cashback__referral pepselect-cashback__engine" aria-labelledby="pepselect-cashback-referral-title">
 			<h2 id="pepselect-cashback-referral-title" class="pepselect-cashback__section-title"><?php esc_html_e( 'Refer a friend', 'pepselect-child' ); ?></h2>
 			<p class="pepselect-cashback__section-lead"><?php esc_html_e( 'Share your code. They save 10% on their first order, and you earn $15 in cash back once it completes.', 'pepselect-child' ); ?></p>
@@ -120,30 +122,6 @@ $pepselect_steps = array(
 			<?php if ( '' !== $pepselect_referral_html ) : ?>
 				<div class="pepselect-cashback__referral-body" data-pepselect-referral>
 					<?php echo $pepselect_referral_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- YITH's own shortcode markup, re-emitted verbatim. ?>
-				</div>
-			<?php else : ?>
-				<?php
-				$pepselect_desc  = function_exists( 'pepselect_child_describe_shortcode' ) ? pepselect_child_describe_shortcode( 'ywpar_referral_link' ) : array();
-				$pepselect_state = function_exists( 'pepselect_child_referral_state' ) ? pepselect_child_referral_state() : array();
-				?>
-				<div class="pepselect-cashback__referral-empty">
-					<p><?php esc_html_e( 'YITH\'s [ywpar_referral_link] shortcode is registered but returned no output for this account. Its callback is read below, straight from the plugin file on this install, so the exact condition it requires can be identified.', 'pepselect-child' ); ?></p>
-					<pre class="pepselect-cashback__referral-dump"><?php
-					echo esc_html( 'callback: ' . ( isset( $pepselect_desc['callback'] ) ? $pepselect_desc['callback'] : '?' ) . "\n" );
-					echo esc_html( 'file: ' . ( isset( $pepselect_desc['file'] ) ? $pepselect_desc['file'] : '?' ) . "\n" );
-					echo esc_html( 'lines: ' . ( isset( $pepselect_desc['lines'] ) ? $pepselect_desc['lines'] : '?' ) . "\n\n" );
-					echo esc_html( "--- callback source ---\n" );
-					echo esc_html( ! empty( $pepselect_desc['source'] ) ? $pepselect_desc['source'] : '(source unavailable)' );
-					echo esc_html( "\n--- referral options / user meta ---\n" );
-
-					if ( $pepselect_state ) {
-						foreach ( $pepselect_state as $pepselect_key => $pepselect_value ) {
-							echo esc_html( $pepselect_key . ' = ' . $pepselect_value . "\n" );
-						}
-					} else {
-						echo esc_html( '(no referral options or user meta found)' );
-					}
-					?></pre>
 				</div>
 			<?php endif; ?>
 
