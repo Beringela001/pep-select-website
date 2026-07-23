@@ -4,6 +4,10 @@ All notable changes to the Pep Select child theme are documented here.
 
 **Live version: 0.17.0-beta.1** — deployed to production (www.pepselect.com) on 2026-07-23. Everything from 0.16.0-beta.6 onward is on Live, not Staging only: the product B4G1 and cash-back pills (both captured and restyled from YITH plugin output), the live-updating dollar cart pill with the cart hang fixed, the reworked cash-back page (3 stat cards, 4 how-it-works cards, referral code and share link via `[ywpar_referral_link user_id="auto"]`), the restyled coupon form, the removed "Cart" heading, and quantity plus add-to-cart on one row.
 
+## 0.17.0-beta.4 - 2026-07-23
+
+- Tracking resolution now validates that a candidate actually looks like a tracking number before accepting it, so a flag meta such as "1" stored under a tracking-shaped key can no longer render the tracking block. The check requires a plain string of 6 to 40 characters made of letters, digits, spaces, and hyphens with at least four digits, and rejects boolean-ish values, arrays, objects, and serialized data. It is applied to every resolution path, and a candidate that fails is skipped so resolution continues to the next source. The email source comment now also lists the tracking-related meta keys present on the order, keys only, so the real Easyship key can be identified from one shipped order.
+
 ## 0.17.0-beta.3 - 2026-07-23
 
 - The 0.17.0-beta.2 delivery-estimate strip did not apply to Fluid Checkout's shipping options, because Fluid Checkout builds its own option markup from the raw rate label rather than the cart full-label. The strip now also hooks `woocommerce_shipping_rate_label` at a late priority, which is the filter `WC_Shipping_Rate::get_label()` applies, so Fluid Checkout and the WooCommerce Blocks cart inherit it at the source. The cart full-label filter moved to the same late priority in case the rates plugin appends its estimate after us.

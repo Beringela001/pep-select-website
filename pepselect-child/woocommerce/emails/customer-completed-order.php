@@ -123,9 +123,22 @@ if ( ! empty( $order->get_billing_first_name() ) ) {
 		</tr>
 	</table>
 	<?php
-	// Names the meta key the tracking was read from. Visible only in the email
-	// source, so the resolved key can be confirmed on a real shipped order.
+	// Names the meta key the tracking was read from, and every tracking-related
+	// meta key present on the order. Keys only, never values, and visible only in
+	// the email source, so the real key can be confirmed from one shipped order.
 	echo "\n<!-- pepselect tracking source: " . esc_html( $pep_tracking['source'] ) . " -->\n";
+	if ( isset( $pep_tracking['candidates'] ) && '' !== $pep_tracking['candidates'] ) {
+		echo "<!-- pepselect tracking candidates: " . esc_html( $pep_tracking['candidates'] ) . " -->\n";
+	}
+	?>
+<?php else : ?>
+	<?php
+	// No usable tracking was resolved. Still list the tracking-related keys on
+	// the order so the real one can be identified. Keys only, and invisible in
+	// the rendered email.
+	if ( isset( $pep_tracking['candidates'] ) && '' !== $pep_tracking['candidates'] ) {
+		echo "\n<!-- pepselect tracking candidates: " . esc_html( $pep_tracking['candidates'] ) . " -->\n";
+	}
 	?>
 <?php endif; ?>
 

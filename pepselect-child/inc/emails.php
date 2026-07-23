@@ -40,6 +40,98 @@ function pepselect_child_email_tokens() {
 }
 
 /**
+ * Report whether a value actually looks like a shipment tracking number.
+ *
+ * Some integrations store flags under tracking-shaped meta keys, so a key name
+ * alone is not evidence. A completed-order email rendered a tracking number of
+ * "1" from such a flag; every resolution path now runs its candidate through
+ * this check first, and a candidate that fails is skipped so resolution
+ * continues to the next source.
+ *
+ * @param mixed $value Candidate value.
+ * @return bool
+ */
+function pepselect_child_is_plausible_tracking_number( $value ) {
+	// Arrays, objects, and other non-scalars are never tracking numbers.
+	if ( ! is_scalar( $value ) ) {
+		return false;
+	}
+
+	$value = trim( (string) $value );
+
+	if ( '' === $value ) {
+		return false;
+	}
+
+	// Serialized payloads are structured data, not a tracking number.
+	if ( function_exists( 'is_serialized' ) && is_serialized( $value ) ) {
+		return false;
+	}
+
+	// Explicit boolean-ish flags, whatever key they were stored under.
+	$flags = array( '0', '1', 'yes', 'no', 'true', 'false' );
+
+	if ( in_array( strtolower( $value ), $flags, true ) ) {
+		return false;
+	}
+
+	$length = strlen( $value );
+
+	if ( $length < 6 || $length > 40 ) {
+		return false;
+	}
+
+	// Carriers use letters, digits, spaces, and hyphens only.
+	if ( ! preg_match( '/^[A-Za-z0-9 \-]+$/', $value ) ) {
+		return false;
+	}
+
+	// A real tracking number carries digits; four is a conservative floor.
+	if ( preg_match_all( '/\d/', $value ) < 4 ) {
+		return false;
+	}
+
+	return true;
+}
+
+/**
+ * List the tracking-related meta keys present on an order, keys only.
+ *
+ * Easyship does not publish a meta key, so this is the diagnostic that lets the
+ * real one be identified from a single shipped order. Values are deliberately
+ * never included.
+ *
+ * @param WC_Order $order Order object.
+ * @return string Comma-separated key list, capped at 15 entries.
+ */
+function pepselect_child_tracking_meta_key_list( $order ) {
+	if ( ! is_a( $order, 'WC_Order' ) || ! method_exists( $order, 'get_meta_data' ) ) {
+		return '';
+	}
+
+	$keys = array();
+
+	foreach ( $order->get_meta_data() as $meta ) {
+		$data = $meta->get_data();
+		$key  = isset( $data['key'] ) ? (string) $data['key'] : '';
+
+		if ( '' === $key || ! preg_match( '/track|tracking|shipment|easyship/i', $key ) ) {
+			continue;
+		}
+
+		if ( ! in_array( $key, $keys, true ) ) {
+			$keys[] = $key;
+		}
+
+		if ( count( $keys ) >= 15 ) {
+			break;
+		}
+	}
+
+	return implode( ', ', $keys );
+}
+
+/**
  * Resolve shipment tracking for an order.
  *
  * Easyship's own documentation states that tracking is written to the order
@@ -47,23 +139,29 @@ function pepselect_child_email_tokens() {
  * differs between the Easyship integration and generic shipment-tracking
  * plugins. Rather than assume one, this checks known keys first, then falls
  * back to scanning the order's meta for any tracking-shaped key, then to the
- * order notes Easyship writes. The key actually used is returned as 'source' so
- * it can be confirmed on a real shipped order.
+ * order notes Easyship writes. Every candidate must pass
+ * pepselect_child_is_plausible_tracking_number() before it is accepted, so a
+ * flag stored under a tracking-shaped key cannot populate the email. The key
+ * actually used is returned as 'source', and 'candidates' lists the
+ * tracking-related keys found on the order.
  *
  * @param WC_Order $order Order object.
- * @return array{number:string,carrier:string,url:string,source:string}
+ * @return array{number:string,carrier:string,url:string,source:string,candidates:string}
  */
 function pepselect_child_get_order_tracking( $order ) {
 	$found = array(
-		'number'  => '',
-		'carrier' => '',
-		'url'     => '',
-		'source'  => '',
+		'number'     => '',
+		'carrier'    => '',
+		'url'        => '',
+		'source'     => '',
+		'candidates' => '',
 	);
 
 	if ( ! is_a( $order, 'WC_Order' ) ) {
-		return $found;
+		return pepselect_child_finalize_tracking( $found );
 	}
+
+	$found['candidates'] = pepselect_child_tracking_meta_key_list( $order );
 
 	// 1. WooCommerce Shipment Tracking / AST structure, which several
 	// integrations (including Easyship setups) write into.
@@ -73,14 +171,22 @@ function pepselect_child_get_order_tracking( $order ) {
 		$item = reset( $items );
 
 		if ( is_array( $item ) ) {
-			$found['number']  = isset( $item['tracking_number'] ) ? (string) $item['tracking_number'] : '';
-			$found['carrier'] = isset( $item['tracking_provider'] ) && $item['tracking_provider']
-				? (string) $item['tracking_provider']
-				: ( isset( $item['custom_tracking_provider'] ) ? (string) $item['custom_tracking_provider'] : '' );
-			$found['url']     = isset( $item['custom_tracking_link'] ) ? (string) $item['custom_tracking_link'] : '';
-			$found['source']  = '_wc_shipment_tracking_items';
+			$candidate = isset( $item['tracking_number'] ) ? $item['tracking_number'] : '';
 
-			if ( '' !== $found['number'] ) {
+			if ( '' === $found['carrier'] ) {
+				$found['carrier'] = isset( $item['tracking_provider'] ) && $item['tracking_provider']
+					? (string) $item['tracking_provider']
+					: ( isset( $item['custom_tracking_provider'] ) ? (string) $item['custom_tracking_provider'] : '' );
+			}
+
+			if ( '' === $found['url'] && ! empty( $item['custom_tracking_link'] ) ) {
+				$found['url'] = (string) $item['custom_tracking_link'];
+			}
+
+			if ( pepselect_child_is_plausible_tracking_number( $candidate ) ) {
+				$found['number'] = trim( (string) $candidate );
+				$found['source'] = '_wc_shipment_tracking_items';
+
 				return pepselect_child_finalize_tracking( $found );
 			}
 		}
@@ -100,8 +206,8 @@ function pepselect_child_get_order_tracking( $order ) {
 	foreach ( $number_keys as $key ) {
 		$value = $order->get_meta( $key );
 
-		if ( is_string( $value ) && '' !== trim( $value ) ) {
-			$found['number'] = trim( $value );
+		if ( pepselect_child_is_plausible_tracking_number( $value ) ) {
+			$found['number'] = trim( (string) $value );
 			$found['source'] = $key;
 			break;
 		}
@@ -134,23 +240,37 @@ function pepselect_child_get_order_tracking( $order ) {
 	}
 
 	// 3. Unknown key: scan the order's own meta for a tracking-shaped entry.
+	// The key only nominates a candidate; the value still has to look like a
+	// tracking number.
 	if ( method_exists( $order, 'get_meta_data' ) ) {
 		foreach ( $order->get_meta_data() as $meta ) {
 			$data = $meta->get_data();
 			$key  = isset( $data['key'] ) ? (string) $data['key'] : '';
 			$val  = isset( $data['value'] ) ? $data['value'] : '';
 
-			if ( ! is_string( $val ) || '' === trim( $val ) ) {
+			if ( '' === $key ) {
 				continue;
 			}
 
-			if ( preg_match( '/track/i', $key ) && ! preg_match( '/url|link|provider|carrier|courier|status/i', $key ) ) {
-				$found['number'] = trim( $val );
+			if ( preg_match( '/track/i', $key ) && preg_match( '/url|link/i', $key ) ) {
+				if ( is_string( $val ) && '' !== trim( $val ) && '' === $found['url'] ) {
+					$found['url'] = trim( $val );
+				}
+
+				continue;
+			}
+
+			if ( preg_match( '/carrier|courier|provider/i', $key ) ) {
+				if ( is_string( $val ) && '' !== trim( $val ) && '' === $found['carrier'] ) {
+					$found['carrier'] = trim( $val );
+				}
+
+				continue;
+			}
+
+			if ( '' === $found['number'] && preg_match( '/track/i', $key ) && pepselect_child_is_plausible_tracking_number( $val ) ) {
+				$found['number'] = trim( (string) $val );
 				$found['source'] = $key . ' (discovered)';
-			} elseif ( preg_match( '/track/i', $key ) && preg_match( '/url|link/i', $key ) ) {
-				$found['url'] = trim( $val );
-			} elseif ( preg_match( '/carrier|courier|provider/i', $key ) ) {
-				$found['carrier'] = trim( $val );
 			}
 		}
 	}
@@ -160,7 +280,8 @@ function pepselect_child_get_order_tracking( $order ) {
 	}
 
 	// 4. Easyship writes tracking into an order note on fulfilment. Read the
-	// most recent note that names a tracking number.
+	// notes that mention tracking or shipping and take the first token that
+	// passes the plausibility rules, plus any URL in the same note.
 	$notes = function_exists( 'wc_get_order_notes' )
 		? wc_get_order_notes(
 			array(
@@ -173,19 +294,34 @@ function pepselect_child_get_order_tracking( $order ) {
 	foreach ( (array) $notes as $note ) {
 		$content = isset( $note->content ) ? (string) $note->content : '';
 
-		if ( '' === $content || ! preg_match( '/track/i', $content ) ) {
+		if ( '' === $content || ! preg_match( '/track|tracking|shipped/i', $content ) ) {
 			continue;
 		}
+
+		$tokens = array();
+		preg_match_all( '/[A-Za-z0-9\-]{6,40}/', $content, $tokens );
+
+		$number = '';
+
+		foreach ( (array) $tokens[0] as $token ) {
+			if ( pepselect_child_is_plausible_tracking_number( $token ) ) {
+				$number = $token;
+				break;
+			}
+		}
+
+		if ( '' === $number ) {
+			continue;
+		}
+
+		$found['number'] = $number;
+		$found['source'] = 'order note';
 
 		if ( preg_match( '~https?://\S+~i', $content, $url_match ) ) {
 			$found['url'] = rtrim( $url_match[0], '.,)' );
 		}
 
-		if ( preg_match( '/([A-Z0-9][A-Z0-9\-]{7,34})/', strtoupper( $content ), $num_match ) ) {
-			$found['number'] = $num_match[1];
-			$found['source'] = 'order note';
-			break;
-		}
+		break;
 	}
 
 	return pepselect_child_finalize_tracking( $found );
@@ -194,14 +330,24 @@ function pepselect_child_get_order_tracking( $order ) {
 /**
  * Normalise a resolved tracking set and allow overriding it.
  *
+ * The number is re-validated here so a filtered or partially built result can
+ * never reintroduce an implausible value.
+ *
  * @param array $found Resolved tracking data.
- * @return array{number:string,carrier:string,url:string,source:string}
+ * @return array{number:string,carrier:string,url:string,source:string,candidates:string}
  */
 function pepselect_child_finalize_tracking( $found ) {
-	$found['number']  = isset( $found['number'] ) ? trim( (string) $found['number'] ) : '';
-	$found['carrier'] = isset( $found['carrier'] ) ? trim( (string) $found['carrier'] ) : '';
-	$found['url']     = isset( $found['url'] ) ? esc_url_raw( trim( (string) $found['url'] ) ) : '';
-	$found['source']  = isset( $found['source'] ) ? (string) $found['source'] : '';
+	$number = isset( $found['number'] ) ? $found['number'] : '';
+
+	$found['number']     = pepselect_child_is_plausible_tracking_number( $number ) ? trim( (string) $number ) : '';
+	$found['carrier']    = isset( $found['carrier'] ) ? trim( (string) $found['carrier'] ) : '';
+	$found['url']        = isset( $found['url'] ) ? esc_url_raw( trim( (string) $found['url'] ) ) : '';
+	$found['source']     = isset( $found['source'] ) ? (string) $found['source'] : '';
+	$found['candidates'] = isset( $found['candidates'] ) ? (string) $found['candidates'] : '';
+
+	if ( '' === $found['number'] ) {
+		$found['source'] = '';
+	}
 
 	return (array) apply_filters( 'pepselect_child_order_tracking', $found );
 }
