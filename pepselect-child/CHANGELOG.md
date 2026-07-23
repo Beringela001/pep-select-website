@@ -2,6 +2,10 @@
 
 All notable changes to the Pep Select child theme are documented here.
 
+## 0.16.0-beta.8 - 2026-07-22
+
+- Quantity input and Add to cart now sit on one row (desktop and mobile): quantity fixed at ~64px, the button fills the remaining width, both the same height and vertically aligned. The empty space below is left untouched for the later current-batch display.
+
 ## 0.16.0-beta.7 - 2026-07-22
 
 - Reworked the product promotion pills to capture and restyle plugin-rendered output instead of recomputing from plugin internals (fixes the beta.6 regression where the cash-back pill vanished). An output buffer around the single-product summary lifts YITH Points & Rewards' own earn message (`p.ywpar_earn_points`) into the cyan cash-back pill, and YITH Dynamic Pricing's rule note (`.ywdpd-notices-wrapper`) into the amber B4G1 pill, then drops both into one flex row above the price. The plugins remain the single source of truth; nothing is computed from their APIs.

@@ -181,6 +181,32 @@
 	background: var(--pep-color-navy) !important;
 }
 
+/* Quantity + Add to cart on one row (desktop and mobile): qty fixed, button
+   fills the rest, both the same height. */
+.pepselect-compound-page__summary form.cart {
+	display: flex;
+	align-items: stretch;
+	gap: 12px;
+}
+
+.pepselect-compound-page__summary form.cart .quantity {
+	flex: 0 0 64px;
+	width: 64px;
+	margin: 0;
+}
+
+.pepselect-compound-page__summary form.cart .quantity .qty {
+	box-sizing: border-box;
+	width: 100%;
+	min-height: 52px;
+	text-align: center;
+}
+
+.pepselect-compound-page__summary form.cart .single_add_to_cart_button {
+	flex: 1 1 auto;
+	width: auto !important;
+}
+
 .pepselect-compound-page__summary .product_meta {
 	margin-top: 18px;
 	padding-top: 16px;
