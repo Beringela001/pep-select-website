@@ -1119,8 +1119,11 @@ body.woocommerce-account:not(.logged-in) h1.entry-title {
 	margin-top: 40px;
 }
 
-/* Hide YITH's own balance summary; our branded balance card already shows it. */
-.pepselect-cashback__engine .ywpar_myaccount_entry_info,
+/*
+ * YITH's entry-info block carries the referral code and share link, so it must
+ * stay visible. Only YITH's duplicate balance heading is suppressed; the
+ * referral markup inside is restyled in the referral section below.
+ */
 .pepselect-cashback__engine > .ywpar-wrapper > h2:first-of-type {
 	display: none;
 }
@@ -1335,4 +1338,189 @@ body.woocommerce-account:not(.logged-in) h1.entry-title {
 .pepselect-cashback__engine .ywpar-share-status.used {
 	background: var(--pep-color-surface);
 	color: var(--pep-color-slate);
+}
+
+/* --- Cash back page layout (M7 rework) --- */
+
+.pepselect-cashback__stats {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 16px;
+	margin: 0 0 40px;
+}
+
+.pepselect-stat {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	padding: 22px 24px;
+	border: 1px solid var(--pep-color-border);
+	border-radius: var(--pep-radius-medium);
+	background: var(--pep-color-white);
+}
+
+.pepselect-stat--primary {
+	border-color: var(--pep-color-cyan);
+	background: var(--pep-color-cyan-soft);
+}
+
+.pepselect-stat__label {
+	color: var(--pep-color-slate);
+	font-size: 12px;
+	font-weight: var(--pep-font-weight-semibold);
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+}
+
+.pepselect-stat__value {
+	color: var(--pep-color-navy);
+	font-family: var(--pep-font-editorial);
+	font-size: 30px;
+	line-height: 1.1;
+}
+
+.pepselect-stat__note {
+	color: var(--pep-color-neutral);
+	font-size: 13px;
+}
+
+/* How it works: 2x2 grid of numbered steps. */
+.pepselect-cashback__steps {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 16px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.pepselect-cashback__step {
+	display: flex;
+	gap: 14px;
+	padding: 20px 22px;
+	border: 1px solid var(--pep-color-border);
+	border-radius: var(--pep-radius-medium);
+	background: var(--pep-color-white);
+}
+
+.pepselect-cashback__step-number {
+	flex: 0 0 auto;
+	color: var(--pep-color-cyan);
+	font-family: var(--pep-font-editorial);
+	font-size: 20px;
+	line-height: 1.2;
+}
+
+.pepselect-cashback__step-title {
+	display: block;
+	margin-bottom: 4px;
+	color: var(--pep-color-navy);
+	font-size: 15px;
+	font-weight: var(--pep-font-weight-semibold);
+}
+
+.pepselect-cashback__step-note {
+	display: block;
+	color: var(--pep-color-slate);
+	font-size: 14px;
+	line-height: 1.5;
+}
+
+.pepselect-cashback__section-title {
+	margin: 0 0 6px;
+	color: var(--pep-color-navy);
+	font-family: var(--pep-font-editorial);
+	font-size: 22px;
+}
+
+.pepselect-cashback__section-lead {
+	margin: 0 0 20px;
+	color: var(--pep-color-slate);
+	font-size: 15px;
+}
+
+/* Referral: copyable code field + share link. */
+.pepselect-copyfield {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 10px;
+	margin: 0 0 14px;
+}
+
+.pepselect-copyfield__label {
+	flex: 0 0 100%;
+	color: var(--pep-color-slate);
+	font-size: 12px;
+	font-weight: var(--pep-font-weight-semibold);
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+}
+
+.pepselect-copyfield__input {
+	flex: 1 1 220px;
+	min-width: 0;
+	padding: 12px 14px;
+	border: 1px solid var(--pep-color-border);
+	border-radius: var(--pep-radius-small);
+	background: var(--pep-color-white);
+	color: var(--pep-color-navy);
+	font-family: var(--pep-font-technical);
+	font-size: 15px;
+}
+
+.pepselect-copyfield__input:focus {
+	outline: none;
+	border-color: var(--pep-color-cyan);
+	box-shadow: 0 0 0 3px rgb(23 161 207 / 15%);
+}
+
+.pepselect-copyfield__copy {
+	flex: 0 0 auto;
+	padding: 12px 22px;
+	border: 1px solid var(--pep-color-cyan);
+	border-radius: var(--pep-radius-pill);
+	background: transparent;
+	color: var(--pep-color-cyan);
+	font-family: var(--pep-font-interface);
+	font-size: 14px;
+	font-weight: var(--pep-font-weight-semibold);
+	cursor: pointer;
+	transition: background-color 140ms ease, color 140ms ease;
+}
+
+.pepselect-copyfield__copy:hover,
+.pepselect-copyfield__copy.is-copied {
+	background: var(--pep-color-cyan);
+	color: var(--pep-color-white);
+}
+
+.pepselect-cashback__mini-stats {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 12px;
+	margin-top: 24px;
+}
+
+.pepselect-stat--mini {
+	padding: 16px 18px;
+}
+
+.pepselect-stat--mini .pepselect-stat__value {
+	font-size: 22px;
+}
+
+.pepselect-stat--mini[hidden] {
+	display: none;
+}
+
+@media (max-width: 900px) {
+	.pepselect-cashback__stats,
+	.pepselect-cashback__mini-stats {
+		grid-template-columns: 1fr;
+	}
+
+	.pepselect-cashback__steps {
+		grid-template-columns: 1fr;
+	}
 }

@@ -2,6 +2,13 @@
 
 All notable changes to the Pep Select child theme are documented here.
 
+## 0.16.0-beta.11 - 2026-07-22
+
+- Fixed: YITH's referral code and share link were hidden by a blanket rule on `.ywpar_myaccount_entry_info`. That block is surfaced again and its code/link are captured and presented as brand-styled copyable fields with Copy buttons; if either cannot be read, YITH's own referral UI is left visible and untouched.
+- Reworked the cash back page layout: three stat cards at the top (Available balance, Total earned, Total applied), "How it works" as a 2x2 grid of numbered steps (earn 3%, refer friends, apply at checkout with a $5 minimum, it stacks up), a referral section with the copyable code and share link plus three small stat cards, and cash back history at the bottom.
+- Total earned and total applied are derived from YITH's own points log (positive and negative entries), using the same dollar conversion as the balance card.
+- The Manage Points convert-to-code form is folded into a "Turn your balance into a code" section instead of a separate tab. YITH's rendered output is split into slots and re-emitted verbatim, so all logic, nonces, and code generation stay with YITH.
+
 ## 0.16.0-beta.10 - 2026-07-22
 
 - Removed the "Cart" page heading via Hello Elementor's page-title filter, with a CSS fallback.

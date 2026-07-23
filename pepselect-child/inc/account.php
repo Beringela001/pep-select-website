@@ -419,5 +419,147 @@ function pepselect_child_enqueue_account_assets() {
 		array( 'pepselect-child-foundations' ),
 		pepselect_child_asset_version( 'assets/css/account.css' )
 	);
+
+	wp_enqueue_script(
+		'pepselect-child-account-cashback',
+		get_stylesheet_directory_uri() . '/assets/js/account-cashback.js',
+		array(),
+		pepselect_child_asset_version( 'assets/js/account-cashback.js' ),
+		true
+	);
 }
 add_action( 'wp_enqueue_scripts', 'pepselect_child_enqueue_account_assets', 40 );
+
+/**
+ * Total cash back earned and applied, derived from YITH's own points log.
+ *
+ * Nothing is invented here: the log entries are YITH's, and positive entries are
+ * summed as earned while negative entries are summed as applied. Values come
+ * back as dollars using the same conversion as the balance card.
+ *
+ * @return array{earned:float,applied:float,earned_formatted:string,applied_formatted:string}
+ */
+function pepselect_child_get_cashback_totals() {
+	$history = function_exists( 'pepselect_child_get_cashback_history' )
+		? pepselect_child_get_cashback_history( 500 )
+		: array();
+
+	$earned  = 0.0;
+	$applied = 0.0;
+
+	foreach ( (array) $history as $entry ) {
+		$dollars = isset( $entry['dollars'] ) ? (float) $entry['dollars'] : 0.0;
+
+		if ( $dollars > 0 ) {
+			$earned += $dollars;
+		} else {
+			$applied += abs( $dollars );
+		}
+	}
+
+	return array(
+		'earned'            => $earned,
+		'applied'           => $applied,
+		'earned_formatted'  => pepselect_child_format_dollars( $earned ),
+		'applied_formatted' => pepselect_child_format_dollars( $applied ),
+	);
+}
+
+/**
+ * Format a dollar amount using WooCommerce when available.
+ *
+ * @param float $amount Amount in dollars.
+ * @return string
+ */
+function pepselect_child_format_dollars( $amount ) {
+	if ( function_exists( 'wc_price' ) ) {
+		return wp_strip_all_tags( wc_price( (float) $amount ) );
+	}
+
+	return '$' . number_format_i18n( (float) $amount, 2 );
+}
+
+/**
+ * Split YITH's rendered my-points output into the slots the cash back layout
+ * needs, so each block can be placed and restyled without reimplementing any of
+ * YITH's logic. Everything returned is YITH's own markup.
+ *
+ * @param string $html Captured YITH output.
+ * @return array{referral:string,history:string,manage:string,rest:string}
+ */
+function pepselect_child_split_yith_points_output( $html ) {
+	$slots = array(
+		'referral' => '',
+		'history'  => '',
+		'manage'   => '',
+		'rest'     => '',
+	);
+
+	$html = (string) $html;
+
+	if ( '' === trim( $html ) || ! class_exists( 'DOMDocument' ) ) {
+		$slots['rest'] = $html;
+		return $slots;
+	}
+
+	$doc = new DOMDocument();
+	libxml_use_internal_errors( true );
+	$doc->loadHTML( '<?xml encoding="utf-8" ?><div id="pepselect-yith-root">' . $html . '</div>', LIBXML_NOWARNING | LIBXML_NOERROR );
+	libxml_clear_errors();
+
+	$xpath = new DOMXPath( $doc );
+
+	// Selectors for each slot, matched on class/id substrings so the split keeps
+	// working across YITH markup revisions.
+	$queries = array(
+		'referral' => "//*[contains(@class,'ywpar_myaccount_entry_info') or contains(@class,'referral') or contains(@id,'referral') or contains(@class,'ywpar-copy-to-clipboard') or contains(@id,'ywpar-copy-to-clipboard')]",
+		'history'  => "//table[contains(@class,'ywpar_points_rewards')]",
+		'manage'   => "//*[@id='share_points' or @id='ywpar-share-points' or contains(@class,'your-coupons')]",
+	);
+
+	foreach ( $queries as $slot => $query ) {
+		$nodes = $xpath->query( $query );
+
+		if ( ! $nodes || ! $nodes->length ) {
+			continue;
+		}
+
+		$collected = array();
+
+		foreach ( $nodes as $node ) {
+			// Skip nodes already inside a node we collected for this slot.
+			foreach ( $collected as $done ) {
+				if ( $done->contains( $node ) ) {
+					continue 2;
+				}
+			}
+
+			$collected[] = $node;
+			$slots[ $slot ] .= $doc->saveHTML( $node );
+		}
+
+		// Remove the collected nodes so they are not duplicated in 'rest'.
+		foreach ( $collected as $node ) {
+			if ( $node->parentNode ) {
+				$node->parentNode->removeChild( $node );
+			}
+		}
+	}
+
+	$root = $doc->getElementById( 'pepselect-yith-root' );
+
+	if ( $root ) {
+		$remaining = '';
+
+		foreach ( $root->childNodes as $child ) {
+			$remaining .= $doc->saveHTML( $child );
+		}
+
+		// Drop leftovers that are only whitespace or an empty tab shell.
+		if ( '' !== trim( wp_strip_all_tags( $remaining ) ) ) {
+			$slots['rest'] = $remaining;
+		}
+	}
+
+	return $slots;
+}

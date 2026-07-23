@@ -2,11 +2,11 @@
 /**
  * Cash back account page (Pep Select).
  *
- * Keeps a branded balance card and "how it works" header, then renders YITH's
- * own points content below (points history, the convert-to-coupon form, and the
- * generated-coupon table with used/unused status). YITH owns all the logic and
- * security (nonces, conversion, code generation); this page only reskins it, so
- * the feature set stays whatever YITH provides and nothing is reimplemented.
+ * Branded layout over YITH's own points engine. YITH's rendered my-points output
+ * is captured and split into slots (referral, history, manage/convert) and each
+ * block is placed and restyled here. YITH keeps all logic and security (nonces,
+ * conversion, code generation, referral links); nothing is reimplemented, and
+ * every value shown comes from YITH.
  *
  * @package PepSelectChild
  */
@@ -21,14 +21,47 @@ $pepselect_cashback = function_exists( 'pepselect_child_get_cashback_display' ) 
 	'balance_formatted' => '$0.00',
 );
 
-// Capture YITH's native my-points output (balance summary + history tab +
-// Manage Points tab with the convert form and coupon-code table).
+$pepselect_totals = function_exists( 'pepselect_child_get_cashback_totals' ) ? pepselect_child_get_cashback_totals() : array(
+	'earned_formatted'  => '$0.00',
+	'applied_formatted' => '$0.00',
+);
+
+// Capture YITH's native my-points output (balance summary, referral block,
+// points history, and the convert-to-coupon form with its coupon table).
 $pepselect_yith_output = '';
 if ( has_action( 'woocommerce_account_my-points_endpoint' ) ) {
 	ob_start();
 	do_action( 'woocommerce_account_my-points_endpoint' );
 	$pepselect_yith_output = ob_get_clean();
 }
+
+$pepselect_slots = function_exists( 'pepselect_child_split_yith_points_output' )
+	? pepselect_child_split_yith_points_output( $pepselect_yith_output )
+	: array(
+		'referral' => '',
+		'history'  => '',
+		'manage'   => '',
+		'rest'     => $pepselect_yith_output,
+	);
+
+$pepselect_steps = array(
+	array(
+		'title' => __( 'Earn cash back', 'pepselect-child' ),
+		'note'  => __( 'You earn 3% back on every order, added once the order completes.', 'pepselect-child' ),
+	),
+	array(
+		'title' => __( 'Refer friends', 'pepselect-child' ),
+		'note'  => __( 'They get 10% off their first order, and you earn $15 once it completes.', 'pepselect-child' ),
+	),
+	array(
+		'title' => __( 'Apply at checkout', 'pepselect-child' ),
+		'note'  => __( 'Once your balance reaches $5, turn it into a code and enter it at checkout.', 'pepselect-child' ),
+	),
+	array(
+		'title' => __( 'It stacks up', 'pepselect-child' ),
+		'note'  => __( 'Cash back and referral credit build up together in one balance.', 'pepselect-child' ),
+	),
+);
 ?>
 <div class="pepselect-cashback">
 	<header class="pepselect-cashback__head">
@@ -36,42 +69,82 @@ if ( has_action( 'woocommerce_account_my-points_endpoint' ) ) {
 		<p class="pepselect-account__lead"><?php esc_html_e( 'Earn 3% back on every order. Turn your balance into a code and apply it at checkout.', 'pepselect-child' ); ?></p>
 	</header>
 
-	<div class="pepselect-cashback__balance">
-		<span class="pepselect-cashback__balance-label"><?php esc_html_e( 'Available balance', 'pepselect-child' ); ?></span>
-		<span class="pepselect-cashback__balance-value"><?php echo esc_html( $pepselect_cashback['balance_formatted'] ); ?></span>
-		<span class="pepselect-cashback__balance-note"><?php esc_html_e( 'Redeem it for a code to use at checkout.', 'pepselect-child' ); ?></span>
+	<div class="pepselect-cashback__stats">
+		<div class="pepselect-stat pepselect-stat--primary">
+			<span class="pepselect-stat__label"><?php esc_html_e( 'Available balance', 'pepselect-child' ); ?></span>
+			<span class="pepselect-stat__value"><?php echo esc_html( $pepselect_cashback['balance_formatted'] ); ?></span>
+			<span class="pepselect-stat__note"><?php esc_html_e( 'Redeem it for a code at checkout.', 'pepselect-child' ); ?></span>
+		</div>
+		<div class="pepselect-stat">
+			<span class="pepselect-stat__label"><?php esc_html_e( 'Total earned', 'pepselect-child' ); ?></span>
+			<span class="pepselect-stat__value"><?php echo esc_html( $pepselect_totals['earned_formatted'] ); ?></span>
+			<span class="pepselect-stat__note"><?php esc_html_e( 'Across all your orders.', 'pepselect-child' ); ?></span>
+		</div>
+		<div class="pepselect-stat">
+			<span class="pepselect-stat__label"><?php esc_html_e( 'Total applied', 'pepselect-child' ); ?></span>
+			<span class="pepselect-stat__value"><?php echo esc_html( $pepselect_totals['applied_formatted'] ); ?></span>
+			<span class="pepselect-stat__note"><?php esc_html_e( 'Already used at checkout.', 'pepselect-child' ); ?></span>
+		</div>
 	</div>
 
 	<section class="pepselect-cashback__how" aria-labelledby="pepselect-cashback-how-title">
-		<h2 id="pepselect-cashback-how-title" class="pepselect-cashback__how-title"><?php esc_html_e( 'How cash back works', 'pepselect-child' ); ?></h2>
+		<h2 id="pepselect-cashback-how-title" class="pepselect-cashback__how-title"><?php esc_html_e( 'How it works', 'pepselect-child' ); ?></h2>
 		<ol class="pepselect-cashback__steps">
-			<li class="pepselect-cashback__step">
-				<span class="pepselect-cashback__step-number" aria-hidden="true">01</span>
-				<div>
-					<span class="pepselect-cashback__step-title"><?php esc_html_e( 'Earn on every order', 'pepselect-child' ); ?></span>
-					<span class="pepselect-cashback__step-note"><?php esc_html_e( 'You earn 3% back on each order, added once the order completes.', 'pepselect-child' ); ?></span>
-				</div>
-			</li>
-			<li class="pepselect-cashback__step">
-				<span class="pepselect-cashback__step-number" aria-hidden="true">02</span>
-				<div>
-					<span class="pepselect-cashback__step-title"><?php esc_html_e( 'It becomes a balance', 'pepselect-child' ); ?></span>
-					<span class="pepselect-cashback__step-note"><?php esc_html_e( 'Your cash back builds up as a dollar balance in your account.', 'pepselect-child' ); ?></span>
-				</div>
-			</li>
-			<li class="pepselect-cashback__step">
-				<span class="pepselect-cashback__step-number" aria-hidden="true">03</span>
-				<div>
-					<span class="pepselect-cashback__step-title"><?php esc_html_e( 'Turn it into a code', 'pepselect-child' ); ?></span>
-					<span class="pepselect-cashback__step-note"><?php esc_html_e( 'Once your balance reaches $5, open Manage Points below to create a code, then enter it in the discount field at checkout.', 'pepselect-child' ); ?></span>
-				</div>
-			</li>
+			<?php foreach ( $pepselect_steps as $pepselect_index => $pepselect_step ) : ?>
+				<li class="pepselect-cashback__step">
+					<span class="pepselect-cashback__step-number" aria-hidden="true"><?php echo esc_html( sprintf( '%02d', $pepselect_index + 1 ) ); ?></span>
+					<div>
+						<span class="pepselect-cashback__step-title"><?php echo esc_html( $pepselect_step['title'] ); ?></span>
+						<span class="pepselect-cashback__step-note"><?php echo esc_html( $pepselect_step['note'] ); ?></span>
+					</div>
+				</li>
+			<?php endforeach; ?>
 		</ol>
 	</section>
 
-	<?php if ( '' !== trim( (string) $pepselect_yith_output ) ) : ?>
-		<section class="pepselect-cashback__engine" aria-label="<?php esc_attr_e( 'Points and coupon codes', 'pepselect-child' ); ?>">
-			<?php echo $pepselect_yith_output; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+	<?php if ( '' !== trim( (string) $pepselect_slots['referral'] ) ) : ?>
+		<section class="pepselect-cashback__referral pepselect-cashback__engine" aria-labelledby="pepselect-cashback-referral-title">
+			<h2 id="pepselect-cashback-referral-title" class="pepselect-cashback__section-title"><?php esc_html_e( 'Refer a friend', 'pepselect-child' ); ?></h2>
+			<p class="pepselect-cashback__section-lead"><?php esc_html_e( 'Share your code. They get 10% off their first order, and you earn $15 in cash back once it completes.', 'pepselect-child' ); ?></p>
+
+			<div class="pepselect-cashback__referral-body" data-pepselect-referral>
+				<?php echo $pepselect_slots['referral']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- YITH's own markup, re-emitted verbatim. ?>
+			</div>
+
+			<div class="pepselect-cashback__mini-stats">
+				<div class="pepselect-stat pepselect-stat--mini" data-pepselect-referral-count hidden>
+					<span class="pepselect-stat__label"><?php esc_html_e( 'Friends referred', 'pepselect-child' ); ?></span>
+					<span class="pepselect-stat__value" data-pepselect-value>&mdash;</span>
+				</div>
+				<div class="pepselect-stat pepselect-stat--mini" data-pepselect-referral-credit hidden>
+					<span class="pepselect-stat__label"><?php esc_html_e( 'Credit from referrals', 'pepselect-child' ); ?></span>
+					<span class="pepselect-stat__value" data-pepselect-value>&mdash;</span>
+				</div>
+				<div class="pepselect-stat pepselect-stat--mini">
+					<span class="pepselect-stat__label"><?php esc_html_e( 'Referral bonus', 'pepselect-child' ); ?></span>
+					<span class="pepselect-stat__value"><?php echo esc_html( pepselect_child_format_dollars( 15 ) ); ?></span>
+				</div>
+			</div>
+		</section>
+	<?php endif; ?>
+
+	<?php if ( '' !== trim( (string) $pepselect_slots['manage'] ) ) : ?>
+		<section class="pepselect-cashback__manage pepselect-cashback__engine" aria-labelledby="pepselect-cashback-manage-title">
+			<h2 id="pepselect-cashback-manage-title" class="pepselect-cashback__section-title"><?php esc_html_e( 'Turn your balance into a code', 'pepselect-child' ); ?></h2>
+			<?php echo $pepselect_slots['manage']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- YITH's own convert form and coupon table. ?>
+		</section>
+	<?php endif; ?>
+
+	<?php if ( '' !== trim( (string) $pepselect_slots['history'] ) ) : ?>
+		<section class="pepselect-cashback__history pepselect-cashback__engine" aria-labelledby="pepselect-cashback-history-title">
+			<h2 id="pepselect-cashback-history-title" class="pepselect-cashback__section-title"><?php esc_html_e( 'Cash back history', 'pepselect-child' ); ?></h2>
+			<?php echo $pepselect_slots['history']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- YITH's own history table. ?>
+		</section>
+	<?php endif; ?>
+
+	<?php if ( '' !== trim( (string) $pepselect_slots['rest'] ) ) : ?>
+		<section class="pepselect-cashback__engine pepselect-cashback__rest" aria-label="<?php esc_attr_e( 'Points and coupon codes', 'pepselect-child' ); ?>">
+			<?php echo $pepselect_slots['rest']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Remaining YITH markup. ?>
 		</section>
 	<?php endif; ?>
 </div>
