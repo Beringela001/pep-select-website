@@ -223,6 +223,51 @@ li.wc_payment_method.payment_method_bacs .payment_box {
 	font-family: var(--pep-font-technical);
 }
 
+/* --- Block cart type scale (legibility) ---
+   The block cart ships its own small type scale, so these are scoped under
+   .wc-block-cart with enough specificity to win, and !important only where a
+   block style forces the size. Sizes only: no layout, spacing, or color. */
+.wc-block-cart .wc-block-cart-items__header th,
+.wc-block-cart .wc-block-cart-items__header .wc-block-cart-items__header-product,
+.wc-block-cart .wc-block-cart-items__header .wc-block-cart-items__header-total {
+	font-size: 14px;
+}
+
+.wc-block-cart .wc-block-components-product-name {
+	font-size: 16px !important;
+	line-height: 1.4;
+}
+
+.wc-block-cart .wc-block-components-product-price,
+.wc-block-cart .wc-block-components-product-price__value,
+.wc-block-cart .wc-block-cart-item__total,
+.wc-block-cart .wc-block-cart-item__total .wc-block-formatted-money-amount {
+	font-size: 15px;
+}
+
+.wc-block-cart .wc-block-components-product-details,
+.wc-block-cart .wc-block-components-product-details__name,
+.wc-block-cart .wc-block-components-product-details__value,
+.wc-block-cart .wc-block-components-product-metadata {
+	font-size: 14px;
+}
+
+.wc-block-cart .wc-block-components-totals-item__label,
+.wc-block-cart .wc-block-components-totals-item__value {
+	font-size: 15px;
+}
+
+.wc-block-cart .wc-block-components-totals-footer-item,
+.wc-block-cart .wc-block-components-totals-footer-item .wc-block-components-totals-item__label,
+.wc-block-cart .wc-block-components-totals-footer-item .wc-block-components-totals-item__value {
+	font-size: 17px;
+	font-weight: 600;
+}
+
+.wc-block-cart .wc-block-components-panel__button {
+	font-size: 15px;
+}
+
 @media (prefers-reduced-motion: reduce) {
 	#place_order,
 	.fc-place-order-button,

@@ -232,7 +232,7 @@
 .pepselect-compound__eyebrow {
 	margin: 0 0 10px;
 	color: var(--pep-color-cyan);
-	font-size: 12px;
+	font-size: 13px;
 	font-weight: 700;
 	letter-spacing: 0.13em;
 	text-transform: uppercase;
@@ -302,7 +302,7 @@
 	background-image: none !important;
 	color: var(--pep-color-navy) !important;
 	font-family: var(--pep-font-interface);
-	font-size: 13px;
+	font-size: 15px;
 	font-weight: var(--pep-font-weight-semibold);
 	cursor: pointer;
 	box-shadow: none;
@@ -334,7 +334,8 @@
 	padding-bottom: 8px;
 	border-bottom: 1px solid var(--pep-color-border);
 	color: var(--pep-color-slate);
-	font-size: 12px;
+	font-size: 14px;
+	line-height: 1.6;
 }
 
 .pepselect-compound__cas span {
@@ -347,8 +348,8 @@
 	margin: 0;
 	padding-left: 18px;
 	color: var(--pep-color-neutral);
-	font-size: 12px;
-	line-height: 1.7;
+	font-size: 14px;
+	line-height: 1.6;
 }
 
 .pepselect-compound__intended {
@@ -361,22 +362,22 @@
 .pepselect-compound__intended-label {
 	margin: 0 0 4px;
 	color: var(--pep-color-navy);
-	font-size: 13px;
+	font-size: 14px;
 	font-weight: var(--pep-font-weight-semibold);
 }
 
 .pepselect-compound__intended p:last-child {
 	margin: 0;
 	color: var(--pep-color-navy);
-	font-size: 13px;
-	line-height: 1.55;
+	font-size: 15px;
+	line-height: 1.6;
 }
 
 .pepselect-compound__disclaimer {
 	margin: 14px 0 0;
 	color: var(--pep-color-neutral);
-	font-size: 11px;
-	line-height: 1.5;
+	font-size: 12px;
+	line-height: 1.6;
 }
 
 /* ---- Section headings (COA-consistent: eyebrow + serif h2) ---- */
