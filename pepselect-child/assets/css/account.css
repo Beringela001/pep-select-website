@@ -1594,3 +1594,28 @@ body.woocommerce-account:not(.logged-in) h1.entry-title {
 .pepselect-cashback .ywpar_myaccount_entry_info {
 	display: none !important;
 }
+
+/* Referral diagnostic fallback: only shown if YITH's shortcode is registered
+   but returns nothing for the account. */
+.pepselect-cashback__referral-empty {
+	padding: 16px 18px;
+	border: 1px solid var(--pep-color-border);
+	border-radius: var(--pep-radius-medium);
+	background: var(--pep-color-surface);
+	color: var(--pep-color-slate);
+	font-size: 14px;
+}
+
+.pepselect-cashback__referral-dump {
+	margin: 10px 0 0;
+	padding: 10px;
+	overflow: auto;
+	max-height: 220px;
+	background: var(--pep-color-white);
+	border: 1px solid var(--pep-color-border);
+	border-radius: var(--pep-radius-small);
+	font-family: var(--pep-font-technical);
+	font-size: 12px;
+	white-space: pre-wrap;
+	word-break: break-all;
+}

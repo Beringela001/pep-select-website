@@ -2,6 +2,12 @@
 
 All notable changes to the Pep Select child theme are documented here.
 
+## 0.16.0-beta.14 - 2026-07-22
+
+- Referral code and share link now render from YITH's own `[ywpar_referral_link]` shortcode, which is separate from the my-points endpoint output. Its output is captured and restyled into a copyable field with a Copy button plus the full share link. If the shortcode is registered but returns nothing, its raw output is shown for diagnosis instead of being silently hidden.
+- Removed the temporary debug build: the raw-output dump block and the `PEPSELECT_CASHBACK_DEBUG` constant are gone.
+- Fixed the cart pill performance regression (slow appearance, then flicker and reload). Three causes: the MutationObserver triggered a full cart-page re-fetch on every DOM change during the block cart's normal render, and that request is the slow one; the refresh ran even when nothing had changed; and a refresh that read no value blanked the pill. The pill is now captured from YITH's already-rendered banner immediately with no network call, an empty read never blanks an existing value, and the server is only re-read when the cart total actually changes.
+
 ## 0.16.0-beta.13 - 2026-07-22 (TEMPORARY DEBUG BUILD)
 
 - Added top margin to the cart cash-back pill so it no longer touches the nav bar.

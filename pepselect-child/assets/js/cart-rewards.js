@@ -29,6 +29,21 @@
 	var host = null;
 	var refreshTimer = null;
 	var inFlight = false;
+	var lastPoints = 0;
+	var lastTotal = null;
+
+	/**
+	 * Current cart total as rendered, used to decide whether anything actually
+	 * changed. Re-reading the cart is expensive, so it only happens when this
+	 * value moves.
+	 */
+	function readTotal() {
+		var node = document.querySelector(
+			'.wc-block-components-totals-footer-item .wc-block-components-totals-item__value, .order-total .amount, .cart_totals .order-total .amount'
+		);
+
+		return node ? ( node.textContent || '' ).trim() : null;
+	}
 
 	function toDollars( points ) {
 		return '$' + ( points / POINTS_PER_DOLLAR ).toFixed( 2 );
@@ -115,10 +130,14 @@
 			return;
 		}
 
+		// Never blank an already-shown value: a refresh that reads nothing means
+		// we could not re-capture, not that the customer earns nothing. Blanking
+		// here is what caused the pill to flash and vanish.
 		if ( ! points ) {
-			mount.innerHTML = '';
 			return;
 		}
+
+		lastPoints = points;
 
 		mount.innerHTML =
 			'<span class="pepselect-pill pepselect-cashback-pill pepselect-rewards-note">' +
@@ -165,15 +184,20 @@
 	}
 
 	function init() {
+		// Immediate, network-free: read the value YITH already rendered.
 		render( capturePoints( document ) );
+		lastTotal = readTotal();
 
-		// Classic/jQuery cart events.
+		// Classic/jQuery cart events are real cart changes, so they may refresh.
 		if ( window.jQuery ) {
 			window
 				.jQuery( document.body )
 				.on(
-					'updated_cart_totals updated_wc_div wc_fragments_refreshed applied_coupon removed_coupon added_to_cart',
-					scheduleRefresh
+					'updated_cart_totals applied_coupon removed_coupon',
+					function () {
+						lastTotal = readTotal();
+						scheduleRefresh();
+					}
 				);
 		}
 
@@ -213,16 +237,29 @@
 					return;
 				}
 
-				// Catch a banner that appeared after init; capturePoints skips
-				// anything already handled.
+				// Cheap and network-free: catch a banner injected after first
+				// paint so the pill appears immediately.
 				var points = capturePoints( document );
-				if ( points ) {
+				if ( points && points !== lastPoints ) {
 					render( points );
 				}
 
-				if ( totalsChanged ) {
-					scheduleRefresh();
+				if ( ! totalsChanged ) {
+					return;
 				}
+
+				// Only re-read from the server when the total actually moved.
+				// The block cart re-renders constantly on load, and the cart
+				// request is slow, so firing on every mutation is what made the
+				// pill take ~20s and then flicker.
+				var total = readTotal();
+
+				if ( null === total || total === lastTotal ) {
+					return;
+				}
+
+				lastTotal = total;
+				scheduleRefresh();
 			} );
 
 			observer.observe( document.body, { childList: true, subtree: true, characterData: true } );
