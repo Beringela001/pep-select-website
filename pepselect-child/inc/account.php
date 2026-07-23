@@ -509,10 +509,36 @@ function pepselect_child_split_yith_points_output( $html ) {
 
 	$xpath = new DOMXPath( $doc );
 
+	// Discard blocks the branded layout replaces: YITH's points/redeem summary
+	// (duplicated by the balance cards) and its now-orphaned tab navigation,
+	// whose panels are inlined as sections below.
+	$drop = $xpath->query(
+		"//*[contains(@class,'ywpar_myaccount_entry_info')]"
+		. "|//*[contains(@class,'ywpar_tabs_header')]"
+		. "|//ul[contains(@class,'ywpar_tabs')]"
+		. "|//*[contains(@class,'ywpar_tabs_links')]"
+	);
+
+	if ( $drop ) {
+		$stale = array();
+
+		foreach ( $drop as $node ) {
+			$stale[] = $node;
+		}
+
+		foreach ( $stale as $node ) {
+			if ( $node->parentNode ) {
+				$node->parentNode->removeChild( $node );
+			}
+		}
+	}
+
 	// Selectors for each slot, matched on class/id substrings so the split keeps
-	// working across YITH markup revisions.
+	// working across YITH markup revisions. Referral matches only genuinely
+	// referral-named markup: YITH Points & Rewards ships no referral feature, so
+	// this stays empty unless a referral plugin renders into the endpoint.
 	$queries = array(
-		'referral' => "//*[contains(@class,'ywpar_myaccount_entry_info') or contains(@class,'referral') or contains(@id,'referral') or contains(@class,'ywpar-copy-to-clipboard') or contains(@id,'ywpar-copy-to-clipboard')]",
+		'referral' => "//*[contains(@class,'referral') or contains(@id,'referral') or contains(@class,'refer-a-friend') or contains(@id,'refer_a_friend')]",
 		'history'  => "//table[contains(@class,'ywpar_points_rewards')]",
 		'manage'   => "//*[@id='share_points' or @id='ywpar-share-points' or contains(@class,'your-coupons')]",
 	);

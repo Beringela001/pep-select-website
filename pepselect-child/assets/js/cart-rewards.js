@@ -177,9 +177,15 @@
 				);
 		}
 
-		// Block cart: totals re-render on quantity/coupon changes.
+		// Block cart: totals re-render on quantity/coupon changes, and YITH's
+		// banner can be injected after first paint. Always re-run the local
+		// capture (cheap, catches a late or re-inserted banner), and schedule a
+		// server re-capture only when the totals actually change.
 		if ( window.MutationObserver && document.body ) {
 			var observer = new MutationObserver( function ( mutations ) {
+				var totalsChanged = false;
+				var sawForeignChange = false;
+
 				for ( var i = 0; i < mutations.length; i++ ) {
 					var target = mutations[ i ].target;
 
@@ -187,19 +193,35 @@
 						continue;
 					}
 
-					// Ignore our own pill updates.
+					// Ignore our own pill updates so we never loop.
 					if ( target.closest( '.pepselect-rewards-note-wrap' ) ) {
 						continue;
 					}
+
+					sawForeignChange = true;
 
 					if (
 						target.closest(
 							'.wc-block-cart__totals, .wc-block-components-totals-item, .wc-block-cart-items, .cart_totals, .woocommerce-cart-form'
 						)
 					) {
-						scheduleRefresh();
-						return;
+						totalsChanged = true;
 					}
+				}
+
+				if ( ! sawForeignChange ) {
+					return;
+				}
+
+				// Catch a banner that appeared after init; capturePoints skips
+				// anything already handled.
+				var points = capturePoints( document );
+				if ( points ) {
+					render( points );
+				}
+
+				if ( totalsChanged ) {
+					scheduleRefresh();
 				}
 			} );
 

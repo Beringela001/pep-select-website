@@ -2,6 +2,14 @@
 
 All notable changes to the Pep Select child theme are documented here.
 
+## 0.16.0-beta.12 - 2026-07-22
+
+- Cash back page now uses the site type scale instead of page-specific styling: Plus Jakarta Sans for UI, the editorial face for headings, and IBM Plex Mono for dollar amounts, matching shop, product, and checkout.
+- Rewrote the four "How it works" cards: Earn on every order, Bring a friend, Spend it at checkout, One balance.
+- Removed YITH's points/redeem summary box (duplicated the balance cards) and its orphaned Points history / Manage Points tab navigation, whose panels are inlined as sections. Both are dropped server-side, with a CSS guard.
+- The referral slot no longer matches YITH's points summary. YITH Points & Rewards ships no referral code or share link, so the referral section only renders if a referral plugin outputs into the account endpoint; nothing is fabricated.
+- Fixed the cart pill reverting to YITH's raw trophy banner: the observer added in beta.10 only scheduled a server refresh on totals changes and never re-ran the local capture, so a banner injected after first paint was missed. It now re-captures locally on any foreign DOM change and still re-reads from the server when totals change.
+
 ## 0.16.0-beta.11 - 2026-07-22
 
 - Fixed: YITH's referral code and share link were hidden by a blanket rule on `.ywpar_myaccount_entry_info`. That block is surfaced again and its code/link are captured and presented as brand-styled copyable fields with Copy buttons; if either cannot be read, YITH's own referral UI is left visible and untouched.

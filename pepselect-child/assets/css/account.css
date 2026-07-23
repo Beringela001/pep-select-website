@@ -1524,3 +1524,73 @@ body.woocommerce-account:not(.logged-in) h1.entry-title {
 		grid-template-columns: 1fr;
 	}
 }
+
+/* --- Cash back page typography: use the site type scale, no page-specific
+   fonts. UI in Plus Jakarta Sans, headings in the site's editorial face,
+   dollar amounts in IBM Plex Mono (matching shop/product/checkout). --- */
+.pepselect-cashback,
+.pepselect-cashback input,
+.pepselect-cashback button,
+.pepselect-cashback table {
+	font-family: var(--pep-font-interface);
+}
+
+.pepselect-cashback .pepselect-account__title,
+.pepselect-cashback__section-title,
+.pepselect-cashback__how-title {
+	font-family: var(--pep-font-editorial);
+	font-weight: var(--pep-font-weight-regular);
+	letter-spacing: 0;
+}
+
+.pepselect-cashback .pepselect-account__title {
+	font-size: clamp(1.75rem, 3vw, 2.25rem);
+}
+
+.pepselect-cashback__how-title,
+.pepselect-cashback__section-title {
+	font-size: 22px;
+}
+
+/* Dollar amounts read as data, in the technical face. */
+.pepselect-cashback .pepselect-stat__value,
+.pepselect-cashback .pepselect-copyfield__input {
+	font-family: var(--pep-font-technical);
+	font-weight: var(--pep-font-weight-medium);
+	letter-spacing: -0.01em;
+}
+
+.pepselect-cashback .pepselect-stat__value {
+	font-size: 28px;
+}
+
+.pepselect-cashback .pepselect-stat--mini .pepselect-stat__value {
+	font-size: 20px;
+}
+
+/* Numbered step markers stay in the editorial face like other section numerals. */
+.pepselect-cashback__step-number {
+	font-family: var(--pep-font-editorial);
+}
+
+/* Any YITH markup left in the engine sections inherits the site type scale. */
+.pepselect-cashback__engine,
+.pepselect-cashback__engine table,
+.pepselect-cashback__engine input,
+.pepselect-cashback__engine button {
+	font-family: var(--pep-font-interface);
+}
+
+.pepselect-cashback__engine h2,
+.pepselect-cashback__engine h3 {
+	font-family: var(--pep-font-editorial);
+	font-weight: var(--pep-font-weight-regular);
+}
+
+/* Orphaned YITH tab shells are removed server-side; hide any that survive. */
+.pepselect-cashback .ywpar_tabs_header,
+.pepselect-cashback .ywpar_tabs_links,
+.pepselect-cashback ul.ywpar_tabs,
+.pepselect-cashback .ywpar_myaccount_entry_info {
+	display: none !important;
+}

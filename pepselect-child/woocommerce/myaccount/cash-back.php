@@ -46,20 +46,20 @@ $pepselect_slots = function_exists( 'pepselect_child_split_yith_points_output' )
 
 $pepselect_steps = array(
 	array(
-		'title' => __( 'Earn cash back', 'pepselect-child' ),
-		'note'  => __( 'You earn 3% back on every order, added once the order completes.', 'pepselect-child' ),
+		'title' => __( 'Earn on every order', 'pepselect-child' ),
+		'note'  => __( '3% of every completed order comes back to you as cash back.', 'pepselect-child' ),
 	),
 	array(
-		'title' => __( 'Refer friends', 'pepselect-child' ),
-		'note'  => __( 'They get 10% off their first order, and you earn $15 once it completes.', 'pepselect-child' ),
+		'title' => __( 'Bring a friend', 'pepselect-child' ),
+		'note'  => __( 'Share your code. They save 10% on their first order, you get $15 once it completes.', 'pepselect-child' ),
 	),
 	array(
-		'title' => __( 'Apply at checkout', 'pepselect-child' ),
-		'note'  => __( 'Once your balance reaches $5, turn it into a code and enter it at checkout.', 'pepselect-child' ),
+		'title' => __( 'Spend it at checkout', 'pepselect-child' ),
+		'note'  => __( 'At $5 or more, turn your balance into a code and apply it to any order.', 'pepselect-child' ),
 	),
 	array(
-		'title' => __( 'It stacks up', 'pepselect-child' ),
-		'note'  => __( 'Cash back and referral credit build up together in one balance.', 'pepselect-child' ),
+		'title' => __( 'One balance', 'pepselect-child' ),
+		'note'  => __( 'Cash back from your purchases and your referral rewards collect together in a single balance.', 'pepselect-child' ),
 	),
 );
 ?>
