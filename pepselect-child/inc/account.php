@@ -589,3 +589,104 @@ function pepselect_child_split_yith_points_output( $html ) {
 
 	return $slots;
 }
+
+/**
+ * Describe a shortcode callback by reading it on this install: which function
+ * or method handles it, the file and lines it lives at, and its source. Used to
+ * determine exactly what YITH's referral shortcode requires before it outputs,
+ * without guessing from documentation.
+ *
+ * @param string $tag Shortcode tag.
+ * @return array<string,string>
+ */
+function pepselect_child_describe_shortcode( $tag ) {
+	$info = array(
+		'tag'      => $tag,
+		'callback' => 'not registered',
+		'file'     => '',
+		'lines'    => '',
+		'source'   => '',
+	);
+
+	if ( empty( $GLOBALS['shortcode_tags'][ $tag ] ) ) {
+		return $info;
+	}
+
+	$callback = $GLOBALS['shortcode_tags'][ $tag ];
+
+	try {
+		if ( is_array( $callback ) ) {
+			$class            = is_object( $callback[0] ) ? get_class( $callback[0] ) : (string) $callback[0];
+			$info['callback'] = $class . '::' . $callback[1];
+			$reflection       = new ReflectionMethod( $callback[0], $callback[1] );
+		} elseif ( is_string( $callback ) && false !== strpos( $callback, '::' ) ) {
+			$info['callback'] = $callback;
+			$parts            = explode( '::', $callback );
+			$reflection       = new ReflectionMethod( $parts[0], $parts[1] );
+		} elseif ( $callback instanceof Closure ) {
+			$info['callback'] = 'Closure';
+			$reflection       = new ReflectionFunction( $callback );
+		} else {
+			$info['callback'] = (string) $callback;
+			$reflection       = new ReflectionFunction( $callback );
+		}
+
+		$file  = $reflection->getFileName();
+		$start = $reflection->getStartLine();
+		$end   = $reflection->getEndLine();
+
+		$info['file']  = (string) $file;
+		$info['lines'] = $start . '-' . $end;
+
+		if ( $file && is_readable( $file ) ) {
+			$lines = file( $file );
+
+			if ( is_array( $lines ) ) {
+				$info['source'] = implode( '', array_slice( $lines, $start - 1, ( $end - $start ) + 1 ) );
+			}
+		}
+	} catch ( Exception $e ) {
+		$info['source'] = 'Reflection failed: ' . $e->getMessage();
+	} catch ( Error $e ) {
+		$info['source'] = 'Reflection error: ' . $e->getMessage();
+	}
+
+	return $info;
+}
+
+/**
+ * Collect referral-related options and current-user meta, so the condition the
+ * referral shortcode checks can be matched against real stored values.
+ *
+ * @return array<string,string>
+ */
+function pepselect_child_referral_state() {
+	global $wpdb;
+
+	$state = array();
+
+	$options = $wpdb->get_results(
+		"SELECT option_name, option_value FROM {$wpdb->options}
+		 WHERE option_name LIKE '%referral%' OR option_name LIKE '%ywpar%'
+		 ORDER BY option_name LIMIT 60",
+		ARRAY_A
+	);
+
+	foreach ( (array) $options as $option ) {
+		$state[ 'option: ' . $option['option_name'] ] = mb_substr( (string) $option['option_value'], 0, 160 );
+	}
+
+	$user_id = get_current_user_id();
+
+	if ( $user_id ) {
+		$meta = get_user_meta( $user_id );
+
+		foreach ( (array) $meta as $key => $value ) {
+			if ( preg_match( '/referral|ywpar|refer/i', $key ) ) {
+				$state[ 'usermeta: ' . $key ] = mb_substr( is_array( $value ) ? wp_json_encode( $value ) : (string) $value, 0, 160 );
+			}
+		}
+	}
+
+	return $state;
+}

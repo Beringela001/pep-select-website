@@ -1,22 +1,21 @@
 /**
  * Cart/checkout rewards note restyle (WEB M7).
  *
- * Same capture-and-restyle intent as the product pills, but the cart is a
- * WooCommerce block cart rendered client-side, so this runs in the browser.
- * It reads YITH Points & Rewards' own rendered "you will earn N Points" banner
- * (the plugin stays the source of truth), drops the trophy, converts points to
- * dollars to match the cash-back framing used everywhere else (100 points =
- * $1.00), and presents it as an enlarged cyan cash-back pill centered above the
- * cart.
+ * YITH Points & Rewards injects its cart banner client-side from its own blocks
+ * bundle (assets/js/blocks/frontend_blocks.js), so there is no server-rendered
+ * banner in the cart HTML to capture in PHP. This mirrors whatever YITH renders:
+ * it reads the points from YITH's banner (the plugin stays the source of truth),
+ * drops the trophy, converts to dollars to match the cash-back framing used
+ * site-wide (100 points = $1.00), and shows it as an enlarged cyan pill centered
+ * above the cart.
  *
- * The value is never computed here. When cart totals change (coupon applied or
- * removed, quantity changed) the cart page is re-requested and YITH's freshly
- * rendered value is re-captured, so YITH's own rules (such as no points on the
- * coupon-discounted amount) always hold.
- *
- * Keyed on YITH's rendered text rather than a class, so it works regardless of
- * the plugin's markup/version. If the banner is absent (for example when logged
- * out) this is a no-op and the page is unchanged.
+ * Deliberately does no network work. An earlier version re-fetched the whole
+ * cart page and re-parsed it to refresh the value; that was both useless (the
+ * banner is not in the fetched HTML, because YITH injects it) and expensive
+ * (each fetch triggered the slow cart request), which made the pill appear late
+ * and then flicker. Live updates now come for free: YITH re-renders its own
+ * banner when the cart changes, and this mirrors it. Work per update is one
+ * cheap DOM scan, coalesced to at most once per animation frame.
  */
 ( function () {
 	'use strict';
@@ -27,35 +26,16 @@
 		'<svg class="pepselect-pill__icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8Zm.9-8.7c-1.6-.4-2.1-.7-2.1-1.3s.5-.9 1.3-.9a1.7 1.7 0 0 1 1.6.9l1.5-.9a3.1 3.1 0 0 0-2-1.5V6.5h-1.8v1.3c-1.3.3-2.2 1.2-2.2 2.5 0 1.7 1.4 2.3 2.9 2.7 1.4.3 1.7.7 1.7 1.3s-.6 1-1.4 1a2 2 0 0 1-1.9-1.2l-1.6.9a3.5 3.5 0 0 0 2.3 1.7v1.3h1.8v-1.3c1.4-.3 2.3-1.2 2.3-2.6 0-1.8-1.5-2.4-3.1-2.8Z"></path></svg>';
 
 	var host = null;
-	var refreshTimer = null;
-	var inFlight = false;
 	var lastPoints = 0;
-	var lastTotal = null;
-
-	/**
-	 * Current cart total as rendered, used to decide whether anything actually
-	 * changed. Re-reading the cart is expensive, so it only happens when this
-	 * value moves.
-	 */
-	function readTotal() {
-		var node = document.querySelector(
-			'.wc-block-components-totals-footer-item .wc-block-components-totals-item__value, .order-total .amount, .cart_totals .order-total .amount'
-		);
-
-		return node ? ( node.textContent || '' ).trim() : null;
-	}
+	var scanQueued = false;
 
 	function toDollars( points ) {
 		return '$' + ( points / POINTS_PER_DOLLAR ).toFixed( 2 );
 	}
 
-	/**
-	 * Find YITH's rendered earn message inside a document/element and return the
-	 * points it states, or 0 when absent. Nothing is calculated here beyond
-	 * reading the number YITH printed.
-	 */
-	function capturePoints( root ) {
-		var nodes = root.querySelectorAll( 'div, p, span, li' );
+	/** Read the points from YITH's rendered banner. Nothing is calculated. */
+	function capturePoints() {
+		var nodes = document.querySelectorAll( 'div, p, span, li' );
 
 		for ( var i = 0; i < nodes.length; i++ ) {
 			var el = nodes[ i ];
@@ -81,8 +61,8 @@
 				continue;
 			}
 
-			// Hide YITH's own banner in the live document; our pill replaces it.
-			if ( el.ownerDocument === document ) {
+			// Hide YITH's own banner; our pill presents the same value.
+			if ( ! el.classList.contains( 'pepselect-rewards-source' ) ) {
 				el.classList.add( 'pepselect-rewards-source' );
 			}
 
@@ -97,9 +77,7 @@
 		return 0;
 	}
 
-	/**
-	 * Ensure the centered host sits at the top of the cart (or checkout) column.
-	 */
+	/** Centered host at the top of the cart (or checkout) column. */
 	function ensureHost() {
 		if ( host && document.body.contains( host ) ) {
 			return host;
@@ -124,16 +102,15 @@
 	}
 
 	function render( points ) {
-		var mount = ensureHost();
-
-		if ( ! mount ) {
+		// An empty read means we could not capture, not that nothing is earned;
+		// never blank a value already on screen.
+		if ( ! points || points === lastPoints ) {
 			return;
 		}
 
-		// Never blank an already-shown value: a refresh that reads nothing means
-		// we could not re-capture, not that the customer earns nothing. Blanking
-		// here is what caused the pill to flash and vanish.
-		if ( ! points ) {
+		var mount = ensureHost();
+
+		if ( ! mount ) {
 			return;
 		}
 
@@ -147,122 +124,40 @@
 			' in cash back</span></span>';
 	}
 
-	/**
-	 * Re-request the cart page and re-capture YITH's freshly rendered value.
-	 * The number is always YITH's, never recomputed here.
-	 */
-	function refreshFromServer() {
-		if ( inFlight ) {
+	/** Coalesce to at most one scan per frame so bursts cost one pass. */
+	function queueScan() {
+		if ( scanQueued ) {
 			return;
 		}
 
-		inFlight = true;
+		scanQueued = true;
 
-		window
-			.fetch( window.location.href, {
-				credentials: 'same-origin',
-				headers: { 'X-Requested-With': 'XMLHttpRequest' },
-			} )
-			.then( function ( response ) {
-				return response.text();
-			} )
-			.then( function ( html ) {
-				var parsed = new window.DOMParser().parseFromString( html, 'text/html' );
-				render( capturePoints( parsed ) );
-			} )
-			.catch( function () {
-				/* Leave the current value in place if the refresh fails. */
-			} )
-			.then( function () {
-				inFlight = false;
-			} );
-	}
-
-	function scheduleRefresh() {
-		window.clearTimeout( refreshTimer );
-		refreshTimer = window.setTimeout( refreshFromServer, 700 );
+		window.requestAnimationFrame( function () {
+			scanQueued = false;
+			render( capturePoints() );
+		} );
 	}
 
 	function init() {
-		// Immediate, network-free: read the value YITH already rendered.
-		render( capturePoints( document ) );
-		lastTotal = readTotal();
+		render( capturePoints() );
 
-		// Classic/jQuery cart events are real cart changes, so they may refresh.
-		if ( window.jQuery ) {
-			window
-				.jQuery( document.body )
-				.on(
-					'updated_cart_totals applied_coupon removed_coupon',
-					function () {
-						lastTotal = readTotal();
-						scheduleRefresh();
-					}
-				);
-		}
-
-		// Block cart: totals re-render on quantity/coupon changes, and YITH's
-		// banner can be injected after first paint. Always re-run the local
-		// capture (cheap, catches a late or re-inserted banner), and schedule a
-		// server re-capture only when the totals actually change.
 		if ( window.MutationObserver && document.body ) {
 			var observer = new MutationObserver( function ( mutations ) {
-				var totalsChanged = false;
-				var sawForeignChange = false;
-
 				for ( var i = 0; i < mutations.length; i++ ) {
 					var target = mutations[ i ].target;
 
-					if ( ! target || ! target.closest ) {
+					// Ignore our own writes so we never feed ourselves.
+					if ( target && target.closest && target.closest( '.pepselect-rewards-note-wrap' ) ) {
 						continue;
 					}
 
-					// Ignore our own pill updates so we never loop.
-					if ( target.closest( '.pepselect-rewards-note-wrap' ) ) {
-						continue;
-					}
-
-					sawForeignChange = true;
-
-					if (
-						target.closest(
-							'.wc-block-cart__totals, .wc-block-components-totals-item, .wc-block-cart-items, .cart_totals, .woocommerce-cart-form'
-						)
-					) {
-						totalsChanged = true;
-					}
-				}
-
-				if ( ! sawForeignChange ) {
+					queueScan();
 					return;
 				}
-
-				// Cheap and network-free: catch a banner injected after first
-				// paint so the pill appears immediately.
-				var points = capturePoints( document );
-				if ( points && points !== lastPoints ) {
-					render( points );
-				}
-
-				if ( ! totalsChanged ) {
-					return;
-				}
-
-				// Only re-read from the server when the total actually moved.
-				// The block cart re-renders constantly on load, and the cart
-				// request is slow, so firing on every mutation is what made the
-				// pill take ~20s and then flicker.
-				var total = readTotal();
-
-				if ( null === total || total === lastTotal ) {
-					return;
-				}
-
-				lastTotal = total;
-				scheduleRefresh();
 			} );
 
-			observer.observe( document.body, { childList: true, subtree: true, characterData: true } );
+			// childList only: no characterData, which fires far more often.
+			observer.observe( document.body, { childList: true, subtree: true } );
 		}
 	}
 

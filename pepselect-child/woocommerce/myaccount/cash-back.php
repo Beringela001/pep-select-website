@@ -122,9 +122,28 @@ $pepselect_steps = array(
 					<?php echo $pepselect_referral_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- YITH's own shortcode markup, re-emitted verbatim. ?>
 				</div>
 			<?php else : ?>
+				<?php
+				$pepselect_desc  = function_exists( 'pepselect_child_describe_shortcode' ) ? pepselect_child_describe_shortcode( 'ywpar_referral_link' ) : array();
+				$pepselect_state = function_exists( 'pepselect_child_referral_state' ) ? pepselect_child_referral_state() : array();
+				?>
 				<div class="pepselect-cashback__referral-empty">
-					<p><?php esc_html_e( 'YITH\'s [ywpar_referral_link] shortcode is registered but rendered no output for this account. Raw output shown below for diagnosis.', 'pepselect-child' ); ?></p>
-					<pre class="pepselect-cashback__referral-dump"><?php echo esc_html( var_export( do_shortcode( '[ywpar_referral_link]' ), true ) ); ?></pre>
+					<p><?php esc_html_e( 'YITH\'s [ywpar_referral_link] shortcode is registered but returned no output for this account. Its callback is read below, straight from the plugin file on this install, so the exact condition it requires can be identified.', 'pepselect-child' ); ?></p>
+					<pre class="pepselect-cashback__referral-dump"><?php
+					echo esc_html( 'callback: ' . ( isset( $pepselect_desc['callback'] ) ? $pepselect_desc['callback'] : '?' ) . "\n" );
+					echo esc_html( 'file: ' . ( isset( $pepselect_desc['file'] ) ? $pepselect_desc['file'] : '?' ) . "\n" );
+					echo esc_html( 'lines: ' . ( isset( $pepselect_desc['lines'] ) ? $pepselect_desc['lines'] : '?' ) . "\n\n" );
+					echo esc_html( "--- callback source ---\n" );
+					echo esc_html( ! empty( $pepselect_desc['source'] ) ? $pepselect_desc['source'] : '(source unavailable)' );
+					echo esc_html( "\n--- referral options / user meta ---\n" );
+
+					if ( $pepselect_state ) {
+						foreach ( $pepselect_state as $pepselect_key => $pepselect_value ) {
+							echo esc_html( $pepselect_key . ' = ' . $pepselect_value . "\n" );
+						}
+					} else {
+						echo esc_html( '(no referral options or user meta found)' );
+					}
+					?></pre>
 				</div>
 			<?php endif; ?>
 
