@@ -302,8 +302,9 @@
 	background-image: none !important;
 	color: var(--pep-color-navy) !important;
 	font-family: var(--pep-font-interface);
-	font-size: 15px;
+	font-size: 13px;
 	font-weight: var(--pep-font-weight-semibold);
+	line-height: 1.5;
 	cursor: pointer;
 	box-shadow: none;
 }
@@ -369,7 +370,7 @@
 .pepselect-compound__intended p:last-child {
 	margin: 0;
 	color: var(--pep-color-navy);
-	font-size: 15px;
+	font-size: 13px;
 	line-height: 1.6;
 }
 

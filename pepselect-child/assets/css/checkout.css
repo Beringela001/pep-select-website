@@ -230,11 +230,11 @@ li.wc_payment_method.payment_method_bacs .payment_box {
 .wc-block-cart .wc-block-cart-items__header th,
 .wc-block-cart .wc-block-cart-items__header .wc-block-cart-items__header-product,
 .wc-block-cart .wc-block-cart-items__header .wc-block-cart-items__header-total {
-	font-size: 14px;
+	font-size: 15px;
 }
 
 .wc-block-cart .wc-block-components-product-name {
-	font-size: 16px !important;
+	font-size: 17px !important;
 	line-height: 1.4;
 }
 
@@ -242,7 +242,7 @@ li.wc_payment_method.payment_method_bacs .payment_box {
 .wc-block-cart .wc-block-components-product-price__value,
 .wc-block-cart .wc-block-cart-item__total,
 .wc-block-cart .wc-block-cart-item__total .wc-block-formatted-money-amount {
-	font-size: 15px;
+	font-size: 16px;
 }
 
 .wc-block-cart .wc-block-components-product-details,
@@ -254,18 +254,30 @@ li.wc_payment_method.payment_method_bacs .payment_box {
 
 .wc-block-cart .wc-block-components-totals-item__label,
 .wc-block-cart .wc-block-components-totals-item__value {
-	font-size: 15px;
+	font-size: 16px;
 }
 
 .wc-block-cart .wc-block-components-totals-footer-item,
 .wc-block-cart .wc-block-components-totals-footer-item .wc-block-components-totals-item__label,
 .wc-block-cart .wc-block-components-totals-footer-item .wc-block-components-totals-item__value {
-	font-size: 17px;
+	font-size: 18px;
 	font-weight: 600;
 }
 
 .wc-block-cart .wc-block-components-panel__button {
+	font-size: 16px;
+}
+
+.wc-block-cart .wc-block-components-quantity-selector__button,
+.wc-block-cart .wc-block-components-quantity-selector__input {
 	font-size: 15px;
+}
+
+/* The per-item short description ("High-purity research peptide") renders at
+   ~11px and is removed by request. This slot is reserved for a future
+   current-batch line on the cart item. */
+.wc-block-cart .wc-block-components-product-metadata__description {
+	display: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
