@@ -163,236 +163,216 @@ function pepselect_child_trim_product_summary() {
 add_action( 'wp', 'pepselect_child_trim_product_summary' );
 
 /**
- * Dollars returned per YITH point. Mirrors the rewards account math
- * (1 point = $0.01, so 100 points = $1.00) so the on-product rate and the
- * account balance speak the same conversion.
+ * Product promotion pills (WEB M7).
+ *
+ * The single-product summary carries two promotional signals, both printed by
+ * plugins and never by the theme:
+ *
+ *   - Cash back: YITH Points & Rewards prints its own earn message on the
+ *     product page (rendered as `p.ywpar_earn_points`).
+ *   - Buy 4, get 1 free: YITH Dynamic Pricing & Discounts prints its rule note
+ *     (`.ywdpd-notices-wrapper` wrapping `.show_note_on_apply_products`).
+ *
+ * Rather than recompute either value from plugin internals (fragile and
+ * version-bound), the theme captures what those plugins actually RENDER, lifts
+ * the raw output out of the summary, and re-emits the text inside styled pills
+ * in one flex row above the price. This mirrors the account.php approach of
+ * reading YITH's own output instead of calling its API, so the plugins stay the
+ * single source of truth. The quantity-discount table and the stock line are
+ * left untouched.
  */
-if ( ! defined( 'PEPSELECT_CASHBACK_DOLLARS_PER_POINT' ) ) {
-	define( 'PEPSELECT_CASHBACK_DOLLARS_PER_POINT', 0.01 );
-}
 
 /**
- * Report whether a product qualifies for the Buy 4, Get 1 Free promotion.
+ * Whether the pills output buffer is currently open. Guards the paired
+ * start/end summary hooks so the buffer is only closed when we opened it.
  *
- * The YITH Dynamic Pricing plugin that drives this promotion is not installed
- * yet, so this returns false and the B4G1 pill renders nowhere. The markup and
- * styling are built and gated here so that enabling the promotion later is a
- * one-line change to this helper (or a `pepselect_product_has_b4g1` filter),
- * with no template work.
+ * @var bool
+ */
+$GLOBALS['pepselect_pills_buffering'] = false;
+
+/**
+ * Decide whether the Buy 4, Get 1 Free promotion applies to a product.
  *
- * @param WC_Product|null $product Product being evaluated.
+ * Detection is driven by whether YITH Dynamic Pricing actually rendered its
+ * rule note for the product (passed in as $detected). The result is filterable
+ * through `pepselect_product_has_b4g1`, so the promotion can be forced on or off
+ * (globally or per product) without editing the template.
+ *
+ * @param bool            $detected Whether the plugin rendered a B4G1 note.
+ * @param WC_Product|null $product  Product being evaluated.
  * @return bool
  */
-function pepselect_product_has_b4g1( $product = null ) {
-	// Deliberately false until YITH Dynamic Pricing is installed and its rule
-	// detection is wired in. Filterable so the promotion can be switched on
-	// (globally or per product) without editing the template.
-	return (bool) apply_filters( 'pepselect_product_has_b4g1', false, $product );
+function pepselect_product_has_b4g1( $detected = false, $product = null ) {
+	return (bool) apply_filters( 'pepselect_product_has_b4g1', $detected, $product );
 }
 
 /**
- * Read the number of points a single unit of a product earns, live from
- * YITH Points & Rewards, honoring any per-product or per-category override.
- *
- * Follows the defensive, version-tolerant pattern used elsewhere in the theme
- * for YITH: try YITH's own earning calculator first (so overrides apply exactly
- * as they would at checkout), then the main instance, then derive from the
- * global earn-rate option, and finally expose a filter escape hatch. Returns a
- * float of points; 0 when nothing can be determined.
- *
- * @param WC_Product $product Product to evaluate.
- * @return float Points earned for one unit, or 0.
- */
-function pepselect_child_get_product_earned_points( $product ) {
-	if ( ! is_a( $product, 'WC_Product' ) ) {
-		return 0.0;
-	}
-
-	$points = 0.0;
-	$price  = (float) $product->get_price();
-
-	// Primary: YITH's own earning calculator honors per-product and
-	// per-category overrides identically to how points are awarded at checkout.
-	if ( class_exists( 'YITH_WC_Points_Rewards_Earning' ) && method_exists( 'YITH_WC_Points_Rewards_Earning', 'get_instance' ) ) {
-		$earning = YITH_WC_Points_Rewards_Earning::get_instance();
-
-		if ( is_object( $earning ) ) {
-			foreach ( array( 'get_points_earned_by_product', 'get_earned_points_by_product', 'get_product_points_earned', 'get_points_earned' ) as $method ) {
-				if ( method_exists( $earning, $method ) ) {
-					$maybe = $earning->$method( $product );
-
-					if ( is_numeric( $maybe ) ) {
-						$points = (float) $maybe;
-						break;
-					}
-				}
-			}
-		}
-	}
-
-	// Secondary: the main plugin instance may expose the calculation directly.
-	if ( ! $points && function_exists( 'YITH_WC_Points_Rewards' ) ) {
-		$instance = YITH_WC_Points_Rewards();
-
-		if ( is_object( $instance ) ) {
-			foreach ( array( 'get_points_earned_by_product', 'get_product_points', 'get_earning_points' ) as $method ) {
-				if ( method_exists( $instance, $method ) ) {
-					$maybe = $instance->$method( $product );
-
-					if ( is_numeric( $maybe ) ) {
-						$points = (float) $maybe;
-						break;
-					}
-				}
-			}
-		}
-	}
-
-	// Tertiary: derive from the stored global earn rate applied to the price.
-	// YITH stores this as array( 'points' => x, 'money' => y ): earn x points
-	// for every y spent. Reading the option keeps the rate live and unhardcoded.
-	if ( ! $points && $price > 0 ) {
-		$rate = get_option( 'ywpar_earn_points_rate' );
-
-		if ( is_array( $rate ) && ! empty( $rate['points'] ) ) {
-			$per_money = isset( $rate['money'] ) ? (float) $rate['money'] : 1.0;
-
-			if ( $per_money > 0 ) {
-				$points = floor( $price / $per_money ) * (float) $rate['points'];
-			}
-		}
-	}
-
-	return (float) apply_filters( 'pepselect_child_product_earned_points', $points, $product );
-}
-
-/**
- * Compute the effective cash-back rate for a product as a whole-or-decimal
- * percentage of its price, or null when the pill should not render.
- *
- * Returns null when Points & Rewards is inactive, the product has no usable
- * price, or the product earns nothing — so the caller hides the pill entirely.
- *
- * @param WC_Product $product Product to evaluate.
- * @return float|null Percentage (e.g. 3 or 2.5), or null to hide.
- */
-function pepselect_child_get_product_cashback_rate( $product ) {
-	if ( ! is_a( $product, 'WC_Product' ) ) {
-		return null;
-	}
-
-	// Hide when Points & Rewards is not active at all.
-	$active = function_exists( 'YITH_WC_Points_Rewards' ) || class_exists( 'YITH_WC_Points_Rewards_Earning' );
-
-	if ( ! $active ) {
-		return null;
-	}
-
-	$price = (float) $product->get_price();
-
-	if ( $price <= 0 ) {
-		return null;
-	}
-
-	$points  = pepselect_child_get_product_earned_points( $product );
-	$dollars = $points * (float) PEPSELECT_CASHBACK_DOLLARS_PER_POINT;
-	$rate    = ( $dollars / $price ) * 100;
-
-	// Round to one decimal, then collapse a whole number to an integer so the
-	// common case reads "3%" rather than "3.0%".
-	$rate = round( $rate, 1 );
-
-	if ( (float) (int) $rate === $rate ) {
-		$rate = (int) $rate;
-	}
-
-	$rate = apply_filters( 'pepselect_child_cashback_rate', $rate, $product );
-
-	// Hide when the product earns nothing.
-	if ( ! $rate || $rate <= 0 ) {
-		return null;
-	}
-
-	return $rate;
-}
-
-/**
- * Render the product promotion pills as a single wrapping flex row inside the
- * WooCommerce summary: the B4G1 pill first when it applies, the cash-back pill
- * second. Nothing is emitted when neither pill qualifies, so a lone cash-back
- * pill leaves no empty gap and a page with no pills adds no wrapper at all.
+ * Open an output buffer around the product summary so the promotional notes
+ * the plugins print can be captured and restyled.
  *
  * @return void
  */
-function pepselect_child_render_product_pills() {
-	global $product;
-
-	if ( ! is_a( $product, 'WC_Product' ) ) {
+function pepselect_child_pills_buffer_start() {
+	if ( ! function_exists( 'is_product' ) || ! is_product() ) {
 		return;
 	}
 
-	$has_b4g1      = pepselect_product_has_b4g1( $product );
-	$cashback_rate = pepselect_child_get_product_cashback_rate( $product );
-
-	if ( ! $has_b4g1 && null === $cashback_rate ) {
+	if ( function_exists( 'pepselect_child_is_elementor_editor_request' ) && pepselect_child_is_elementor_editor_request() ) {
 		return;
 	}
 
-	echo '<div class="pepselect-product-pills">';
-
-	if ( $has_b4g1 ) {
-		$b4g1_label = apply_filters( 'pepselect_child_b4g1_pill_label', __( 'Buy 4, get the 5th free', 'pepselect-child' ), $product );
-		?>
-		<span class="pepselect-pill pepselect-b4g1-pill">
-			<svg class="pepselect-pill__icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24" width="16" height="16">
-				<path fill="currentColor" d="M20 7h-2.2a3 3 0 0 0-.5-3.4 3 3 0 0 0-4.2 0L12 4.2l-1.1-1.1a3 3 0 0 0-4.2 0A3 3 0 0 0 6.2 7H4a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h1v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7h1a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1Zm-6.5-2.1a1 1 0 1 1 1.4 1.4l-.7.7H13V5.6l.5-.7ZM9.1 4.9a1 1 0 0 1 1.4 0l.5.7V7H9.8l-.7-.7a1 1 0 0 1 0-1.4ZM11 19H7v-7h4v7Zm0-9H5V9h6v1Zm6 9h-4v-7h4v7Zm2-9h-6V9h6v1Z"></path>
-			</svg>
-			<span class="pepselect-pill__label"><?php echo esc_html( $b4g1_label ); ?></span>
-		</span>
-		<?php
-	}
-
-	if ( null !== $cashback_rate ) {
-		$rate_display = (string) $cashback_rate;
-		/* translators: %s: cash-back rate as a percentage, e.g. "3". */
-		$cashback_label = apply_filters(
-			'pepselect_child_cashback_pill_label',
-			sprintf( __( 'Earn %s%% back in points', 'pepselect-child' ), $rate_display ),
-			$cashback_rate,
-			$product
-		);
-		?>
-		<span class="pepselect-pill pepselect-cashback-pill">
-			<svg class="pepselect-pill__icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24" width="16" height="16">
-				<path fill="currentColor" d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8Zm.9-8.7c-1.6-.4-2.1-.7-2.1-1.3s.5-.9 1.3-.9a1.7 1.7 0 0 1 1.6.9l1.5-.9a3.1 3.1 0 0 0-2-1.5V6.5h-1.8v1.3c-1.3.3-2.2 1.2-2.2 2.5 0 1.7 1.4 2.3 2.9 2.7 1.4.3 1.7.7 1.7 1.3s-.6 1-1.4 1a2 2 0 0 1-1.9-1.2l-1.6.9a3.5 3.5 0 0 0 2.3 1.7v1.3h1.8v-1.3c1.4-.3 2.3-1.2 2.3-2.6 0-1.8-1.5-2.4-3.1-2.8Z"></path>
-			</svg>
-			<span class="pepselect-pill__label"><?php echo esc_html( $cashback_label ); ?></span>
-		</span>
-		<?php
-	}
-
-	echo '</div>';
+	$GLOBALS['pepselect_pills_buffering'] = true;
+	ob_start();
 }
-add_action( 'woocommerce_single_product_summary', 'pepselect_child_render_product_pills', 8 );
+add_action( 'woocommerce_single_product_summary', 'pepselect_child_pills_buffer_start', 4 );
 
 /**
- * Suppress YITH's native on-product earn message so the coded cash-back pill is
- * the single source of truth for the rate. The theme's own pill sits in the
- * flex row above; leaving YITH's message in place would duplicate it.
+ * Close the summary buffer, lift the plugin-rendered promotional notes out of
+ * it, and re-emit them as styled pills in one flex row above the price.
  *
- * The native message is also hidden via CSS on the compound summary as a
- * belt-and-braces guard for versions that hook it through paths not covered by
- * this filter.
- *
- * @param bool $show Whether YITH should show the product message.
- * @return bool
+ * @return void
  */
-function pepselect_child_hide_native_points_message( $show ) {
-	if ( function_exists( 'is_product' ) && is_product() ) {
-		return false;
+function pepselect_child_pills_buffer_end() {
+	if ( empty( $GLOBALS['pepselect_pills_buffering'] ) ) {
+		return;
 	}
 
-	return $show;
+	$GLOBALS['pepselect_pills_buffering'] = false;
+	$html = ob_get_clean();
+
+	global $product;
+
+	// Capture and remove YITH Points & Rewards' own earn message. We only read
+	// the text it renders; the plugin's API is never called.
+	$cashback_text = '';
+	$html          = pepselect_child_extract_plugin_note(
+		$html,
+		'#<p\b[^>]*class="[^"]*\bywpar_earn_points\b[^"]*"[^>]*>.*?</p>#is',
+		$cashback_text
+	);
+
+	// Fallback selectors, in case the earn message is emitted under a sibling
+	// class on this YITH version.
+	if ( '' === $cashback_text ) {
+		$html = pepselect_child_extract_plugin_note(
+			$html,
+			'#<([a-z0-9]+)\b[^>]*class="[^"]*\b(?:ywpar-message|ywpar_message_cart|yith-par-message)\b[^"]*"[^>]*>.*?</\1>#is',
+			$cashback_text
+		);
+	}
+
+	// Capture and remove YITH Dynamic Pricing's rule note (the gray
+	// "Buy 4 get 1 free" text). The whole notices wrapper is removed so no empty
+	// plugin markup is left behind. The separate quantity-discount table wrapper
+	// (`ywdpd-table-discounts-wrapper`) is intentionally left in place.
+	$b4g1_text = '';
+	$html      = pepselect_child_extract_plugin_note(
+		$html,
+		'#<div\b[^>]*class="[^"]*\bywdpd-notices-wrapper\b[^"]*"[^>]*>.*?</div>\s*</div>#is',
+		$b4g1_text
+	);
+
+	// Fallback to the inner note alone when the wrapper nesting differs.
+	if ( '' === $b4g1_text ) {
+		$html = pepselect_child_extract_plugin_note(
+			$html,
+			'#<div\b[^>]*class="[^"]*\bshow_note_on_apply_products\b[^"]*"[^>]*>.*?</div>#is',
+			$b4g1_text
+		);
+	}
+
+	$show_b4g1 = pepselect_product_has_b4g1( '' !== $b4g1_text, $product );
+
+	$pills = '';
+
+	if ( $show_b4g1 ) {
+		// Prefer the plugin's own rule text so the pill always matches the live
+		// rule; fall back to the designed label when the note was empty.
+		$label  = '' !== $b4g1_text ? $b4g1_text : __( 'Buy 4, get the 5th free', 'pepselect-child' );
+		$label  = apply_filters( 'pepselect_child_b4g1_pill_label', $label, $product );
+		$pills .= pepselect_child_pill_markup( 'b4g1', $label );
+	}
+
+	if ( '' !== $cashback_text ) {
+		$cashback_text = apply_filters( 'pepselect_child_cashback_pill_text', $cashback_text, $product );
+		$pills        .= pepselect_child_pill_markup( 'cashback', $cashback_text );
+	}
+
+	if ( '' !== $pills ) {
+		$row  = '<div class="pepselect-product-pills">' . $pills . '</div>';
+		$html = pepselect_child_inject_before_price( $html, $row );
+	}
+
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Re-emitting captured summary markup verbatim; pill text is escaped in pepselect_child_pill_markup().
+	echo $html;
 }
-add_filter( 'ywpar_show_points_message', 'pepselect_child_hide_native_points_message' );
-add_filter( 'yith_ywpar_show_product_message', 'pepselect_child_hide_native_points_message' );
+add_action( 'woocommerce_single_product_summary', 'pepselect_child_pills_buffer_end', 999 );
+
+/**
+ * Extract the first match of $pattern from $html, capture its inner text into
+ * $text (stripped to a clean single line), and remove the matched node from the
+ * returned markup. Returns $html unchanged when nothing matches.
+ *
+ * @param string $html    Buffered summary markup.
+ * @param string $pattern Regex matching the node to lift out.
+ * @param string $text    Receives the captured, stripped text by reference.
+ * @return string Markup with the matched node removed.
+ */
+function pepselect_child_extract_plugin_note( $html, $pattern, &$text ) {
+	if ( ! preg_match( $pattern, $html, $m ) ) {
+		return $html;
+	}
+
+	$captured = wp_strip_all_tags( $m[0] );
+	$captured = trim( preg_replace( '/\s+/', ' ', $captured ) );
+
+	if ( '' === $captured ) {
+		return $html;
+	}
+
+	$text = $captured;
+
+	return preg_replace( $pattern, '', $html, 1 );
+}
+
+/**
+ * Build a promotion pill. Cash back keeps the theme's cyan treatment; B4G1 uses
+ * the amber treatment that matches the on-hold email.
+ *
+ * @param string $type One of 'cashback' or 'b4g1'.
+ * @param string $text Visible pill text.
+ * @return string
+ */
+function pepselect_child_pill_markup( $type, $text ) {
+	$icons = array(
+		'cashback' => '<svg class="pepselect-pill__icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8Zm.9-8.7c-1.6-.4-2.1-.7-2.1-1.3s.5-.9 1.3-.9a1.7 1.7 0 0 1 1.6.9l1.5-.9a3.1 3.1 0 0 0-2-1.5V6.5h-1.8v1.3c-1.3.3-2.2 1.2-2.2 2.5 0 1.7 1.4 2.3 2.9 2.7 1.4.3 1.7.7 1.7 1.3s-.6 1-1.4 1a2 2 0 0 1-1.9-1.2l-1.6.9a3.5 3.5 0 0 0 2.3 1.7v1.3h1.8v-1.3c1.4-.3 2.3-1.2 2.3-2.6 0-1.8-1.5-2.4-3.1-2.8Z"></path></svg>',
+		'b4g1'     => '<svg class="pepselect-pill__icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M20 7h-2.2a3 3 0 0 0-.5-3.4 3 3 0 0 0-4.2 0L12 4.2l-1.1-1.1a3 3 0 0 0-4.2 0A3 3 0 0 0 6.2 7H4a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h1v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7h1a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1Zm-6.5-2.1a1 1 0 1 1 1.4 1.4l-.7.7H13V5.6l.5-.7ZM9.1 4.9a1 1 0 0 1 1.4 0l.5.7V7H9.8l-.7-.7a1 1 0 0 1 0-1.4ZM11 19H7v-7h4v7Zm0-9H5V9h6v1Zm6 9h-4v-7h4v7Zm2-9h-6V9h6v1Z"></path></svg>',
+	);
+
+	$icon  = isset( $icons[ $type ] ) ? $icons[ $type ] : '';
+	$class = 'b4g1' === $type ? 'pepselect-b4g1-pill' : 'pepselect-cashback-pill';
+
+	return '<span class="pepselect-pill ' . esc_attr( $class ) . '">'
+		. $icon
+		. '<span class="pepselect-pill__label">' . esc_html( $text ) . '</span>'
+		. '</span>';
+}
+
+/**
+ * Insert $row immediately before the WooCommerce price element so the pills sit
+ * above the price, the position the plugin notes held. Falls back to prepending
+ * when no price node is found.
+ *
+ * @param string $html Summary markup.
+ * @param string $row  Pills row markup.
+ * @return string
+ */
+function pepselect_child_inject_before_price( $html, $row ) {
+	if ( preg_match( '#<p\b[^>]*class="[^"]*\bprice\b[^"]*"#i', $html, $m, PREG_OFFSET_CAPTURE ) ) {
+		$pos = (int) $m[0][1];
+
+		return substr( $html, 0, $pos ) . $row . substr( $html, $pos );
+	}
+
+	return $row . $html;
+}

@@ -563,14 +563,35 @@
 }
 
 /*
- * Suppress YITH's native on-product earn message. The coded cash-back pill
- * above is the single source of truth for the rate; a filter also disables it
- * in PHP, and this rule guards versions that hook it through other paths.
+ * Fallback: if YITH's earn message is not captured into the pills row (for
+ * example if a YITH version emits it under different markup), style it in place
+ * so cash back still reads as a cyan pill rather than raw text. When it IS
+ * captured, PHP removes the node and this rule simply matches nothing.
  */
-.pepselect-compound-page__summary .ywpar_message_cart,
+.pepselect-compound-page__summary p.ywpar_earn_points,
 .pepselect-compound-page__summary .ywpar-message,
-.pepselect-compound-page__summary .yith-par-message,
-.pepselect-compound-page__summary p.ywpar_earn_points {
+.pepselect-compound-page__summary .ywpar_message_cart,
+.pepselect-compound-page__summary .yith-par-message {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	margin: 0 0 18px;
+	padding: 8px 16px;
+	border: 1px solid var(--pep-color-cyan);
+	border-radius: var(--pep-radius-pill);
+	background: var(--pep-color-cyan-soft);
+	color: var(--pep-color-navy);
+	font-size: 13px;
+	font-weight: var(--pep-font-weight-semibold);
+}
+
+/*
+ * The amber B4G1 pill replaces YITH Dynamic Pricing's gray rule note, which PHP
+ * lifts out of the summary. This rule keeps the raw note hidden as a guard in
+ * case the plugin re-injects it client-side. The separate quantity-discount
+ * table wrapper is deliberately left visible (removed via plugin config).
+ */
+.pepselect-compound-page__summary .ywdpd-notices-wrapper {
 	display: none;
 }
 

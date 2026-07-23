@@ -2,6 +2,12 @@
 
 All notable changes to the Pep Select child theme are documented here.
 
+## 0.16.0-beta.7 - 2026-07-22
+
+- Reworked the product promotion pills to capture and restyle plugin-rendered output instead of recomputing from plugin internals (fixes the beta.6 regression where the cash-back pill vanished). An output buffer around the single-product summary lifts YITH Points & Rewards' own earn message (`p.ywpar_earn_points`) into the cyan cash-back pill, and YITH Dynamic Pricing's rule note (`.ywdpd-notices-wrapper`) into the amber B4G1 pill, then drops both into one flex row above the price. The plugins remain the single source of truth; nothing is computed from their APIs.
+- Removed the beta.6 earn-rate computation, the `PEPSELECT_CASHBACK_DOLLARS_PER_POINT` constant in this file, and the native-message suppression filters/CSS that caused the regression. YITH's earn message now also styles in place as a cyan pill fallback if it is ever not captured.
+- Activated the B4G1 pill: it now renders when YITH Dynamic Pricing prints a rule note for the product, showing the plugin's own note text ("Buy 4 get 1 free") and hiding the raw gray note. `pepselect_product_has_b4g1()` now takes the detected state and stays filterable. The quantity-discount table wrapper and the stock line are left untouched.
+
 ## 0.16.0-beta.6 - 2026-07-22
 
 - Replaced the native YITH points message on the single compound page with a coded cash-back pill that reads the earn rate live from Points & Rewards (global rate or any per-product/category override), converts it to an effective percentage against price, and hides itself when Points & Rewards is inactive or the product earns nothing. The pill keeps the theme's existing cyan treatment; the native YITH message is suppressed via filter and CSS to avoid duplication.
