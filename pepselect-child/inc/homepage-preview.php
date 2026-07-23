@@ -324,7 +324,7 @@ function pepselect_child_get_homepage_faqs() {
 		),
 		array(
 			'question' => __( 'How do orders ship, and how fast?', 'pepselect-child' ),
-			'answer'   => __( 'Orders placed by 10 a.m. Eastern, Monday through Thursday, ship the same day. Shipments travel by USPS Priority or FedEx two-day and next-day service, and orders with a subtotal of $200 or more ship free with FedEx two-day.', 'pepselect-child' ),
+			'answer'   => __( 'Orders placed before 10:00 AM ET, Monday through Thursday, ship the same day. After 10:00 AM ET on those days, orders ship the next day. Orders placed Friday through Sunday ship on Monday. Holidays can shift these times when carrier services are closed. Shipments travel by USPS Priority or FedEx two-day and next-day service, and orders with a subtotal of $200 or more ship free with FedEx two-day.', 'pepselect-child' ),
 		),
 		array(
 			'question' => __( 'How does payment work?', 'pepselect-child' ),

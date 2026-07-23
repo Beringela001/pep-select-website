@@ -497,6 +497,10 @@ function pepselect_child_get_legal_documents() {
 				),
 				array(
 					'type' => 'paragraph',
+					'html' => 'Orders placed before 10:00 AM ET, Monday through Thursday, ship the same day. Orders placed after 10:00 AM ET, Monday through Thursday, ship the next day. Orders placed Friday through Sunday ship on Monday. Holidays can shift these times when carrier services are closed.',
+				),
+				array(
+					'type' => 'paragraph',
 					'html' => 'Orders are typically processed and handed to the carrier within 1–2 business days of confirmed payment. Once your order ships, you will receive tracking information by email. Delivery estimates begin when the carrier takes possession of the package; transit times, delays, and final delivery are the responsibility of the carrier and are outside our control. We currently ship within the United States only.',
 				),
 				array(
