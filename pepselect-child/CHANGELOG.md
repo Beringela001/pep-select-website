@@ -2,6 +2,12 @@
 
 All notable changes to the Pep Select child theme are documented here.
 
+## 0.17.0-beta.1 - 2026-07-22
+
+- Redesigned the on-hold order email to the storefront: navy headings, cyan pill Square button, amber exact-amount block, Plus Jakarta Sans with email-safe fallbacks, and IBM Plex Mono for the order total. Voice reset to calm and precise. The live total via `get_formatted_order_total()`, the Square link in both button and plain-text form, the "3BS Holdings LLC" descriptor, and the support address are unchanged. Table layout with inline styles throughout; no flexbox or grid.
+- Added a customer completed-order email override with a shipment tracking block styled to match, showing carrier, tracking number, and a tracking button plus plain link when a URL is available. The block is omitted entirely when an order has no tracking.
+- Added `inc/emails.php` with shared email tokens mirroring foundations.css, and `pepselect_child_get_order_tracking()`, which resolves tracking from the WooCommerce Shipment Tracking structure, known Easyship and generic meta keys, a scan of the order's own meta for tracking-shaped keys, and finally the fulfilment order note Easyship writes. The key it read from is emitted as an HTML comment in the email source so it can be confirmed on a real shipment, and the whole result is filterable via `pepselect_child_order_tracking`.
+
 ## 0.16.0-beta.16 - 2026-07-22
 
 - Referral link now renders. YITH's `get_referral_link()` defaults `user_id` to 0 and only outputs when it resolves to a real user, so the shortcode is called as `[ywpar_referral_link user_id="auto"]`. Its output (`#ywpar_referral_link_sc`) is captured and restyled into a copyable field with a Copy button plus the full share link, and YITH's raw block is collapsed only once the values have been read from it.
