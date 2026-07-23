@@ -133,7 +133,7 @@ function pepselect_child_strip_delivery_estimate( $label ) {
 function pepselect_child_filter_shipping_rate_label( $label ) {
 	return pepselect_child_strip_delivery_estimate( $label );
 }
-add_filter( 'woocommerce_cart_shipping_method_full_label', 'pepselect_child_filter_shipping_rate_label', 20 );
+add_filter( 'woocommerce_cart_shipping_method_full_label', 'pepselect_child_filter_shipping_rate_label', 9999 );
 
 /**
  * Order-received page, My Account order views, and order emails read the method
@@ -147,6 +147,24 @@ function pepselect_child_filter_order_shipping_display( $names ) {
 	return pepselect_child_strip_delivery_estimate( $names );
 }
 add_filter( 'woocommerce_order_shipping_method', 'pepselect_child_filter_order_shipping_display', 20 );
+
+/**
+ * The rate label at its source. WC_Shipping_Rate::get_label() applies this
+ * filter, so hooking here covers renderers that build their own option markup
+ * from the raw rate label instead of the cart full-label: Fluid Checkout's
+ * shipping options and the WooCommerce Blocks cart both read it directly. The
+ * late priority runs after any plugin that appends its estimate through the
+ * same filter. The two filters above stay as belt-and-suspenders for
+ * stored-order display.
+ *
+ * @param string                $label Rate label.
+ * @param WC_Shipping_Rate|null $rate  Rate object, unused.
+ * @return string
+ */
+function pepselect_child_filter_shipping_rate_source_label( $label, $rate = null ) {
+	return pepselect_child_strip_delivery_estimate( $label );
+}
+add_filter( 'woocommerce_shipping_rate_label', 'pepselect_child_filter_shipping_rate_source_label', 9999, 2 );
 
 /**
  * Drop the "Cart" page heading. Hello Elementor gates its page header on this
