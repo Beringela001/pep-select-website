@@ -20,6 +20,7 @@ require_once get_stylesheet_directory() . '/inc/compound-content.php';
 require_once get_stylesheet_directory() . '/inc/single-product.php';
 require_once get_stylesheet_directory() . '/inc/faq-page.php';
 require_once get_stylesheet_directory() . '/inc/contact-page.php';
+require_once get_stylesheet_directory() . '/inc/legal-pages.php';
 require_once get_stylesheet_directory() . '/inc/military-page.php';
 require_once get_stylesheet_directory() . '/inc/account.php';
 require_once get_stylesheet_directory() . '/inc/checkout.php';

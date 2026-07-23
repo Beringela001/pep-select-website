@@ -1,0 +1,162 @@
+/*
+ * Legal pages (Terms, Privacy, RUO, Refund & Shipping).
+ *
+ * These are long documents, so the design serves reading: the utility-page
+ * eyebrow signature shared with Contact and FAQ, a single left-aligned column
+ * with a ~70-character measure, generous vertical rhythm between sections, and
+ * no card-per-section treatment. Tokens come from foundations.css.
+ */
+
+.pepselect-legal {
+	padding: 56px var(--pep-gutter-desktop) 96px;
+	background: var(--pep-color-white);
+	color: var(--pep-color-ink);
+}
+
+.pepselect-legal__inner {
+	max-width: 720px;
+	margin: 0 auto;
+}
+
+/* Utility-page signature: the eyebrow is the h1. No hero-scale title. */
+.pepselect-legal__eyebrow {
+	margin: 0 0 14px;
+	color: var(--pep-color-cyan);
+	font-family: var(--pep-font-interface);
+	font-size: 17px;
+	font-weight: var(--pep-font-weight-bold);
+	letter-spacing: 0.13em;
+	text-transform: uppercase;
+}
+
+.pepselect-legal__updated {
+	margin: 0;
+	color: var(--pep-color-slate);
+	font-family: var(--pep-font-interface);
+	font-size: 14px;
+}
+
+/* Plain in-page contents for the longer documents. Not a card. */
+.pepselect-legal__toc {
+	margin: 40px 0 8px;
+	padding: 20px 24px;
+	border: 1px solid var(--pep-color-border);
+	border-radius: var(--pep-radius-medium);
+	background: var(--pep-color-soft-gray);
+}
+
+.pepselect-legal__toc-title {
+	margin: 0 0 12px;
+	color: var(--pep-color-slate);
+	font-family: var(--pep-font-interface);
+	font-size: 12px;
+	font-weight: var(--pep-font-weight-bold);
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+}
+
+.pepselect-legal__toc-list {
+	margin: 0;
+	padding-left: 20px;
+	display: grid;
+	gap: 8px;
+	color: var(--pep-color-ink);
+	font-family: var(--pep-font-interface);
+	font-size: 15px;
+	line-height: 1.5;
+}
+
+.pepselect-legal__toc-list a {
+	color: var(--pep-color-navy);
+	text-decoration: none;
+	border-bottom: 1px solid transparent;
+	transition: border-color var(--pep-motion-duration, 180ms) ease;
+}
+
+.pepselect-legal__toc-list a:hover,
+.pepselect-legal__toc-list a:focus-visible {
+	border-bottom-color: var(--pep-color-cyan);
+}
+
+/* Body: 16px / 1.7 for long-form legibility, capped near a 70ch measure. */
+.pepselect-legal__body {
+	margin-top: 40px;
+	max-width: 70ch;
+	color: var(--pep-color-ink);
+	font-family: var(--pep-font-interface);
+	font-size: 16px;
+	line-height: 1.7;
+}
+
+.pepselect-legal__body p {
+	margin: 0 0 18px;
+}
+
+.pepselect-legal__section-title {
+	margin: 44px 0 16px;
+	color: var(--pep-color-navy);
+	font-family: var(--pep-font-editorial);
+	font-weight: var(--pep-font-weight-bold);
+	line-height: 1.3;
+	scroll-margin-top: 24px;
+}
+
+.pepselect-legal__section-title {
+	font-size: 22px;
+}
+
+.pepselect-legal__section-title--sub {
+	margin-top: 32px;
+	font-size: 18px;
+}
+
+.pepselect-legal__body a {
+	color: var(--pep-color-navy);
+	text-decoration: underline;
+	text-underline-offset: 2px;
+}
+
+.pepselect-legal__body a:hover,
+.pepselect-legal__body a:focus-visible {
+	color: var(--pep-color-cyan);
+}
+
+.pepselect-legal__list {
+	margin: 0 0 18px;
+	padding-left: 24px;
+}
+
+.pepselect-legal__list li {
+	margin: 0 0 8px;
+}
+
+.pepselect-legal__list li:last-child {
+	margin-bottom: 0;
+}
+
+@media (max-width: 1024px) {
+	.pepselect-legal {
+		padding-left: var(--pep-gutter-tablet);
+		padding-right: var(--pep-gutter-tablet);
+	}
+}
+
+@media (max-width: 767px) {
+	.pepselect-legal {
+		padding: 40px var(--pep-gutter-mobile) 72px;
+	}
+
+	.pepselect-legal__eyebrow {
+		font-size: 15px;
+	}
+
+	.pepselect-legal__section-title {
+		font-size: 20px;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.pepselect-legal__toc-list a {
+		transition: none;
+	}
+}
