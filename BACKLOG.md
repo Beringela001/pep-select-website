@@ -21,6 +21,18 @@ Related: ops design doc §13 "COA publishing (R4)" — `pass_status` is genuinel
 
 ---
 
+## Features
+
+### Cart line item: batch number (blocked on ops)
+
+**Status:** blocked · **Source of truth:** ops repo `PEPSELECT-OPS-DESIGN-SYSTEM.md` §13, "Batch number as a shared order field"
+
+Show the batch number on each cart line item, in the slot vacated when the per-item short description was removed in `0.17.0-beta.6` — the CSS slot `.wc-block-components-product-metadata__description` is already hidden under `.wc-block-cart` in `assets/css/checkout.css` and marked reserved for exactly this. Blocked until the ops app assigns a specific batch to an order at fulfilment; until then the storefront knows only the *current* batch, which may not be the one that ships.
+
+The batch is to be persisted as **order line-item meta on the order**, not recomputed per surface, and consumed from that single field by the order-received page, the completed-order email, and EasyShip labels and packing slips. Cart implementation should extend the Store API cart item schema rather than inject into the DOM. See the ops repo item for framings, acceptance criteria, and the EasyShip field investigation.
+
+---
+
 ## Notes
 
 ### Batch numbering — existing numbers predate R6, do not "fix"
