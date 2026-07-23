@@ -254,7 +254,7 @@ li.wc_payment_method.payment_method_bacs .payment_box {
 	display: flex;
 	justify-content: center;
 	width: 100%;
-	margin: 0 0 24px;
+	margin: 32px 0 24px;
 }
 
 .pepselect-rewards-note-wrap:empty {

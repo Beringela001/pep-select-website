@@ -2,6 +2,11 @@
 
 All notable changes to the Pep Select child theme are documented here.
 
+## 0.16.0-beta.13 - 2026-07-22 (TEMPORARY DEBUG BUILD)
+
+- Added top margin to the cart cash-back pill so it no longer touches the nav bar.
+- TEMPORARY: the cash back page renders a debug block above the normal layout showing YITH's unmodified my-points output three ways — a plugin/shortcode/endpoint probe, the output rendered verbatim with the theme restyle bypassed, and the raw escaped source. This exists only to identify the real referral markup and must be removed in the next build (delete the debug block in `woocommerce/myaccount/cash-back.php` and the `PEPSELECT_CASHBACK_DEBUG` constant).
+
 ## 0.16.0-beta.12 - 2026-07-22
 
 - Cash back page now uses the site type scale instead of page-specific styling: Plus Jakarta Sans for UI, the editorial face for headings, and IBM Plex Mono for dollar amounts, matching shop, product, and checkout.

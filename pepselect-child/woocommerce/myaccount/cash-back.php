@@ -35,6 +35,72 @@ if ( has_action( 'woocommerce_account_my-points_endpoint' ) ) {
 	$pepselect_yith_output = ob_get_clean();
 }
 
+/*
+ * TEMPORARY DEBUG (0.16.0-beta.13-debug).
+ *
+ * Renders YITH's unmodified my-points output verbatim, plus its escaped source
+ * and a shortcode/endpoint probe, so the real referral markup (if any) can be
+ * identified. Delete this block and the constant to remove.
+ */
+if ( ! defined( 'PEPSELECT_CASHBACK_DEBUG' ) ) {
+	define( 'PEPSELECT_CASHBACK_DEBUG', true );
+}
+
+if ( PEPSELECT_CASHBACK_DEBUG ) :
+	$pepselect_probe_tags = array();
+
+	if ( ! empty( $GLOBALS['shortcode_tags'] ) && is_array( $GLOBALS['shortcode_tags'] ) ) {
+		foreach ( array_keys( $GLOBALS['shortcode_tags'] ) as $pepselect_tag ) {
+			if ( preg_match( '/ywpar|refer|point|reward|affiliate|invite/i', $pepselect_tag ) ) {
+				$pepselect_probe_tags[] = $pepselect_tag;
+			}
+		}
+	}
+
+	$pepselect_endpoints = array();
+
+	if ( function_exists( 'WC' ) && WC()->query && method_exists( WC()->query, 'get_query_vars' ) ) {
+		$pepselect_endpoints = array_keys( (array) WC()->query->get_query_vars() );
+	}
+
+	$pepselect_referral_actions = array();
+
+	foreach ( array( 'woocommerce_account_my-points_endpoint', 'woocommerce_account_referral_endpoint', 'woocommerce_account_refer-a-friend_endpoint' ) as $pepselect_hook ) {
+		$pepselect_referral_actions[ $pepselect_hook ] = has_action( $pepselect_hook ) ? 'registered' : 'not registered';
+	}
+	?>
+	<div class="pepselect-debug" style="margin:0 0 40px;padding:20px;border:2px solid #B46A00;border-radius:12px;background:#FFF4DF;font-family:monospace;font-size:13px;color:#001D3A;">
+		<h2 style="margin:0 0 6px;font-family:monospace;font-size:16px;color:#B46A00;">DEBUG — YITH raw output (temporary build)</h2>
+		<p style="margin:0 0 18px;">Theme restyle bypassed below. Screenshot everything, including the source box.</p>
+
+		<h3 style="margin:0 0 8px;font-size:14px;">1. Plugin / endpoint probe</h3>
+		<pre style="margin:0 0 20px;padding:12px;background:#fff;border:1px solid #D7E1E9;border-radius:8px;white-space:pre-wrap;word-break:break-word;"><?php
+		echo esc_html( 'YITH_YWPAR_VERSION: ' . ( defined( 'YITH_YWPAR_VERSION' ) ? YITH_YWPAR_VERSION : 'undefined' ) . "\n" );
+		echo esc_html( 'YITH_WC_Points_Rewards(): ' . ( function_exists( 'YITH_WC_Points_Rewards' ) ? 'available' : 'missing' ) . "\n\n" );
+		echo esc_html( "Shortcodes matching ywpar|refer|point|reward|affiliate|invite:\n" );
+		echo esc_html( $pepselect_probe_tags ? '  ' . implode( "\n  ", $pepselect_probe_tags ) . "\n\n" : "  (none)\n\n" );
+		echo esc_html( "My Account endpoints:\n  " . implode( "\n  ", $pepselect_endpoints ) . "\n\n" );
+		echo esc_html( "Endpoint hooks:\n" );
+		foreach ( $pepselect_referral_actions as $pepselect_hook => $pepselect_state ) {
+			echo esc_html( '  ' . $pepselect_hook . ': ' . $pepselect_state . "\n" );
+		}
+		?></pre>
+
+		<h3 style="margin:0 0 8px;font-size:14px;">2. YITH output rendered verbatim (no theme restyle)</h3>
+		<div class="pepselect-debug__render" style="margin:0 0 20px;padding:16px;background:#fff;border:1px solid #D7E1E9;border-radius:8px;">
+			<?php echo $pepselect_yith_output; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Debug: YITH markup verbatim. ?>
+		</div>
+
+		<h3 style="margin:0 0 8px;font-size:14px;">3. YITH output source (<?php echo esc_html( (string) strlen( (string) $pepselect_yith_output ) ); ?> chars)</h3>
+		<pre style="margin:0;padding:12px;max-height:520px;overflow:auto;background:#fff;border:1px solid #D7E1E9;border-radius:8px;white-space:pre-wrap;word-break:break-all;"><?php
+		echo '' === trim( (string) $pepselect_yith_output )
+			? esc_html( '(YITH rendered NOTHING on this endpoint)' )
+			: esc_html( (string) $pepselect_yith_output );
+		?></pre>
+	</div>
+	<?php
+endif;
+
 $pepselect_slots = function_exists( 'pepselect_child_split_yith_points_output' )
 	? pepselect_child_split_yith_points_output( $pepselect_yith_output )
 	: array(
