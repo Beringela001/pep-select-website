@@ -2,6 +2,13 @@
 
 All notable changes to the Pep Select child theme are documented here.
 
+## 0.16.0-beta.10 - 2026-07-22
+
+- Removed the "Cart" page heading via Hello Elementor's page-title filter, with a CSS fallback.
+- Cash-back pill on the cart is now larger and horizontally centered above the cart, in the same cyan treatment.
+- Cash-back pill now updates live when cart totals change (coupon applied or removed, quantity changed). On each change the cart is re-requested and YITH's freshly rendered value is re-captured; the amount is never computed in the theme, so YITH's own rules (such as no points on the coupon-discounted amount) continue to hold.
+- Restyled the "Add coupons" form: the Apply button was rendering with pink text and border, and is now a secondary-weight cyan pill button (cyan outline, filling cyan on hover) matching Proceed to Checkout, with the coupon input matching the theme's field styling.
+
 ## 0.16.0-beta.9 - 2026-07-22
 
 - Restyled YITH Points & Rewards' cart/checkout points banner into the cyan cash-back pill. Because the cart is a client-rendered WooCommerce block cart, this uses a browser script (`assets/js/cart-rewards.js`) that reads YITH's own rendered "you will earn N Points" text (plugin stays the source of truth), drops the trophy, converts points to dollars to match the cash-back framing site-wide (100 points = $1.00, so 2280 points = $22.80), and applies the cash-back pill styling. Keyed on the rendered text, not a plugin class, so it is version-agnostic and a no-op when the banner is absent (e.g. logged-out). Enqueued on cart and checkout.

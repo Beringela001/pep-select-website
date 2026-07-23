@@ -103,6 +103,23 @@ function pepselect_child_order_received_reminder( $order_id ) {
 add_action( 'woocommerce_thankyou', 'pepselect_child_order_received_reminder', 5 );
 
 /**
+ * Drop the "Cart" page heading. Hello Elementor gates its page header on this
+ * filter, so the markup is never printed; CSS in checkout.css covers any
+ * builder-rendered title as a fallback.
+ *
+ * @param bool $show Whether to render the page title.
+ * @return bool
+ */
+function pepselect_child_hide_cart_page_title( $show ) {
+	if ( function_exists( 'is_cart' ) && is_cart() ) {
+		return false;
+	}
+
+	return $show;
+}
+add_filter( 'hello_elementor_page_title', 'pepselect_child_hide_cart_page_title' );
+
+/**
  * Enqueue checkout and cart presentation styles.
  *
  * @return void

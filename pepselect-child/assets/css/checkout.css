@@ -236,24 +236,93 @@ li.wc_payment_method.payment_method_bacs .payment_box {
 	}
 }
 
-/* Rewards note restyled from YITH's cart/checkout points banner (see
-   assets/js/cart-rewards.js): the trophy banner becomes the cyan cash-back
-   pill, expressed in dollars to match the cash-back framing site-wide. */
+/* --- Cart page: heading, rewards pill, coupon form (M7) --- */
+
+/* Remove the "Cart" page heading entirely. */
+.woocommerce-cart .page-header,
+.woocommerce-cart .page-header .entry-title {
+	display: none;
+}
+
+/* YITH's own points banner is hidden; the pill below replaces it. */
+.pepselect-rewards-source {
+	display: none !important;
+}
+
+/* Enlarged cash-back pill, horizontally centered above the cart. */
+.pepselect-rewards-note-wrap {
+	display: flex;
+	justify-content: center;
+	width: 100%;
+	margin: 0 0 24px;
+}
+
+.pepselect-rewards-note-wrap:empty {
+	display: none;
+}
+
 .pepselect-rewards-note {
 	display: inline-flex;
 	align-items: center;
-	gap: 6px;
-	margin: 0 0 16px;
-	padding: 8px 16px;
+	gap: 8px;
+	padding: 12px 24px;
 	border: 1px solid var(--pep-color-cyan);
 	border-radius: var(--pep-radius-pill);
 	background: var(--pep-color-cyan-soft);
 	color: var(--pep-color-navy);
-	font-size: 13px;
+	font-family: var(--pep-font-interface);
+	font-size: 16px;
 	font-weight: var(--pep-font-weight-semibold);
-	line-height: 1.2;
+	line-height: 1.3;
+	text-align: center;
 }
 
 .pepselect-rewards-note .pepselect-pill__icon {
 	flex: 0 0 auto;
+}
+
+/* Coupon form: secondary-weight cyan Apply button (the block default renders
+   pink text/border), and an input matching the theme's fields. */
+.wc-block-components-totals-coupon__button,
+.wc-block-components-totals-coupon button[type="submit"] {
+	border: 1px solid var(--pep-color-cyan) !important;
+	border-radius: var(--pep-radius-pill) !important;
+	background: transparent !important;
+	background-image: none !important;
+	color: var(--pep-color-cyan) !important;
+	font-family: var(--pep-font-interface) !important;
+	font-weight: var(--pep-font-weight-semibold) !important;
+	box-shadow: none !important;
+	transition: background-color 180ms ease, color 180ms ease;
+}
+
+.wc-block-components-totals-coupon__button .wc-block-components-button__text {
+	color: inherit !important;
+}
+
+.wc-block-components-totals-coupon__button:hover:not([disabled]),
+.wc-block-components-totals-coupon button[type="submit"]:hover:not([disabled]) {
+	background: var(--pep-color-cyan) !important;
+	color: var(--pep-color-white) !important;
+}
+
+.wc-block-components-totals-coupon__button[disabled] {
+	opacity: 0.55;
+}
+
+.wc-block-components-totals-coupon__input input[type="text"],
+#wc-block-components-totals-coupon__input-coupon {
+	border: 1px solid var(--pep-color-border) !important;
+	border-radius: var(--pep-radius-small) !important;
+	background: var(--pep-color-white) !important;
+	color: var(--pep-color-navy) !important;
+	font-family: var(--pep-font-interface) !important;
+	font-size: 15px !important;
+}
+
+.wc-block-components-totals-coupon__input input[type="text"]:focus,
+#wc-block-components-totals-coupon__input-coupon:focus {
+	border-color: var(--pep-color-cyan) !important;
+	outline: none !important;
+	box-shadow: 0 0 0 3px rgb(23 161 207 / 18%) !important;
 }
