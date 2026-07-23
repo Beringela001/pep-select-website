@@ -103,6 +103,52 @@ function pepselect_child_order_received_reminder( $order_id ) {
 add_action( 'woocommerce_thankyou', 'pepselect_child_order_received_reminder', 5 );
 
 /**
+ * Strip the parenthetical delivery estimate from shipping-rate labels.
+ *
+ * The live-rates integration appends the carrier's transit estimate to the
+ * method title itself (e.g. "USPS - Priority Mail (1-3 working days)") and does
+ * not offer a setting to suppress it. This removes any parenthetical that
+ * mentions "day"/"days" from the label wherever WooCommerce renders it, without
+ * touching the rate, its cost, or the stored method title. Parentheticals that
+ * are not delivery estimates (e.g. "(Signature required)") are left alone.
+ *
+ * @param string $label Shipping label text or HTML.
+ * @return string
+ */
+function pepselect_child_strip_delivery_estimate( $label ) {
+	if ( ! is_string( $label ) || '' === $label ) {
+		return $label;
+	}
+
+	return preg_replace( '/\s*\((?=[^()]*\bdays?\b)[^()]*\)/i', '', $label );
+}
+
+/**
+ * Cart/checkout shipping radio labels (also used by Fluid Checkout's chosen-
+ * method review rows and the WooCommerce Blocks cart totals).
+ *
+ * @param string $label Full rate label, may include the price markup.
+ * @return string
+ */
+function pepselect_child_filter_shipping_rate_label( $label ) {
+	return pepselect_child_strip_delivery_estimate( $label );
+}
+add_filter( 'woocommerce_cart_shipping_method_full_label', 'pepselect_child_filter_shipping_rate_label', 20 );
+
+/**
+ * Order-received page, My Account order views, and order emails read the method
+ * title stored on the order, which still contains the estimate; strip it there
+ * too so the display is consistent end to end.
+ *
+ * @param string $names Shipping method name(s) for display.
+ * @return string
+ */
+function pepselect_child_filter_order_shipping_display( $names ) {
+	return pepselect_child_strip_delivery_estimate( $names );
+}
+add_filter( 'woocommerce_order_shipping_method', 'pepselect_child_filter_order_shipping_display', 20 );
+
+/**
  * Drop the "Cart" page heading. Hello Elementor gates its page header on this
  * filter, so the markup is never printed; CSS in checkout.css covers any
  * builder-rendered title as a fallback.

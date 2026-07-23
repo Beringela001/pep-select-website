@@ -4,6 +4,10 @@ All notable changes to the Pep Select child theme are documented here.
 
 **Live version: 0.17.0-beta.1** — deployed to production (www.pepselect.com) on 2026-07-23. Everything from 0.16.0-beta.6 onward is on Live, not Staging only: the product B4G1 and cash-back pills (both captured and restyled from YITH plugin output), the live-updating dollar cart pill with the cart hang fixed, the reworked cash-back page (3 stat cards, 4 how-it-works cards, referral code and share link via `[ywpar_referral_link user_id="auto"]`), the restyled coupon form, the removed "Cart" heading, and quantity plus add-to-cart on one row.
 
+## 0.17.0-beta.2 - 2026-07-23
+
+- Removed the carrier delivery-time estimate from shipping labels wherever they display. The live-rates integration appends the transit estimate to the method title itself and offers no setting to suppress it, so any parenthetical mentioning "day" or "days" is stripped from the cart and checkout rate labels and from the stored method title shown on the order-received page, account order views, and order emails. Display only: rates, costs, and stored titles are unchanged, and parentheticals that are not estimates, such as "(Signature required)", are left alone.
+
 ## 0.17.0-beta.1 - 2026-07-22
 
 - Redesigned the on-hold order email to the storefront: navy headings, cyan pill Square button, amber exact-amount block, Plus Jakarta Sans with email-safe fallbacks, and IBM Plex Mono for the order total. Voice reset to calm and precise. The live total via `get_formatted_order_total()`, the Square link in both button and plain-text form, the "3BS Holdings LLC" descriptor, and the support address are unchanged. Table layout with inline styles throughout; no flexbox or grid.
