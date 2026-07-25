@@ -4,6 +4,11 @@ All notable changes to the Pep Select child theme are documented here.
 
 **Live version: 0.17.0-beta.1** — deployed to production (www.pepselect.com) on 2026-07-23. Everything from 0.16.0-beta.6 onward is on Live, not Staging only: the product B4G1 and cash-back pills (both captured and restyled from YITH plugin output), the live-updating dollar cart pill with the cart hang fixed, the reworked cash-back page (3 stat cards, 4 how-it-works cards, referral code and share link via `[ywpar_referral_link user_id="auto"]`), the restyled coupon form, the removed "Cart" heading, and quantity plus add-to-cart on one row.
 
+## 0.19.0-beta.2 - 2026-07-25
+
+- Removed the "Your referral code" field from the cash-back referral section. It showed the raw numeric user ID and did nothing, since there is nowhere to enter a bare code; the share link is the actual mechanism, and only it remains.
+- Replaced the raw numeric referral link (?ref=7) with a readable vanity link: the first two letters of the first name, the first two of the last, and the user ID, uppercased (Paulo Basseto, user 7 -> ?ref=PABA7). The share field and Copy button now show the vanity URL. Names shorter than two letters use what letters exist, a missing name falls back to the bare ID, and the trailing ID keeps every code unique. On a visit, the code is validated back to the user ID it encodes and YITH is handed the numeric ID it keys attribution to, so a vanity link credits exactly as the numeric link did; a mismatched or spoofed code is ignored.
+
 ## 0.19.0-beta.1 - 2026-07-23
 
 - Migrated the checkout consent checkboxes, the Research Purpose field, and three legacy shortcodes out of the parent theme (hello-elementor/functions.php) into the child theme, where a parent-theme update can no longer destroy them. The parent's original hooks are removed at runtime on init and the migrated callbacks are renamed with the pepselect_child_ prefix, so the two copies never duplicate output or fatally redeclare a function while the parent code is still present. All data contracts are preserved: the field names, the order meta keys, the Yes/No consent values, the raw Research Purpose label, the seven options and their placeholder, the field order (Research Purpose first, then the two consents), and the "Research Purpose" email label.

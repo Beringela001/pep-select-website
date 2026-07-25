@@ -136,7 +136,11 @@
 
 		var found = harvest( root );
 
-		if ( ! found.code && ! found.link ) {
+		// Prefer the server-computed vanity share URL (e.g. ?ref=PABA7); fall
+		// back to YITH's raw link only if the vanity URL is unavailable.
+		var shareLink = root.getAttribute( 'data-pepselect-share-url' ) || found.link;
+
+		if ( ! shareLink ) {
 			// Nothing readable: leave YITH's own referral UI untouched and visible.
 			return;
 		}
@@ -144,13 +148,9 @@
 		var host = document.createElement( 'div' );
 		host.className = 'pepselect-cashback__referral-fields';
 
-		if ( found.code ) {
-			host.appendChild( copyField( 'Your referral code', found.code, 'pepselect-referral-code' ) );
-		}
-
-		if ( found.link ) {
-			host.appendChild( copyField( 'Your share link', found.link, 'pepselect-referral-link' ) );
-		}
+		// The referral code field is intentionally omitted: the share link is the
+		// mechanism, and there is nowhere to enter a bare code.
+		host.appendChild( copyField( 'Your share link', shareLink, 'pepselect-referral-link' ) );
 
 		hideTarget.parentNode.insertBefore( host, hideTarget );
 

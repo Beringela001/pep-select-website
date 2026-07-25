@@ -56,6 +56,13 @@ if ( '' === $pepselect_referral_html && '' !== trim( (string) $pepselect_slots['
 	$pepselect_referral_html = $pepselect_slots['referral'];
 }
 
+// Vanity share URL (e.g. ?ref=PABA7) for the logged-in customer. The share
+// field uses this in place of YITH's raw numeric ?ref link; the trailing digits
+// resolve back to the numeric user ID on visit so YITH's crediting is unchanged.
+$pepselect_vanity_url = function_exists( 'pepselect_child_referral_vanity_url' )
+	? pepselect_child_referral_vanity_url( get_current_user_id() )
+	: '';
+
 $pepselect_steps = array(
 	array(
 		'title' => __( 'Earn on every order', 'pepselect-child' ),
@@ -120,7 +127,7 @@ $pepselect_steps = array(
 			<p class="pepselect-cashback__section-lead"><?php esc_html_e( 'Share your code. They save 10% on their first order, and you earn $15 in cash back once it completes.', 'pepselect-child' ); ?></p>
 
 			<?php if ( '' !== $pepselect_referral_html ) : ?>
-				<div class="pepselect-cashback__referral-body" data-pepselect-referral>
+				<div class="pepselect-cashback__referral-body" data-pepselect-referral data-pepselect-share-url="<?php echo esc_url( $pepselect_vanity_url ); ?>">
 					<?php echo $pepselect_referral_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- YITH's own shortcode markup, re-emitted verbatim. ?>
 				</div>
 			<?php endif; ?>

@@ -23,6 +23,7 @@ require_once get_stylesheet_directory() . '/inc/contact-page.php';
 require_once get_stylesheet_directory() . '/inc/legal-pages.php';
 require_once get_stylesheet_directory() . '/inc/military-page.php';
 require_once get_stylesheet_directory() . '/inc/account.php';
+require_once get_stylesheet_directory() . '/inc/referral-vanity.php';
 require_once get_stylesheet_directory() . '/inc/checkout.php';
 require_once get_stylesheet_directory() . '/inc/checkout-fields.php';
 require_once get_stylesheet_directory() . '/inc/legacy-shortcodes.php';
