@@ -4,6 +4,11 @@ All notable changes to the Pep Select child theme are documented here.
 
 **Live version: 0.17.0-beta.1** — deployed to production (www.pepselect.com) on 2026-07-23. Everything from 0.16.0-beta.6 onward is on Live, not Staging only: the product B4G1 and cash-back pills (both captured and restyled from YITH plugin output), the live-updating dollar cart pill with the cart hang fixed, the reworked cash-back page (3 stat cards, 4 how-it-works cards, referral code and share link via `[ywpar_referral_link user_id="auto"]`), the restyled coupon form, the removed "Cart" heading, and quantity plus add-to-cart on one row.
 
+## 0.19.0-beta.4 - 2026-07-25
+
+- Switched the vanity referral code from name-based to email-based. Google/Nextend social-login accounts populate no first or last name (and often no billing name), so the name-based code collapsed to the bare user ID and the link stayed ?ref=7. The code is now the email local-part plus the user ID (contact@paulobasseto.com, user 7 -> ?ref=contact7); email is always present. The local-part is lowercased, reduced to a-z0-9, and capped at 12 characters, and an empty result falls back to the bare ID.
+- The resolver recovers the user ID by trying each trailing-digit suffix and regenerating the code, so a local-part that itself ends in digits still resolves to the correct user; it hands YITH the numeric ID, leaving attribution unchanged, and ignores spoofed or unknown codes while still passing a legacy numeric ?ref through.
+
 ## 0.19.0-beta.3 - 2026-07-25
 
 - Fixed the vanity referral link not generating: the code read only the WordPress account first and last name, which is empty for customers who have only a billing name, so it collapsed to the bare user ID and the share link stayed as ?ref=7. It now falls back to the billing name, then the display name, before the ID, so a named customer gets a real code (Paulo Basseto, user 7 -> ?ref=PABA7). The resolver uses the same generator, so inbound codes still validate back to the numeric user ID YITH credits.

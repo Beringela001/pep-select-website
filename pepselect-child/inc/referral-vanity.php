@@ -3,11 +3,12 @@
  * Vanity referral codes for the cash-back page (M10).
  *
  * YITH's referral tracking is keyed to the numeric user ID (?ref=7). Customers
- * share a readable code instead — the first two letters of the first name, the
- * first two letters of the last name, and the user ID, uppercased (Paulo
- * Basseto, user 7 -> PABA7). The trailing digits are the real user ID, so on a
- * visit to ?ref=PABA7 the code is validated back to user 7 and the numeric ID
- * is handed to YITH before YITH reads it, leaving YITH's attribution untouched.
+ * share a readable code instead — the email local-part plus the user ID
+ * (contact@paulobasseto.com, user 7 -> contact7). Email is always populated,
+ * including Google/Nextend social logins that leave the name empty, so this
+ * avoids the empty-name problem. The trailing digits encode the real user ID,
+ * so on a visit to ?ref=contact7 the code is validated back to user 7 and the
+ * numeric ID is handed to YITH before YITH reads it, leaving attribution intact.
  *
  * @package PepSelectChild
  */
@@ -17,50 +18,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Resolve a user's first and last name for the vanity code. The WordPress
- * account first_name/last_name meta is frequently empty for WooCommerce
- * customers, who have only a billing name, so this falls back to the billing
- * name and then to the display name before giving up.
- *
- * @param int $user_id User ID.
- * @return array{0:string,1:string} First and last name (either may be empty).
- */
-function pepselect_child_referral_name_parts( $user_id ) {
-	$user = get_userdata( $user_id );
-
-	if ( ! $user ) {
-		return array( '', '' );
-	}
-
-	$first = trim( (string) $user->first_name );
-	$last  = trim( (string) $user->last_name );
-
-	if ( '' === $first ) {
-		$first = trim( (string) get_user_meta( $user_id, 'billing_first_name', true ) );
-	}
-
-	if ( '' === $last ) {
-		$last = trim( (string) get_user_meta( $user_id, 'billing_last_name', true ) );
-	}
-
-	// Last resort: split the display name (e.g. "Paulo Basseto") into two parts.
-	if ( '' === $first && '' === $last ) {
-		$display = trim( (string) $user->display_name );
-
-		if ( '' !== $display ) {
-			$parts = preg_split( '/\s+/', $display );
-			$first = isset( $parts[0] ) ? $parts[0] : '';
-			$last  = isset( $parts[1] ) ? $parts[1] : '';
-		}
-	}
-
-	return array( $first, $last );
-}
-
-/**
- * Build a user's vanity referral code: two letters of the first name, two of
- * the last, then the user ID, uppercased. Falls back to whatever letters exist,
- * and to the bare ID when there is no usable name (still unique via the ID).
+ * Build a user's vanity referral code from the email local-part plus the user
+ * ID (contact@paulobasseto.com, user 7 -> "contact7"). Email is mandatory and
+ * always populated, including Google/Nextend social logins that leave the name
+ * empty, so this avoids the empty-name problem. The local-part is lowercased,
+ * reduced to a-z0-9, and capped; an empty result falls back to the bare ID,
+ * which the trailing ID keeps unique regardless.
  *
  * @param int $user_id User ID.
  * @return string Vanity code, or '' when the user ID is invalid.
@@ -72,12 +35,16 @@ function pepselect_child_referral_vanity_code( $user_id ) {
 		return '';
 	}
 
-	list( $first, $last ) = pepselect_child_referral_name_parts( $user_id );
+	$user  = get_userdata( $user_id );
+	$email = $user ? (string) $user->user_email : '';
+	$at    = strpos( $email, '@' );
+	$local = false !== $at ? substr( $email, 0, $at ) : '';
 
-	$first_letters = strtoupper( substr( preg_replace( '/[^A-Za-z]/', '', $first ), 0, 2 ) );
-	$last_letters  = strtoupper( substr( preg_replace( '/[^A-Za-z]/', '', $last ), 0, 2 ) );
+	$local = strtolower( $local );
+	$local = preg_replace( '/[^a-z0-9]/', '', $local );
+	$local = substr( $local, 0, 12 );
 
-	return $first_letters . $last_letters . $user_id;
+	return $local . $user_id;
 }
 
 /**
@@ -101,10 +68,13 @@ function pepselect_child_referral_vanity_url( $user_id ) {
  * Resolve an inbound vanity referral code back to the numeric user ID that YITH
  * expects, before YITH's own init handler reads the parameter.
  *
- * A numeric ref is left untouched. A vanity ref is only rewritten when its
- * trailing digits point to a real user AND the code regenerated for that user
- * matches the inbound code, so an arbitrary or spoofed code is ignored and
- * cannot misattribute a referral.
+ * The code is an email local-part followed by the user ID, and the local-part
+ * itself may contain digits, so the split point is not known in advance. The
+ * user ID is recovered by trying each trailing-digit suffix and regenerating
+ * the code for that candidate: the ref is rewritten only when the regenerated
+ * code matches exactly, so an arbitrary or spoofed code is ignored and cannot
+ * misattribute a referral. A plain numeric ref that does not match any vanity
+ * code is left untouched, so a legacy ?ref=7 still works.
  *
  * @return void
  */
@@ -115,28 +85,33 @@ function pepselect_child_resolve_referral_vanity() {
 	}
 
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- See above.
-	$ref = sanitize_text_field( wp_unslash( $_GET['ref'] ) );
+	$ref = strtolower( sanitize_text_field( wp_unslash( $_GET['ref'] ) ) );
 
-	// Already the numeric ID YITH expects: nothing to do.
-	if ( '' === $ref || ctype_digit( $ref ) ) {
+	// Must end in digits (the user ID); otherwise there is nothing to resolve.
+	if ( '' === $ref || ! preg_match( '/([0-9]+)$/', $ref, $matches ) ) {
 		return;
 	}
 
-	// A vanity code is letters followed by the trailing user ID.
-	if ( ! preg_match( '/^[A-Za-z]*([0-9]+)$/', $ref, $matches ) ) {
-		return;
+	$digits = $matches[1];
+	$length = strlen( $digits );
+
+	// Try each trailing-digit suffix as the candidate user ID, shortest first.
+	for ( $take = 1; $take <= $length; $take++ ) {
+		$candidate = absint( substr( $digits, $length - $take ) );
+
+		if ( ! $candidate ) {
+			continue;
+		}
+
+		$expected = pepselect_child_referral_vanity_code( $candidate );
+
+		if ( '' !== $expected && $ref === strtolower( $expected ) ) {
+			// Hand YITH the numeric ID it keys attribution to.
+			$_GET['ref']     = (string) $candidate;
+			$_REQUEST['ref'] = (string) $candidate;
+			return;
+		}
 	}
-
-	$user_id  = absint( $matches[1] );
-	$expected = pepselect_child_referral_vanity_code( $user_id );
-
-	if ( '' === $expected || strtoupper( $ref ) !== strtoupper( $expected ) ) {
-		return;
-	}
-
-	// Hand YITH the numeric ID it keys attribution to.
-	$_GET['ref']     = (string) $user_id;
-	$_REQUEST['ref'] = (string) $user_id;
 }
 add_action( 'init', 'pepselect_child_resolve_referral_vanity', 0 );
 add_action( 'after_setup_theme', 'pepselect_child_resolve_referral_vanity', 0 );
