@@ -4,6 +4,11 @@ All notable changes to the Pep Select child theme are documented here.
 
 **Live version: 0.17.0-beta.1** — deployed to production (www.pepselect.com) on 2026-07-23. Everything from 0.16.0-beta.6 onward is on Live, not Staging only: the product B4G1 and cash-back pills (both captured and restyled from YITH plugin output), the live-updating dollar cart pill with the cart hang fixed, the reworked cash-back page (3 stat cards, 4 how-it-works cards, referral code and share link via `[ywpar_referral_link user_id="auto"]`), the restyled coupon form, the removed "Cart" heading, and quantity plus add-to-cart on one row.
 
+## 0.19.0-beta.3 - 2026-07-25
+
+- Fixed the vanity referral link not generating: the code read only the WordPress account first and last name, which is empty for customers who have only a billing name, so it collapsed to the bare user ID and the share link stayed as ?ref=7. It now falls back to the billing name, then the display name, before the ID, so a named customer gets a real code (Paulo Basseto, user 7 -> ?ref=PABA7). The resolver uses the same generator, so inbound codes still validate back to the numeric user ID YITH credits.
+- Added a three-step "how to refer" explainer above the share link: share the link, tell the friend to use code WELCOME10 at checkout for 10% off their first order, and earn $15 in cash back when their order completes. Numbered cards in the page tokens, stacking on small screens.
+
 ## 0.19.0-beta.2 - 2026-07-25
 
 - Removed the "Your referral code" field from the cash-back referral section. It showed the raw numeric user ID and did nothing, since there is nowhere to enter a bare code; the share link is the actual mechanism, and only it remains.

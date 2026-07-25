@@ -124,7 +124,30 @@ $pepselect_steps = array(
 	<?php if ( '' !== $pepselect_referral_html ) : ?>
 		<section class="pepselect-cashback__referral pepselect-cashback__engine" aria-labelledby="pepselect-cashback-referral-title">
 			<h2 id="pepselect-cashback-referral-title" class="pepselect-cashback__section-title"><?php esc_html_e( 'Refer a friend', 'pepselect-child' ); ?></h2>
-			<p class="pepselect-cashback__section-lead"><?php esc_html_e( 'Share your code. They save 10% on their first order, and you earn $15 in cash back once it completes.', 'pepselect-child' ); ?></p>
+			<p class="pepselect-cashback__section-lead"><?php esc_html_e( 'Share your link. They save 10% on their first order, and you earn $15 in cash back once it completes.', 'pepselect-child' ); ?></p>
+
+			<ol class="pepselect-cashback__refer-steps">
+				<li class="pepselect-refer-step">
+					<span class="pepselect-refer-step__num" aria-hidden="true">1</span>
+					<p class="pepselect-refer-step__text"><?php esc_html_e( 'Share your link with a friend.', 'pepselect-child' ); ?></p>
+				</li>
+				<li class="pepselect-refer-step">
+					<span class="pepselect-refer-step__num" aria-hidden="true">2</span>
+					<p class="pepselect-refer-step__text">
+						<?php
+						printf(
+							/* translators: %s: the welcome coupon code. */
+							esc_html__( 'Tell them to use code %s at checkout for 10%% off their first order.', 'pepselect-child' ),
+							'<span class="pepselect-refer-step__code">WELCOME10</span>'
+						);
+						?>
+					</p>
+				</li>
+				<li class="pepselect-refer-step">
+					<span class="pepselect-refer-step__num" aria-hidden="true">3</span>
+					<p class="pepselect-refer-step__text"><?php esc_html_e( 'When their order completes, you get $15 in cash back.', 'pepselect-child' ); ?></p>
+				</li>
+			</ol>
 
 			<?php if ( '' !== $pepselect_referral_html ) : ?>
 				<div class="pepselect-cashback__referral-body" data-pepselect-referral data-pepselect-share-url="<?php echo esc_url( $pepselect_vanity_url ); ?>">

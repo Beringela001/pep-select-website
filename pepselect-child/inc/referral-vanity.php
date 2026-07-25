@@ -17,6 +17,47 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Resolve a user's first and last name for the vanity code. The WordPress
+ * account first_name/last_name meta is frequently empty for WooCommerce
+ * customers, who have only a billing name, so this falls back to the billing
+ * name and then to the display name before giving up.
+ *
+ * @param int $user_id User ID.
+ * @return array{0:string,1:string} First and last name (either may be empty).
+ */
+function pepselect_child_referral_name_parts( $user_id ) {
+	$user = get_userdata( $user_id );
+
+	if ( ! $user ) {
+		return array( '', '' );
+	}
+
+	$first = trim( (string) $user->first_name );
+	$last  = trim( (string) $user->last_name );
+
+	if ( '' === $first ) {
+		$first = trim( (string) get_user_meta( $user_id, 'billing_first_name', true ) );
+	}
+
+	if ( '' === $last ) {
+		$last = trim( (string) get_user_meta( $user_id, 'billing_last_name', true ) );
+	}
+
+	// Last resort: split the display name (e.g. "Paulo Basseto") into two parts.
+	if ( '' === $first && '' === $last ) {
+		$display = trim( (string) $user->display_name );
+
+		if ( '' !== $display ) {
+			$parts = preg_split( '/\s+/', $display );
+			$first = isset( $parts[0] ) ? $parts[0] : '';
+			$last  = isset( $parts[1] ) ? $parts[1] : '';
+		}
+	}
+
+	return array( $first, $last );
+}
+
+/**
  * Build a user's vanity referral code: two letters of the first name, two of
  * the last, then the user ID, uppercased. Falls back to whatever letters exist,
  * and to the bare ID when there is no usable name (still unique via the ID).
@@ -31,9 +72,7 @@ function pepselect_child_referral_vanity_code( $user_id ) {
 		return '';
 	}
 
-	$user  = get_userdata( $user_id );
-	$first = $user ? (string) $user->first_name : '';
-	$last  = $user ? (string) $user->last_name : '';
+	list( $first, $last ) = pepselect_child_referral_name_parts( $user_id );
 
 	$first_letters = strtoupper( substr( preg_replace( '/[^A-Za-z]/', '', $first ), 0, 2 ) );
 	$last_letters  = strtoupper( substr( preg_replace( '/[^A-Za-z]/', '', $last ), 0, 2 ) );
