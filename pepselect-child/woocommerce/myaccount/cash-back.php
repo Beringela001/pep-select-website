@@ -45,20 +45,11 @@ $pepselect_slots = function_exists( 'pepselect_child_split_yith_points_output' )
 		'rest'     => $pepselect_yith_output,
 	);
 
-// Referral code/link comes from YITH's own shortcode, which is not part of the
-// my-points endpoint output. YITH's get_referral_link() defaults user_id to 0
-// and only outputs when it resolves to a real user, so user_id="auto" is
-// required for it to render for the logged-in customer.
-$pepselect_referral_shortcode = shortcode_exists( 'ywpar_referral_link' );
-$pepselect_referral_html      = $pepselect_referral_shortcode ? trim( do_shortcode( '[ywpar_referral_link user_id="auto"]' ) ) : '';
-
-if ( '' === $pepselect_referral_html && '' !== trim( (string) $pepselect_slots['referral'] ) ) {
-	$pepselect_referral_html = $pepselect_slots['referral'];
-}
-
-// Vanity share URL (e.g. ?ref=PABA7) for the logged-in customer. The share
-// field uses this in place of YITH's raw numeric ?ref link; the trailing digits
-// resolve back to the numeric user ID on visit so YITH's crediting is unchanged.
+// Share link is rendered server-side from the stored PSRC code (?ref=PSRC7).
+// It no longer depends on YITH's shortcode output or any client-side harvest,
+// which is what previously left the link stuck on the raw numeric ?ref. On a
+// visit the PSRC prefix is stripped back to the numeric user ID for YITH, so
+// crediting is unchanged.
 $pepselect_vanity_url = function_exists( 'pepselect_child_referral_vanity_url' )
 	? pepselect_child_referral_vanity_url( get_current_user_id() )
 	: '';
@@ -121,7 +112,7 @@ $pepselect_steps = array(
 		</ol>
 	</section>
 
-	<?php if ( '' !== $pepselect_referral_html ) : ?>
+	<?php if ( '' !== $pepselect_vanity_url ) : ?>
 		<section class="pepselect-cashback__referral pepselect-cashback__engine" aria-labelledby="pepselect-cashback-referral-title">
 			<h2 id="pepselect-cashback-referral-title" class="pepselect-cashback__section-title"><?php esc_html_e( 'Refer a friend', 'pepselect-child' ); ?></h2>
 			<p class="pepselect-cashback__section-lead"><?php esc_html_e( 'Share your link. They save 10% on their first order, and you earn $15 in cash back once it completes.', 'pepselect-child' ); ?></p>
@@ -149,11 +140,13 @@ $pepselect_steps = array(
 				</li>
 			</ol>
 
-			<?php if ( '' !== $pepselect_referral_html ) : ?>
-				<div class="pepselect-cashback__referral-body" data-pepselect-referral data-pepselect-share-url="<?php echo esc_url( $pepselect_vanity_url ); ?>">
-					<?php echo $pepselect_referral_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- YITH's own shortcode markup, re-emitted verbatim. ?>
+			<div class="pepselect-cashback__referral-fields">
+				<div class="pepselect-copyfield">
+					<span class="pepselect-copyfield__label"><?php esc_html_e( 'Your share link', 'pepselect-child' ); ?></span>
+					<input class="pepselect-copyfield__input" id="pepselect-referral-link" type="text" readonly value="<?php echo esc_url( $pepselect_vanity_url ); ?>" aria-label="<?php esc_attr_e( 'Your share link', 'pepselect-child' ); ?>" />
+					<button class="pepselect-copyfield__copy" type="button"><?php esc_html_e( 'Copy', 'pepselect-child' ); ?></button>
 				</div>
-			<?php endif; ?>
+			</div>
 
 			<div class="pepselect-cashback__mini-stats">
 				<div class="pepselect-stat pepselect-stat--mini">

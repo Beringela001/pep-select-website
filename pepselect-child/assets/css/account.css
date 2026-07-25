@@ -1677,3 +1677,11 @@ body.woocommerce-account:not(.logged-in) h1.entry-title {
 		grid-template-columns: 1fr;
 	}
 }
+
+/* Guard: the share link is rendered server-side; hide any raw YITH
+   referral markup that might surface in the cash-back area. */
+.pepselect-cashback #ywpar_referral_link_sc,
+.pepselect-cashback .ywpar_referral,
+.pepselect-cashback [id*="ywpar_referral"] {
+	display: none !important;
+}

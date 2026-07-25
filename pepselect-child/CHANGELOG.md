@@ -4,6 +4,12 @@ All notable changes to the Pep Select child theme are documented here.
 
 **Live version: 0.17.0-beta.1** — deployed to production (www.pepselect.com) on 2026-07-23. Everything from 0.16.0-beta.6 onward is on Live, not Staging only: the product B4G1 and cash-back pills (both captured and restyled from YITH plugin output), the live-updating dollar cart pill with the cart hang fixed, the reworked cash-back page (3 stat cards, 4 how-it-works cards, referral code and share link via `[ywpar_referral_link user_id="auto"]`), the restyled coupon form, the removed "Cart" heading, and quantity plus add-to-cart on one row.
 
+## 0.19.0-beta.6 - 2026-07-25
+
+- Fixed the referral share link never changing from ?ref=7. The link was built client-side by reading a data attribute off the wrong element (YITH's inner node instead of the wrapper that carried it), so it always fell back to YITH's raw numeric link and every vanity scheme was computed and then ignored. The share field is now rendered server-side in the template from the stored code, and the JavaScript no longer harvests YITH's markup at all; it only wires the Copy button.
+- Referral codes are now generated at account creation and stored as the pepselect_referral_code user meta. The user_register hook covers both manual signup and Nextend/Google social login, since both create the account through wp_insert_user. A one-time guarded backfill gives every existing account a code. Display falls back to generating the code on demand if the meta is ever missing, so the link can never regress to the bare ID.
+- The code stays PSRC + user ID (PSRC7); the resolver strips the prefix back to the numeric ID for YITH, so crediting is unchanged. YITH's own referral shortcode is no longer rendered, and a CSS guard hides any stray YITH referral markup in the cash-back area.
+
 ## 0.19.0-beta.5 - 2026-07-25
 
 - Replaced the name and email referral schemes, which both degraded to the bare user ID when the account data was missing (common for Google/Nextend social logins), with a fixed-prefix code that reads no account data and cannot fail: the code is "PSRC" plus the user ID (user 7 -> ?ref=PSRC7). The resolver strips the PSRC prefix (case-insensitive) to recover the numeric ID and hands it to YITH, so crediting is unchanged; a legacy numeric ?ref is left untouched. The share-link field and Copy button show the PSRC-format URL.

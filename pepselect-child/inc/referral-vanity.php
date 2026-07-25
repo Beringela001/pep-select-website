@@ -42,14 +42,95 @@ function pepselect_child_referral_vanity_code( $user_id ) {
 }
 
 /**
- * Build the full share URL for a user (site root + ?ref=CODE), matching the
- * format YITH's own referral link uses.
+ * Return a user's stored referral code, generating and storing it on demand
+ * when the meta is missing. This means display never depends on the
+ * registration hook having fired for that user.
+ *
+ * @param int $user_id User ID.
+ * @return string Referral code, or '' when the user ID is invalid.
+ */
+function pepselect_child_referral_code_for_user( $user_id ) {
+	$user_id = absint( $user_id );
+
+	if ( ! $user_id ) {
+		return '';
+	}
+
+	$code = (string) get_user_meta( $user_id, 'pepselect_referral_code', true );
+
+	if ( '' === $code ) {
+		$code = pepselect_child_referral_vanity_code( $user_id );
+
+		if ( '' !== $code ) {
+			update_user_meta( $user_id, 'pepselect_referral_code', $code );
+		}
+	}
+
+	return $code;
+}
+
+/**
+ * Store a referral code for a newly registered user. Manual signup and social
+ * logins (Nextend/Google) both create the account via wp_insert_user, which
+ * fires user_register, so this one hook covers every registration path.
+ *
+ * @param int $user_id New user ID.
+ * @return void
+ */
+function pepselect_child_store_referral_code_on_register( $user_id ) {
+	$code = pepselect_child_referral_vanity_code( $user_id );
+
+	if ( '' !== $code ) {
+		update_user_meta( $user_id, 'pepselect_referral_code', $code );
+	}
+}
+add_action( 'user_register', 'pepselect_child_store_referral_code_on_register', 20 );
+
+/**
+ * One-time backfill: give every existing account without a code one. Guarded by
+ * an option so the sweep runs a single time, after which the get_option check
+ * short-circuits on every request.
+ *
+ * @return void
+ */
+function pepselect_child_backfill_referral_codes() {
+	if ( get_option( 'pepselect_referral_backfill_v1' ) ) {
+		return;
+	}
+
+	$user_ids = get_users(
+		array(
+			'fields'     => 'ID',
+			'number'     => 0,
+			'meta_query' => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- One-time backfill sweep.
+				array(
+					'key'     => 'pepselect_referral_code',
+					'compare' => 'NOT EXISTS',
+				),
+			),
+		)
+	);
+
+	foreach ( (array) $user_ids as $backfill_user_id ) {
+		$code = pepselect_child_referral_vanity_code( $backfill_user_id );
+
+		if ( '' !== $code ) {
+			update_user_meta( $backfill_user_id, 'pepselect_referral_code', $code );
+		}
+	}
+
+	update_option( 'pepselect_referral_backfill_v1', 1 );
+}
+add_action( 'init', 'pepselect_child_backfill_referral_codes', 20 );
+
+/**
+ * Build the full share URL for a user (site root + ?ref=CODE).
  *
  * @param int $user_id User ID.
  * @return string Share URL, or '' when unavailable.
  */
 function pepselect_child_referral_vanity_url( $user_id ) {
-	$code = pepselect_child_referral_vanity_code( $user_id );
+	$code = pepselect_child_referral_code_for_user( $user_id );
 
 	if ( '' === $code ) {
 		return '';
