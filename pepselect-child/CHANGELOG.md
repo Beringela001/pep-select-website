@@ -4,6 +4,10 @@ All notable changes to the Pep Select child theme are documented here.
 
 **Live version: 0.17.0-beta.1** — deployed to production (www.pepselect.com) on 2026-07-23. Everything from 0.16.0-beta.6 onward is on Live, not Staging only: the product B4G1 and cash-back pills (both captured and restyled from YITH plugin output), the live-updating dollar cart pill with the cart hang fixed, the reworked cash-back page (3 stat cards, 4 how-it-works cards, referral code and share link via `[ywpar_referral_link user_id="auto"]`), the restyled coupon form, the removed "Cart" heading, and quantity plus add-to-cart on one row.
 
+## 0.19.0-beta.5 - 2026-07-25
+
+- Replaced the name and email referral schemes, which both degraded to the bare user ID when the account data was missing (common for Google/Nextend social logins), with a fixed-prefix code that reads no account data and cannot fail: the code is "PSRC" plus the user ID (user 7 -> ?ref=PSRC7). The resolver strips the PSRC prefix (case-insensitive) to recover the numeric ID and hands it to YITH, so crediting is unchanged; a legacy numeric ?ref is left untouched. The share-link field and Copy button show the PSRC-format URL.
+
 ## 0.19.0-beta.4 - 2026-07-25
 
 - Switched the vanity referral code from name-based to email-based. Google/Nextend social-login accounts populate no first or last name (and often no billing name), so the name-based code collapsed to the bare user ID and the link stayed ?ref=7. The code is now the email local-part plus the user ID (contact@paulobasseto.com, user 7 -> ?ref=contact7); email is always present. The local-part is lowercased, reduced to a-z0-9, and capped at 12 characters, and an empty result falls back to the bare ID.

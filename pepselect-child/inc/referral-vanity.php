@@ -1,14 +1,14 @@
 <?php
 /**
- * Vanity referral codes for the cash-back page (M10).
+ * Referral codes for the cash-back page (M10).
  *
  * YITH's referral tracking is keyed to the numeric user ID (?ref=7). Customers
- * share a readable code instead — the email local-part plus the user ID
- * (contact@paulobasseto.com, user 7 -> contact7). Email is always populated,
- * including Google/Nextend social logins that leave the name empty, so this
- * avoids the empty-name problem. The trailing digits encode the real user ID,
- * so on a visit to ?ref=contact7 the code is validated back to user 7 and the
- * numeric ID is handed to YITH before YITH reads it, leaving attribution intact.
+ * share a readable code instead — a fixed "PSRC" prefix plus the user ID
+ * (user 7 -> PSRC7). The prefix is identical for everyone; only the trailing
+ * number changes. There is no account-data lookup (no name, no email), so it
+ * cannot fail on missing data. On a visit to ?ref=PSRC7 the prefix is stripped,
+ * the numeric ID is handed to YITH before YITH reads it, and attribution is
+ * unchanged.
  *
  * @package PepSelectChild
  */
@@ -18,15 +18,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Build a user's vanity referral code from the email local-part plus the user
- * ID (contact@paulobasseto.com, user 7 -> "contact7"). Email is mandatory and
- * always populated, including Google/Nextend social logins that leave the name
- * empty, so this avoids the empty-name problem. The local-part is lowercased,
- * reduced to a-z0-9, and capped; an empty result falls back to the bare ID,
- * which the trailing ID keeps unique regardless.
+ * The fixed referral-code prefix. Identical for every user.
+ */
+if ( ! defined( 'PEPSELECT_REFERRAL_PREFIX' ) ) {
+	define( 'PEPSELECT_REFERRAL_PREFIX', 'PSRC' );
+}
+
+/**
+ * Build a user's referral code: the fixed prefix plus the user ID (7 -> PSRC7).
+ * No account data is read, so this never degrades to a bare ID.
  *
  * @param int $user_id User ID.
- * @return string Vanity code, or '' when the user ID is invalid.
+ * @return string Referral code, or '' when the user ID is invalid.
  */
 function pepselect_child_referral_vanity_code( $user_id ) {
 	$user_id = absint( $user_id );
@@ -35,21 +38,12 @@ function pepselect_child_referral_vanity_code( $user_id ) {
 		return '';
 	}
 
-	$user  = get_userdata( $user_id );
-	$email = $user ? (string) $user->user_email : '';
-	$at    = strpos( $email, '@' );
-	$local = false !== $at ? substr( $email, 0, $at ) : '';
-
-	$local = strtolower( $local );
-	$local = preg_replace( '/[^a-z0-9]/', '', $local );
-	$local = substr( $local, 0, 12 );
-
-	return $local . $user_id;
+	return PEPSELECT_REFERRAL_PREFIX . $user_id;
 }
 
 /**
- * Build the full vanity share URL for a user (site root + ?ref=CODE), matching
- * the format YITH's own referral link uses.
+ * Build the full share URL for a user (site root + ?ref=CODE), matching the
+ * format YITH's own referral link uses.
  *
  * @param int $user_id User ID.
  * @return string Share URL, or '' when unavailable.
@@ -65,16 +59,10 @@ function pepselect_child_referral_vanity_url( $user_id ) {
 }
 
 /**
- * Resolve an inbound vanity referral code back to the numeric user ID that YITH
- * expects, before YITH's own init handler reads the parameter.
- *
- * The code is an email local-part followed by the user ID, and the local-part
- * itself may contain digits, so the split point is not known in advance. The
- * user ID is recovered by trying each trailing-digit suffix and regenerating
- * the code for that candidate: the ref is rewritten only when the regenerated
- * code matches exactly, so an arbitrary or spoofed code is ignored and cannot
- * misattribute a referral. A plain numeric ref that does not match any vanity
- * code is left untouched, so a legacy ?ref=7 still works.
+ * Resolve an inbound referral code back to the numeric user ID that YITH
+ * expects, before YITH's own init handler reads the parameter. A PSRC-prefixed
+ * ref (case-insensitive) has its prefix stripped and the numeric ID handed to
+ * YITH; anything else, including a legacy numeric ?ref=7, is left untouched.
  *
  * @return void
  */
@@ -85,33 +73,23 @@ function pepselect_child_resolve_referral_vanity() {
 	}
 
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- See above.
-	$ref = strtolower( sanitize_text_field( wp_unslash( $_GET['ref'] ) ) );
+	$ref = sanitize_text_field( wp_unslash( $_GET['ref'] ) );
 
-	// Must end in digits (the user ID); otherwise there is nothing to resolve.
-	if ( '' === $ref || ! preg_match( '/([0-9]+)$/', $ref, $matches ) ) {
+	$pattern = '/^' . preg_quote( PEPSELECT_REFERRAL_PREFIX, '/' ) . '([0-9]+)$/i';
+
+	if ( ! preg_match( $pattern, $ref, $matches ) ) {
 		return;
 	}
 
-	$digits = $matches[1];
-	$length = strlen( $digits );
+	$user_id = absint( $matches[1] );
 
-	// Try each trailing-digit suffix as the candidate user ID, shortest first.
-	for ( $take = 1; $take <= $length; $take++ ) {
-		$candidate = absint( substr( $digits, $length - $take ) );
-
-		if ( ! $candidate ) {
-			continue;
-		}
-
-		$expected = pepselect_child_referral_vanity_code( $candidate );
-
-		if ( '' !== $expected && $ref === strtolower( $expected ) ) {
-			// Hand YITH the numeric ID it keys attribution to.
-			$_GET['ref']     = (string) $candidate;
-			$_REQUEST['ref'] = (string) $candidate;
-			return;
-		}
+	if ( ! $user_id ) {
+		return;
 	}
+
+	// Hand YITH the numeric ID it keys attribution to.
+	$_GET['ref']     = (string) $user_id;
+	$_REQUEST['ref'] = (string) $user_id;
 }
 add_action( 'init', 'pepselect_child_resolve_referral_vanity', 0 );
 add_action( 'after_setup_theme', 'pepselect_child_resolve_referral_vanity', 0 );
