@@ -2,7 +2,9 @@
 
 All notable changes to the Pep Select child theme are documented here.
 
-**Live version: 0.17.0-beta.1** — deployed to production (www.pepselect.com) on 2026-07-23. Everything from 0.16.0-beta.6 onward is on Live, not Staging only: the product B4G1 and cash-back pills (both captured and restyled from YITH plugin output), the live-updating dollar cart pill with the cart hang fixed, the reworked cash-back page (3 stat cards, 4 how-it-works cards, referral code and share link via `[ywpar_referral_link user_id="auto"]`), the restyled coupon form, the removed "Cart" heading, and quantity plus add-to-cart on one row.
+**Live version: 0.19.0-beta.8** — deployed to production (www.pepselect.com) on 2026-08-01. Everything from 0.16.0-beta.6 onward is on Live, not Staging only: the product B4G1 and cash-back pills (both captured and restyled from YITH plugin output), the live-updating dollar cart pill with the cart hang fixed, the reworked cash-back page (3 stat cards, 4 how-it-works cards, referral code and share link via `[ywpar_referral_link user_id="auto"]`), the restyled coupon form, the removed "Cart" heading, quantity plus add-to-cart on one row, the M9 legal pages and shipping copy corrections, the parent-theme code migration, the referral vanity code and stored referral meta, and the M10 dilution notice on the compound buy card with the matching dilution and cloudiness clause on the Terms & Conditions and Refund & Shipping Policy pages.
+
+Previously live: **0.17.0-beta.1**, deployed to production on 2026-07-23.
 
 ## 0.19.0-beta.8 - 2026-08-01
 
