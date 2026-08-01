@@ -688,3 +688,33 @@
 	display: flex;
 	flex-direction: column;
 }
+
+/*
+ * Dilution notice (WEB M10): sits directly below the buy card's action row,
+ * under add to cart on an in-stock compound and under the notify form when the
+ * compound is out of stock. Refund-policy copy, so it reads as a quiet notice
+ * rather than a promotion.
+ */
+.pepselect-dilution-notice {
+	margin-top: 20px;
+	padding: 14px 16px;
+	border: 1px solid var(--pep-color-border);
+	border-radius: var(--pep-radius-medium);
+	background: var(--pep-color-surface);
+}
+
+.pepselect-dilution-notice__label {
+	margin: 0 0 5px;
+	color: var(--pep-color-navy);
+	font-family: var(--pep-font-interface);
+	font-size: 12px;
+	font-weight: var(--pep-font-weight-semibold);
+	letter-spacing: 0.02em;
+}
+
+.pepselect-dilution-notice__body {
+	margin: 0;
+	color: var(--pep-color-neutral);
+	font-size: 12px;
+	line-height: 1.55;
+}

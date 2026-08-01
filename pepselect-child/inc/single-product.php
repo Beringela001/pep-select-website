@@ -163,6 +163,103 @@ function pepselect_child_trim_product_summary() {
 add_action( 'wp', 'pepselect_child_trim_product_summary' );
 
 /**
+ * Dilution notice (WEB M10).
+ *
+ * Renders once per compound page, directly below the buy card's action row:
+ * after add to cart on a purchasable compound, and after the back-in-stock
+ * notify form when the compound is out of stock. The notice carries binding
+ * refund-policy language, so it must never be missing from a compound page and
+ * never printed twice.
+ *
+ * @return void
+ */
+function pepselect_child_render_dilution_notice() {
+	static $rendered = false;
+
+	if ( $rendered ) {
+		return;
+	}
+
+	$rendered = true;
+	?>
+	<div class="pepselect-dilution-notice">
+		<p class="pepselect-dilution-notice__label"><?php esc_html_e( 'Dilution notice', 'pepselect-child' ); ?></p>
+		<p class="pepselect-dilution-notice__body"><?php esc_html_e( 'If a compound turns cloudy after it is reconstituted, the cause is almost always the dilution solution rather than the compound itself, and non-pharmaceutical-grade solutions are the usual culprit. For this reason, cloudiness cannot be accepted as grounds for a refund unless the reconstitution was done using Pfizer pharmaceutical-grade dilution solution.', 'pepselect-child' ); ?></p>
+	</div>
+	<?php
+}
+
+/**
+ * Resolve the summary priority that puts the notice below the buy card's
+ * action row.
+ *
+ * Add to cart runs at 30, so 35 clears it on an in-stock compound. The
+ * back-in-stock notify form that replaces add to cart when a compound is out
+ * of stock is printed by the notifier plugin at a priority the theme does not
+ * own and the store can change from the plugin's settings, so on an
+ * out-of-stock compound the registered callbacks are inspected and the notice
+ * is placed after the last notifier callback instead of at a priority merely
+ * assumed to be later. The summary buffer at 999 is left as the outer bound.
+ *
+ * @return int
+ */
+function pepselect_child_dilution_notice_priority() {
+	global $wp_filter;
+
+	$priority = 35;
+	$product  = function_exists( 'wc_get_product' ) ? wc_get_product( get_queried_object_id() ) : null;
+
+	if ( ! is_a( $product, 'WC_Product' ) || $product->is_in_stock() ) {
+		return $priority;
+	}
+
+	if ( ! isset( $wp_filter['woocommerce_single_product_summary']->callbacks ) ) {
+		return $priority;
+	}
+
+	foreach ( $wp_filter['woocommerce_single_product_summary']->callbacks as $registered => $callbacks ) {
+		$registered = (int) $registered;
+
+		if ( $registered <= $priority || $registered >= 999 ) {
+			continue;
+		}
+
+		foreach ( $callbacks as $callback ) {
+			$function = isset( $callback['function'] ) ? $callback['function'] : null;
+			$name     = '';
+
+			if ( is_string( $function ) ) {
+				$name = $function;
+			} elseif ( is_array( $function ) && isset( $function[0], $function[1] ) && is_string( $function[1] ) ) {
+				$name = ( is_object( $function[0] ) ? get_class( $function[0] ) : (string) $function[0] ) . '::' . $function[1];
+			}
+
+			if ( '' !== $name && preg_match( '/cwg|instock/i', $name ) ) {
+				$priority = $registered + 1;
+			}
+		}
+	}
+
+	return $priority;
+}
+
+/**
+ * Register the dilution notice once the query is resolved, so the priority can
+ * be chosen from the current compound's stock state and the callbacks actually
+ * registered on the summary.
+ *
+ * @return void
+ */
+function pepselect_child_register_dilution_notice() {
+	if ( ! function_exists( 'is_product' ) || ! is_product() ) {
+		return;
+	}
+
+	add_action( 'woocommerce_single_product_summary', 'pepselect_child_render_dilution_notice', pepselect_child_dilution_notice_priority() );
+}
+add_action( 'wp', 'pepselect_child_register_dilution_notice' );
+
+/**
  * Product promotion pills (WEB M7).
  *
  * The single-product summary carries two promotional signals, both printed by

@@ -4,6 +4,10 @@ All notable changes to the Pep Select child theme are documented here.
 
 **Live version: 0.17.0-beta.1** — deployed to production (www.pepselect.com) on 2026-07-23. Everything from 0.16.0-beta.6 onward is on Live, not Staging only: the product B4G1 and cash-back pills (both captured and restyled from YITH plugin output), the live-updating dollar cart pill with the cart hang fixed, the reworked cash-back page (3 stat cards, 4 how-it-works cards, referral code and share link via `[ywpar_referral_link user_id="auto"]`), the restyled coupon form, the removed "Cart" heading, and quantity plus add-to-cart on one row.
 
+## 0.19.0-beta.7 - 2026-08-01
+
+- Added a dilution notice to every compound buy card, directly below add to cart (and below the notify form on out-of-stock pages). It states that post-reconstitution cloudiness is almost always caused by the dilution solution rather than the compound, and that cloudiness is not eligible for refund unless Pfizer pharmaceutical-grade dilution solution was used. Binding refund-policy language — flagged for M9 attorney review.
+
 ## 0.19.0-beta.6 - 2026-07-25
 
 - Fixed the referral share link never changing from ?ref=7. The link was built client-side by reading a data attribute off the wrong element (YITH's inner node instead of the wrapper that carried it), so it always fell back to YITH's raw numeric link and every vanity scheme was computed and then ignored. The share field is now rendered server-side in the template from the stored code, and the JavaScript no longer harvests YITH's markup at all; it only wires the Copy button.
