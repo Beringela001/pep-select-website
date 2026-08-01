@@ -36,7 +36,7 @@ function pepselect_child_get_legal_documents() {
 		'terms-conditions' => array(
 			'slug'         => 'terms-conditions',
 			'title'        => 'Terms & Conditions',
-			'last_updated' => 'July 23, 2026',
+			'last_updated' => 'August 1, 2026',
 			'body'         => array(
 				array(
 					'type' => 'paragraph',
@@ -114,6 +114,10 @@ function pepselect_child_get_legal_documents() {
 				array(
 					'type' => 'paragraph',
 					'html' => 'Processing and dispatch times are set out in our Refund &amp; Shipping Policy. Transit times provided by carriers are estimates and are outside our control. Risk of loss and title pass to you when the package is delivered to the carrier. PepSelect is not responsible for delays caused by carriers, weather, customs, or other circumstances beyond our control. Full details are set out in our Refund &amp; Shipping Policy, which is incorporated into these Terms.',
+				),
+				array(
+					'type' => 'paragraph',
+					'html' => 'Dilution and cloudiness: Cloudiness that appears after a compound is reconstituted is almost always caused by the dilution solution rather than the compound. Cloudiness is not eligible for a refund, replacement, or credit unless the reconstitution was performed using Pfizer pharmaceutical-grade dilution solution.',
 				),
 				array(
 					'type'  => 'heading',
@@ -484,7 +488,7 @@ function pepselect_child_get_legal_documents() {
 		'refund-shipping-policy' => array(
 			'slug'         => 'refund-shipping-policy',
 			'title'        => 'Refund & Shipping Policy',
-			'last_updated' => 'July 23, 2026',
+			'last_updated' => 'August 1, 2026',
 			'body'         => array(
 				array(
 					'type' => 'paragraph',
@@ -552,6 +556,10 @@ function pepselect_child_get_legal_documents() {
 					'html' => 'Upon verification, we will offer a replacement shipment at no cost, a refund, or store credit, at our discretion. Requests submitted outside the 72-hour window may not be eligible.',
 				),
 				array(
+					'type' => 'paragraph',
+					'html' => 'Dilution and cloudiness: Cloudiness that appears after a compound is reconstituted is almost always caused by the dilution solution rather than the compound. Cloudiness is not eligible for a refund, replacement, or credit unless the reconstitution was performed using Pfizer pharmaceutical-grade dilution solution.',
+				),
+				array(
 					'type'  => 'heading',
 					'level' => 2,
 					'text'  => 'Packages Marked as Delivered',
@@ -577,6 +585,10 @@ function pepselect_child_get_legal_documents() {
 						'Carrier delays or mishandling after carrier acceptance',
 						'Issues arising from misuse, improper storage, or misapplication of research materials',
 					),
+				),
+				array(
+					'type' => 'paragraph',
+					'html' => 'Dilution and cloudiness: Cloudiness that appears after a compound is reconstituted is almost always caused by the dilution solution rather than the compound. Cloudiness is not eligible for a refund, replacement, or credit unless the reconstitution was performed using Pfizer pharmaceutical-grade dilution solution.',
 				),
 				array(
 					'type'  => 'heading',

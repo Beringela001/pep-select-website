@@ -4,6 +4,10 @@ All notable changes to the Pep Select child theme are documented here.
 
 **Live version: 0.17.0-beta.1** — deployed to production (www.pepselect.com) on 2026-07-23. Everything from 0.16.0-beta.6 onward is on Live, not Staging only: the product B4G1 and cash-back pills (both captured and restyled from YITH plugin output), the live-updating dollar cart pill with the cart hang fixed, the reworked cash-back page (3 stat cards, 4 how-it-works cards, referral code and share link via `[ywpar_referral_link user_id="auto"]`), the restyled coupon form, the removed "Cart" heading, and quantity plus add-to-cart on one row.
 
+## 0.19.0-beta.8 - 2026-08-01
+
+- Added a dilution and cloudiness clause to the Refund & Shipping Policy (both under "Not Eligible for Refund or Replacement" and alongside the damaged or incorrect order remedies) and to Terms & Conditions section 5. Cloudiness after reconstitution is not eligible for refund, replacement, or credit unless Pfizer pharmaceutical-grade dilution solution was used. Existing refund language unchanged; no sections renumbered. last_updated bumped to August 1, 2026 on both documents. Attorney approved.
+
 ## 0.19.0-beta.7 - 2026-08-01
 
 - Added a dilution notice to every compound buy card, directly below add to cart (and below the notify form on out-of-stock pages). It states that post-reconstitution cloudiness is almost always caused by the dilution solution rather than the compound, and that cloudiness is not eligible for refund unless Pfizer pharmaceutical-grade dilution solution was used. Binding refund-policy language — flagged for M9 attorney review.
