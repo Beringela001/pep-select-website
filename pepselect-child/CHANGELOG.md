@@ -6,6 +6,12 @@ All notable changes to the Pep Select child theme are documented here.
 
 Previously live: **0.17.0-beta.1**, deployed to production on 2026-07-23.
 
+## 0.19.0-beta.10 - 2026-08-02
+
+- Fixed the mobile cart overflow that 0.19.0-beta.9 did not resolve. The cause was a selector error, not a delivery or caching problem: WooCommerce Blocks passes "wc-block-cart" into its SidebarLayout component, so wc-block-cart and wc-block-components-sidebar-layout sit on the same element, and beta.9 targeted them with a descendant combinator that can never match one element. The rule that collapses the two-column layout therefore never applied, while the width rules on the main and sidebar columns did, leaving two full-width flex children in a still-flex row about twice the viewport wide. Because the cart is centred, that overflow split both sides and clipped the left edge. Selectors now match the layout class on its own, are scoped under body.woocommerce-cart so they outrank the plugin's single-class rules without !important, and set min-width 0 on cart descendants so a long label can no longer force its row wider than the screen.
+- The empty cart carousel no longer guesses a container class. The rendered block is parsed and the element that actually holds the product items is tagged with ps-empty-carousel, so the carousel works across block versions, including container classes that do not exist yet. When fewer than two product items are found nothing is tagged, the markup is returned untouched, and the real markup is reported to shop managers.
+- No change to desktop. All layout rules remain inside the 767px breakpoint.
+
 ## 0.19.0-beta.9 - 2026-08-02
 
 - Fixed the cart overflowing horizontally on phones. The block cart sizes itself from a JS-measured container class (.is-large / .is-medium / .is-small) rather than the viewport, so on a narrow screen it kept the two-column sidebar layout and pushed "Coupons", "Estimated total", and the shipping method name past the left edge. Below 768px the sidebar layout now collapses to a single column, main and sidebar are full width with no inline padding, the item table is width-constrained with table-layout fixed, the item table header is hidden, and totals rows are flex with both label and value allowed to shrink so long labels wrap instead of widening the row. The same overrides are applied under the .is-large and .is-medium container classes. The cart wrapper carries overflow-x clip as a final guard.

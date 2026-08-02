@@ -168,6 +168,114 @@ function pepselect_child_cart_rewrite_empty( $html ) {
 }
 
 /**
+ * Tag the empty-cart product list container with ps-empty-carousel.
+ *
+ * The container class differs by WooCommerce Blocks version, so it is found by
+ * parsing the rendered markup and locating the element that actually holds the
+ * product items, rather than by testing a list of guessed class names. The
+ * element with the most product-item children wins; when no element holds at
+ * least two, nothing is tagged and the markup is returned untouched so the
+ * grid keeps its default layout.
+ *
+ * @param string $html Rendered block HTML.
+ * @return string
+ */
+function pepselect_child_cart_tag_carousel( $html ) {
+	if ( false !== strpos( $html, 'ps-empty-carousel' ) ) {
+		return $html;
+	}
+
+	if ( '' === trim( $html ) || ! class_exists( 'DOMDocument' ) ) {
+		return $html;
+	}
+
+	$doc = new DOMDocument();
+	libxml_use_internal_errors( true );
+	$loaded = $doc->loadHTML( '<?xml encoding="utf-8" ?><div id="pepselect-carousel-root">' . $html . '</div>', LIBXML_NOWARNING | LIBXML_NOERROR );
+	libxml_clear_errors();
+
+	if ( ! $loaded ) {
+		return $html;
+	}
+
+	$xpath = new DOMXPath( $doc );
+
+	// Product items as any current or past block version renders them.
+	$items = $xpath->query(
+		"//li[contains(@class,'product')]"
+		. "|//li[contains(@class,'wc-block-grid__product')]"
+		. "|//div[contains(@class,'wc-block-grid__product')]"
+		. "|//li[contains(@class,'wc-block-product')]"
+	);
+
+	if ( ! $items || $items->length < 2 ) {
+		pepselect_child_cart_report_markup( $html );
+
+		return $html;
+	}
+
+	// Group siblings by parent; the parent holding the most items is the list.
+	$parents = array();
+
+	foreach ( $items as $item ) {
+		$parent = $item->parentNode;
+
+		if ( ! $parent instanceof DOMElement ) {
+			continue;
+		}
+
+		$key = spl_object_hash( $parent );
+
+		if ( ! isset( $parents[ $key ] ) ) {
+			$parents[ $key ] = array(
+				'node'  => $parent,
+				'count' => 0,
+			);
+		}
+
+		++$parents[ $key ]['count'];
+	}
+
+	$container = null;
+	$best      = 1;
+
+	foreach ( $parents as $candidate ) {
+		if ( $candidate['count'] > $best ) {
+			$best      = $candidate['count'];
+			$container = $candidate['node'];
+		}
+	}
+
+	if ( ! $container instanceof DOMElement ) {
+		pepselect_child_cart_report_markup( $html );
+
+		return $html;
+	}
+
+	$existing = trim( (string) $container->getAttribute( 'class' ) );
+	$container->setAttribute( 'class', '' === $existing ? 'ps-empty-carousel' : $existing . ' ps-empty-carousel' );
+
+	$root = $doc->getElementById( 'pepselect-carousel-root' );
+
+	if ( ! $root instanceof DOMElement ) {
+		return $html;
+	}
+
+	$rebuilt = '';
+
+	foreach ( $root->childNodes as $child ) {
+		$rebuilt .= $doc->saveHTML( $child );
+	}
+
+	// Never hand back markup that lost content in the round trip.
+	if ( '' === trim( $rebuilt ) || strlen( $rebuilt ) < ( strlen( $html ) / 2 ) ) {
+		return $html;
+	}
+
+	return $rebuilt;
+}
+
+/**
  * Record the real empty-cart markup when the expected title is absent.
  *
  * WooCommerce Blocks owns this markup and changes it between versions. Rather
@@ -231,6 +339,7 @@ function pepselect_child_cart_render_block( $block_content, $block = array() ) {
 
 	if ( $is_empty_cart ) {
 		$block_content = pepselect_child_cart_rewrite_empty( $block_content );
+		$block_content = pepselect_child_cart_tag_carousel( $block_content );
 	}
 
 	return pepselect_child_cart_swap_new_in_store( $block_content );

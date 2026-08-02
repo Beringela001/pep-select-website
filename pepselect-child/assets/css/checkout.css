@@ -434,14 +434,22 @@ li.wc_payment_method.payment_method_bacs .payment_box {
 }
 
 /* ===================================================================
- * Cart page, small screens only (WEB M10).
+ * Cart page, small screens only (WEB M10, corrected in 0.19.0-beta.10).
  *
- * The block cart sizes itself from a JS-measured container class
- * (.is-large / .is-medium / .is-small) rather than the viewport, so on a
- * narrow phone it can keep the two-column sidebar layout and overflow the
- * page horizontally. The offending rules live in the WooCommerce Blocks
- * stylesheet, which the theme must not edit, so they are overridden here at
- * the same breakpoint the design uses everywhere else (767px).
+ * Root cause of the beta.9 miss: WooCommerce Blocks passes "wc-block-cart"
+ * into its SidebarLayout component, so `wc-block-cart` and
+ * `wc-block-components-sidebar-layout` land on the SAME element. beta.9
+ * targeted them as `.wc-block-cart .wc-block-components-sidebar-layout`, a
+ * descendant combinator that can never match a single element, so the one
+ * rule that collapses the two-column layout never applied. The width and
+ * min-width rules on __main / __sidebar DID apply, which left two 100%-wide
+ * flex children in a still-flex row: a track about twice the viewport, and
+ * because the block is centered the overflow splits both sides, clipping the
+ * left edge.
+ *
+ * Selectors below therefore never assume a descendant relationship, and are
+ * scoped under body.woocommerce-cart so they outrank the plugin's
+ * single-class rules without !important.
  * =================================================================== */
 
 @media (max-width: 767px) {
@@ -455,100 +463,122 @@ li.wc_payment_method.payment_method_bacs .payment_box {
 		display: inline;
 	}
 
-	/* --- Collapse the sidebar layout to a single column --- */
-	.wc-block-cart .wc-block-components-sidebar-layout,
-	.wc-block-cart.is-large .wc-block-components-sidebar-layout,
-	.wc-block-cart.is-medium .wc-block-components-sidebar-layout {
-		display: block;
+	/* --- Outer wrappers cannot exceed the viewport --- */
+	body.woocommerce-cart .wp-block-woocommerce-cart,
+	body.woocommerce-cart .wc-block-cart,
+	body.woocommerce-cart .wp-block-woocommerce-filled-cart-block {
+		width: 100%;
+		max-width: 100%;
+		min-width: 0;
+		margin-inline: 0;
 	}
 
-	.wc-block-cart .wc-block-cart__main,
-	.wc-block-cart .wc-block-cart__sidebar,
-	.wc-block-cart.is-large .wc-block-cart__main,
-	.wc-block-cart.is-large .wc-block-cart__sidebar,
-	.wc-block-cart.is-medium .wc-block-cart__main,
-	.wc-block-cart.is-medium .wc-block-cart__sidebar,
-	.wc-block-cart .wc-block-components-sidebar,
-	.wc-block-cart .wc-block-components-main {
+	/* --- Collapse the sidebar layout ---
+	 * Matched on the layout class alone, so it applies whether or not the
+	 * element also carries .wc-block-cart or a container class. */
+	body.woocommerce-cart .wc-block-components-sidebar-layout,
+	body.woocommerce-cart .wc-block-components-sidebar-layout.is-large,
+	body.woocommerce-cart .wc-block-components-sidebar-layout.is-medium,
+	body.woocommerce-cart .is-large .wc-block-components-sidebar-layout,
+	body.woocommerce-cart .is-medium .wc-block-components-sidebar-layout {
+		display: block;
+		width: 100%;
+		max-width: 100%;
+		min-width: 0;
+	}
+
+	/* --- Columns stack full width --- */
+	body.woocommerce-cart .wc-block-cart__main,
+	body.woocommerce-cart .wc-block-cart__sidebar,
+	body.woocommerce-cart .wc-block-components-main,
+	body.woocommerce-cart .wc-block-components-sidebar,
+	body.woocommerce-cart .is-large .wc-block-cart__main,
+	body.woocommerce-cart .is-large .wc-block-cart__sidebar,
+	body.woocommerce-cart .is-medium .wc-block-cart__main,
+	body.woocommerce-cart .is-medium .wc-block-cart__sidebar {
 		float: none;
 		width: 100%;
 		max-width: 100%;
+		min-width: 0;
 		padding-inline: 0;
 	}
 
-	/* --- Item table cannot exceed the viewport --- */
-	.wc-block-cart table.wc-block-cart-items,
-	.wc-block-cart.is-large table.wc-block-cart-items {
+	/* --- Nothing inside the cart may establish a floor wider than its parent.
+	 * This is what stops a long label forcing its row past the viewport. --- */
+	body.woocommerce-cart .wc-block-cart *,
+	body.woocommerce-cart .wp-block-woocommerce-cart * {
+		min-width: 0;
+	}
+
+	/* --- Item table --- */
+	body.woocommerce-cart table.wc-block-cart-items {
 		width: 100%;
 		max-width: 100%;
 		table-layout: fixed;
 	}
 
-	.wc-block-cart .wc-block-cart-items__header {
+	body.woocommerce-cart .wc-block-cart-items__header {
 		display: none;
 	}
 
-	.wc-block-cart .wc-block-cart-items__row,
-	.wc-block-cart .wc-block-cart-item__wrap {
+	body.woocommerce-cart .wc-block-cart-items__row {
 		max-width: 100%;
 	}
 
-	/* --- Totals rows: long labels wrap instead of widening the row --- */
-	.wc-block-cart .wc-block-components-totals-item {
+	/* --- Totals rows --- */
+	body.woocommerce-cart .wc-block-components-totals-item {
 		display: flex;
 		gap: 12px;
 		justify-content: space-between;
 		max-width: 100%;
 	}
 
-	.wc-block-cart .wc-block-components-totals-item__label,
-	.wc-block-cart .wc-block-components-totals-item__value {
+	body.woocommerce-cart .wc-block-components-totals-item__label {
 		min-width: 0;
+		white-space: normal;
 		overflow-wrap: anywhere;
 	}
 
-	.wc-block-cart .wc-block-components-totals-item__value {
+	body.woocommerce-cart .wc-block-components-totals-item__value {
+		min-width: 0;
+		overflow-wrap: anywhere;
 		text-align: right;
 	}
 
-	/* Shipping method names and coupon rows come from plugin markup and are
-	 * the longest strings in the sidebar. */
-	.wc-block-cart .wc-block-components-shipping-rates-control__package,
-	.wc-block-cart .wc-block-components-radio-control__option,
-	.wc-block-cart .wc-block-components-totals-coupon,
-	.wc-block-cart .wc-block-components-totals-coupon__form {
-		min-width: 0;
+	/* Shipping method names and coupon rows are the longest plugin strings
+	 * in the sidebar. */
+	body.woocommerce-cart .wc-block-components-shipping-rates-control__package,
+	body.woocommerce-cart .wc-block-components-radio-control__option,
+	body.woocommerce-cart .wc-block-components-totals-coupon,
+	body.woocommerce-cart .wc-block-components-totals-coupon__form {
 		max-width: 100%;
+		white-space: normal;
 		overflow-wrap: anywhere;
 	}
 
 	/* --- Media inside cart rows --- */
-	.wc-block-cart .wc-block-cart-item__image img,
-	.wc-block-cart .wc-block-components-product-image img {
+	body.woocommerce-cart .wc-block-cart-item__image img,
+	body.woocommerce-cart .wc-block-components-product-image img {
 		max-width: 100%;
 		height: auto;
 	}
 
-	/* --- Final guard: clip, not hidden, so sticky elements still work --- */
-	.woocommerce-cart .wp-block-woocommerce-cart,
-	.woocommerce-cart .wc-block-cart {
-		max-width: 100%;
+	/* --- Page-level guard: clip, not hidden, so sticky elements survive --- */
+	body.woocommerce-cart {
 		overflow-x: clip;
 	}
 
 	/* --- Empty cart: in-stock only --- */
-	.wp-block-woocommerce-empty-cart-block li.ps-oos,
-	.wp-block-woocommerce-empty-cart-block li.outofstock {
+	body.woocommerce-cart li.ps-oos,
+	body.woocommerce-cart li.outofstock {
 		display: none;
 	}
 
-	/* --- Empty cart: horizontal scroll-snap carousel ---
-	 * All three container selectors are covered because the block version
-	 * that ships this list is not pinned. Layout only; the cards keep their
-	 * existing styling. */
-	.wp-block-woocommerce-empty-cart-block .wc-block-grid__products,
-	.wp-block-woocommerce-empty-cart-block .wc-block-product-template,
-	.wp-block-woocommerce-empty-cart-block .wp-block-post-template {
+	/* --- Empty cart carousel ---
+	 * The container carries ps-empty-carousel, added in inc/cart-empty.php by
+	 * parsing the rendered block and tagging the element that actually holds
+	 * the product items. No container class is guessed here. */
+	.ps-empty-carousel {
 		display: flex;
 		flex-wrap: nowrap;
 		gap: 16px;
@@ -562,34 +592,27 @@ li.wc_payment_method.payment_method_bacs .payment_box {
 		scrollbar-width: none;
 	}
 
-	.wp-block-woocommerce-empty-cart-block .wc-block-grid__products::-webkit-scrollbar,
-	.wp-block-woocommerce-empty-cart-block .wc-block-product-template::-webkit-scrollbar,
-	.wp-block-woocommerce-empty-cart-block .wp-block-post-template::-webkit-scrollbar {
+	.ps-empty-carousel::-webkit-scrollbar {
 		display: none;
 	}
 
-	/* WooCommerce clearfix pseudo-elements become phantom flex items. */
-	.wp-block-woocommerce-empty-cart-block .wc-block-grid__products::before,
-	.wp-block-woocommerce-empty-cart-block .wc-block-grid__products::after,
-	.wp-block-woocommerce-empty-cart-block .wc-block-product-template::before,
-	.wp-block-woocommerce-empty-cart-block .wc-block-product-template::after,
-	.wp-block-woocommerce-empty-cart-block .wp-block-post-template::before,
-	.wp-block-woocommerce-empty-cart-block .wp-block-post-template::after {
+	/* Clearfix pseudo-elements become phantom flex items. */
+	.ps-empty-carousel::before,
+	.ps-empty-carousel::after {
 		display: none;
 	}
 
-	.wp-block-woocommerce-empty-cart-block .wc-block-grid__products > li,
-	.wp-block-woocommerce-empty-cart-block .wc-block-product-template > li,
-	.wp-block-woocommerce-empty-cart-block .wp-block-post-template > li {
+	.ps-empty-carousel > * {
 		flex: 0 0 78%;
 		max-width: 280px;
 		margin: 0;
 		scroll-snap-align: start;
 	}
 
-	/* The negative margin bleeds the carousel to the screen edge; this keeps
-	 * that bleed from widening the page. */
-	.wp-block-woocommerce-empty-cart-block {
+	/* The negative margin bleeds the track to the screen edge; this stops that
+	 * bleed from widening the page. */
+	.ps-empty-carousel-wrap,
+	body.woocommerce-cart .wp-block-woocommerce-empty-cart-block {
 		max-width: 100%;
 		overflow-x: clip;
 	}
