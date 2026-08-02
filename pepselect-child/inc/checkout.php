@@ -193,6 +193,18 @@ function pepselect_child_enqueue_checkout_assets() {
 		return;
 	}
 
+	// The empty cart renders the shared compound card, whose styles live in
+	// cards.css. Without this the cart would be the one surface using that
+	// partial with no stylesheet behind it.
+	if ( is_cart() ) {
+		wp_enqueue_style(
+			'pepselect-child-cards',
+			get_stylesheet_directory_uri() . '/assets/css/cards.css',
+			array( 'pepselect-child-foundations' ),
+			pepselect_child_asset_version( 'assets/css/cards.css' )
+		);
+	}
+
 	if ( is_checkout() || is_cart() || ( function_exists( 'is_wc_endpoint_url' ) && is_wc_endpoint_url( 'order-received' ) ) ) {
 		wp_enqueue_style(
 			'pepselect-child-checkout',

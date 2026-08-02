@@ -423,6 +423,50 @@ li.wc_payment_method.payment_method_bacs .payment_box {
 	text-align: center;
 }
 
+/* ===================================================================
+ * Empty cart product list (WEB M10).
+ *
+ * The list is rendered by inc/cart-empty.php from the theme's own query,
+ * using the same card partial as the homepage grid and the single-compound
+ * related carousel. The desktop presentation matches the homepage featured
+ * grid exactly: four columns, dropping to two at 1024px, then flipping to the
+ * scroll-snap carousel below 768px (further down this file).
+ * =================================================================== */
+
+.ps-empty-products {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: 24px;
+	margin: 32px 0 0;
+	padding: 0;
+	list-style: none;
+}
+
+.ps-empty-products > li {
+	min-width: 0;
+	margin: 0;
+}
+
+@media (max-width: 1024px) {
+	.ps-empty-products {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 24px;
+	}
+}
+
+/* Guard against the parent theme's link colour leaking into the card title
+ * on this page; cards.css already pins it, this keeps it pinned if a block
+ * or parent rule loads later. */
+.ps-empty-products .pepselect-card__title a,
+.ps-empty-products .pepselect-card__action {
+	color: var(--pep-color-navy);
+	text-decoration: none;
+}
+
+.ps-empty-products .pepselect-card__title a:hover {
+	color: var(--pep-color-cyan);
+}
+
 /* Heading label pair: the desktop wording is unchanged, the mobile wording
  * only appears below 768px. Both are rendered; one is always hidden. */
 .ps-label-mobile {
@@ -461,6 +505,14 @@ li.wc_payment_method.payment_method_bacs .payment_box {
 
 	.ps-label-mobile {
 		display: inline;
+	}
+
+	/* --- Breathing room between the header/search bar and the vial mark.
+	 * One step up the gutter scale (mobile gutter 20px -> desktop 32px);
+	 * the theme has no dedicated spacing scale, so the gutter tokens are the
+	 * only spacing tokens available. --- */
+	body.woocommerce-cart .ps-empty-cart__mark {
+		margin-block-start: var(--pep-gutter-desktop);
 	}
 
 	/* --- Page-wide width containment ---
@@ -660,18 +712,6 @@ li.wc_payment_method.payment_method_bacs .payment_box {
 		min-width: 0;
 		margin: 0;
 		scroll-snap-align: start;
-	}
-
-	/* --- Empty cart: in-stock only ---
-	 * ps-oos is applied in inc/cart-empty.php from the resolved product's
-	 * stock state. Placed after the carousel child rule and carrying equal
-	 * specificity plus !important, so a hidden item cannot be revived by the
-	 * flex sizing above. Desktop is untouched: this rule exists only inside
-	 * the 767px breakpoint. */
-	body.woocommerce-cart .ps-empty-carousel.ps-empty-carousel > .ps-oos,
-	body.woocommerce-cart li.ps-oos,
-	body.woocommerce-cart li.outofstock {
-		display: none !important;
 	}
 
 	/* The negative margin bleeds the track to the screen edge; this stops that

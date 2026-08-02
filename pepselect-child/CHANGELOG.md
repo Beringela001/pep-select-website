@@ -6,6 +6,15 @@ All notable changes to the Pep Select child theme are documented here.
 
 Previously live: **0.17.0-beta.1**, deployed to production on 2026-07-23.
 
+## 0.19.0-beta.13 - 2026-08-02
+
+- The empty cart product list is now queried and rendered by the theme instead of being filtered out of the block's own list. Only two compounds were showing because the block asks for a small fixed number of products and the out-of-stock filter removed some of them; a filter can only remove, it cannot reach past the block's post count. The list is now queried with wc_get_products at status publish, stock_status instock, catalog visibility visible, limit 12, ordered by menu order then title, and the block's own list is replaced with it.
+- The list renders through the existing compound card partial, the same one the homepage grid and the single-compound related carousel use, in the same ul and li wrapper as the related carousel. No new card markup was written. Desktop presentation matches the homepage featured grid exactly: four columns, two at 1024px, and the scroll-snap carousel below 768px. Mobile and desktop show the same compounds and the same cards; only the container changes.
+- cards.css is now enqueued on the cart page. The cart was the one surface using the card partial with no stylesheet behind it.
+- Added breathing room above the vial mark on small screens, one step up the gutter scale. The theme has no dedicated spacing scale, so the gutter tokens are the only spacing tokens available.
+- Removed the out-of-stock marking and its display none rule. Both are dead now that the query returns in-stock products only, so an out-of-stock compound is never rendered and there is nothing to hide. The product-ID resolver introduced in 0.19.0-beta.11 was removed with it.
+- The homepage carousel, the COA carousel, and their templates are untouched.
+
 ## 0.19.0-beta.12 - 2026-08-02
 
 - Fixed the empty cart product list still rendering as a vertical stack. The class was reaching the right element all along: the out-of-stock filtering that shipped in 0.19.0-beta.11 is applied in the same pass, to the children of that same tagged container, and it worked, which is only possible if the container was found and tagged. The failure was in the CSS. The rule was a single class and it never reset grid-template-columns, while WordPress layout support emits a container rule that sets display grid together with an explicit grid-template-columns and doubles its own class to raise specificity above a plain single-class selector. Both carousels already in the theme neutralise grid-template-columns for that reason; that reset was the missing piece.
