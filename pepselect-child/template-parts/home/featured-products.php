@@ -27,7 +27,7 @@ $products      = isset( $product_state['products'] ) ? array_slice( (array) $pro
 		<?php if ( $products ) : ?>
 			<div class="pepselect-home__product-grid" aria-label="<?php esc_attr_e( 'Featured compounds', 'pepselect-child' ); ?>">
 				<?php foreach ( $products as $product ) : ?>
-					<?php get_template_part( 'template-parts/home/product-card', null, array( 'product' => $product ) ); ?>
+					<?php get_template_part( 'template-parts/home/product-card', null, array( 'product' => $product, 'variant' => 'home' ) ); ?>
 				<?php endforeach; ?>
 			</div>
 		<?php else : ?>

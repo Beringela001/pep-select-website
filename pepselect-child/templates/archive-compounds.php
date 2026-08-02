@@ -48,7 +48,7 @@ get_header();
 
 						if ( $product && $product->is_visible() ) {
 							echo '<li>';
-							get_template_part( 'template-parts/home/product-card', null, array( 'product' => $product ) );
+							get_template_part( 'template-parts/home/product-card', null, array( 'product' => $product, 'variant' => 'archive' ) );
 							echo '</li>';
 						}
 					endwhile;

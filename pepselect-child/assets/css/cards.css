@@ -429,3 +429,132 @@
 		min-height: 66px;
 	}
 }
+
+/* ===================================================================
+ * Compact card variant (WEB M10).
+ *
+ * Applies to the compounds archive and the homepage featured grid only,
+ * through the pepselect-card--compact class the partial adds when a caller
+ * passes a variant. The related-products carousel and the empty-cart carousel
+ * never receive that class, so every rule below is invisible to them.
+ *
+ * Changes: one shared left edge for all body content, the dose pill moved onto
+ * the name row, the reserved heights removed, a shorter uncropped image, and
+ * the whole card turned into a stretched link.
+ * =================================================================== */
+
+.pepselect-card--compact {
+	position: relative;
+	cursor: pointer;
+}
+
+/* --- Alignment ---
+ * The body is the single container that owns the horizontal padding, and no
+ * child adds any of its own, so the name, stock label, price, and button all
+ * share one left edge. The dose pill keeps its internal padding because that
+ * padding is the pill shape, and it no longer sits on the left edge anyway. */
+.pepselect-card--compact .pepselect-card__body {
+	align-items: stretch;
+	padding: 16px 18px 18px;
+	text-align: left;
+}
+
+.pepselect-card--compact .pepselect-card__body > * {
+	margin-inline: 0;
+	padding-inline: 0;
+}
+
+/* --- Name row: name left, dose pill right --- */
+.pepselect-card--compact .pepselect-card__headline {
+	display: flex;
+	gap: 12px;
+	align-items: flex-start;
+	justify-content: space-between;
+	width: 100%;
+	margin-bottom: 8px;
+}
+
+.pepselect-card.pepselect-card--compact .pepselect-card__title {
+	flex: 1 1 auto;
+	min-width: 0;
+	min-height: 0;
+	margin: 0;
+	overflow-wrap: anywhere;
+}
+
+/* The pill holds its width so a wrapping name cannot push it off the card. */
+.pepselect-card.pepselect-card--compact .pepselect-card__strength {
+	flex: 0 0 auto;
+	margin: 0;
+	align-self: flex-start;
+}
+
+/* --- Vertical rhythm ---
+ * The base card reserves 76px (66px on mobile) for the status block and
+ * 2.3em for the title so cards line up in a grid. Both are removed here: the
+ * grid already stretches every card in a row to the same height, and the
+ * action keeps its margin-top:auto, so the slack from a missing "Restocking
+ * Soon" pill collects directly above the button instead of sitting as a hole
+ * in the middle of the card. Cards in a row stay equal height either way. */
+.pepselect-card--compact .pepselect-card__status {
+	gap: 6px;
+	min-height: 0;
+	margin-bottom: 10px;
+}
+
+.pepselect-card.pepselect-card--compact .pepselect-card__price {
+	margin-bottom: 14px;
+}
+
+/* --- Image: shorter, and the whole vial visible --- */
+.pepselect-card--compact .pepselect-card__media {
+	aspect-ratio: 4 / 3;
+	padding: 8px;
+}
+
+.pepselect-card--compact .pepselect-card__media img {
+	height: 100%;
+	object-fit: contain;
+}
+
+/* --- Whole card clickable ---
+ * One real anchor, the one already wrapping the compound name, is stretched
+ * over the card with a pseudo-element. No second anchor is added and no
+ * button is nested inside a link. The action sits above the overlay so it
+ * stays independently clickable, and the existing hover lift is untouched. */
+.pepselect-card--compact .pepselect-card__title a::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+}
+
+.pepselect-card--compact .pepselect-card__action {
+	position: relative;
+	z-index: 2;
+}
+
+/* Keyboard focus has to be visible on the card, since the anchor's own box is
+ * only the name. Uses the existing focus colour token. */
+.pepselect-card--compact .pepselect-card__title a:focus-visible::after {
+	outline: 2px solid var(--pep-color-cyan);
+	outline-offset: 2px;
+}
+
+.pepselect-card--compact .pepselect-card__title a:focus:not(:focus-visible) {
+	outline: none;
+}
+
+@media (max-width: 767px) {
+	.pepselect-card--compact .pepselect-card__body {
+		padding: 14px 14px 16px;
+	}
+
+	.pepselect-card.pepselect-card--compact .pepselect-card__title {
+		min-height: 0;
+	}
+
+	.pepselect-card--compact .pepselect-card__status {
+		min-height: 0;
+	}
+}

@@ -39,8 +39,28 @@ $status_band    = function_exists( 'pepselect_child_get_product_status_band' ) ?
  */
 $card_action = isset( $args['action'] ) ? (string) $args['action'] : 'link';
 $can_add     = $in_stock && $product->is_purchasable() && $product->is_type( 'simple' );
+
+/*
+ * Presentation variant. Empty by default, which is the layout the related
+ * carousel and the empty-cart carousel already render, so those two surfaces
+ * are unaffected by anything below. 'archive' and 'home' opt into the compact
+ * layout: the dose pill moves onto the name row, the reserved heights come
+ * out, and the whole card becomes a stretched link. 'home' additionally drops
+ * the stock line, which is redundant on a grid that only shows in-stock
+ * compounds.
+ */
+$variant     = isset( $args['variant'] ) ? (string) $args['variant'] : '';
+$is_compact  = in_array( $variant, array( 'archive', 'home' ), true );
+$show_stock  = 'home' !== $variant;
+$has_status  = $status_band || $show_stock;
+
+$card_classes = 'pepselect-card';
+
+if ( $is_compact ) {
+	$card_classes .= ' pepselect-card--compact pepselect-card--' . $variant;
+}
 ?>
-<article class="pepselect-card">
+<article class="<?php echo esc_attr( $card_classes ); ?>">
 	<a class="pepselect-card__media" href="<?php echo esc_url( $product_url ); ?>" aria-label="<?php echo esc_attr( sprintf( __( 'View %s', 'pepselect-child' ), $product_name ) ); ?>" tabindex="-1">
 		<?php
 		if ( $image_id ) {
@@ -59,21 +79,36 @@ $can_add     = $in_stock && $product->is_purchasable() && $product->is_type( 'si
 	</a>
 
 	<div class="pepselect-card__body">
-		<?php if ( '' !== $strength_label ) : ?>
-			<span class="pepselect-card__strength"><?php echo esc_html( $strength_label ); ?></span>
-		<?php endif; ?>
+		<?php if ( $is_compact ) : ?>
+			<?php // Name and dose pill share one row: name left, pill right. ?>
+			<div class="pepselect-card__headline">
+				<h3 class="pepselect-card__title"><a href="<?php echo esc_url( $product_url ); ?>"><?php echo esc_html( $product_name ); ?></a></h3>
 
-		<h3 class="pepselect-card__title"><a href="<?php echo esc_url( $product_url ); ?>"><?php echo esc_html( $product_name ); ?></a></h3>
-
-		<div class="pepselect-card__status">
-			<?php if ( $status_band ) : ?>
-				<p class="pepselect-card__band pepselect-card__band--<?php echo esc_attr( $status_band['tone'] ); ?>"><?php echo esc_html( $status_band['label'] ); ?></p>
+				<?php if ( '' !== $strength_label ) : ?>
+					<span class="pepselect-card__strength"><?php echo esc_html( $strength_label ); ?></span>
+				<?php endif; ?>
+			</div>
+		<?php else : ?>
+			<?php if ( '' !== $strength_label ) : ?>
+				<span class="pepselect-card__strength"><?php echo esc_html( $strength_label ); ?></span>
 			<?php endif; ?>
 
-			<p class="pepselect-card__stock <?php echo $in_stock ? 'pepselect-card__stock--available' : 'pepselect-card__stock--out'; ?>">
-				<?php $in_stock ? esc_html_e( 'Available', 'pepselect-child' ) : esc_html_e( 'Out of Stock', 'pepselect-child' ); ?>
-			</p>
-		</div>
+			<h3 class="pepselect-card__title"><a href="<?php echo esc_url( $product_url ); ?>"><?php echo esc_html( $product_name ); ?></a></h3>
+		<?php endif; ?>
+
+		<?php if ( $has_status ) : ?>
+			<div class="pepselect-card__status">
+				<?php if ( $status_band ) : ?>
+					<p class="pepselect-card__band pepselect-card__band--<?php echo esc_attr( $status_band['tone'] ); ?>"><?php echo esc_html( $status_band['label'] ); ?></p>
+				<?php endif; ?>
+
+				<?php if ( $show_stock ) : ?>
+					<p class="pepselect-card__stock <?php echo $in_stock ? 'pepselect-card__stock--available' : 'pepselect-card__stock--out'; ?>">
+						<?php $in_stock ? esc_html_e( 'Available', 'pepselect-child' ) : esc_html_e( 'Out of Stock', 'pepselect-child' ); ?>
+					</p>
+				<?php endif; ?>
+			</div>
+		<?php endif; ?>
 
 		<p class="pepselect-card__price"><?php echo wp_kses_post( $price_html ); ?></p>
 
