@@ -606,55 +606,76 @@ li.wc_payment_method.payment_method_bacs .payment_box {
 		overflow-x: clip;
 	}
 
-	/* --- Empty cart: in-stock only ---
-	 * ps-oos is applied in inc/cart-empty.php from the resolved product's
-	 * stock state. The carousel-child form is listed explicitly because the
-	 * items are not always <li>. Desktop is untouched: this rule only exists
-	 * inside the 767px breakpoint. */
-	.ps-empty-carousel > .ps-oos,
-	body.woocommerce-cart li.ps-oos,
-	body.woocommerce-cart li.outofstock {
-		display: none;
-	}
-
 	/* --- Empty cart carousel ---
-	 * The container carries ps-empty-carousel, added in inc/cart-empty.php by
-	 * parsing the rendered block and tagging the element that actually holds
-	 * the product items. No container class is guessed here. */
-	.ps-empty-carousel {
-		display: flex;
+	 * Same recipe as the related-products carousel in product.css (flex track,
+	 * x mandatory snap, gutter-width edge bleed, hidden scrollbar, snap-align
+	 * on the children). That rule cannot literally be shared: product.css is
+	 * enqueued only on single product pages, so its class name is not present
+	 * on the cart. The declarations are therefore reproduced here, in the one
+	 * stylesheet the cart loads, rather than a second pattern being invented.
+	 *
+	 * Why beta.11 did not take: the rule was a single class, 0-0-1-0, and it
+	 * never reset grid-template-columns. WordPress layout support emits a
+	 * container rule that sets display:grid together with an explicit
+	 * grid-template-columns, and doubles its own class to raise specificity
+	 * above a plain single-class selector. Both existing theme carousels
+	 * neutralise grid-template-columns for exactly this reason; that reset was
+	 * the missing piece. The selector is now body + doubled class, 0-0-3-1,
+	 * which outranks the doubled container rule.
+	 *
+	 * display and grid-template-columns additionally carry !important, as does
+	 * display:none on the out-of-stock rule below: three in the whole file.
+	 * They are here because the competing values are machine-generated per
+	 * page load, so their exact selector cannot be verified from this
+	 * repository. Every other declaration wins on specificity alone. */
+	body.woocommerce-cart .ps-empty-carousel.ps-empty-carousel {
+		display: flex !important;
+		grid-template-columns: none !important;
 		flex-wrap: nowrap;
 		gap: 16px;
-		margin-inline: -20px;
-		padding-inline: 20px;
+		list-style: none;
+		margin-inline: calc(-1 * var(--pep-layout-gutter));
+		padding-inline: var(--pep-layout-gutter);
 		overflow-x: auto;
 		overflow-y: hidden;
 		scroll-snap-type: x mandatory;
-		scroll-padding-inline: 20px;
+		scroll-padding-inline: var(--pep-layout-gutter);
 		-webkit-overflow-scrolling: touch;
 		scrollbar-width: none;
 	}
 
-	.ps-empty-carousel::-webkit-scrollbar {
+	body.woocommerce-cart .ps-empty-carousel.ps-empty-carousel::-webkit-scrollbar {
 		display: none;
 	}
 
 	/* Clearfix pseudo-elements become phantom flex items. */
-	.ps-empty-carousel::before,
-	.ps-empty-carousel::after {
+	body.woocommerce-cart .ps-empty-carousel.ps-empty-carousel::before,
+	body.woocommerce-cart .ps-empty-carousel.ps-empty-carousel::after {
 		display: none;
 	}
 
-	.ps-empty-carousel > * {
+	body.woocommerce-cart .ps-empty-carousel.ps-empty-carousel > * {
 		flex: 0 0 78%;
 		max-width: 280px;
+		min-width: 0;
 		margin: 0;
 		scroll-snap-align: start;
 	}
 
+	/* --- Empty cart: in-stock only ---
+	 * ps-oos is applied in inc/cart-empty.php from the resolved product's
+	 * stock state. Placed after the carousel child rule and carrying equal
+	 * specificity plus !important, so a hidden item cannot be revived by the
+	 * flex sizing above. Desktop is untouched: this rule exists only inside
+	 * the 767px breakpoint. */
+	body.woocommerce-cart .ps-empty-carousel.ps-empty-carousel > .ps-oos,
+	body.woocommerce-cart li.ps-oos,
+	body.woocommerce-cart li.outofstock {
+		display: none !important;
+	}
+
 	/* The negative margin bleeds the track to the screen edge; this stops that
 	 * bleed from widening the page. */
-	.ps-empty-carousel-wrap,
 	body.woocommerce-cart .wp-block-woocommerce-empty-cart-block {
 		max-width: 100%;
 		overflow-x: clip;
