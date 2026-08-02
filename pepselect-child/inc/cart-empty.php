@@ -168,7 +168,82 @@ function pepselect_child_cart_rewrite_empty( $html ) {
 }
 
 /**
- * Tag the empty-cart product list container with ps-empty-carousel.
+ * Resolve the product ID for one rendered list item.
+ *
+ * The block product template does not run post_class on these items, so the
+ * ID is recovered from the markup itself, in descending order of reliability:
+ *
+ *   1. An explicit data-product-id / data-product_id attribute, on the item or
+ *      on any descendant (add-to-cart buttons carry it).
+ *   2. A post-<id> class on the item, present when a template did run
+ *      get_post_class().
+ *   3. The item's first link, mapped back through url_to_postid().
+ *
+ * Every candidate is confirmed by loading it through wc_get_product(), so a
+ * number that is not a product is discarded rather than acted on. Returns 0
+ * when no candidate resolves.
+ *
+ * @param DOMElement $item  List item element.
+ * @param DOMXPath   $xpath Document xpath.
+ * @return int
+ */
+function pepselect_child_cart_resolve_product_id( $item, $xpath ) {
+	if ( ! function_exists( 'wc_get_product' ) ) {
+		return 0;
+	}
+
+	$candidates = array();
+
+	// 1. Explicit data attributes, on the item or below it.
+	foreach ( array( 'data-product-id', 'data-product_id' ) as $attribute ) {
+		if ( $item->hasAttribute( $attribute ) ) {
+			$candidates[] = (int) $item->getAttribute( $attribute );
+		}
+
+		$nodes = $xpath->query( './/*[@' . $attribute . ']', $item );
+
+		if ( $nodes ) {
+			foreach ( $nodes as $node ) {
+				$candidates[] = (int) $node->getAttribute( $attribute );
+			}
+		}
+	}
+
+	// 2. post-<id> class on the item.
+	if ( preg_match( '/\bpost-(\d+)\b/', (string) $item->getAttribute( 'class' ), $matches ) ) {
+		$candidates[] = (int) $matches[1];
+	}
+
+	// 3. The item's first link, resolved back to a post.
+	if ( function_exists( 'url_to_postid' ) ) {
+		$links = $xpath->query( './/a[@href]', $item );
+
+		if ( $links && $links->length ) {
+			$href = (string) $links->item( 0 )->getAttribute( 'href' );
+
+			if ( '' !== $href && false === strpos( $href, 'add-to-cart' ) ) {
+				$candidates[] = (int) url_to_postid( $href );
+			}
+		}
+	}
+
+	foreach ( $candidates as $candidate ) {
+		if ( $candidate < 1 ) {
+			continue;
+		}
+
+		$product = wc_get_product( $candidate );
+
+		if ( is_a( $product, 'WC_Product' ) ) {
+			return $candidate;
+		}
+	}
+
+	return 0;
+}
+
+/**
+ * Tag the empty-cart product list and mark its out-of-stock items.
  *
  * The container class differs by WooCommerce Blocks version, so it is found by
  * parsing the rendered markup and locating the element that actually holds the
@@ -176,6 +251,10 @@ function pepselect_child_cart_rewrite_empty( $html ) {
  * element with the most product-item children wins; when no element holds at
  * least two, nothing is tagged and the markup is returned untouched so the
  * grid keeps its default layout.
+ *
+ * In the same pass, each item's product is resolved and out-of-stock items are
+ * given the ps-oos class. CSS hides them below 768px only, so desktop keeps
+ * showing the full list.
  *
  * @param string $html Rendered block HTML.
  * @return string
@@ -254,6 +333,41 @@ function pepselect_child_cart_tag_carousel( $html ) {
 
 	$existing = trim( (string) $container->getAttribute( 'class' ) );
 	$container->setAttribute( 'class', '' === $existing ? 'ps-empty-carousel' : $existing . ' ps-empty-carousel' );
+
+	// Mark out-of-stock items on the container's own children, so a nested
+	// product reference elsewhere in the block cannot be hidden by mistake.
+	$unresolved = 0;
+
+	foreach ( $items as $item ) {
+		if ( $item->parentNode !== $container ) {
+			continue;
+		}
+
+		$product_id = pepselect_child_cart_resolve_product_id( $item, $xpath );
+
+		if ( ! $product_id ) {
+			++$unresolved;
+			continue;
+		}
+
+		$product = wc_get_product( $product_id );
+
+		if ( ! is_a( $product, 'WC_Product' ) || $product->is_in_stock() ) {
+			continue;
+		}
+
+		$item_class = trim( (string) $item->getAttribute( 'class' ) );
+
+		if ( false === strpos( ' ' . $item_class . ' ', ' ps-oos ' ) ) {
+			$item->setAttribute( 'class', '' === $item_class ? 'ps-oos' : $item_class . ' ps-oos' );
+		}
+	}
+
+	// Every item failing to resolve means the markup carries no usable product
+	// reference; surface it rather than silently shipping an unfiltered list.
+	if ( $unresolved > 0 && $unresolved === $items->length ) {
+		pepselect_child_cart_report_markup( $html );
+	}
 
 	$root = $doc->getElementById( 'pepselect-carousel-root' );
 
@@ -346,30 +460,11 @@ function pepselect_child_cart_render_block( $block_content, $block = array() ) {
 }
 add_filter( 'render_block', 'pepselect_child_cart_render_block', 10, 2 );
 
-/**
- * Mark out-of-stock products in the cart page's recommendation list.
- *
- * The class is added on the cart page only; CSS hides the marked items below
- * 768px and leaves every breakpoint above it untouched.
- *
- * @param string[] $classes Post classes.
- * @return string[]
+/*
+ * Note: a post_class filter was used for the out-of-stock marking in
+ * 0.19.0-beta.9. The block product template that renders this list does not
+ * run get_post_class() on its items, so the filter never fired and the class
+ * never reached the markup. It has been removed rather than left in place as
+ * dead code; the marking now happens in the DOM pass above, where the product
+ * ID is resolved from the rendered item itself.
  */
-function pepselect_child_cart_mark_out_of_stock( $classes ) {
-	if ( ! pepselect_child_is_cart_request() ) {
-		return $classes;
-	}
-
-	if ( ! function_exists( 'wc_get_product' ) ) {
-		return $classes;
-	}
-
-	$product = wc_get_product( get_the_ID() );
-
-	if ( is_a( $product, 'WC_Product' ) && ! $product->is_in_stock() ) {
-		$classes[] = 'ps-oos';
-	}
-
-	return $classes;
-}
-add_filter( 'post_class', 'pepselect_child_cart_mark_out_of_stock' );

@@ -463,14 +463,52 @@ li.wc_payment_method.payment_method_bacs .payment_box {
 		display: inline;
 	}
 
-	/* --- Outer wrappers cannot exceed the viewport --- */
+	/* --- Page-wide width containment ---
+	 * Scoped to the cart page rather than to the filled cart, so the empty
+	 * cart is covered by the same reset. The empty-cart block is centred, so
+	 * anything wider than the viewport loses text off the LEFT edge, which is
+	 * how the clipped title and subline presented. */
+	body.woocommerce-cart .site-main,
+	body.woocommerce-cart .page-content,
+	body.woocommerce-cart .entry-content,
+	body.woocommerce-cart .wp-block-post-content,
+	body.woocommerce-cart .e-con,
+	body.woocommerce-cart .e-con-inner,
+	body.woocommerce-cart .elementor-widget-container,
 	body.woocommerce-cart .wp-block-woocommerce-cart,
 	body.woocommerce-cart .wc-block-cart,
-	body.woocommerce-cart .wp-block-woocommerce-filled-cart-block {
+	body.woocommerce-cart .wp-block-woocommerce-filled-cart-block,
+	body.woocommerce-cart .wp-block-woocommerce-empty-cart-block {
 		width: 100%;
 		max-width: 100%;
 		min-width: 0;
+	}
+
+	/* The cart blocks are the ones that carry auto margins; the page wrappers
+	 * above keep theirs so the layout stays centred. */
+	body.woocommerce-cart .wp-block-woocommerce-cart,
+	body.woocommerce-cart .wc-block-cart,
+	body.woocommerce-cart .wp-block-woocommerce-filled-cart-block,
+	body.woocommerce-cart .wp-block-woocommerce-empty-cart-block {
 		margin-inline: 0;
+	}
+
+	/* Wide/full alignments resolve to viewport-relative widths that overshoot
+	 * a narrow screen. */
+	body.woocommerce-cart .alignwide,
+	body.woocommerce-cart .alignfull {
+		width: 100%;
+		max-width: 100%;
+		margin-inline: 0;
+	}
+
+	/* The empty-cart copy must never be the thing that overflows. */
+	body.woocommerce-cart .ps-empty-cart__title,
+	body.woocommerce-cart .ps-empty-cart__sub {
+		max-width: 100%;
+		min-width: 0;
+		padding-inline: 20px;
+		overflow-wrap: anywhere;
 	}
 
 	/* --- Collapse the sidebar layout ---
@@ -568,7 +606,12 @@ li.wc_payment_method.payment_method_bacs .payment_box {
 		overflow-x: clip;
 	}
 
-	/* --- Empty cart: in-stock only --- */
+	/* --- Empty cart: in-stock only ---
+	 * ps-oos is applied in inc/cart-empty.php from the resolved product's
+	 * stock state. The carousel-child form is listed explicitly because the
+	 * items are not always <li>. Desktop is untouched: this rule only exists
+	 * inside the 767px breakpoint. */
+	.ps-empty-carousel > .ps-oos,
 	body.woocommerce-cart li.ps-oos,
 	body.woocommerce-cart li.outofstock {
 		display: none;
