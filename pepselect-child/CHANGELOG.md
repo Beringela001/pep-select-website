@@ -6,6 +6,14 @@ All notable changes to the Pep Select child theme are documented here.
 
 Previously live: **0.17.0-beta.1**, deployed to production on 2026-07-23.
 
+## 0.19.0-beta.9 - 2026-08-02
+
+- Fixed the cart overflowing horizontally on phones. The block cart sizes itself from a JS-measured container class (.is-large / .is-medium / .is-small) rather than the viewport, so on a narrow screen it kept the two-column sidebar layout and pushed "Coupons", "Estimated total", and the shipping method name past the left edge. Below 768px the sidebar layout now collapses to a single column, main and sidebar are full width with no inline padding, the item table is width-constrained with table-layout fixed, the item table header is hidden, and totals rows are flex with both label and value allowed to shrink so long labels wrap instead of widening the row. The same overrides are applied under the .is-large and .is-medium container classes. The cart wrapper carries overflow-x clip as a final guard.
+- Replaced the empty cart's broken placeholder image with a coded inline vial mark, and the default "Your cart is currently empty!" string with "An empty cart is a clean bench." and "Pick a compound and we will handle the paperwork." The placeholder is matched on the block's own class rather than an image URL, so no uploaded asset is referenced. When the expected markup is not found the block is returned untouched and the real markup is emitted as an HTML comment for shop managers rather than guessed at or hidden.
+- Added a mobile-only "Selected compounds" label for the empty cart's "New in store" heading. Both labels render and CSS shows one per breakpoint, so the desktop wording is unchanged.
+- Out-of-stock products in the empty cart recommendation list are marked with a ps-oos class on the cart page and hidden below 768px only. Desktop is untouched.
+- The empty cart recommendation list becomes a horizontal scroll-snap carousel below 768px, bleeding to the screen edge without widening the page. Layout only; the cards keep their existing styling.
+
 ## 0.19.0-beta.8 - 2026-08-01
 
 - Added a dilution and cloudiness clause to the Refund & Shipping Policy (both under "Not Eligible for Refund or Replacement" and alongside the damaged or incorrect order remedies) and to Terms & Conditions section 5. Cloudiness after reconstitution is not eligible for refund, replacement, or credit unless Pfizer pharmaceutical-grade dilution solution was used. Existing refund language unchanged; no sections renumbered. last_updated bumped to August 1, 2026 on both documents. Attorney approved.

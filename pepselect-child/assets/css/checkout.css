@@ -383,3 +383,214 @@ li.wc_payment_method.payment_method_bacs .payment_box {
 	outline: none !important;
 	box-shadow: 0 0 0 3px rgb(23 161 207 / 18%) !important;
 }
+
+/* ===================================================================
+ * Empty cart: coded brand mark and approved copy (WEB M10).
+ *
+ * Applies at every breakpoint. The block's placeholder image is removed in
+ * inc/cart-empty.php and replaced with an inline vial glyph, so nothing here
+ * depends on an uploaded asset. Tokens only.
+ * =================================================================== */
+
+.ps-empty-cart__mark {
+	display: flex;
+	justify-content: center;
+	margin-bottom: 16px;
+	color: var(--pep-color-navy);
+}
+
+.ps-empty-cart__glyph {
+	display: block;
+}
+
+.ps-empty-cart__title {
+	margin: 0 0 8px;
+	color: var(--pep-color-navy);
+	font-family: var(--pep-font-interface);
+	font-size: 20px;
+	font-weight: var(--pep-font-weight-semibold);
+	line-height: 1.3;
+	text-align: center;
+}
+
+.ps-empty-cart__sub {
+	max-width: 34ch;
+	margin: 0 auto;
+	color: var(--pep-color-slate);
+	font-family: var(--pep-font-interface);
+	font-size: 16px;
+	line-height: 1.55;
+	text-align: center;
+}
+
+/* Heading label pair: the desktop wording is unchanged, the mobile wording
+ * only appears below 768px. Both are rendered; one is always hidden. */
+.ps-label-mobile {
+	display: none;
+}
+
+.ps-label-desktop {
+	display: inline;
+}
+
+/* ===================================================================
+ * Cart page, small screens only (WEB M10).
+ *
+ * The block cart sizes itself from a JS-measured container class
+ * (.is-large / .is-medium / .is-small) rather than the viewport, so on a
+ * narrow phone it can keep the two-column sidebar layout and overflow the
+ * page horizontally. The offending rules live in the WooCommerce Blocks
+ * stylesheet, which the theme must not edit, so they are overridden here at
+ * the same breakpoint the design uses everywhere else (767px).
+ * =================================================================== */
+
+@media (max-width: 767px) {
+
+	/* --- Label pair --- */
+	.ps-label-desktop {
+		display: none;
+	}
+
+	.ps-label-mobile {
+		display: inline;
+	}
+
+	/* --- Collapse the sidebar layout to a single column --- */
+	.wc-block-cart .wc-block-components-sidebar-layout,
+	.wc-block-cart.is-large .wc-block-components-sidebar-layout,
+	.wc-block-cart.is-medium .wc-block-components-sidebar-layout {
+		display: block;
+	}
+
+	.wc-block-cart .wc-block-cart__main,
+	.wc-block-cart .wc-block-cart__sidebar,
+	.wc-block-cart.is-large .wc-block-cart__main,
+	.wc-block-cart.is-large .wc-block-cart__sidebar,
+	.wc-block-cart.is-medium .wc-block-cart__main,
+	.wc-block-cart.is-medium .wc-block-cart__sidebar,
+	.wc-block-cart .wc-block-components-sidebar,
+	.wc-block-cart .wc-block-components-main {
+		float: none;
+		width: 100%;
+		max-width: 100%;
+		padding-inline: 0;
+	}
+
+	/* --- Item table cannot exceed the viewport --- */
+	.wc-block-cart table.wc-block-cart-items,
+	.wc-block-cart.is-large table.wc-block-cart-items {
+		width: 100%;
+		max-width: 100%;
+		table-layout: fixed;
+	}
+
+	.wc-block-cart .wc-block-cart-items__header {
+		display: none;
+	}
+
+	.wc-block-cart .wc-block-cart-items__row,
+	.wc-block-cart .wc-block-cart-item__wrap {
+		max-width: 100%;
+	}
+
+	/* --- Totals rows: long labels wrap instead of widening the row --- */
+	.wc-block-cart .wc-block-components-totals-item {
+		display: flex;
+		gap: 12px;
+		justify-content: space-between;
+		max-width: 100%;
+	}
+
+	.wc-block-cart .wc-block-components-totals-item__label,
+	.wc-block-cart .wc-block-components-totals-item__value {
+		min-width: 0;
+		overflow-wrap: anywhere;
+	}
+
+	.wc-block-cart .wc-block-components-totals-item__value {
+		text-align: right;
+	}
+
+	/* Shipping method names and coupon rows come from plugin markup and are
+	 * the longest strings in the sidebar. */
+	.wc-block-cart .wc-block-components-shipping-rates-control__package,
+	.wc-block-cart .wc-block-components-radio-control__option,
+	.wc-block-cart .wc-block-components-totals-coupon,
+	.wc-block-cart .wc-block-components-totals-coupon__form {
+		min-width: 0;
+		max-width: 100%;
+		overflow-wrap: anywhere;
+	}
+
+	/* --- Media inside cart rows --- */
+	.wc-block-cart .wc-block-cart-item__image img,
+	.wc-block-cart .wc-block-components-product-image img {
+		max-width: 100%;
+		height: auto;
+	}
+
+	/* --- Final guard: clip, not hidden, so sticky elements still work --- */
+	.woocommerce-cart .wp-block-woocommerce-cart,
+	.woocommerce-cart .wc-block-cart {
+		max-width: 100%;
+		overflow-x: clip;
+	}
+
+	/* --- Empty cart: in-stock only --- */
+	.wp-block-woocommerce-empty-cart-block li.ps-oos,
+	.wp-block-woocommerce-empty-cart-block li.outofstock {
+		display: none;
+	}
+
+	/* --- Empty cart: horizontal scroll-snap carousel ---
+	 * All three container selectors are covered because the block version
+	 * that ships this list is not pinned. Layout only; the cards keep their
+	 * existing styling. */
+	.wp-block-woocommerce-empty-cart-block .wc-block-grid__products,
+	.wp-block-woocommerce-empty-cart-block .wc-block-product-template,
+	.wp-block-woocommerce-empty-cart-block .wp-block-post-template {
+		display: flex;
+		flex-wrap: nowrap;
+		gap: 16px;
+		margin-inline: -20px;
+		padding-inline: 20px;
+		overflow-x: auto;
+		overflow-y: hidden;
+		scroll-snap-type: x mandatory;
+		scroll-padding-inline: 20px;
+		-webkit-overflow-scrolling: touch;
+		scrollbar-width: none;
+	}
+
+	.wp-block-woocommerce-empty-cart-block .wc-block-grid__products::-webkit-scrollbar,
+	.wp-block-woocommerce-empty-cart-block .wc-block-product-template::-webkit-scrollbar,
+	.wp-block-woocommerce-empty-cart-block .wp-block-post-template::-webkit-scrollbar {
+		display: none;
+	}
+
+	/* WooCommerce clearfix pseudo-elements become phantom flex items. */
+	.wp-block-woocommerce-empty-cart-block .wc-block-grid__products::before,
+	.wp-block-woocommerce-empty-cart-block .wc-block-grid__products::after,
+	.wp-block-woocommerce-empty-cart-block .wc-block-product-template::before,
+	.wp-block-woocommerce-empty-cart-block .wc-block-product-template::after,
+	.wp-block-woocommerce-empty-cart-block .wp-block-post-template::before,
+	.wp-block-woocommerce-empty-cart-block .wp-block-post-template::after {
+		display: none;
+	}
+
+	.wp-block-woocommerce-empty-cart-block .wc-block-grid__products > li,
+	.wp-block-woocommerce-empty-cart-block .wc-block-product-template > li,
+	.wp-block-woocommerce-empty-cart-block .wp-block-post-template > li {
+		flex: 0 0 78%;
+		max-width: 280px;
+		margin: 0;
+		scroll-snap-align: start;
+	}
+
+	/* The negative margin bleeds the carousel to the screen edge; this keeps
+	 * that bleed from widening the page. */
+	.wp-block-woocommerce-empty-cart-block {
+		max-width: 100%;
+		overflow-x: clip;
+	}
+}
