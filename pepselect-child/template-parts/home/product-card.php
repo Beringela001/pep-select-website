@@ -29,6 +29,16 @@ $price_html     = $product->get_price_html();
 $in_stock       = $product->is_in_stock();
 $strength_label = function_exists( 'pepselect_child_get_product_strength_label' ) ? pepselect_child_get_product_strength_label( $product ) : '';
 $status_band    = function_exists( 'pepselect_child_get_product_status_band' ) ? pepselect_child_get_product_status_band( $product->get_id() ) : null;
+
+/*
+ * Action variant. Defaults to the Learn more link every existing caller
+ * already renders, so the homepage grid and the single-compound related
+ * carousel are unaffected. Callers opt in to the add-to-cart button by
+ * passing 'action' => 'add-to-cart'; a product that cannot be added directly
+ * still falls back to the link, so the button is never shipped broken.
+ */
+$card_action = isset( $args['action'] ) ? (string) $args['action'] : 'link';
+$can_add     = $in_stock && $product->is_purchasable() && $product->is_type( 'simple' );
 ?>
 <article class="pepselect-card">
 	<a class="pepselect-card__media" href="<?php echo esc_url( $product_url ); ?>" aria-label="<?php echo esc_attr( sprintf( __( 'View %s', 'pepselect-child' ), $product_name ) ); ?>" tabindex="-1">
@@ -67,8 +77,30 @@ $status_band    = function_exists( 'pepselect_child_get_product_status_band' ) ?
 
 		<p class="pepselect-card__price"><?php echo wp_kses_post( $price_html ); ?></p>
 
-		<?php if ( $in_stock ) : ?>
-			<a class="pepselect-card__action" href="<?php echo esc_url( $product_url ); ?>"><?php esc_html_e( 'Learn more', 'pepselect-child' ); ?></a>
+		<?php if ( $in_stock && 'add-to-cart' === $card_action && $can_add ) : ?>
+			<?php
+			/*
+			 * Standard WooCommerce loop add-to-cart markup, so cart state, the
+			 * AJAX refresh, and the header count behave exactly as they do on
+			 * the shop archive. Only the class list is extended, not replaced.
+			 */
+			$pep_classes = 'pepselect-card__action pepselect-card__action--cart button product_type_' . $product->get_type() . ' add_to_cart_button';
+
+			if ( $product->supports( 'ajax_add_to_cart' ) ) {
+				$pep_classes .= ' ajax_add_to_cart';
+			}
+			?>
+			<a
+				class="<?php echo esc_attr( $pep_classes ); ?>"
+				href="<?php echo esc_url( $product->add_to_cart_url() ); ?>"
+				data-quantity="1"
+				data-product_id="<?php echo esc_attr( $product->get_id() ); ?>"
+				data-product_sku="<?php echo esc_attr( $product->get_sku() ); ?>"
+				aria-label="<?php echo esc_attr( sprintf( __( 'Add %s to your cart', 'pepselect-child' ), $product_name ) ); ?>"
+				rel="nofollow"
+			><?php echo esc_html( $product->add_to_cart_text() ); ?></a>
+		<?php elseif ( $in_stock ) : ?>
+			<a class="pepselect-card__action" href="<?php echo esc_url( $product_url ); ?>"><?php echo esc_html( 'add-to-cart' === $card_action ? $product->add_to_cart_text() : __( 'Learn more', 'pepselect-child' ) ); ?></a>
 		<?php else : ?>
 			<?php $inline_form = shortcode_exists( 'cwginstock_subscribe_form' ); ?>
 			<a class="pepselect-card__action pepselect-card__action--notify" href="<?php echo esc_url( $product_url ); ?>"<?php if ( $inline_form ) : ?> data-pepselect-notify-toggle aria-expanded="false" aria-controls="pepselect-notify-<?php echo esc_attr( $product->get_id() ); ?>"<?php endif; ?>><?php esc_html_e( 'Notify when available', 'pepselect-child' ); ?></a>

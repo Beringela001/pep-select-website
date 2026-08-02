@@ -454,6 +454,50 @@ li.wc_payment_method.payment_method_bacs .payment_box {
 	}
 }
 
+/* --- Compact card, empty cart only ---
+ * Every rule is scoped under .ps-empty-products, so the homepage grid and the
+ * single-compound related carousel keep the taller card unchanged. Type sizes,
+ * colours, radii, and the card's visual style are untouched: this reduces the
+ * image box and the vertical rhythm only.
+ *
+ * The image switches from cover to contain. The taller box was cropping the
+ * vial to fill a 7:8 frame; a 4:3 box with contain shows the whole vial,
+ * uncropped at its edges, in noticeably less height. */
+.ps-empty-products .pepselect-card__media {
+	aspect-ratio: 4 / 3;
+	padding: 8px;
+}
+
+.ps-empty-products .pepselect-card__media img {
+	height: 100%;
+	object-fit: contain;
+}
+
+.ps-empty-products .pepselect-card__body {
+	padding: 14px 16px 16px;
+}
+
+.ps-empty-products .pepselect-card .pepselect-card__strength {
+	margin-bottom: 8px;
+}
+
+.ps-empty-products .pepselect-card .pepselect-card__title {
+	min-height: 0;
+	margin-bottom: 6px;
+}
+
+/* The reserved band height exists so cards in a grid align; the compact card
+ * lets the row collapse to its content instead. */
+.ps-empty-products .pepselect-card__status {
+	gap: 6px;
+	min-height: 0;
+	margin-bottom: 8px;
+}
+
+.ps-empty-products .pepselect-card .pepselect-card__price {
+	margin-bottom: 12px;
+}
+
 /* Guard against the parent theme's link colour leaking into the card title
  * on this page; cards.css already pins it, this keeps it pinned if a block
  * or parent rule loads later. */
@@ -461,6 +505,42 @@ li.wc_payment_method.payment_method_bacs .payment_box {
 .ps-empty-products .pepselect-card__action {
 	color: var(--pep-color-navy);
 	text-decoration: none;
+}
+
+/* The add-to-cart variant also carries WooCommerce's .button class, whose
+ * styles would otherwise fight the card action. Same look as the Learn more
+ * button; only the label and behaviour differ. */
+.ps-empty-products .pepselect-card__action.button,
+.ps-empty-products .pepselect-card__action--cart {
+	width: 100%;
+	height: 44px;
+	padding: 0 16px;
+	border: 1px solid var(--pep-color-cyan);
+	border-radius: var(--pep-radius-medium);
+	background: var(--pep-color-white);
+	color: var(--pep-color-navy);
+	font-family: var(--pep-font-interface);
+	font-size: 15px;
+	font-weight: var(--pep-font-weight-semibold);
+	line-height: 42px;
+	text-align: center;
+}
+
+.ps-empty-products .pepselect-card__action.button:hover,
+.ps-empty-products .pepselect-card__action--cart:hover {
+	border-color: var(--pep-color-navy);
+	background: var(--pep-color-navy);
+	color: var(--pep-color-white);
+}
+
+/* WooCommerce's post-add "View cart" link. */
+.ps-empty-products .added_to_cart {
+	display: block;
+	margin-top: 8px;
+	color: var(--pep-color-cyan);
+	font-family: var(--pep-font-interface);
+	font-size: 14px;
+	text-align: center;
 }
 
 .ps-empty-products .pepselect-card__title a:hover {

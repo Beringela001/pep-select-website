@@ -6,10 +6,11 @@
  * output rather than to plugin files:
  *
  *   - The "New in store" heading gains a mobile-only alternative label.
- *   - Out-of-stock products in the empty-cart recommendation list are marked
- *     so CSS can drop them on small screens.
  *   - The empty-cart block's placeholder image is replaced with a coded brand
  *     mark, and its default title with the approved two-line copy.
+ *   - The recommendation list is replaced with the theme's own query, rendered
+ *     through the shared compound card; any further list block is dropped so
+ *     exactly one survives.
  *
  * Every filter is gated on is_cart() and every rewrite is conditional: when a
  * pattern does not match, the original markup is returned untouched. The block
@@ -222,7 +223,7 @@ function pepselect_child_cart_render_products() {
 	<ul class="ps-empty-products ps-empty-carousel">
 		<?php foreach ( $products as $product ) : ?>
 			<li>
-				<?php get_template_part( 'template-parts/home/product-card', null, array( 'product' => $product ) ); ?>
+				<?php get_template_part( 'template-parts/home/product-card', null, array( 'product' => $product, 'action' => 'add-to-cart' ) ); ?>
 			</li>
 		<?php endforeach; ?>
 	</ul>
@@ -232,127 +233,45 @@ function pepselect_child_cart_render_products() {
 }
 
 /**
- * Swap the block's product list for our own.
+ * Whether a rendered block is the empty cart's product list.
  *
- * The block's list container is located by parsing the rendered markup and
- * finding the element that actually holds the product items, rather than by
- * testing guessed class names. That element is replaced with a slot marker,
- * and the marker is swapped for our rendered list after serialization. When
- * the block rendered no list, our list is appended instead, so the compounds
- * still show. When we have no products to show, the markup is returned
- * untouched and the block keeps whatever it rendered.
+ * Detected from content, because the block that renders this list differs by
+ * WooCommerce version and by how the Cart page was built. Two or more product
+ * items in one block is the signature; our own list is excluded by its class
+ * so a second pass cannot match it.
  *
  * @param string $html Rendered block HTML.
- * @return string
+ * @return bool
  */
-function pepselect_child_cart_replace_list( $html ) {
+function pepselect_child_cart_is_product_list( $html ) {
 	if ( false !== strpos( $html, 'ps-empty-products' ) ) {
-		return $html;
+		return false;
 	}
 
-	if ( '' === trim( $html ) || ! class_exists( 'DOMDocument' ) ) {
-		return $html;
-	}
-
-	$list = pepselect_child_cart_render_products();
-
-	if ( '' === $list ) {
-		return $html;
-	}
-
-	$doc = new DOMDocument();
-	libxml_use_internal_errors( true );
-	$loaded = $doc->loadHTML( '<?xml encoding="utf-8" ?><div id="pepselect-carousel-root">' . $html . '</div>', LIBXML_NOWARNING | LIBXML_NOERROR );
-	libxml_clear_errors();
-
-	if ( ! $loaded ) {
-		return $html;
-	}
-
-	$root = $doc->getElementById( 'pepselect-carousel-root' );
-
-	if ( ! $root instanceof DOMElement ) {
-		return $html;
-	}
-
-	$xpath = new DOMXPath( $doc );
-
-	$items = $xpath->query(
-		"//li[contains(@class,'product')]"
-		. "|//li[contains(@class,'wc-block-grid__product')]"
-		. "|//div[contains(@class,'wc-block-grid__product')]"
-		. "|//li[contains(@class,'wc-block-product')]"
+	$items = preg_match_all(
+		'#<(?:li|div)\b[^>]*class="[^"]*\b(?:wc-block-grid__product|wc-block-product|product)\b[^"]*"#i',
+		$html
 	);
 
-	// The parent holding the most product items is the block's list.
-	$parents = array();
+	return $items >= 2;
+}
 
-	if ( $items ) {
-		foreach ( $items as $item ) {
-			$parent = $item->parentNode;
-
-			if ( ! $parent instanceof DOMElement ) {
-				continue;
-			}
-
-			$key = spl_object_hash( $parent );
-
-			if ( ! isset( $parents[ $key ] ) ) {
-				$parents[ $key ] = array(
-					'node'  => $parent,
-					'count' => 0,
-				);
-			}
-
-			++$parents[ $key ]['count'];
-		}
+/**
+ * Whether the cart is genuinely empty.
+ *
+ * The list swap must not touch a product list that happens to sit on the Cart
+ * page while the cart has contents.
+ *
+ * @return bool
+ */
+function pepselect_child_cart_is_empty() {
+	if ( ! function_exists( 'WC' ) ) {
+		return false;
 	}
 
-	$container = null;
-	$best      = 0;
+	$wc = WC();
 
-	foreach ( $parents as $candidate ) {
-		if ( $candidate['count'] > $best ) {
-			$best      = $candidate['count'];
-			$container = $candidate['node'];
-		}
-	}
-
-	$slot = $doc->createElement( 'div' );
-	$slot->setAttribute( 'id', 'pepselect-list-slot' );
-
-	if ( $container instanceof DOMElement && $container->parentNode ) {
-		$container->parentNode->replaceChild( $slot, $container );
-	} else {
-		// The block rendered no recognisable list; append ours instead of
-		// dropping the compounds entirely.
-		$root->appendChild( $slot );
-		pepselect_child_cart_report_markup( $html );
-	}
-
-	$rebuilt = '';
-
-	foreach ( $root->childNodes as $child ) {
-		$rebuilt .= $doc->saveHTML( $child );
-	}
-
-	if ( '' === trim( $rebuilt ) || false === strpos( $rebuilt, 'pepselect-list-slot' ) ) {
-		return $html;
-	}
-
-	$rebuilt = preg_replace(
-		'#<div id="pepselect-list-slot">\s*</div>#i',
-		$list,
-		$rebuilt,
-		1,
-		$swapped
-	);
-
-	if ( null === $rebuilt || ! $swapped ) {
-		return $html;
-	}
-
-	return $rebuilt;
+	return isset( $wc->cart ) && is_object( $wc->cart ) && $wc->cart->is_empty();
 }
 
 /**
@@ -396,11 +315,26 @@ function pepselect_child_cart_report_markup( $html ) {
 /**
  * Apply the cart block rewrites.
  *
- * @param string               $block_content Rendered block HTML.
- * @param array<string,mixed>  $block         Parsed block.
+ * 0.19.0-beta.13 swapped the list from inside the empty-cart block's own
+ * output. That block does not contain the list: the products render from a
+ * separate block, so the swap found nothing, took its append fallback, and
+ * added our carousel to the end of the empty-cart block while the stock list
+ * carried on rendering in its own block further down. Both lists were on the
+ * page, with the heading stranded between them.
+ *
+ * The product list is now handled where it actually renders. The first block
+ * that looks like a product list becomes our carousel; any later one is
+ * dropped, so exactly one list survives. Because the swap happens in place,
+ * the heading block keeps its own position and ends up above the carousel,
+ * giving mark, title, subline, heading, carousel.
+ *
+ * @param string              $block_content Rendered block HTML.
+ * @param array<string,mixed> $block         Parsed block.
  * @return string
  */
 function pepselect_child_cart_render_block( $block_content, $block = array() ) {
+	static $list_rendered = false;
+
 	if ( ! is_string( $block_content ) || '' === $block_content ) {
 		return $block_content;
 	}
@@ -419,7 +353,22 @@ function pepselect_child_cart_render_block( $block_content, $block = array() ) {
 
 	if ( $is_empty_cart ) {
 		$block_content = pepselect_child_cart_rewrite_empty( $block_content );
-		$block_content = pepselect_child_cart_replace_list( $block_content );
+	}
+
+	// The product list only belongs to us while the cart is actually empty; a
+	// list sitting on the Cart page with items in the cart is left alone.
+	if ( pepselect_child_cart_is_empty() && pepselect_child_cart_is_product_list( $block_content ) ) {
+		if ( $list_rendered ) {
+			return '';
+		}
+
+		$ours = pepselect_child_cart_render_products();
+
+		if ( '' !== $ours ) {
+			$list_rendered = true;
+
+			return $ours;
+		}
 	}
 
 	return pepselect_child_cart_swap_new_in_store( $block_content );

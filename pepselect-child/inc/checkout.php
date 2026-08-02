@@ -203,6 +203,11 @@ function pepselect_child_enqueue_checkout_assets() {
 			array( 'pepselect-child-foundations' ),
 			pepselect_child_asset_version( 'assets/css/cards.css' )
 		);
+
+		// The empty cart's cards use WooCommerce's own add-to-cart button.
+		// WooCommerce registers this script but only enqueues it where it
+		// expects loop buttons, which does not include the cart.
+		wp_enqueue_script( 'wc-add-to-cart' );
 	}
 
 	if ( is_checkout() || is_cart() || ( function_exists( 'is_wc_endpoint_url' ) && is_wc_endpoint_url( 'order-received' ) ) ) {
