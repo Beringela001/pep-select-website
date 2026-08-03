@@ -460,9 +460,13 @@
 	text-align: left;
 }
 
+/* Margins only. An earlier version also zeroed padding-inline here, which
+ * stripped the dose pill's own 6px 14px down to 6px 0 and left a pill-radius
+ * capsule hugging the text, reading as a circle. The pill's horizontal padding
+ * is its shape, not an alignment offset, so it is left alone. No other body
+ * child carries horizontal padding. */
 .pepselect-card--compact .pepselect-card__body > * {
 	margin-inline: 0;
-	padding-inline: 0;
 }
 
 /* --- Dose pill: own line above the name, right-aligned ---
@@ -497,6 +501,22 @@
 	margin-bottom: 10px;
 }
 
+/* --- Archive: reserve the Restocking Soon row on every card ---
+ * The band is per-product, so without a reserved row the stock line and the
+ * price sat lower on cards that had one and higher on cards that did not. The
+ * row is reserved on every archive card, and the base justify-content:flex-end
+ * keeps the stock line pinned to the bottom of the reserved box, so the stock
+ * line and the price land at the same offset on every card in a row. Cards
+ * without the band carry a small reserved gap; alignment is worth it.
+ *
+ * Height is one band (13px text in 5px padding, about 26px) plus the 6px gap
+ * plus the stock line (16px text, about 22px). The homepage has neither a band
+ * nor a stock line, so it reserves nothing. */
+.pepselect-card--archive .pepselect-card__status {
+	min-height: 54px;
+	justify-content: flex-end;
+}
+
 .pepselect-card.pepselect-card--compact .pepselect-card__price {
 	margin-bottom: 14px;
 }
@@ -515,22 +535,22 @@
  * overflow hidden, so its intrinsic size cannot influence layout at all. The
  * panel keeps its existing gradient tint, which shows as the letterbox around
  * a contained vial. */
+/* These are the empty-cart card's values exactly, so all three card types
+ * present the image identically. The base grid centring and the panel tint are
+ * inherited untouched; only the box shape and the fit change. overflow:hidden
+ * is the one addition, and it clips rather than sizes, so it cannot alter
+ * layout. The absolutely positioned variant tried in 0.19.0-beta.16 is gone:
+ * it changed the content box the image was fitted into and rendered the vial
+ * smaller than the reference. */
 .pepselect-card--compact .pepselect-card__media {
-	display: block;
-	position: relative;
 	aspect-ratio: 4 / 3;
-	padding: 0;
+	padding: 8px;
 	overflow: hidden;
 }
 
 .pepselect-card--compact .pepselect-card__media img {
-	position: absolute;
-	inset: 0;
-	box-sizing: border-box;
 	width: 100%;
 	height: 100%;
-	min-height: 0;
-	padding: 8px;
 	object-fit: contain;
 }
 
@@ -573,5 +593,11 @@
 
 	.pepselect-card--compact .pepselect-card__status {
 		min-height: 0;
+	}
+
+	/* Same reservation, sized for the mobile type scale: band about 24px,
+	 * 6px gap, stock line about 21px. */
+	.pepselect-card--archive .pepselect-card__status {
+		min-height: 50px;
 	}
 }
