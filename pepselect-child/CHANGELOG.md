@@ -6,6 +6,12 @@ All notable changes to the Pep Select child theme are documented here.
 
 Previously live: **0.17.0-beta.1**, deployed to production on 2026-07-23.
 
+## 0.19.0-beta.16 - 2026-08-03
+
+- Fixed the product image spilling out of its box on the archive and homepage cards. 0.19.0-beta.15 shortened the image box from a 7:8 to a 4:3 aspect ratio but left the base grid layout in place. A grid item carries an automatic minimum size, so the image could not shrink below its own intrinsic height, and with the box now shorter than that height and no overflow control on the wrapper it spilled downward over the compound name and the dose pill. The taller box had hidden the problem because the intrinsic height still fitted. The wrapper now owns the box outright with a fixed aspect ratio and hidden overflow, and the image is absolutely positioned inside it at full width and height with object-fit contain, so its intrinsic size cannot influence layout at all. The panel keeps its existing gradient tint, which shows as the letterbox around the contained vial.
+- Moved the dose pill back onto its own line above the compound name, which is the original structure. Sharing the name's row squeezed the name into the remaining width and, together with an overflow-wrap anywhere rule, broke long names mid-word. The only change from the original layout is that the pill now sits at the right edge of the card body. The name has the full body width on its own line and no longer breaks mid-word. Pill styling is unchanged.
+- Everything else from 0.19.0-beta.15 is retained: one shared left edge for the body content, the removed reserved heights, the stretched-link card with an independently clickable button, the homepage dropping its redundant Available label, and the archive keeping its stock labels and Notify when available. Queries, sort orders, and colour treatments are untouched, and the related-products and empty-cart carousels remain structurally identical to 0.19.0-beta.14.
+
 ## 0.19.0-beta.15 - 2026-08-02
 
 - Compacted and realigned the compound cards on the compounds archive and the homepage featured grid. All four surfaces that show a compound card share one partial, so the changes are gated behind a variant argument that adds a pepselect-card--compact class. The related-products carousel and the empty-cart carousel pass no variant and their markup is unchanged, verified by rendering both against the previous partial and comparing the resulting DOM.

@@ -79,22 +79,19 @@ if ( $is_compact ) {
 	</a>
 
 	<div class="pepselect-card__body">
-		<?php if ( $is_compact ) : ?>
-			<?php // Name and dose pill share one row: name left, pill right. ?>
-			<div class="pepselect-card__headline">
-				<h3 class="pepselect-card__title"><a href="<?php echo esc_url( $product_url ); ?>"><?php echo esc_html( $product_name ); ?></a></h3>
-
-				<?php if ( '' !== $strength_label ) : ?>
-					<span class="pepselect-card__strength"><?php echo esc_html( $strength_label ); ?></span>
-				<?php endif; ?>
-			</div>
-		<?php else : ?>
-			<?php if ( '' !== $strength_label ) : ?>
-				<span class="pepselect-card__strength"><?php echo esc_html( $strength_label ); ?></span>
-			<?php endif; ?>
-
-			<h3 class="pepselect-card__title"><a href="<?php echo esc_url( $product_url ); ?>"><?php echo esc_html( $product_name ); ?></a></h3>
+		<?php
+		/*
+		 * The dose pill keeps its own line above the compound name, which is
+		 * the original structure. The compact variant only moves it to the
+		 * right edge, in CSS. Sharing a row with the name was tried in
+		 * 0.19.0-beta.15 and squeezed long names into mid-word breaks.
+		 */
+		?>
+		<?php if ( '' !== $strength_label ) : ?>
+			<span class="pepselect-card__strength"><?php echo esc_html( $strength_label ); ?></span>
 		<?php endif; ?>
+
+		<h3 class="pepselect-card__title"><a href="<?php echo esc_url( $product_url ); ?>"><?php echo esc_html( $product_name ); ?></a></h3>
 
 		<?php if ( $has_status ) : ?>
 			<div class="pepselect-card__status">

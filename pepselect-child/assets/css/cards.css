@@ -438,9 +438,10 @@
  * passes a variant. The related-products carousel and the empty-cart carousel
  * never receive that class, so every rule below is invisible to them.
  *
- * Changes: one shared left edge for all body content, the dose pill moved onto
- * the name row, the reserved heights removed, a shorter uncropped image, and
- * the whole card turned into a stretched link.
+ * Changes: one shared left edge for all body content, the dose pill kept on
+ * its own line but moved to the right edge, the reserved heights removed, a
+ * shorter uncropped image in a box that cannot overflow, and the whole card
+ * turned into a stretched link.
  * =================================================================== */
 
 .pepselect-card--compact {
@@ -464,29 +465,23 @@
 	padding-inline: 0;
 }
 
-/* --- Name row: name left, dose pill right --- */
-.pepselect-card--compact .pepselect-card__headline {
-	display: flex;
-	gap: 12px;
-	align-items: flex-start;
-	justify-content: space-between;
-	width: 100%;
-	margin-bottom: 8px;
+/* --- Dose pill: own line above the name, right-aligned ---
+ * 0.19.0-beta.15 put the pill on the name's row. That squeezed the name into
+ * the remaining width and, combined with overflow-wrap:anywhere, broke long
+ * names mid-word ("Glutath / ione"). The pill is back on its own line, which
+ * is the original structure; the only change from the original is that it now
+ * sits at the right edge. The name gets the full body width below it. */
+.pepselect-card.pepselect-card--compact .pepselect-card__strength {
+	align-self: flex-end;
+	margin: 0 0 8px;
 }
 
 .pepselect-card.pepselect-card--compact .pepselect-card__title {
-	flex: 1 1 auto;
-	min-width: 0;
+	width: 100%;
 	min-height: 0;
-	margin: 0;
-	overflow-wrap: anywhere;
-}
-
-/* The pill holds its width so a wrapping name cannot push it off the card. */
-.pepselect-card.pepselect-card--compact .pepselect-card__strength {
-	flex: 0 0 auto;
-	margin: 0;
-	align-self: flex-start;
+	margin: 0 0 8px;
+	overflow-wrap: normal;
+	word-break: normal;
 }
 
 /* --- Vertical rhythm ---
@@ -507,13 +502,35 @@
 }
 
 /* --- Image: shorter, and the whole vial visible --- */
+/* The wrapper owns the box outright.
+ *
+ * 0.19.0-beta.15 shortened this box from 7/8 to 4/3 but left the base grid
+ * layout in place. A grid item carries min-height:auto, so the image could not
+ * shrink below its own intrinsic height; with the box now shorter than that
+ * height and no overflow control on the wrapper, the vial spilled downward
+ * over the name row and the dose pill. The taller 7/8 box had hidden the
+ * problem because the intrinsic height still fitted.
+ *
+ * The image is now absolutely positioned inside an aspect-ratio box with
+ * overflow hidden, so its intrinsic size cannot influence layout at all. The
+ * panel keeps its existing gradient tint, which shows as the letterbox around
+ * a contained vial. */
 .pepselect-card--compact .pepselect-card__media {
+	display: block;
+	position: relative;
 	aspect-ratio: 4 / 3;
-	padding: 8px;
+	padding: 0;
+	overflow: hidden;
 }
 
 .pepselect-card--compact .pepselect-card__media img {
+	position: absolute;
+	inset: 0;
+	box-sizing: border-box;
+	width: 100%;
 	height: 100%;
+	min-height: 0;
+	padding: 8px;
 	object-fit: contain;
 }
 
