@@ -475,8 +475,12 @@
  * names mid-word ("Glutath / ione"). The pill is back on its own line, which
  * is the original structure; the only change from the original is that it now
  * sits at the right edge. The name gets the full body width below it. */
+/* Left-aligned, on the same edge as the name, stock label, price, and button,
+ * matching the cart card. align-self is set explicitly because the compact
+ * body uses align-items:stretch, which would otherwise pull the pill to the
+ * full width of the card instead of letting it size to its text. */
 .pepselect-card.pepselect-card--compact .pepselect-card__strength {
-	align-self: flex-end;
+	align-self: flex-start;
 	margin: 0 0 8px;
 }
 
@@ -542,35 +546,32 @@
  * layout. The absolutely positioned variant tried in 0.19.0-beta.16 is gone:
  * it changed the content box the image was fitted into and rendered the vial
  * smaller than the reference. */
-/* Three things were fighting here.
+/* The empty-cart card's inset treatment, value for value: the photo sits 8px
+ * inside the panel so a band of the panel tint shows on all four sides, and
+ * the image keeps its own 14px radius nested inside the card's 24px one. Both
+ * of those come straight from the reference; the tint is the base gradient and
+ * the panel sets no outer radius of its own, because the card's overflow
+ * clips its top corners already. Nothing here is invented.
  *
- * The 8px panel padding guaranteed a gutter on all four sides before the image
- * was even measured. The 4:3 box is wider than these product photographs, so
- * object-fit had to letterbox horizontally to fit the height, leaving pale
- * gutters left and right. And the base grid centring sizes the image as a
- * centred item rather than stretching it to the area, so where the height did
- * not resolve cleanly the image kept its intrinsic height and spilled past the
- * short 4:3 box, clipping the cap or the base of the vial.
- *
- * The panel is now a square block box with no padding, and the image is a
- * plain block filling it exactly. object-fit:contain guarantees the whole vial
- * is visible, never cropped on any edge. 1/1 is the ratio the related-products
- * panel already uses, so it is a shape these photographs are known to sit in.
- * The panel carries the card's own 24px radius on its top corners and clips to
- * it, so the image follows the card's outer curve. */
+ * The square box is kept from 0.19.0-beta.18 rather than the reference's 4:3.
+ * With a square box the image fills the panel evenly, so the 8px inset reads
+ * as an equal band on all four sides; a 4:3 box letterboxes a taller
+ * photograph and the side bands come out wider than the top and bottom.
+ * display:block replaces the base grid centring, which was what let an
+ * unresolved height leave the image at intrinsic size and crop the vial.
+ * object-fit:contain keeps the whole vial visible. */
 .pepselect-card--compact .pepselect-card__media {
 	display: block;
 	aspect-ratio: 1 / 1;
-	padding: 0;
+	padding: 8px;
 	overflow: hidden;
-	border-radius: 24px 24px 0 0;
 }
 
 .pepselect-card--compact .pepselect-card__media img {
 	display: block;
 	width: 100%;
 	height: 100%;
-	border-radius: 0;
+	border-radius: 14px;
 	object-fit: contain;
 }
 

@@ -6,6 +6,13 @@ All notable changes to the Pep Select child theme are documented here.
 
 Previously live: **0.17.0-beta.1**, deployed to production on 2026-07-23.
 
+## 0.19.0-beta.19 - 2026-08-03
+
+- Gave the homepage and archive cards the empty-cart card's inset image treatment, value for value. The photo now sits 8px inside the panel so a band of the panel tint shows on all four sides, and the image carries its own 14px radius nested inside the card's 24px one. The tint is the base gradient and the panel sets no outer radius of its own, because the card's overflow already clips its top corners. Nothing was invented; all four values are the reference's.
+- Kept the square image box introduced in 0.19.0-beta.18 rather than the reference's 4:3. With a square box the image fills the panel evenly, so the 8px inset reads as an equal band on all four sides, which is the requested result. A 4:3 box letterboxes a taller photograph and the side bands come out wider than the top and bottom. The vial stays fully visible and uncropped.
+- Moved the dose pill back to the left, sharing the same edge as the compound name, stock label, price, and button, matching the cart card. It stays on its own line above the name and its size and styling are unchanged. The alignment is set explicitly because the compact card body stretches its children, which would otherwise pull the pill to the full width of the card.
+- Added clearance below the empty-cart carousel so the last card no longer sits against the footer, at two desktop gutters on both mobile and desktop. Spacing only; the carousel cards are untouched.
+
 ## 0.19.0-beta.18 - 2026-08-03
 
 - Fixed the product image on the homepage and archive cards leaving pale gutters at the sides while cropping the vial top or bottom. Three things were combining. The 8px panel padding guaranteed a gutter on all four sides before the image was measured at all. The 4:3 box is wider than these product photographs, so fitting the image to the panel height letterboxed it horizontally and left the side gutters. And the inherited grid centring sizes the image as a centred item rather than stretching it to the area, so where the height did not resolve cleanly the image kept its intrinsic height and spilled past the short box, clipping the cap on archive cards and the base on the homepage.

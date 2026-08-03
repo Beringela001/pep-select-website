@@ -447,6 +447,13 @@ li.wc_payment_method.payment_method_bacs .payment_box {
 	margin: 0;
 }
 
+/* Clearance between the last card and the footer. Two desktop gutters; the
+ * theme has no dedicated spacing scale, so the gutter tokens are the spacing
+ * tokens. Spacing only: the cards themselves are untouched. */
+.ps-empty-products {
+	margin-bottom: calc(var(--pep-gutter-desktop) * 2);
+}
+
 @media (max-width: 1024px) {
 	.ps-empty-products {
 		grid-template-columns: repeat(2, minmax(0, 1fr));
