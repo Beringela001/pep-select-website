@@ -27,6 +27,8 @@ require_once get_stylesheet_directory() . '/inc/referral-vanity.php';
 require_once get_stylesheet_directory() . '/inc/checkout.php';
 require_once get_stylesheet_directory() . '/inc/checkout-fields.php';
 require_once get_stylesheet_directory() . '/inc/cart-empty.php';
+require_once get_stylesheet_directory() . '/inc/checkout-upsell.php';
+require_once get_stylesheet_directory() . '/inc/product-ordering.php';
 require_once get_stylesheet_directory() . '/inc/legacy-shortcodes.php';
 require_once get_stylesheet_directory() . '/inc/emails.php';
 

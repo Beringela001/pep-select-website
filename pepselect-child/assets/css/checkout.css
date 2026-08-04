@@ -807,4 +807,93 @@ li.wc_payment_method.payment_method_bacs .payment_box {
 		max-width: 100%;
 		overflow-x: clip;
 	}
+/* --- Bacteriostatic Water upsell toggle (under the order total) --- */
+.pepselect-bacwater-cell {
+	padding: 0 !important;
+}
+
+.pepselect-bacwater {
+	margin: 12px 0 4px;
+	padding: 14px 16px;
+	border: 1px solid var(--pep-color-border);
+	border-radius: 8px;
+	background: var(--pep-color-white);
+	font-family: var(--pep-font-interface);
+	color: var(--pep-color-navy);
+	text-align: left;
+}
+
+.pepselect-bacwater__question {
+	margin: 0 0 10px;
+	color: var(--pep-color-navy);
+	font-size: 14px;
+	font-weight: 600;
+	line-height: 1.4;
+}
+
+.pepselect-bacwater__toggle {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin: 0;
+	cursor: pointer;
+}
+
+.pepselect-bacwater__input {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	opacity: 0;
+}
+
+.pepselect-bacwater__switch {
+	position: relative;
+	flex: 0 0 auto;
+	width: 44px;
+	height: 26px;
+	border-radius: 999px;
+	background: var(--pep-color-border);
+	transition: background-color 160ms ease;
+}
+
+.pepselect-bacwater__switch::after {
+	content: "";
+	position: absolute;
+	top: 3px;
+	left: 3px;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	background: var(--pep-color-white);
+	box-shadow: 0 1px 3px rgb(0 42 83 / 25%);
+	transition: transform 160ms ease;
+}
+
+.pepselect-bacwater__input:checked + .pepselect-bacwater__switch {
+	background: var(--pep-color-cyan);
+}
+
+.pepselect-bacwater__input:checked + .pepselect-bacwater__switch::after {
+	transform: translateX(18px);
+}
+
+.pepselect-bacwater__input:focus-visible + .pepselect-bacwater__switch {
+	box-shadow: 0 0 0 3px rgb(23 161 207 / 30%);
+}
+
+.pepselect-bacwater__input:disabled + .pepselect-bacwater__switch {
+	opacity: 0.55;
+}
+
+.pepselect-bacwater__text {
+	color: var(--pep-color-navy);
+	font-size: 14px;
+	font-weight: 600;
+	line-height: 1.4;
+}
+
+.pepselect-bacwater__price {
+	color: var(--pep-color-slate);
+	font-weight: 600;
+	white-space: nowrap;
 }

@@ -6,6 +6,11 @@ All notable changes to the Pep Select child theme are documented here.
 
 Previously live: **0.17.0-beta.1**, deployed to production on 2026-07-23.
 
+## 0.20.0-beta.1 - 2026-08-04
+
+- Added a Bacteriostatic Water upsell to the checkout Order Summary, directly under the order total and above the terms text. A toggle adds one unit to the cart and refreshes the totals live over AJAX, and toggling off removes it; if it is already in the cart the toggle shows on. The product is resolved by SKU from a single constant (PEPSELECT_BAC_WATER_SKU in inc/checkout-upsell.php), and its price and stock are read from the live product, never hardcoded. When the product is out of stock, missing, or the SKU is unset, the whole block does not render (no greyed toggle, no message). Styled to the checkout: navy, Plus Jakarta Sans, 8px radius.
+- Added a per-product "Display order" field to the product admin (General panel) and sorted the compound listings by it: in-stock products always sort before out-of-stock ones, and within the in-stock group products sort by the display-order value, lowest first. The sort reads only the stored meta, so the sequence is changed in the admin without code. It applies to the shop page, every product category and tag listing, and product search, since all run through the main archive query. A one-time seed sets the launch order (GLP-3 R, GLP-2T, GLP-1 S, NAD+, TB-500, BPC-157, Tesamorelin, Glutathione, then everything else) by matching product titles.
+
 ## 0.19.0-beta.19 - 2026-08-03
 
 - Gave the homepage and archive cards the empty-cart card's inset image treatment, value for value. The photo now sits 8px inside the panel so a band of the panel tint shows on all four sides, and the image carries its own 14px radius nested inside the card's 24px one. The tint is the base gradient and the panel sets no outer radius of its own, because the card's overflow already clips its top corners. Nothing was invented; all four values are the reference's.
