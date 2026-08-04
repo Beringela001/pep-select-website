@@ -807,6 +807,8 @@ li.wc_payment_method.payment_method_bacs .payment_box {
 		max-width: 100%;
 		overflow-x: clip;
 	}
+}
+
 /* --- Bacteriostatic Water upsell toggle (under the order total) --- */
 .pepselect-bacwater-cell {
 	padding: 0 !important;
@@ -896,4 +898,19 @@ li.wc_payment_method.payment_method_bacs .payment_box {
 	color: var(--pep-color-slate);
 	font-weight: 600;
 	white-space: nowrap;
+}
+
+/* Empty cart: WooCommerce re-injects its own "Newest products" grid
+   (woocommerce/product-new) on the client re-render after an AJAX cart
+   removal, bypassing the PHP render_block filter. Hide it; the coded list is
+   the single source shown instead (server-rendered on load, or cloned from the
+   page template by cart-empty.js on the re-render path). No-JS removals do a
+   full reload, which re-runs the server render, so nothing is lost there. */
+.wp-block-woocommerce-empty-cart-block .wc-block-grid.wp-block-product-new,
+.wp-block-woocommerce-empty-cart-block [data-block-name="woocommerce/product-new"] {
+	display: none;
+}
+
+.ps-empty-products-mount {
+	width: 100%;
 }

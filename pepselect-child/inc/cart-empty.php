@@ -190,14 +190,37 @@ function pepselect_child_cart_empty_products() {
 			'status'             => 'publish',
 			'stock_status'       => 'instock',
 			'catalog_visibility' => 'visible',
-			'limit'              => 12,
+			'limit'              => 24,
 			'orderby'            => 'menu_order title',
 			'order'              => 'ASC',
 			'return'             => 'objects',
 		)
 	);
 
-	return is_array( $products ) ? $products : array();
+	if ( ! is_array( $products ) ) {
+		return array();
+	}
+
+	// Gate on the same predicate the shop archive uses to decide whether to
+	// render a card (templates/archive-compounds.php), so the empty-cart list
+	// and /shop agree: a product that is hidden from the catalog, such as a
+	// supply set to "Hidden" catalog visibility, is dropped here too. No product
+	// ID or SKU is hardcoded.
+	$visible = array();
+
+	foreach ( $products as $product ) {
+		if ( ! $product instanceof WC_Product || ! $product->is_visible() ) {
+			continue;
+		}
+
+		$visible[] = $product;
+
+		if ( count( $visible ) >= 12 ) {
+			break;
+		}
+	}
+
+	return $visible;
 }
 
 /**
@@ -374,6 +397,55 @@ function pepselect_child_cart_render_block( $block_content, $block = array() ) {
 	return pepselect_child_cart_swap_new_in_store( $block_content );
 }
 add_filter( 'render_block', 'pepselect_child_cart_render_block', 10, 2 );
+
+/**
+ * Enqueue the empty-cart script on the cart page.
+ *
+ * The script clones the coded list onto the client re-render path (see
+ * assets/js/cart-empty.js). It carries no card markup of its own.
+ *
+ * @return void
+ */
+function pepselect_child_cart_empty_enqueue() {
+	if ( ! pepselect_child_is_cart_request() ) {
+		return;
+	}
+
+	wp_enqueue_script(
+		'pepselect-child-cart-empty',
+		get_stylesheet_directory_uri() . '/assets/js/cart-empty.js',
+		array(),
+		pepselect_child_asset_version( 'assets/js/cart-empty.js' ),
+		true
+	);
+}
+add_action( 'wp_enqueue_scripts', 'pepselect_child_cart_empty_enqueue', 45 );
+
+/**
+ * Emit the coded product list once into a <template> on the cart page.
+ *
+ * This is the single source the client re-render path clones from. It is the
+ * same markup pepselect_child_cart_render_products() renders server-side, so the
+ * two paths cannot diverge. The template is inert until cloned and sits outside
+ * the WooCommerce cart block, so React never manages or discards it.
+ *
+ * @return void
+ */
+function pepselect_child_cart_empty_template() {
+	if ( ! pepselect_child_is_cart_request() ) {
+		return;
+	}
+
+	$list = pepselect_child_cart_render_products();
+
+	if ( '' === $list ) {
+		return;
+	}
+
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Coded card markup; each field is escaped inside the product-card partial.
+	echo '<template id="ps-empty-cart-products-template">' . $list . '</template>';
+}
+add_action( 'wp_footer', 'pepselect_child_cart_empty_template' );
 
 /*
  * Note on the out-of-stock handling that used to live here.

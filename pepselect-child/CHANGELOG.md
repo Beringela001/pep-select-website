@@ -6,6 +6,12 @@ All notable changes to the Pep Select child theme are documented here.
 
 Previously live: **0.17.0-beta.1**, deployed to production on 2026-07-23.
 
+## 0.20.0-beta.2 - 2026-08-04
+
+- Fixed the empty cart reverting to the stock WooCommerce product list after an item was removed without a reload. The reverting list is the woocommerce/product-new block, which WooCommerce Blocks re-renders client-side after a Store API cart mutation, bypassing the PHP render_block filter that replaces it on the server. The coded list is now the single source on both paths: rendered server-side on load, and on the client re-render cloned from a page <template> by assets/js/cart-empty.js into the empty-cart block, with the stock grid hidden in CSS. No card markup is duplicated in JavaScript, and a no-JS removal reloads and re-runs the server render. Verified on live by reproducing the removal on desktop and mobile.
+- Excluded Bacteriostatic Water, and any catalog-hidden product, from the empty-cart list so it agrees with /shop. The list query did not apply the shop's visibility rule; it now gates products through WC_Product::is_visible(), the same predicate the shop archive uses to decide whether to render a card. No product ID or SKU is hardcoded.
+- Closed an unterminated @media (max-width: 767px) block in checkout.css left by an earlier commit, which had trapped the (not-yet-rendered) Bacteriostatic Water upsell styles inside the mobile breakpoint; those rules are now top-level as intended.
+
 ## 0.20.0-beta.1 - 2026-08-04
 
 - Added a Bacteriostatic Water upsell to the checkout Order Summary, directly under the order total and above the terms text. A toggle adds one unit to the cart and refreshes the totals live over AJAX, and toggling off removes it; if it is already in the cart the toggle shows on. The product is resolved by SKU from a single constant (PEPSELECT_BAC_WATER_SKU in inc/checkout-upsell.php), and its price and stock are read from the live product, never hardcoded. When the product is out of stock, missing, or the SKU is unset, the whole block does not render (no greyed toggle, no message). Styled to the checkout: navy, Plus Jakarta Sans, 8px radius.
