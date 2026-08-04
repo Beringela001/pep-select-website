@@ -907,6 +907,27 @@ li.wc_payment_method.payment_method_bacs .payment_box {
 	white-space: nowrap;
 }
 
+/* In-progress state while the toggle request is in flight. The switch itself
+   is already dimmed via :disabled above; this dims the label to match and
+   signals work with the cursor. No spinner. Motion uses the shared duration
+   token, which collapses under prefers-reduced-motion. */
+.pepselect-bacwater.is-busy .pepselect-bacwater__text {
+	opacity: 0.55;
+	transition: opacity var(--pep-motion-duration) ease;
+}
+
+.pepselect-bacwater.is-busy .pepselect-bacwater__toggle {
+	cursor: progress;
+}
+
+/* Inline retry hint shown only when a toggle request fails. */
+.pepselect-bacwater__message {
+	margin: 10px 0 0;
+	color: var(--pep-color-red);
+	font-size: 13px;
+	line-height: 1.5;
+}
+
 /* Empty cart: WooCommerce re-injects its own "Newest products" grid
    (woocommerce/product-new) on the client re-render after an AJAX cart
    removal, bypassing the PHP render_block filter. Hide it; the coded list is
