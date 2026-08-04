@@ -91,17 +91,32 @@ function pepselect_child_render_bacwater_upsell() {
 
 	$in_cart    = '' !== pepselect_child_bacwater_cart_key( $product->get_id() );
 	$price_html = wc_price( wc_get_price_to_display( $product ) );
+	$name       = $product->get_name();
+
+	// The product carries no volume attribute, so the volume is parsed from the
+	// product title (e.g. "Bacteriostatic Water 30mL" -> "30mL") rather than typed
+	// as a literal, and follows the title if it changes. When no volume can be
+	// parsed the toggle falls back to the full product name.
+	$volume   = preg_match( '/(\d+(?:\.\d+)?\s?m[lL])\b/', $name, $matches ) ? $matches[1] : '';
+	$add_lead = '' !== $volume ? $volume : $name;
+
+	/* translators: %s: full product name, e.g. "Bacteriostatic Water 30mL". */
+	$aria = sprintf( __( 'Add %s to your order', 'pepselect-child' ), $name );
 	?>
 	<tr class="pepselect-bacwater-row">
 		<td colspan="2" class="pepselect-bacwater-cell">
 			<div class="pepselect-bacwater" data-pepselect-bacwater>
-				<p class="pepselect-bacwater__question"><?php esc_html_e( 'Do you have all the supplies needed for your research?', 'pepselect-child' ); ?></p>
+				<p class="pepselect-bacwater__question"><?php esc_html_e( 'Need bacteriostatic water for your research?', 'pepselect-child' ); ?></p>
+				<p class="pepselect-bacwater__sub"><?php esc_html_e( 'Compounds ship as lyophilized powder.', 'pepselect-child' ); ?></p>
 				<label class="pepselect-bacwater__toggle">
-					<input type="checkbox" class="pepselect-bacwater__input" data-pepselect-bacwater-input <?php checked( $in_cart ); ?> />
+					<input type="checkbox" class="pepselect-bacwater__input" data-pepselect-bacwater-input aria-label="<?php echo esc_attr( $aria ); ?>" <?php checked( $in_cart ); ?> />
 					<span class="pepselect-bacwater__switch" aria-hidden="true"></span>
 					<span class="pepselect-bacwater__text">
-						<?php esc_html_e( 'Add Bacteriostatic Water', 'pepselect-child' ); ?>
-						<span class="pepselect-bacwater__price">&mdash; <?php echo wp_kses_post( $price_html ); ?></span>
+						<?php
+						/* translators: %s: product volume, e.g. "30mL", or the product name as a fallback. */
+						echo esc_html( sprintf( __( 'Add %s', 'pepselect-child' ), $add_lead ) );
+						?>
+						<span class="pepselect-bacwater__price">&ndash; <?php echo wp_kses_post( $price_html ); ?></span>
 					</span>
 				</label>
 			</div>

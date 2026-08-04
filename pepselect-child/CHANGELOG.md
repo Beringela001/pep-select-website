@@ -6,6 +6,11 @@ All notable changes to the Pep Select child theme are documented here.
 
 Previously live: **0.17.0-beta.1**, deployed to production on 2026-07-23.
 
+## 0.20.0-beta.4 - 2026-08-04
+
+- Gave the checkout Bacteriostatic Water upsell a light blue tinted panel using the existing --pep-color-cyan-soft token, the same tint the cash-back pill background and the card image panel use, with a cyan border matching the cash-back pill. The 8px radius and Plus Jakarta Sans are kept, with no shadow, gradient, or glow, and it stays visually distinct from the amber payment instruction panel. Heading text (navy) on the tint measures 13.05:1, passing AA and AAA.
+- Rewrote the copy: heading "Need bacteriostatic water for your research?", a muted subline "Compounds ship as lyophilized powder." in the --pep-color-slate body token, and a shorter toggle-row label "Add 30mL - $19.99" with an en-dash separator. The price is read live from the product. The volume is parsed from the product title, since the product carries no volume attribute, rather than typed as a literal, and falls back to the full name. The toggle keeps a full-name accessible label ("Add Bacteriostatic Water 30mL to your order"). No claim is made about grade, purity, sterility, suitability, or refund eligibility, and nothing connects the product to the Pfizer dilution solution.
+
 ## 0.20.0-beta.3 - 2026-08-04
 
 - Set the Bacteriostatic Water upsell SKU constant (PEPSELECT_BAC_WATER_SKU in inc/checkout-upsell.php) to BACW30, so the checkout upsell now renders. The product is resolved by SKU, and its price and stock are read from the live product. Verified against the live store: SKU BACW30, product id 1339, $19.99, in stock, purchasable.

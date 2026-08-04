@@ -817,20 +817,27 @@ li.wc_payment_method.payment_method_bacs .payment_box {
 .pepselect-bacwater {
 	margin: 12px 0 4px;
 	padding: 14px 16px;
-	border: 1px solid var(--pep-color-border);
+	border: 1px solid var(--pep-color-cyan);
 	border-radius: 8px;
-	background: var(--pep-color-white);
+	background: var(--pep-color-cyan-soft);
 	font-family: var(--pep-font-interface);
 	color: var(--pep-color-navy);
 	text-align: left;
 }
 
 .pepselect-bacwater__question {
-	margin: 0 0 10px;
+	margin: 0 0 3px;
 	color: var(--pep-color-navy);
 	font-size: 14px;
 	font-weight: 600;
 	line-height: 1.4;
+}
+
+.pepselect-bacwater__sub {
+	margin: 0 0 12px;
+	color: var(--pep-color-slate);
+	font-size: 13px;
+	line-height: 1.5;
 }
 
 .pepselect-bacwater__toggle {
