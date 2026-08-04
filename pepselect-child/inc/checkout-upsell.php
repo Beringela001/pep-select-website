@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * safe. Only this one value needs to change.
  */
 if ( ! defined( 'PEPSELECT_BAC_WATER_SKU' ) ) {
-	define( 'PEPSELECT_BAC_WATER_SKU', '' );
+	define( 'PEPSELECT_BAC_WATER_SKU', 'BACW30' );
 }
 
 /**

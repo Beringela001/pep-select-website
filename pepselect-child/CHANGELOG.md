@@ -6,6 +6,12 @@ All notable changes to the Pep Select child theme are documented here.
 
 Previously live: **0.17.0-beta.1**, deployed to production on 2026-07-23.
 
+## 0.20.0-beta.3 - 2026-08-04
+
+- Set the Bacteriostatic Water upsell SKU constant (PEPSELECT_BAC_WATER_SKU in inc/checkout-upsell.php) to BACW30, so the checkout upsell now renders. The product is resolved by SKU, and its price and stock are read from the live product. Verified against the live store: SKU BACW30, product id 1339, $19.99, in stock, purchasable.
+- Confirmed placement under Fluid Checkout without a hook change. The block hooks woocommerce_review_order_after_order_total, and that hook fires inside Fluid Checkout's order-summary sidebar, directly under the order total and above the terms consent, verified against the live checkout DOM (the classic review-order table renders in the fc-sidebar, and the existing consent hooks render there too). The block is navy, Plus Jakarta Sans, 8px radius, cyan switch, with no new tokens.
+- Confirmed catalog visibility "Hidden" does not block the SKU lookup, the price read, or add-to-cart: the product is purchasable and was added successfully through the store cart in testing, so the toggle works without making the product visible on /shop or in search.
+
 ## 0.20.0-beta.2 - 2026-08-04
 
 - Fixed the empty cart reverting to the stock WooCommerce product list after an item was removed without a reload. The reverting list is the woocommerce/product-new block, which WooCommerce Blocks re-renders client-side after a Store API cart mutation, bypassing the PHP render_block filter that replaces it on the server. The coded list is now the single source on both paths: rendered server-side on load, and on the client re-render cloned from a page <template> by assets/js/cart-empty.js into the empty-cart block, with the stock grid hidden in CSS. No card markup is duplicated in JavaScript, and a no-JS removal reloads and re-runs the server render. Verified on live by reproducing the removal on desktop and mobile.
