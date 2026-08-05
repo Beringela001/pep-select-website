@@ -15,10 +15,10 @@ Media → Add New → upload all 6 files from `assets/`.
 
 After uploading, copy each file's real URL from the media library.
 
-The HTML currently points at `https://www.pepselect.com/wp-content/uploads/2026/08/<filename>`.
+The HTML currently points at `https://pepselect.com/wp-content/uploads/2026/08/<filename>`.
 If WordPress puts them in a different month folder or renames a file (appending `-1`,
 `-scaled`, etc.), find-and-replace the URLs in the HTML to match. **Every image URL must be
-absolute and start with `https://www.pepselect.com/`** — relative paths break in email.
+absolute and start with `https://pepselect.com/`** — relative paths break in email.
 
 ## 2. Fill in the placeholders
 
@@ -26,12 +26,12 @@ Search the HTML for `{{` and replace all four:
 
 | Placeholder | Replace with | How to get it |
 |---|---|---|
-| `{{GHKCU_URL}}` | `https://www.pepselect.com/product/ghk-cu/` | confirmed 2026-08-04 |
-| `{{NAD_URL}}` | `https://www.pepselect.com/product/nad/` | confirmed 2026-08-04 |
-| `{{TESA_URL}}` | `https://www.pepselect.com/product/tesa-10/` | confirmed 2026-08-04 |
+| `{{GHKCU_URL}}` | `https://pepselect.com/product/ghk-cu/` | confirmed 2026-08-04 |
+| `{{NAD_URL}}` | `https://pepselect.com/product/nad/` | confirmed 2026-08-04 |
+| `{{TESA_URL}}` | `https://pepselect.com/product/tesa-10/` | confirmed 2026-08-04 |
 | `{{COMPANY_ADDRESS}}` | Physical mailing address | **legally required** in the footer |
 
-GLP-3 R 10mg is already live at `https://www.pepselect.com/product/glp3-r10/`. The hero image
+GLP-3 R 10mg is already live at `https://pepselect.com/product/glp3-r10/`. The hero image
 links to `/shop/`.
 
 Each appears twice in the HTML (image link + button), so expect 2 replacements per URL.
