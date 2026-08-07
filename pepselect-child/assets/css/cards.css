@@ -10,7 +10,7 @@
 	height: 100%;
 	overflow: hidden;
 	border: 1px solid var(--pep-color-border);
-	border-radius: 24px;
+	border-radius: 32px;
 	background: var(--pep-color-white);
 	transition: box-shadow 180ms var(--pep-home-ease, ease), transform 180ms var(--pep-home-ease, ease);
 }
@@ -29,19 +29,22 @@
 }
 
 .pepselect-card__media {
+	position: relative;
 	display: grid;
-	aspect-ratio: 7 / 8;
-	padding: 10px;
+	aspect-ratio: 1.25;
+	padding: 16px;
+	overflow: hidden;
 	background: linear-gradient(180deg, var(--pep-color-surface), var(--pep-color-cyan-soft));
 	place-items: center;
 }
 
 .pepselect-card__media img {
 	display: block;
-	width: 100%;
-	height: 100%;
-	border-radius: 14px;
-	object-fit: cover;
+	width: 72%;
+	height: auto;
+	max-height: 100%;
+	border-radius: 16px;
+	object-fit: contain;
 }
 
 .pepselect-card__body {
@@ -92,54 +95,43 @@
 	color: var(--pep-color-cyan);
 }
 
-.pepselect-card__status {
-	display: flex;
-	flex-direction: column;
-	gap: 8px;
-	align-items: flex-start;
-	justify-content: flex-end;
-	min-height: 76px;
-	margin-bottom: 12px;
-}
-
-.pepselect-card .pepselect-card__stock {
-	margin: 0;
-	font-family: var(--pep-font-interface);
-	font-size: 16px;
-	font-weight: var(--pep-font-weight-semibold);
-}
-
-.pepselect-card__stock--available {
-	color: var(--pep-color-green);
-}
-
-.pepselect-card__stock--out {
-	color: var(--pep-color-red);
-}
-
-.pepselect-card .pepselect-card__band {
-	display: inline-flex;
-	align-items: center;
-	padding: 5px 12px;
-	margin: 0;
-	border-radius: var(--pep-radius-small);
+/* Over-image stock chip: the sole stock signal, shown only when out of stock.
+ * Reads "Restocking soon" when a pending-batch band is present, "Out of stock"
+ * otherwise; identical styling for both. Marked aria-hidden and paired with
+ * visually-hidden body text so the state is announced once to screen readers. */
+.pepselect-card__chip {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	z-index: 2;
+	transform: translate(-50%, -50%);
+	padding: 7px 16px;
+	border-radius: var(--pep-radius-pill);
+	color: var(--pep-color-white);
+	background: var(--pep-color-navy);
 	font-family: var(--pep-font-interface);
 	font-size: 13px;
 	font-weight: var(--pep-font-weight-semibold);
+	letter-spacing: 0.02em;
+	white-space: nowrap;
+	pointer-events: none;
 }
 
-.pepselect-card__band--testing {
-	color: var(--pep-color-amber);
-	background: var(--pep-color-amber-soft);
-}
-
-.pepselect-card__band--incoming {
-	color: var(--pep-color-navy);
-	background: var(--pep-color-cyan-soft);
+/* Screen-reader-only utility (self-contained; the theme ships no global one). */
+.pepselect-visually-hidden {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
+	border: 0;
 }
 
 .pepselect-card .pepselect-card__price {
-	margin: 0 0 16px;
+	margin: auto 0 16px;
 	color: var(--pep-color-navy);
 	font-family: var(--pep-font-editorial);
 	font-size: 26px;
@@ -159,7 +151,7 @@
 	justify-content: center;
 	width: 100%;
 	height: 44px;
-	margin-top: auto;
+	margin-top: 0;
 	padding: 0 16px;
 	white-space: nowrap;
 	border: 1px solid var(--pep-color-cyan);
@@ -186,6 +178,40 @@
 }
 
 .pepselect-card__action--notify:hover {
+	border-color: var(--pep-color-navy);
+	color: var(--pep-color-white);
+	background: var(--pep-color-navy);
+}
+
+/* --- Out-of-stock card: cooler background, muted content, greyed image, and a
+ * notify CTA kept at full contrast as the most prominent element. --- */
+.pepselect-card--oos {
+	background: var(--pep-color-surface);
+}
+
+.pepselect-card--oos .pepselect-card__media img {
+	opacity: 0.53;
+	filter: grayscale(47%);
+}
+
+.pepselect-card--oos .pepselect-card__title a,
+.pepselect-card--oos .pepselect-card__price {
+	color: var(--pep-color-slate);
+}
+
+.pepselect-card--oos .pepselect-card__strength {
+	color: var(--pep-color-slate);
+	background: var(--pep-color-white);
+}
+
+.pepselect-card--oos .pepselect-card__action--notify {
+	border-color: var(--pep-color-navy);
+	color: var(--pep-color-navy);
+	background: var(--pep-color-white);
+	font-size: 15px;
+}
+
+.pepselect-card--oos .pepselect-card__action--notify:hover {
 	border-color: var(--pep-color-navy);
 	color: var(--pep-color-white);
 	background: var(--pep-color-navy);
@@ -416,17 +442,9 @@
 		font-size: 21px;
 	}
 
-	.pepselect-card .pepselect-card__stock {
-		font-size: 15px;
-	}
-
 	.pepselect-card .pepselect-card__strength {
 		padding: 5px 12px;
 		font-size: 12px;
-	}
-
-	.pepselect-card__status {
-		min-height: 66px;
 	}
 }
 
@@ -492,88 +510,17 @@
 	word-break: normal;
 }
 
-/* --- Vertical rhythm ---
- * The base card reserves 76px (66px on mobile) for the status block and
- * 2.3em for the title so cards line up in a grid. Both are removed here: the
- * grid already stretches every card in a row to the same height, and the
- * action keeps its margin-top:auto, so the slack from a missing "Restocking
- * Soon" pill collects directly above the button instead of sitting as a hole
- * in the middle of the card. Cards in a row stay equal height either way. */
-.pepselect-card--compact .pepselect-card__status {
-	gap: 6px;
-	min-height: 0;
-	margin-bottom: 10px;
-}
-
-/* --- Archive: reserve the Restocking Soon row on every card ---
- * The band is per-product, so without a reserved row the stock line and the
- * price sat lower on cards that had one and higher on cards that did not. The
- * row is reserved on every archive card, and the base justify-content:flex-end
- * keeps the stock line pinned to the bottom of the reserved box, so the stock
- * line and the price land at the same offset on every card in a row. Cards
- * without the band carry a small reserved gap; alignment is worth it.
- *
- * Height is one band (13px text in 5px padding, about 26px) plus the 6px gap
- * plus the stock line (16px text, about 22px). The homepage has neither a band
- * nor a stock line, so it reserves nothing. */
-.pepselect-card--archive .pepselect-card__status {
-	min-height: 54px;
-	justify-content: flex-end;
-}
+/* Vertical rhythm: the old status reservation is gone. The base card now
+ * collects the flex slack above the price (margin-top:auto on the price), so
+ * the price and the action bottom-align as a pair across every card in a
+ * row, with or without a stock chip. */
 
 .pepselect-card.pepselect-card--compact .pepselect-card__price {
 	margin-bottom: 14px;
 }
 
-/* --- Image: shorter, and the whole vial visible --- */
-/* The wrapper owns the box outright.
- *
- * 0.19.0-beta.15 shortened this box from 7/8 to 4/3 but left the base grid
- * layout in place. A grid item carries min-height:auto, so the image could not
- * shrink below its own intrinsic height; with the box now shorter than that
- * height and no overflow control on the wrapper, the vial spilled downward
- * over the name row and the dose pill. The taller 7/8 box had hidden the
- * problem because the intrinsic height still fitted.
- *
- * The image is now absolutely positioned inside an aspect-ratio box with
- * overflow hidden, so its intrinsic size cannot influence layout at all. The
- * panel keeps its existing gradient tint, which shows as the letterbox around
- * a contained vial. */
-/* These are the empty-cart card's values exactly, so all three card types
- * present the image identically. The base grid centring and the panel tint are
- * inherited untouched; only the box shape and the fit change. overflow:hidden
- * is the one addition, and it clips rather than sizes, so it cannot alter
- * layout. The absolutely positioned variant tried in 0.19.0-beta.16 is gone:
- * it changed the content box the image was fitted into and rendered the vial
- * smaller than the reference. */
-/* The empty-cart card's inset treatment, value for value: the photo sits 8px
- * inside the panel so a band of the panel tint shows on all four sides, and
- * the image keeps its own 14px radius nested inside the card's 24px one. Both
- * of those come straight from the reference; the tint is the base gradient and
- * the panel sets no outer radius of its own, because the card's overflow
- * clips its top corners already. Nothing here is invented.
- *
- * The square box is kept from 0.19.0-beta.18 rather than the reference's 4:3.
- * With a square box the image fills the panel evenly, so the 8px inset reads
- * as an equal band on all four sides; a 4:3 box letterboxes a taller
- * photograph and the side bands come out wider than the top and bottom.
- * display:block replaces the base grid centring, which was what let an
- * unresolved height leave the image at intrinsic size and crop the vial.
- * object-fit:contain keeps the whole vial visible. */
-.pepselect-card--compact .pepselect-card__media {
-	display: block;
-	aspect-ratio: 1 / 1;
-	padding: 8px;
-	overflow: hidden;
-}
-
-.pepselect-card--compact .pepselect-card__media img {
-	display: block;
-	width: 100%;
-	height: 100%;
-	border-radius: 14px;
-	object-fit: contain;
-}
+/* The image panel and image treatment are unified on the base card above, so
+ * the compact variant adds no media overrides of its own. */
 
 /* --- Whole card clickable ---
  * One real anchor, the one already wrapping the compound name, is stretched
@@ -610,15 +557,5 @@
 
 	.pepselect-card.pepselect-card--compact .pepselect-card__title {
 		min-height: 0;
-	}
-
-	.pepselect-card--compact .pepselect-card__status {
-		min-height: 0;
-	}
-
-	/* Same reservation, sized for the mobile type scale: band about 24px,
-	 * 6px gap, stock line about 21px. */
-	.pepselect-card--archive .pepselect-card__status {
-		min-height: 50px;
 	}
 }

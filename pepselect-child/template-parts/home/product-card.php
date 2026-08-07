@@ -51,10 +51,21 @@ $can_add     = $in_stock && $product->is_purchasable() && $product->is_type( 'si
  */
 $variant     = isset( $args['variant'] ) ? (string) $args['variant'] : '';
 $is_compact  = in_array( $variant, array( 'archive', 'home' ), true );
-$show_stock  = 'home' !== $variant;
-$has_status  = $status_band || $show_stock;
+
+/*
+ * Out-of-stock chip copy. A product flagged as restocking carries a
+ * pending-batch status band from the COA Archive bridge (inc/compound-status.php,
+ * tone "incoming"). When the product is out of stock the over-image chip reads
+ * "Restocking soon" if that flag is set, and "Out of stock" otherwise.
+ */
+$is_restocking = null !== $status_band;
+$oos_label     = $is_restocking ? __( 'Restocking soon', 'pepselect-child' ) : __( 'Out of stock', 'pepselect-child' );
 
 $card_classes = 'pepselect-card';
+
+if ( ! $in_stock ) {
+	$card_classes .= ' pepselect-card--oos';
+}
 
 if ( $is_compact ) {
 	$card_classes .= ' pepselect-card--compact pepselect-card--' . $variant;
@@ -76,6 +87,9 @@ if ( $is_compact ) {
 			); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Core generates escaped markup.
 		}
 		?>
+		<?php if ( ! $in_stock ) : ?>
+			<span class="pepselect-card__chip" aria-hidden="true"><?php echo esc_html( $oos_label ); ?></span>
+		<?php endif; ?>
 	</a>
 
 	<div class="pepselect-card__body">
@@ -93,18 +107,8 @@ if ( $is_compact ) {
 
 		<h3 class="pepselect-card__title"><a href="<?php echo esc_url( $product_url ); ?>"><?php echo esc_html( $product_name ); ?></a></h3>
 
-		<?php if ( $has_status ) : ?>
-			<div class="pepselect-card__status">
-				<?php if ( $status_band ) : ?>
-					<p class="pepselect-card__band pepselect-card__band--<?php echo esc_attr( $status_band['tone'] ); ?>"><?php echo esc_html( $status_band['label'] ); ?></p>
-				<?php endif; ?>
-
-				<?php if ( $show_stock ) : ?>
-					<p class="pepselect-card__stock <?php echo $in_stock ? 'pepselect-card__stock--available' : 'pepselect-card__stock--out'; ?>">
-						<?php $in_stock ? esc_html_e( 'Available', 'pepselect-child' ) : esc_html_e( 'Out of Stock', 'pepselect-child' ); ?>
-					</p>
-				<?php endif; ?>
-			</div>
+		<?php if ( ! $in_stock ) : ?>
+			<span class="pepselect-visually-hidden"><?php echo esc_html( $oos_label ); ?></span>
 		<?php endif; ?>
 
 		<p class="pepselect-card__price"><?php echo wp_kses_post( $price_html ); ?></p>
