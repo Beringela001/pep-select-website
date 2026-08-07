@@ -31,8 +31,8 @@
 .pepselect-card__media {
 	position: relative;
 	display: grid;
-	aspect-ratio: 1.25;
-	padding: 16px;
+	aspect-ratio: 1.03;
+	padding: 0;
 	overflow: hidden;
 	background: linear-gradient(180deg, var(--pep-color-surface), var(--pep-color-cyan-soft));
 	place-items: center;
@@ -40,11 +40,10 @@
 
 .pepselect-card__media img {
 	display: block;
-	width: 72%;
-	height: auto;
-	max-height: 100%;
-	border-radius: 16px;
-	object-fit: contain;
+	width: 100%;
+	height: 100%;
+	border-radius: 0;
+	object-fit: cover;
 }
 
 .pepselect-card__body {
@@ -58,14 +57,14 @@
 .pepselect-card .pepselect-card__strength {
 	display: inline-flex;
 	align-items: center;
-	padding: 6px 14px;
+	padding: 3px 9px;
 	margin-bottom: 12px;
 	border: 1px solid var(--pep-color-border);
 	border-radius: var(--pep-radius-pill);
 	color: var(--pep-color-navy);
 	background: var(--pep-color-surface);
 	font-family: var(--pep-font-technical);
-	font-size: 13px;
+	font-size: 11px;
 	font-weight: 600;
 	letter-spacing: 0.08em;
 	text-transform: uppercase;
@@ -80,7 +79,7 @@
 	margin: 0 0 10px;
 	color: var(--pep-color-navy);
 	font-family: var(--pep-font-editorial);
-	font-size: 30px;
+	font-size: 21px;
 	font-weight: var(--pep-font-weight-bold);
 	line-height: 1.15;
 }
@@ -133,9 +132,9 @@
 .pepselect-card .pepselect-card__price {
 	margin: auto 0 16px;
 	color: var(--pep-color-navy);
-	font-family: var(--pep-font-editorial);
-	font-size: 26px;
-	font-weight: var(--pep-font-weight-bold);
+	font-family: var(--pep-font-technical);
+	font-size: 17px;
+	font-weight: var(--pep-font-weight-semibold);
 	line-height: 1.1;
 }
 
@@ -435,16 +434,16 @@
 
 	.pepselect-card .pepselect-card__title {
 		min-height: 2.2em;
-		font-size: 22px;
+		font-size: 20px;
 	}
 
 	.pepselect-card .pepselect-card__price {
-		font-size: 21px;
+		font-size: 16px;
 	}
 
 	.pepselect-card .pepselect-card__strength {
-		padding: 5px 12px;
-		font-size: 12px;
+		padding: 3px 8px;
+		font-size: 10px;
 	}
 }
 
