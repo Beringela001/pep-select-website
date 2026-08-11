@@ -1,19 +1,22 @@
 <?php
 /**
- * Checkout consent checkboxes and Research Purpose field (M10 migration).
+ * Checkout Research Purpose field and compliance Acknowledgments (M12-1).
  *
- * These fields were added directly to the parent theme's functions.php, where a
- * Hello Elementor update would silently overwrite them and take the checkout
- * consent gate and the Research Purpose field with it. They are migrated here,
- * renamed with the pepselect_child_ prefix so they never collide with the
- * parent's still-present originals, which are unhooked at runtime on init. The
- * data contracts are preserved exactly: field names (privacy_agreement,
- * terms_agreement_custom, research_purpose), meta keys (_privacy_agreement,
- * _terms_agreement_custom, _research_purpose), the stored Yes/No and raw-label
- * values, field order (Research Purpose at 10, consents at 20), and the
- * "Research Purpose" email label. The only change is the fix to the Terms link,
- * which pointed at the non-existent /terms-and-conditions/ and now resolves
- * through the legal URL helper.
+ * The Research Purpose dropdown is unchanged from the M10 migration. The two
+ * legacy consent checkboxes (privacy_agreement, terms_agreement_custom) are
+ * replaced by two required Acknowledgments modelled for payment-processor
+ * underwriting: a compliance statement, and a combined policy agreement that
+ * folds the privacy consent into the Terms, Privacy, and Return & Refund links.
+ *
+ * All three controls render on woocommerce_review_order_before_submit (Research
+ * Purpose at priority 10, the Acknowledgments at priority 20), the same proven
+ * hook the migrated controls used, because Fluid Checkout silently drops markup
+ * on classic checkout hooks it does not fire.
+ *
+ * Acceptance is stored on the order as evidence, not a flag: each checkbox as
+ * Yes/No, an acceptance timestamp, and a wording-version hash so a later wording
+ * change cannot make old orders unprovable. Legacy orders keep their original
+ * meta and the admin block reads whichever set is present.
  *
  * @package PepSelectChild
  */
@@ -24,9 +27,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /**
  * Remove the parent theme's original checkout-field hooks so the migrated
- * versions below are the only ones that run. Each remove_action/remove_filter
- * is a harmless no-op if the parent code has already been overwritten by an
- * update. Runs early on init, before the checkout renders.
+ * versions below are the only ones that run. Each remove is a harmless no-op if
+ * the parent code has already been overwritten by an update.
  *
  * @return void
  */
@@ -65,9 +67,8 @@ function pepselect_child_research_purpose_options() {
 }
 
 /**
- * Resolve a legal page URL through the theme helper, with a path fallback so
- * the label still links correctly if the helper is ever unavailable. This is
- * the Terms-link fix: the slug is the real one, never /terms-and-conditions/.
+ * Resolve a legal page URL through the theme helper, with a path fallback so the
+ * label still links correctly if the helper is ever unavailable.
  *
  * @param string $slug Legal page slug.
  * @return string
@@ -81,8 +82,36 @@ function pepselect_child_legal_link_url( $slug ) {
 }
 
 /**
- * Render the Research Purpose select. Registers at the default priority 10 on
- * woocommerce_review_order_before_submit, so it appears above the consents.
+ * The canonical Acknowledgment wording. One source string per checkbox is reused
+ * for the rendered label and for the version hash, so the two can never drift.
+ * Checkbox 2's three named policies are linked at render time from this text.
+ *
+ * @return array<string,string>
+ */
+function pepselect_child_ack_definitions() {
+	return array(
+		'compliance' => 'Research-only use restriction; prohibition on human or animal consumption; acknowledgment that products are not for diagnosis/treatment/prevention of any disease; indemnification of the seller; acknowledgment that the buyer is a qualified professional.',
+		'policy'     => 'I have read and agree to the Terms & Conditions, Privacy Policy, and Return & Refund Policy.',
+	);
+}
+
+/**
+ * A short, stable identifier for the exact Acknowledgment wording an order
+ * accepted. A hash of the two canonical strings is used rather than a manual
+ * version number: it changes automatically the instant the wording changes and
+ * cannot drift out of sync with the text, and the current text and its hash are
+ * recorded in HANDOFF-processor-compliance-wording.md for lookup.
+ *
+ * @return string
+ */
+function pepselect_child_ack_version() {
+	$defs = pepselect_child_ack_definitions();
+
+	return substr( sha1( $defs['compliance'] . '|' . $defs['policy'] ), 0, 12 );
+}
+
+/**
+ * Render the Research Purpose select at priority 10, above the Acknowledgments.
  *
  * @return void
  */
@@ -102,55 +131,127 @@ function pepselect_child_research_purpose_field() {
 add_action( 'woocommerce_review_order_before_submit', 'pepselect_child_research_purpose_field', 10 );
 
 /**
- * Render the two required consent checkboxes at priority 20, so they follow the
- * Research Purpose field. The label URLs are built from the legal helper; the
- * href is escaped and the sentence wording is otherwise verbatim.
+ * Render the two required Acknowledgment checkboxes at priority 20, so they
+ * follow the Research Purpose field. Each carries an empty, hidden inline error
+ * node that the client-side script fills; the input's aria-describedby points at
+ * it so a screen reader announces the error when shown.
  *
  * @return void
  */
 function pepselect_child_required_checkboxes() {
-	$privacy_url = pepselect_child_legal_link_url( 'privacy-policy' );
+	$defs        = pepselect_child_ack_definitions();
 	$terms_url   = pepselect_child_legal_link_url( 'terms-conditions' );
+	$privacy_url = pepselect_child_legal_link_url( 'privacy-policy' );
+	$refund_url  = pepselect_child_legal_link_url( 'refund-shipping-policy' );
+
+	// Link the three named policies inside the canonical wording, so the rendered
+	// label stays derived from the same string the version hash is built from.
+	$policy_label = str_replace(
+		array( 'Terms & Conditions', 'Privacy Policy', 'Return & Refund Policy' ),
+		array(
+			'<a href="' . esc_url( $terms_url ) . '" target="_blank" rel="noopener">Terms & Conditions</a>',
+			'<a href="' . esc_url( $privacy_url ) . '" target="_blank" rel="noopener">Privacy Policy</a>',
+			'<a href="' . esc_url( $refund_url ) . '" target="_blank" rel="noopener">Return &amp; Refund Policy</a>',
+		),
+		$defs['policy']
+	);
+
+	echo '<div class="pepselect-acknowledgments" role="group" aria-labelledby="pepselect-acknowledgments-heading">';
+	echo '<p class="pepselect-acknowledgments__heading" id="pepselect-acknowledgments-heading">' . esc_html__( 'Acknowledgments', 'pepselect-child' ) . '</p>';
 
 	woocommerce_form_field(
-		'privacy_agreement',
+		'compliance_acknowledgment',
 		array(
-			'type'     => 'checkbox',
-			'class'    => array( 'form-row', 'privacy-checkbox' ),
-			'label'    => 'I have read and agree to the <a href="' . esc_url( $privacy_url ) . '" target="_blank">Privacy Policy</a>.',
-			'required' => true,
+			'type'              => 'checkbox',
+			'class'             => array( 'form-row', 'pepselect-ack', 'pepselect-ack--compliance' ),
+			'label'             => esc_html( $defs['compliance'] ),
+			'required'          => true,
+			'custom_attributes' => array(
+				'aria-required'    => 'true',
+				'aria-describedby' => 'compliance_acknowledgment_error',
+			),
 		),
 		''
 	);
+	echo '<span class="pepselect-ack__error" id="compliance_acknowledgment_error" role="alert" hidden></span>';
 
 	woocommerce_form_field(
-		'terms_agreement_custom',
+		'policy_agreement',
 		array(
-			'type'     => 'checkbox',
-			'class'    => array( 'form-row', 'terms-checkbox' ),
-			'label'    => 'I have read and agree to the <a href="' . esc_url( $terms_url ) . '" target="_blank">Terms & Conditions</a>.',
-			'required' => true,
+			'type'              => 'checkbox',
+			'class'             => array( 'form-row', 'pepselect-ack', 'pepselect-ack--policy' ),
+			'label'             => $policy_label,
+			'required'          => true,
+			'custom_attributes' => array(
+				'aria-required'    => 'true',
+				'aria-describedby' => 'policy_agreement_error',
+			),
 		),
 		''
 	);
+	echo '<span class="pepselect-ack__error" id="policy_agreement_error" role="alert" hidden></span>';
+
+	echo '</div>';
 }
 add_action( 'woocommerce_review_order_before_submit', 'pepselect_child_required_checkboxes', 20 );
 
 /**
- * Validate the required consent checkboxes. WooCommerce core validates the
- * checkout nonce before woocommerce_checkout_process fires, so the posted
- * fields can be trusted here.
+ * Enqueue the client-side Acknowledgments validation on the checkout only. This
+ * is UX (inline errors, focus); the server-side validation below is the
+ * authoritative, non-bypassable gate.
+ *
+ * @return void
+ */
+function pepselect_child_ack_assets() {
+	if ( ! function_exists( 'is_checkout' ) || ! is_checkout() ) {
+		return;
+	}
+
+	wp_enqueue_script(
+		'pepselect-child-checkout-acknowledgments',
+		get_stylesheet_directory_uri() . '/assets/js/checkout-acknowledgments.js',
+		array( 'jquery' ),
+		pepselect_child_asset_version( 'assets/js/checkout-acknowledgments.js' ),
+		true
+	);
+
+	wp_localize_script(
+		'pepselect-child-checkout-acknowledgments',
+		'pepselectAck',
+		array(
+			'fields' => array(
+				array(
+					'input'   => 'compliance_acknowledgment',
+					'error'   => 'compliance_acknowledgment_error',
+					'message' => __( 'You must acknowledge the compliance statement to place your order.', 'pepselect-child' ),
+				),
+				array(
+					'input'   => 'policy_agreement',
+					'error'   => 'policy_agreement_error',
+					'message' => __( 'You must agree to the Terms & Conditions, Privacy Policy, and Return & Refund Policy to place your order.', 'pepselect-child' ),
+				),
+			),
+		)
+	);
+}
+add_action( 'wp_enqueue_scripts', 'pepselect_child_ack_assets', 45 );
+
+/**
+ * Server-side validation of the two Acknowledgments. WooCommerce core validates
+ * the checkout nonce before woocommerce_checkout_process fires, so the posted
+ * fields can be trusted here. This runs regardless of the client-side script and
+ * is what actually blocks placement, so acceptance is real evidence.
  *
  * @return void
  */
 function pepselect_child_validate_required_checkboxes() {
 	// phpcs:disable WordPress.Security.NonceVerification.Missing -- WooCommerce core validates the checkout nonce before this hook.
-	if ( empty( $_POST['privacy_agreement'] ) ) {
-		wc_add_notice( __( 'Please agree to the Privacy Policy to continue.', 'pepselect-child' ), 'error' );
+	if ( empty( $_POST['compliance_acknowledgment'] ) ) {
+		wc_add_notice( __( 'You must acknowledge the compliance statement to place your order.', 'pepselect-child' ), 'error' );
 	}
 
-	if ( empty( $_POST['terms_agreement_custom'] ) ) {
-		wc_add_notice( __( 'Please agree to the Terms & Conditions to continue.', 'pepselect-child' ), 'error' );
+	if ( empty( $_POST['policy_agreement'] ) ) {
+		wc_add_notice( __( 'You must agree to the Terms & Conditions, Privacy Policy, and Return & Refund Policy to place your order.', 'pepselect-child' ), 'error' );
 	}
 	// phpcs:enable WordPress.Security.NonceVerification.Missing
 }
@@ -174,24 +275,27 @@ function pepselect_child_validate_research_purpose() {
 add_action( 'woocommerce_checkout_process', 'pepselect_child_validate_research_purpose', 10 );
 
 /**
- * Save the consent answers to order meta as Yes/No. Priority 10 mirrors the
- * parent hook order.
+ * Store Acknowledgment acceptance on the order as evidence: each checkbox as
+ * Yes/No, an acceptance timestamp, and the wording-version hash. The order is
+ * blocked unless both are ticked, so a stored "No" would only ever appear if the
+ * gate were bypassed; it is recorded honestly either way.
  *
  * @param WC_Order $order Order being created.
  * @return void
  */
 function pepselect_child_save_checkout_checkboxes( $order ) {
 	// phpcs:disable WordPress.Security.NonceVerification.Missing -- WooCommerce core validates the checkout nonce before order creation.
-	$order->update_meta_data( '_privacy_agreement', empty( $_POST['privacy_agreement'] ) ? 'No' : 'Yes' );
-	$order->update_meta_data( '_terms_agreement_custom', empty( $_POST['terms_agreement_custom'] ) ? 'No' : 'Yes' );
+	$order->update_meta_data( '_pepselect_ack_compliance', empty( $_POST['compliance_acknowledgment'] ) ? 'No' : 'Yes' );
+	$order->update_meta_data( '_pepselect_ack_policy', empty( $_POST['policy_agreement'] ) ? 'No' : 'Yes' );
 	// phpcs:enable WordPress.Security.NonceVerification.Missing
+	$order->update_meta_data( '_pepselect_ack_timestamp', current_time( 'c' ) );
+	$order->update_meta_data( '_pepselect_ack_version', pepselect_child_ack_version() );
 }
 add_action( 'woocommerce_checkout_create_order', 'pepselect_child_save_checkout_checkboxes', 10, 1 );
 
 /**
- * Save the Research Purpose to order meta as the raw selected label. Priority
- * 20 mirrors the parent hook order. The value is re-checked against the allow
- * list so only a known label is stored.
+ * Save the Research Purpose to order meta as the raw selected label. The value
+ * is re-checked against the allow list so only a known label is stored.
  *
  * @param WC_Order $order Order being created.
  * @return void
@@ -208,13 +312,40 @@ function pepselect_child_save_research_purpose( $order ) {
 add_action( 'woocommerce_checkout_create_order', 'pepselect_child_save_research_purpose', 20, 1 );
 
 /**
- * Show the stored consent answers in the admin order screen, after the billing
- * address. Priority 10 mirrors the parent hook.
+ * Show the stored acceptance in the admin order screen, after the billing
+ * address. New orders (M12-1 onward) show the Acknowledgment block with its
+ * timestamp and wording version; orders placed before this change fall back to
+ * the legacy consent meta so historical orders still display correctly.
  *
  * @param WC_Order $order Order being displayed.
  * @return void
  */
 function pepselect_child_admin_display_agreements( $order ) {
+	$ack_compliance = (string) $order->get_meta( '_pepselect_ack_compliance' );
+	$ack_policy     = (string) $order->get_meta( '_pepselect_ack_policy' );
+
+	if ( '' !== $ack_compliance || '' !== $ack_policy ) {
+		$timestamp = (string) $order->get_meta( '_pepselect_ack_timestamp' );
+		$version   = (string) $order->get_meta( '_pepselect_ack_version' );
+
+		echo '<div class="pepselect-admin-agreements">';
+		echo '<p><strong>' . esc_html__( 'Compliance acknowledgments', 'pepselect-child' ) . '</strong></p>';
+		echo '<p>' . esc_html__( 'Compliance statement accepted', 'pepselect-child' ) . ': ' . esc_html( '' !== $ack_compliance ? $ack_compliance : 'No' ) . '</p>';
+		echo '<p>' . esc_html__( 'Terms, Privacy &amp; Refund agreement accepted', 'pepselect-child' ) . ': ' . esc_html( '' !== $ack_policy ? $ack_policy : 'No' ) . '</p>';
+
+		if ( '' !== $timestamp ) {
+			echo '<p>' . esc_html__( 'Accepted at', 'pepselect-child' ) . ': ' . esc_html( $timestamp ) . '</p>';
+		}
+
+		if ( '' !== $version ) {
+			echo '<p>' . esc_html__( 'Wording version', 'pepselect-child' ) . ': ' . esc_html( $version ) . '</p>';
+		}
+
+		echo '</div>';
+		return;
+	}
+
+	// Legacy orders placed before M12-1: fall back to the original consent meta.
 	$privacy = (string) $order->get_meta( '_privacy_agreement' );
 	$terms   = (string) $order->get_meta( '_terms_agreement_custom' );
 
@@ -223,7 +354,7 @@ function pepselect_child_admin_display_agreements( $order ) {
 	}
 
 	echo '<div class="pepselect-admin-agreements">';
-	echo '<p><strong>' . esc_html__( 'Consent', 'pepselect-child' ) . '</strong></p>';
+	echo '<p><strong>' . esc_html__( 'Consent (legacy)', 'pepselect-child' ) . '</strong></p>';
 	echo '<p>' . esc_html__( 'Privacy Policy', 'pepselect-child' ) . ': ' . esc_html( '' !== $privacy ? $privacy : 'No' ) . '</p>';
 	echo '<p>' . esc_html__( 'Terms & Conditions', 'pepselect-child' ) . ': ' . esc_html( '' !== $terms ? $terms : 'No' ) . '</p>';
 	echo '</div>';
@@ -232,7 +363,7 @@ add_action( 'woocommerce_admin_order_data_after_billing_address', 'pepselect_chi
 
 /**
  * Show the stored Research Purpose in the admin order screen, after the billing
- * address. Priority 10 mirrors the parent hook.
+ * address.
  *
  * @param WC_Order $order Order being displayed.
  * @return void

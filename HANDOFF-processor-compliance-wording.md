@@ -279,6 +279,63 @@ Please agree to the Terms & Conditions to continue.
 
 ---
 
+## New checkout consent controls — M12-1 (replaces the two consent checkboxes above)
+
+Verbatim from `inc/checkout-fields.php` after M12-1. The Research Purpose dropdown recorded
+above is UNCHANGED. The two legacy consent checkboxes (`privacy_agreement` /
+`terms_agreement_custom`) are replaced by the two Acknowledgments below; privacy consent is
+folded into checkbox 2, so it is still explicitly ticked. Same hook and priorities as before:
+`woocommerce_review_order_before_submit`, Research Purpose at 10, Acknowledgments at 20.
+
+Section heading: **Acknowledgments**
+
+### Checkbox 1 — compliance statement
+Field name `compliance_acknowledgment` · order meta `_pepselect_ack_compliance` (Yes/No) · required. Label verbatim:
+```
+Research-only use restriction; prohibition on human or animal consumption; acknowledgment that products are not for diagnosis/treatment/prevention of any disease; indemnification of the seller; acknowledgment that the buyer is a qualified professional.
+```
+
+### Checkbox 2 — combined policy agreement
+Field name `policy_agreement` · order meta `_pepselect_ack_policy` (Yes/No) · required. Label verbatim (three links, target `_blank`, `rel="noopener"`):
+```
+I have read and agree to the Terms & Conditions, Privacy Policy, and Return & Refund Policy.
+```
+- Terms & Conditions      -> https://pepselect.com/terms-conditions/
+- Privacy Policy          -> https://pepselect.com/privacy-policy/
+- Return & Refund Policy   -> https://pepselect.com/refund-shipping-policy/
+
+### Acceptance evidence stored on the order (WC CRUD meta, HPOS-safe)
+- `_pepselect_ack_compliance`  = Yes/No
+- `_pepselect_ack_policy`       = Yes/No
+- `_pepselect_ack_timestamp`    = ISO 8601 acceptance time (`current_time( 'c' )`)
+- `_pepselect_ack_version`      = `11b0a95ea858`
+
+The wording version is the first 12 hex of `sha1( checkbox1_label . '|' . checkbox2_label )` — a
+HASH of the two canonical label strings, not a manual number, so it changes automatically if the
+wording changes and old orders keep their own hash. If either label above is edited, recompute
+and record the new hash here. Current mapping:
+```
+11b0a95ea858  ->  the two labels exactly as printed in this section
+```
+
+### Validation
+Both mandatory. Server-side on `woocommerce_checkout_process` (authoritative, non-bypassable) and
+client-side (`assets/js/checkout-acknowledgments.js`: inline error next to each unticked box, focus
+to the first). Server-side error strings:
+```
+You must acknowledge the compliance statement to place your order.
+You must agree to the Terms & Conditions, Privacy Policy, and Return & Refund Policy to place your order.
+```
+
+### Admin order screen
+The block under the billing address shows the new acknowledgments (with timestamp and version) for
+M12-1 orders, and falls back to the legacy `_privacy_agreement` / `_terms_agreement_custom` meta for
+orders placed before M12-1. Both are readable; nothing was migrated or deleted.
+
+Shipped in: 0.20.0-beta.10.
+
+---
+
 ## How to revert
 
 1. Confirm with the attorney which items are safe to revert, especially item 1.

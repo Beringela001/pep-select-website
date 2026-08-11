@@ -942,3 +942,72 @@ li.wc_payment_method.payment_method_bacs .payment_box {
 .ps-empty-products-mount {
 	width: 100%;
 }
+
+/* --- Compliance Acknowledgments (M12-1) --- */
+.pepselect-acknowledgments {
+	margin: 16px 0 4px;
+}
+
+.pepselect-acknowledgments__heading {
+	margin: 0 0 10px;
+	color: var(--pep-color-navy);
+	font-family: var(--pep-font-interface);
+	font-size: 15px;
+	font-weight: var(--pep-font-weight-semibold);
+	line-height: 1.4;
+}
+
+.pepselect-acknowledgments .pepselect-ack {
+	margin: 0 0 10px;
+	padding: 0;
+}
+
+.pepselect-acknowledgments .pepselect-ack .checkbox,
+.pepselect-acknowledgments .pepselect-ack > label {
+	display: flex;
+	align-items: flex-start;
+	gap: 10px;
+	margin: 0;
+	color: var(--pep-color-slate);
+	font-family: var(--pep-font-interface);
+	font-size: 13px;
+	line-height: 1.5;
+	cursor: pointer;
+}
+
+.pepselect-acknowledgments .pepselect-ack input[type="checkbox"] {
+	flex: 0 0 auto;
+	width: 18px;
+	height: 18px;
+	margin: 2px 0 0;
+	accent-color: var(--pep-color-navy);
+}
+
+.pepselect-acknowledgments .pepselect-ack a {
+	color: var(--pep-color-cyan);
+	text-decoration: underline;
+	text-underline-offset: 2px;
+}
+
+.pepselect-acknowledgments .required {
+	color: var(--pep-color-red);
+	text-decoration: none;
+}
+
+.pepselect-ack__error {
+	display: block;
+	margin: 2px 0 12px 28px;
+	color: var(--pep-color-red);
+	font-family: var(--pep-font-interface);
+	font-size: 12px;
+	line-height: 1.4;
+}
+
+.pepselect-ack__error[hidden] {
+	display: none;
+}
+
+.pepselect-acknowledgments .pepselect-ack--error input[type="checkbox"] {
+	outline: 2px solid var(--pep-color-red);
+	outline-offset: 2px;
+}
