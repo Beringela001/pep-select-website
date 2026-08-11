@@ -809,9 +809,9 @@ li.wc_payment_method.payment_method_bacs .payment_box {
 	}
 }
 
-/* --- Bacteriostatic Water upsell toggle (under the order total) --- */
-.pepselect-bacwater-cell {
-	padding: 0 !important;
+/* --- Bacteriostatic Water upsell toggle (above the payment method) --- */
+.pepselect-bacwater-standalone {
+	margin: 0 0 20px;
 }
 
 .pepselect-bacwater {

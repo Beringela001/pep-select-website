@@ -184,7 +184,7 @@ function pepselect_child_render_dilution_notice() {
 	?>
 	<div class="pepselect-dilution-notice">
 		<p class="pepselect-dilution-notice__label"><?php esc_html_e( 'Dilution notice', 'pepselect-child' ); ?></p>
-		<p class="pepselect-dilution-notice__body"><?php esc_html_e( 'If a compound turns cloudy after it is reconstituted, the cause is almost always the dilution solution rather than the compound itself, and non-pharmaceutical-grade solutions are the usual culprit. For this reason, cloudiness cannot be accepted as grounds for a refund unless the reconstitution was done using Pfizer pharmaceutical-grade dilution solution.', 'pepselect-child' ); ?></p>
+		<p class="pepselect-dilution-notice__body"><?php esc_html_e( 'If a compound turns cloudy after it is reconstituted, the cause is almost always the reconstitution solution rather than the compound itself, and non-laboratory-grade solutions are the usual culprit. For this reason, cloudiness cannot be accepted as grounds for a refund unless the reconstitution was done using a laboratory-grade reconstitution solution.', 'pepselect-child' ); ?></p>
 	</div>
 	<?php
 }

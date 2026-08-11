@@ -62,7 +62,7 @@ $source_id = 'pepselect-compound-sources-' . $product->get_id();
 
 	<div class="pepselect-compound__intended">
 		<p class="pepselect-compound__intended-label"><?php esc_html_e( 'Intended use', 'pepselect-child' ); ?></p>
-		<p><?php esc_html_e( 'Supplied strictly for laboratory research. Not for use in humans or animals, and not for use in foods, drugs, supplements, or diagnostics.', 'pepselect-child' ); ?></p>
+		<p><?php esc_html_e( 'Research Use Only. Supplied strictly for laboratory research. Not for use in humans or animals, and not for use in foods, drugs, supplements, or diagnostics.', 'pepselect-child' ); ?></p>
 	</div>
 
 	<p class="pepselect-compound__disclaimer"><?php esc_html_e( 'These statements have not been evaluated by the Food and Drug Administration. No claims are made regarding the diagnosis, treatment, cure, or prevention of any disease. Use is restricted to qualified research professionals.', 'pepselect-child' ); ?></p>

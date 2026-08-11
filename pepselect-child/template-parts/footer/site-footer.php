@@ -27,9 +27,8 @@ $support_mail = 'support@pepselect.com';
 				<?php endif; ?>
 
 				<div class="pepselect-footer__research-copy">
-					<p><?php esc_html_e( 'For laboratory research use only.', 'pepselect-child' ); ?></p>
+					<p><?php esc_html_e( 'All products sold on this website are intended for research and identification purposes only. These products are not intended for human dosing, injection, or ingestion.', 'pepselect-child' ); ?></p>
 					<p><?php esc_html_e( 'Pep Select compounds are independently tested, with batch specific Certificates of Analysis available for review.', 'pepselect-child' ); ?></p>
-					<p><?php esc_html_e( 'Products are not intended for human consumption.', 'pepselect-child' ); ?></p>
 				</div>
 
 				<p class="pepselect-footer__support">

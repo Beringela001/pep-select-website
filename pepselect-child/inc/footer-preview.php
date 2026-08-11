@@ -166,7 +166,6 @@ function pepselect_child_get_footer_link_groups() {
 			array( 'label' => __( 'FAQ', 'pepselect-child' ), 'url' => pepselect_child_get_faq_url() ),
 			array( 'label' => __( 'Certificate of Analysis', 'pepselect-child' ), 'url' => home_url( '/testing/' ) ),
 			array( 'label' => __( 'Track your order', 'pepselect-child' ), 'url' => pepselect_child_get_track_order_url() ),
-			array( 'label' => __( 'Military & First responder discount', 'pepselect-child' ), 'url' => pepselect_child_get_page_url( 'military-discount' ) ),
 		),
 		__( 'Legal', 'pepselect-child' ) => array(
 			array( 'label' => __( 'Privacy Policy', 'pepselect-child' ), 'url' => pepselect_child_get_page_url( 'privacy-policy' ) ),

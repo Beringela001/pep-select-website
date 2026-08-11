@@ -2,8 +2,9 @@
 /**
  * Bacteriostatic Water checkout upsell (M10).
  *
- * Renders a toggle under the order total in the checkout Order Summary. Turning
- * it on adds one Bacteriostatic Water to the cart and refreshes the totals live;
+ * Renders a toggle directly above the payment method on checkout, so the order
+ * total is final before the Square payment instruction. Turning it on adds one
+ * Bacteriostatic Water to the cart and refreshes the totals live;
  * turning it off removes it. The product is resolved by SKU from the constant
  * below, and its price and stock are always read from the live product. If the
  * product is out of stock, missing, or the SKU is unset, the block does not
@@ -77,8 +78,9 @@ function pepselect_child_bacwater_cart_key( $product_id ) {
 }
 
 /**
- * Render the upsell block under the order total. Output is a totals-table row so
- * it sits directly beneath the order total and above the terms/privacy text.
+ * Render the upsell block directly above the payment method, through the Fluid
+ * Checkout before-payment hook, so the order total is final before the Square
+ * payment instruction.
  *
  * @return void
  */
@@ -103,11 +105,10 @@ function pepselect_child_render_bacwater_upsell() {
 	/* translators: %s: full product name, e.g. "Bacteriostatic Water 30mL". */
 	$aria = sprintf( __( 'Add %s to your order', 'pepselect-child' ), $name );
 	?>
-	<tr class="pepselect-bacwater-row">
-		<td colspan="2" class="pepselect-bacwater-cell">
+	<div class="pepselect-bacwater-standalone">
 			<div class="pepselect-bacwater" data-pepselect-bacwater>
 				<p class="pepselect-bacwater__question"><?php esc_html_e( 'Need bacteriostatic water for your research?', 'pepselect-child' ); ?></p>
-				<p class="pepselect-bacwater__sub"><?php esc_html_e( 'Compounds ship as lyophilized powder.', 'pepselect-child' ); ?></p>
+				<p class="pepselect-bacwater__sub"><?php esc_html_e( 'Reconstitution Solution – for Laboratory Use.', 'pepselect-child' ); ?></p>
 				<label class="pepselect-bacwater__toggle">
 					<input type="checkbox" class="pepselect-bacwater__input" data-pepselect-bacwater-input aria-label="<?php echo esc_attr( $aria ); ?>" <?php checked( $in_cart ); ?> />
 					<span class="pepselect-bacwater__switch" aria-hidden="true"></span>
@@ -120,11 +121,10 @@ function pepselect_child_render_bacwater_upsell() {
 					</span>
 				</label>
 			</div>
-		</td>
-	</tr>
+	</div>
 	<?php
 }
-add_action( 'woocommerce_review_order_after_order_total', 'pepselect_child_render_bacwater_upsell' );
+add_action( 'fc_checkout_before_step_payment_fields', 'pepselect_child_render_bacwater_upsell' );
 
 /**
  * Toggle the Bacteriostatic Water line in the cart. Runs through the WooCommerce

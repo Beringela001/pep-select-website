@@ -6,6 +6,16 @@ All notable changes to the Pep Select child theme are documented here.
 
 Previously live: **0.17.0-beta.1**, deployed to production on 2026-07-23.
 
+## 0.20.0-beta.9 - 2026-08-08
+
+- Payment-processor compliance and BAC upsell relocation.
+- Dilution notice: removed the former named solution brand and its graded-quality claim everywhere the notice appeared, per attorney approval, and replaced it with laboratory-grade reconstitution-solution wording. Updated the per-compound notice under add to cart (inc/single-product.php), the Refund and Shipping Policy in two places and Terms section 5 (inc/legal-content.php, three matching clauses each adapted to fit their surrounding wording rather than pasted verbatim), and scrubbed the same brand and grade wording from the historical changelog entries, so the theme now contains zero occurrences of either. No other policy sentence changed.
+- Footer disclaimer: replaced the research-use line and the human-consumption line with the two required sentences, kept contiguous, "All products sold on this website are intended for research and identification purposes only. These products are not intended for human dosing, injection, or ingestion." The independent-testing trust line is kept as a separate following sentence, and the separate FDA disclaimer paragraph is untouched.
+- Product descriptions: prefixed the intended-use line in the shared description partial (template-parts/product/description.php) with the literal phrase "Research Use Only.", so it appears in the description area of every compound page. This is a shared partial, not per-product database content, so no product records were edited.
+- Military and First Responder link: removed from the footer navigation (inc/footer-preview.php). The page, its template, and its styles are untouched, and it remains reachable at /military-discount/. Added a noindex directive gated to that one page (inc/military-page.php), applied through the active SEO layer with a core wp_robots fallback, so the page cannot be found via search. It was the only link to that page in the theme.
+- BAC upsell: moved out of the collapsible order summary to directly above the payment method, through the Fluid Checkout before-payment hook (fc_checkout_before_step_payment_fields), so the order total is final before the Square payment instruction. On desktop this moves it from the order-summary sidebar into the main column above payment; the markup changed only from a totals-table row to a standalone block, and the panel styling and the Add 30mL row are unchanged. Toggling still refreshes the order total and the Square instruction amount together with no reload (verified live: 35.35 to 56.14 and back).
+- BAC upsell subline: changed from "Compounds ship as lyophilized powder." to "Reconstitution Solution – for Laboratory Use." with an en dash, the processor's required framing, keeping the existing muted subline styling and adding no grade, purity, sterility, or suitability claim.
+
 ## 0.20.0-beta.8 - 2026-08-08
 
 - Fixed the out-of-stock chip so it reads "Restocking soon" when a compound has a batch in the vetting pipeline, and "Out of stock" otherwise. The chip already switched on the status band; the bridge that resolves the band (inc/compound-status.php) was reading the wrong things, so it always returned nothing and every out-of-stock card read "Out of stock".
@@ -43,7 +53,7 @@ Previously live: **0.17.0-beta.1**, deployed to production on 2026-07-23.
 ## 0.20.0-beta.4 - 2026-08-04
 
 - Gave the checkout Bacteriostatic Water upsell a light blue tinted panel using the existing --pep-color-cyan-soft token, the same tint the cash-back pill background and the card image panel use, with a cyan border matching the cash-back pill. The 8px radius and Plus Jakarta Sans are kept, with no shadow, gradient, or glow, and it stays visually distinct from the amber payment instruction panel. Heading text (navy) on the tint measures 13.05:1, passing AA and AAA.
-- Rewrote the copy: heading "Need bacteriostatic water for your research?", a muted subline "Compounds ship as lyophilized powder." in the --pep-color-slate body token, and a shorter toggle-row label "Add 30mL - $19.99" with an en-dash separator. The price is read live from the product. The volume is parsed from the product title, since the product carries no volume attribute, rather than typed as a literal, and falls back to the full name. The toggle keeps a full-name accessible label ("Add Bacteriostatic Water 30mL to your order"). No claim is made about grade, purity, sterility, suitability, or refund eligibility, and nothing connects the product to the Pfizer dilution solution.
+- Rewrote the copy: heading "Need bacteriostatic water for your research?", a muted subline "Compounds ship as lyophilized powder." in the --pep-color-slate body token, and a shorter toggle-row label "Add 30mL - $19.99" with an en-dash separator. The price is read live from the product. The volume is parsed from the product title, since the product carries no volume attribute, rather than typed as a literal, and falls back to the full name. The toggle keeps a full-name accessible label ("Add Bacteriostatic Water 30mL to your order"). No claim is made about grade, purity, sterility, suitability, or refund eligibility, and nothing connects the product to the dilution notice.
 
 ## 0.20.0-beta.3 - 2026-08-04
 
@@ -140,11 +150,11 @@ Previously live: **0.17.0-beta.1**, deployed to production on 2026-07-23.
 
 ## 0.19.0-beta.8 - 2026-08-01
 
-- Added a dilution and cloudiness clause to the Refund & Shipping Policy (both under "Not Eligible for Refund or Replacement" and alongside the damaged or incorrect order remedies) and to Terms & Conditions section 5. Cloudiness after reconstitution is not eligible for refund, replacement, or credit unless Pfizer pharmaceutical-grade dilution solution was used. Existing refund language unchanged; no sections renumbered. last_updated bumped to August 1, 2026 on both documents. Attorney approved.
+- Added a dilution and cloudiness clause to the Refund & Shipping Policy (both under "Not Eligible for Refund or Replacement" and alongside the damaged or incorrect order remedies) and to Terms & Conditions section 5. Cloudiness after reconstitution is not eligible for refund, replacement, or credit unless a laboratory-grade reconstitution solution was used. Existing refund language unchanged; no sections renumbered. last_updated bumped to August 1, 2026 on both documents. Attorney approved.
 
 ## 0.19.0-beta.7 - 2026-08-01
 
-- Added a dilution notice to every compound buy card, directly below add to cart (and below the notify form on out-of-stock pages). It states that post-reconstitution cloudiness is almost always caused by the dilution solution rather than the compound, and that cloudiness is not eligible for refund unless Pfizer pharmaceutical-grade dilution solution was used. Binding refund-policy language — flagged for M9 attorney review.
+- Added a dilution notice to every compound buy card, directly below add to cart (and below the notify form on out-of-stock pages). It states that post-reconstitution cloudiness is almost always caused by the dilution solution rather than the compound, and that cloudiness is not eligible for refund unless a laboratory-grade reconstitution solution was used. Binding refund-policy language — flagged for M9 attorney review.
 
 ## 0.19.0-beta.6 - 2026-07-25
 

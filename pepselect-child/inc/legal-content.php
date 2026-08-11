@@ -117,7 +117,7 @@ function pepselect_child_get_legal_documents() {
 				),
 				array(
 					'type' => 'paragraph',
-					'html' => 'Dilution and cloudiness: Cloudiness that appears after a compound is reconstituted is almost always caused by the dilution solution rather than the compound. Cloudiness is not eligible for a refund, replacement, or credit unless the reconstitution was performed using Pfizer pharmaceutical-grade dilution solution.',
+					'html' => 'Dilution and cloudiness: Cloudiness that appears after a compound is reconstituted is almost always caused by the reconstitution solution rather than the compound. Cloudiness is not eligible for a refund, replacement, or credit unless the reconstitution was performed using a laboratory-grade reconstitution solution.',
 				),
 				array(
 					'type'  => 'heading',
@@ -557,7 +557,7 @@ function pepselect_child_get_legal_documents() {
 				),
 				array(
 					'type' => 'paragraph',
-					'html' => 'Dilution and cloudiness: Cloudiness that appears after a compound is reconstituted is almost always caused by the dilution solution rather than the compound. Cloudiness is not eligible for a refund, replacement, or credit unless the reconstitution was performed using Pfizer pharmaceutical-grade dilution solution.',
+					'html' => 'Dilution and cloudiness: Cloudiness that appears after a compound is reconstituted is almost always caused by the reconstitution solution rather than the compound. Cloudiness is not eligible for a refund, replacement, or credit unless the reconstitution was performed using a laboratory-grade reconstitution solution.',
 				),
 				array(
 					'type'  => 'heading',
@@ -588,7 +588,7 @@ function pepselect_child_get_legal_documents() {
 				),
 				array(
 					'type' => 'paragraph',
-					'html' => 'Dilution and cloudiness: Cloudiness that appears after a compound is reconstituted is almost always caused by the dilution solution rather than the compound. Cloudiness is not eligible for a refund, replacement, or credit unless the reconstitution was performed using Pfizer pharmaceutical-grade dilution solution.',
+					'html' => 'Dilution and cloudiness: Cloudiness that appears after a compound is reconstituted is almost always caused by the reconstitution solution rather than the compound. Cloudiness is not eligible for a refund, replacement, or credit unless the reconstitution was performed using a laboratory-grade reconstitution solution.',
 				),
 				array(
 					'type'  => 'heading',
