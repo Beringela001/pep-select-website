@@ -23,6 +23,8 @@ Related: ops design doc §13 "COA publishing (R4)" — `pass_status` is genuinel
 
 ## Features
 
+**M12 milestone plan:** the sequenced M12-1 to M12-5 work (checkout compliance checkboxes, account page simplification, cart and side cart redesign, side cart BAC offer, discount pill and loyalty redemption) is planned in [M12-compliance-account-cart-redesign.md](M12-compliance-account-cart-redesign.md).
+
 ### Cart line item: batch number (blocked on ops)
 
 **Status:** blocked · **Source of truth:** ops repo `PEPSELECT-OPS-DESIGN-SYSTEM.md` §13, "Batch number as a shared order field"
