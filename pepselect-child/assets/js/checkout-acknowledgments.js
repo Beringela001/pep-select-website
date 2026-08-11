@@ -110,6 +110,27 @@
 			} );
 	}
 
+	// Fluid Checkout validates any field carrying the standard validate-required
+	// class and shows its own generic "This is a required field." message. Our three
+	// fields have their own specific inline validation, so the class is stripped from
+	// them to leave a single message source; every other checkout field keeps the
+	// class and Fluid still validates it normally. Fluid keys on this class, not on
+	// aria-required, which is kept for assistive tech.
+	function stripFluidRequired() {
+		cfg.fields.forEach( function ( field ) {
+			var input = document.getElementById( field.input );
+			var row = input && input.closest( '.form-row' );
+
+			if ( row ) {
+				row.classList.remove( 'validate-required' );
+			}
+		} );
+	}
+
+	stripFluidRequired();
 	bind();
-	$( document.body ).on( 'updated_checkout', bind );
+	$( document.body ).on( 'updated_checkout', function () {
+		stripFluidRequired();
+		bind();
+	} );
 }( jQuery ) );

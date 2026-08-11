@@ -6,6 +6,10 @@ All notable changes to the Pep Select child theme are documented here.
 
 Previously live: **0.17.0-beta.1**, deployed to production on 2026-07-23.
 
+## 0.20.0-beta.13 - 2026-08-11
+
+- M12-1 polish: removed the duplicate validation message on the three checkout compliance fields. Fluid Checkout validates any field carrying the standard validate-required class and shows its own generic "This is a required field.", which stacked under the custom, processor-specific messages. The client script now strips validate-required from only those three fields (research_purpose, compliance_acknowledgment, policy_agreement) on load and after each AJAX order-review refresh, so the custom message is the single source for each; every other checkout field keeps the class and Fluid still validates it (verified an empty billing email still shows Fluid required error). Fluid keys on the class and not on aria-required (verified), so aria-required, the required asterisk, focus management, aria-invalid, aria-describedby, and server-side enforcement are all unchanged. The field-stripped bypass POST still returns failure with all three messages.
+
 ## 0.20.0-beta.12 - 2026-08-11
 
 - M12-1 hotfix: the HTML required attribute added in beta.11 broke the inline validation. WooCommerce applies the required custom attribute to the Research Purpose select but not to the checkboxes, so with all three fields empty the empty required select failed the browser constraint (checkValidity() false) and Fluid Checkout's own validation, which keys on that, blocked the submit before the custom validator could run. No error rendered and Place order looked dead, hitting every first-time customer who left all three empty.
