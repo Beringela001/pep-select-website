@@ -1685,3 +1685,470 @@ body.woocommerce-account:not(.logged-in) h1.entry-title {
 .pepselect-cashback [id*="ywpar_referral"] {
 	display: none !important;
 }
+
+/* =========================================================================
+   M12-2: single-page account dashboard.
+   The left navigation rail is hidden (presentation only); every account
+   endpoint still resolves and is reachable from the cards below and the site
+   header. One scrolling column of cards, all on existing tokens.
+   ========================================================================= */
+
+/* Collapse the nav rail and the two-column grid on logged-in account pages. */
+.woocommerce-account.logged-in .woocommerce-MyAccount-navigation {
+	display: none !important;
+}
+
+@media (min-width: 861px) {
+	.woocommerce-account.logged-in .woocommerce {
+		display: block;
+	}
+
+	.woocommerce-account.logged-in .woocommerce-MyAccount-content {
+		grid-column: auto;
+		max-width: none;
+	}
+}
+
+.pepselect-dash {
+	display: grid;
+	gap: 20px;
+	font-family: var(--pep-font-interface);
+}
+
+.pepselect-dash__grid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 20px;
+}
+
+/* Card base. */
+.pepselect-card {
+	padding: 28px;
+	border: 1px solid var(--pep-color-border);
+	border-radius: var(--pep-radius-large);
+	background: var(--pep-color-white);
+}
+
+.pepselect-card__head {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 16px;
+	margin-bottom: 20px;
+}
+
+.pepselect-card__title {
+	margin: 0;
+	color: var(--pep-color-navy);
+	font-family: var(--pep-font-editorial);
+	font-weight: var(--pep-font-weight-regular);
+	font-size: 22px;
+	letter-spacing: 0;
+}
+
+.pepselect-card__edit {
+	color: var(--pep-color-cyan);
+	font-size: 14px;
+	font-weight: var(--pep-font-weight-semibold);
+	text-decoration: none;
+	white-space: nowrap;
+}
+
+.pepselect-card__edit:hover {
+	color: var(--pep-color-navy);
+}
+
+.pepselect-card__link {
+	display: inline-block;
+	margin-top: 16px;
+	color: var(--pep-color-cyan);
+	font-size: 14px;
+	font-weight: var(--pep-font-weight-semibold);
+	text-decoration: none;
+}
+
+.pepselect-card__link:hover {
+	color: var(--pep-color-navy);
+}
+
+/* Card 1: welcome + sign out. */
+.pepselect-card--welcome {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 20px;
+	flex-wrap: wrap;
+	background: linear-gradient(155deg, var(--pep-color-cyan-soft) 0%, var(--pep-color-white) 100%);
+	border-color: var(--pep-color-cyan);
+}
+
+.pepselect-card__title--welcome {
+	font-size: clamp(1.6rem, 3vw, 2rem);
+	margin-bottom: 4px;
+}
+
+.pepselect-card__email {
+	margin: 0;
+	color: var(--pep-color-slate);
+	font-size: 15px;
+}
+
+/* Buttons. */
+.pepselect-btn {
+	display: inline-block;
+	padding: 12px 24px;
+	border-radius: var(--pep-radius-pill);
+	font-family: var(--pep-font-interface);
+	font-size: 14px;
+	font-weight: var(--pep-font-weight-bold);
+	text-decoration: none;
+	cursor: pointer;
+	transition: background-color var(--pep-motion-duration) ease, color var(--pep-motion-duration) ease, border-color var(--pep-motion-duration) ease, transform var(--pep-motion-duration) ease;
+}
+
+.pepselect-btn--ghost {
+	border: 1px solid var(--pep-color-navy);
+	background: transparent;
+	color: var(--pep-color-navy);
+}
+
+.pepselect-btn--ghost:hover {
+	background: var(--pep-color-navy);
+	color: var(--pep-color-white);
+}
+
+.pepselect-btn--solid {
+	border: 0;
+	background: var(--pep-color-cyan);
+	color: var(--pep-color-white);
+}
+
+.pepselect-btn--solid:hover {
+	background: var(--pep-color-navy);
+	transform: translateY(-1px);
+}
+
+/* Card 2: my information. */
+.pepselect-info {
+	margin: 0;
+	display: grid;
+	gap: 16px;
+}
+
+.pepselect-info__row {
+	display: grid;
+	gap: 3px;
+}
+
+.pepselect-info__label {
+	color: var(--pep-color-slate);
+	font-size: 12px;
+	font-weight: var(--pep-font-weight-semibold);
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+}
+
+.pepselect-info__value {
+	margin: 0;
+	color: var(--pep-color-navy);
+	font-size: 16px;
+}
+
+.pepselect-info__muted {
+	color: var(--pep-color-neutral);
+}
+
+.pepselect-info__add {
+	display: inline-block;
+	margin-left: 8px;
+	color: var(--pep-color-cyan);
+	font-weight: var(--pep-font-weight-semibold);
+	text-decoration: none;
+}
+
+.pepselect-info__address {
+	font-style: normal;
+	line-height: 1.6;
+	color: var(--pep-color-navy);
+}
+
+/* Card 3: cash back. */
+.pepselect-card--cashback {
+	background: var(--pep-color-surface);
+}
+
+.pepselect-cashback-figure {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	margin: 0 0 16px;
+}
+
+.pepselect-cashback-figure__value {
+	color: var(--pep-color-navy);
+	font-family: var(--pep-font-technical);
+	font-weight: var(--pep-font-weight-medium);
+	font-size: 36px;
+	line-height: 1;
+	letter-spacing: -0.02em;
+}
+
+.pepselect-cashback-figure__label {
+	color: var(--pep-color-slate);
+	font-size: 13px;
+}
+
+.pepselect-cashback-lifetime {
+	margin: 0 0 16px;
+	color: var(--pep-color-navy);
+	font-size: 15px;
+}
+
+.pepselect-cashback-explain {
+	margin: 0;
+	color: var(--pep-color-slate);
+	font-size: 14px;
+	line-height: 1.6;
+}
+
+/* Card 4: orders, inline. */
+.pepselect-orders {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	display: grid;
+	gap: 16px;
+}
+
+.pepselect-order {
+	padding: 20px;
+	border: 1px solid var(--pep-color-border);
+	border-radius: var(--pep-radius-medium);
+	background: var(--pep-color-white);
+}
+
+.pepselect-order__head {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 12px;
+	margin-bottom: 12px;
+}
+
+.pepselect-order__id {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.pepselect-order__number {
+	color: var(--pep-color-navy);
+	font-family: var(--pep-font-technical);
+	font-weight: var(--pep-font-weight-medium);
+	font-size: 16px;
+}
+
+.pepselect-order__date {
+	color: var(--pep-color-neutral);
+	font-size: 13px;
+}
+
+.pepselect-order__status {
+	flex-shrink: 0;
+	display: inline-block;
+	padding: 4px 12px;
+	border-radius: var(--pep-radius-pill);
+	font-size: 12px;
+	font-weight: var(--pep-font-weight-bold);
+	letter-spacing: 0.02em;
+	background: var(--pep-color-surface);
+	color: var(--pep-color-slate);
+}
+
+.pepselect-order__status--completed {
+	background: var(--pep-color-green-soft);
+	color: var(--pep-color-green);
+}
+
+.pepselect-order__status--processing,
+.pepselect-order__status--on-hold,
+.pepselect-order__status--pending {
+	background: var(--pep-color-amber-soft);
+	color: var(--pep-color-amber);
+}
+
+.pepselect-order__status--cancelled,
+.pepselect-order__status--failed,
+.pepselect-order__status--refunded {
+	background: var(--pep-color-red-soft);
+	color: var(--pep-color-red);
+}
+
+.pepselect-order__meta {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	flex-wrap: wrap;
+	margin-bottom: 12px;
+}
+
+.pepselect-order__total {
+	color: var(--pep-color-navy);
+	font-family: var(--pep-font-technical);
+	font-weight: var(--pep-font-weight-medium);
+	font-size: 15px;
+}
+
+.pepselect-order__earned {
+	color: var(--pep-color-green);
+	font-size: 13px;
+	font-weight: var(--pep-font-weight-semibold);
+}
+
+.pepselect-order__tracking {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px 10px;
+	align-items: baseline;
+	margin: 0 0 12px;
+	padding: 10px 14px;
+	border-radius: var(--pep-radius-small);
+	background: var(--pep-color-cyan-soft);
+}
+
+.pepselect-order__tracking-label {
+	color: var(--pep-color-slate);
+	font-size: 12px;
+	font-weight: var(--pep-font-weight-semibold);
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+}
+
+.pepselect-order__tracking-num {
+	color: var(--pep-color-navy);
+	font-family: var(--pep-font-technical);
+	font-size: 13px;
+	word-break: break-all;
+}
+
+.pepselect-order__items {
+	margin: 0;
+	padding: 14px 0 0;
+	list-style: none;
+	border-top: 1px solid var(--pep-color-border);
+	display: grid;
+	gap: 8px;
+}
+
+.pepselect-order__item {
+	display: grid;
+	grid-template-columns: 1fr auto auto;
+	gap: 12px;
+	align-items: baseline;
+	font-size: 14px;
+}
+
+.pepselect-order__item-name {
+	color: var(--pep-color-navy);
+	min-width: 0;
+}
+
+.pepselect-order__item-qty {
+	color: var(--pep-color-neutral);
+	font-family: var(--pep-font-technical);
+	font-size: 13px;
+}
+
+.pepselect-order__item-price {
+	color: var(--pep-color-navy);
+	font-family: var(--pep-font-technical);
+	font-size: 13px;
+	white-space: nowrap;
+}
+
+/* Empty orders. */
+.pepselect-orders__empty {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 16px;
+	padding: 24px 0;
+}
+
+.pepselect-orders__empty-text {
+	margin: 0;
+	color: var(--pep-color-slate);
+	font-size: 15px;
+}
+
+@media (max-width: 860px) {
+	.pepselect-dash__grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+@media (max-width: 480px) {
+	.pepselect-card {
+		padding: 20px;
+	}
+
+	.pepselect-order__item {
+		grid-template-columns: 1fr auto;
+	}
+
+	.pepselect-order__item-qty {
+		grid-column: 1;
+		justify-self: start;
+	}
+
+	.pepselect-order__item-price {
+		grid-column: 2;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.pepselect-btn {
+		transition: none;
+	}
+
+	.pepselect-btn--solid:hover {
+		transform: none;
+	}
+}
+
+/* -------------------------------------------------------------------------
+   A4 pink-link fix: the view-order line-item product name inherits an
+   underlined pink (rgb(204,51,102)) link. Pin it to the brand palette with the
+   established pattern (text-decoration:none + explicit colour). Scoped to the
+   order-details product-name anchor only - not a blanket account-anchor rule.
+   ------------------------------------------------------------------------- */
+.woocommerce-account .woocommerce-table--order-details td.woocommerce-table__product-name a,
+.woocommerce-account tr.woocommerce-table__line-item td.woocommerce-table__product-name a {
+	text-decoration: none;
+	color: var(--pep-color-navy);
+}
+
+.woocommerce-account .woocommerce-table--order-details td.woocommerce-table__product-name a:hover,
+.woocommerce-account tr.woocommerce-table__line-item td.woocommerce-table__product-name a:hover {
+	color: var(--pep-color-cyan);
+}
+
+/* YITH per-order summary, reframed to dollars by the child theme; styled calm. */
+.woocommerce-account .ywpar-order-point-summary {
+	margin: 16px 0 0;
+	color: var(--pep-color-navy);
+	font-size: 15px;
+}
+
+.woocommerce-account .ywpar-order-point-summary span {
+	font-family: var(--pep-font-technical);
+	font-weight: var(--pep-font-weight-medium);
+	color: var(--pep-color-green);
+}
+
+/* Account frame: border-box so the gutter padding never adds to the width
+   (keeps content at the intended 1200px cap and prevents a small horizontal
+   overflow at narrow widths). */
+.woocommerce-account .woocommerce {
+	box-sizing: border-box;
+}

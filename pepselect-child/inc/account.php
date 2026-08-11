@@ -138,6 +138,15 @@ function pepselect_child_get_cashback_history( $limit = 20 ) {
 			$desc = (string) $e['reason'];
 		}
 
+		// The order this movement is tied to, when the log records one. Used to
+		// attribute per-order cash back on the account dashboard.
+		$order_ref = 0;
+		if ( isset( $e['order_id'] ) ) {
+			$order_ref = (int) $e['order_id'];
+		} elseif ( isset( $e['order'] ) ) {
+			$order_ref = (int) $e['order'];
+		}
+
 		// Present the raw date as a formatted date when parseable.
 		$timestamp = $date ? strtotime( $date ) : false;
 		$date_out  = $timestamp ? date_i18n( get_option( 'date_format' ), $timestamp ) : (string) $date;
@@ -147,6 +156,7 @@ function pepselect_child_get_cashback_history( $limit = 20 ) {
 			'description' => pepselect_child_cashback_reason_label( $desc, $points ),
 			'points'      => $points,
 			'dollars'     => $points * (float) PEPSELECT_CASHBACK_DOLLARS_PER_POINT,
+			'order_id'    => $order_ref,
 			'sort'        => $timestamp ? $timestamp : 0,
 		);
 	}
@@ -689,4 +699,237 @@ function pepselect_child_referral_state() {
 	}
 
 	return $state;
+}
+
+/**
+ * Map of order_id => positive cash-back dollars earned, from YITH's own points
+ * log. One pass over the log (the same authoritative source as the balance and
+ * totals), so a dashboard listing many orders stays cheap. No per-order plugin
+ * meta key is assumed; when the log carries no order references the map is empty
+ * and the dashboard simply omits the per-order cash-back line.
+ *
+ * @return array<int,float>
+ */
+function pepselect_child_get_cashback_earned_by_order() {
+	$history = function_exists( 'pepselect_child_get_cashback_history' )
+		? pepselect_child_get_cashback_history( 500 )
+		: array();
+
+	$map = array();
+
+	foreach ( (array) $history as $entry ) {
+		$eid     = isset( $entry['order_id'] ) ? (int) $entry['order_id'] : 0;
+		$dollars = isset( $entry['dollars'] ) ? (float) $entry['dollars'] : 0.0;
+
+		if ( $eid > 0 && $dollars > 0 ) {
+			$map[ $eid ] = isset( $map[ $eid ] ) ? $map[ $eid ] + $dollars : $dollars;
+		}
+	}
+
+	return $map;
+}
+
+/**
+ * Convert the POINTS column of YITH's account points-history table into dollar
+ * cash back, server-side, before render. Operates on the captured YITH HTML
+ * string, so YITH's own logic is untouched - presentation only. Scoped strictly
+ * to Table 1 (class my_account_orders); the share-coupon table
+ * (ywpar_share_points_table) is deliberately left alone, as its VALUE column is
+ * already in dollars.
+ *
+ * Reason cells that expose a raw coupon code ("Created coupon: xxxx-...") are
+ * reworded through pepselect_child_cashback_reason_label() so no code is shown;
+ * recognised human reasons (Order Completed, Order Cancelled, Target achieved -
+ * Daily Login) are left exactly as YITH renders them - the M10 wording fix is
+ * not disturbed.
+ *
+ * Degrades safely: if the table or DOMDocument is unavailable the input HTML is
+ * returned unchanged.
+ *
+ * @param string $html Captured YITH history HTML.
+ * @return string
+ */
+function pepselect_child_transform_points_history_html( $html ) {
+	$html = (string) $html;
+
+	if ( '' === trim( $html ) || false === strpos( $html, 'my_account_orders' ) || ! class_exists( 'DOMDocument' ) ) {
+		return $html;
+	}
+
+	$doc = new DOMDocument();
+	libxml_use_internal_errors( true );
+	$doc->loadHTML( '<?xml encoding="utf-8" ?><div id="pep-hist-root">' . $html . '</div>', LIBXML_NOWARNING | LIBXML_NOERROR );
+	libxml_clear_errors();
+
+	$xpath = new DOMXPath( $doc );
+
+	// Only the account points-history table; never the share-coupon table.
+	$tables = $xpath->query( "//table[contains(concat(' ', normalize-space(@class), ' '), ' my_account_orders ')]" );
+
+	if ( ! $tables || ! $tables->length ) {
+		return $html;
+	}
+
+	foreach ( $tables as $table ) {
+		// Header cell: POINTS -> Cash back.
+		foreach ( $xpath->query( ".//thead//th", $table ) as $th ) {
+			if ( 0 === strcasecmp( trim( $th->textContent ), 'points' ) ) {
+				$th->nodeValue = __( 'Cash back', 'pepselect-child' );
+			}
+		}
+
+		// Points cells: convert every integer to dollars, drop the "Points" word,
+		// keep YITH's ywpar_minus / ywpar_plus spans (coloured by existing CSS).
+		foreach ( $xpath->query( ".//td[contains(concat(' ', normalize-space(@class), ' '), ' ywpar_points_rewards-points ')]", $table ) as $td ) {
+			pepselect_child_points_cell_to_dollars( $td );
+
+			// WooCommerce responsive tables echo the header into a data-title.
+			if ( $td->hasAttribute( 'data-title' ) && 0 === strcasecmp( trim( $td->getAttribute( 'data-title' ) ), 'points' ) ) {
+				$td->setAttribute( 'data-title', __( 'Cash back', 'pepselect-child' ) );
+			}
+		}
+
+		// Reason cells that expose a coupon code -> calm label, no raw code.
+		foreach ( $xpath->query( ".//td[contains(concat(' ', normalize-space(@class), ' '), ' ywpar_points_rewards-action ')]", $table ) as $td ) {
+			$text = trim( $td->textContent );
+
+			if ( '' !== $text && preg_match( '/coupon|[A-Za-z0-9]{4}-[A-Za-z0-9]{4}/', $text ) ) {
+				$td->nodeValue = pepselect_child_cashback_reason_label( $text );
+			}
+		}
+	}
+
+	$root = $doc->getElementById( 'pep-hist-root' );
+
+	if ( ! $root ) {
+		return $html;
+	}
+
+	$out = '';
+	foreach ( $root->childNodes as $child ) {
+		$out .= $doc->saveHTML( $child );
+	}
+
+	return $out;
+}
+
+/**
+ * Recursively rewrite the integer point figures inside a points cell as dollars,
+ * descending into YITH's ywpar_minus / ywpar_plus spans so their styling is kept.
+ *
+ * @param DOMNode $node Cell or descendant node.
+ * @return void
+ */
+function pepselect_child_points_cell_to_dollars( $node ) {
+	if ( ! $node->hasChildNodes() ) {
+		return;
+	}
+
+	foreach ( iterator_to_array( $node->childNodes ) as $child ) {
+		if ( XML_ELEMENT_NODE === $child->nodeType ) {
+			pepselect_child_points_cell_to_dollars( $child );
+		} elseif ( XML_TEXT_NODE === $child->nodeType ) {
+			$child->nodeValue = pepselect_child_points_text_to_dollars( $child->nodeValue );
+		}
+	}
+}
+
+/**
+ * Turn a run of points text ("-570 / 0 Points") into dollars ("-$5.70 / $0.00").
+ * The trailing Points/Point label is removed; each signed integer is converted
+ * at 1 point = $0.01.
+ *
+ * @param string $text Raw text.
+ * @return string
+ */
+function pepselect_child_points_text_to_dollars( $text ) {
+	$text = (string) $text;
+
+	if ( '' === trim( $text ) ) {
+		return $text;
+	}
+
+	// Remove the "Points"/"Point" word; the column now reads dollars.
+	$text = preg_replace( '/\s*\bpoints?\b/i', '', $text );
+
+	// Convert each integer (optional leading sign) to a dollar amount.
+	$text = preg_replace_callback(
+		'/-?\d[\d,]*/',
+		function ( $m ) {
+			$points  = (int) str_replace( ',', '', $m[0] );
+			$dollars = abs( $points ) * (float) PEPSELECT_CASHBACK_DOLLARS_PER_POINT;
+			$sign    = ( $points < 0 ) ? '-' : '';
+
+			return $sign . '$' . number_format( $dollars, 2 );
+		},
+		$text
+	);
+
+	return $text;
+}
+
+/**
+ * Convert YITH's per-order "Points earned: N" summary on the view-order page into
+ * dollar cash back, without editing YITH. YITH prints
+ * <p class="ywpar-order-point-summary">...<span>N</span></p> during the
+ * view-order render; these two callbacks bracket that render with an output
+ * buffer (priority 1 opens, 999 rewrites and flushes) and rewrite only that one
+ * paragraph at 1 point = $0.01. Everything else is echoed byte-for-byte.
+ *
+ * Scoped to the view-order endpoint. The anchor is the class substring
+ * "ywpar-order-point-summary" - fragile by nature, so if YITH renames it the
+ * summary is left untouched rather than mis-edited.
+ *
+ * @return void
+ */
+function pepselect_child_view_order_points_buffer_start() {
+	ob_start();
+}
+add_action( 'woocommerce_account_view-order_endpoint', 'pepselect_child_view_order_points_buffer_start', 1 );
+
+/**
+ * Close the view-order output buffer opened above and flush the converted HTML.
+ *
+ * @return void
+ */
+function pepselect_child_view_order_points_buffer_end() {
+	if ( 0 === ob_get_level() ) {
+		return;
+	}
+
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- YITH's own view-order markup; only the points figure is rewritten.
+	echo pepselect_child_convert_order_points_html( ob_get_clean() );
+}
+add_action( 'woocommerce_account_view-order_endpoint', 'pepselect_child_view_order_points_buffer_end', 999 );
+
+/**
+ * Rewrite YITH's per-order points summary paragraph as dollars. Returns the input
+ * unchanged when the anchor class is absent or no integer is present.
+ *
+ * @param string $html Buffered view-order HTML.
+ * @return string
+ */
+function pepselect_child_convert_order_points_html( $html ) {
+	$html = (string) $html;
+
+	if ( false === strpos( $html, 'ywpar-order-point-summary' ) ) {
+		return $html;
+	}
+
+	return preg_replace_callback(
+		'/(<p\b[^>]*\bywpar-order-point-summary\b[^>]*>)(.*?)(<\/p>)/is',
+		function ( $m ) {
+			if ( ! preg_match( '/-?\d[\d,]*/', wp_strip_all_tags( $m[2] ), $n ) ) {
+				return $m[0];
+			}
+
+			$points  = (int) str_replace( ',', '', $n[0] );
+			$dollars = function_exists( 'pepselect_child_format_dollars' )
+				? pepselect_child_format_dollars( $points * (float) PEPSELECT_CASHBACK_DOLLARS_PER_POINT )
+				: '$' . number_format( $points * (float) PEPSELECT_CASHBACK_DOLLARS_PER_POINT, 2 );
+
+			return $m[1] . '<strong>' . esc_html__( 'Cash back earned:', 'pepselect-child' ) . '</strong> <span>' . esc_html( $dollars ) . '</span>' . $m[3];
+		},
+		$html
+	);
 }

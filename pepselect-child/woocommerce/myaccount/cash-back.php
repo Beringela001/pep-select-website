@@ -167,7 +167,13 @@ $pepselect_steps = array(
 	<?php if ( '' !== trim( (string) $pepselect_slots['history'] ) ) : ?>
 		<section class="pepselect-cashback__history pepselect-cashback__engine" aria-labelledby="pepselect-cashback-history-title">
 			<h2 id="pepselect-cashback-history-title" class="pepselect-cashback__section-title"><?php esc_html_e( 'Cash back history', 'pepselect-child' ); ?></h2>
-			<?php echo $pepselect_slots['history']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- YITH's own history table. ?>
+			<?php
+			// Convert the POINTS column of YITH's account history table to dollars
+			// server-side before render; the share-coupon table is left untouched.
+			echo function_exists( 'pepselect_child_transform_points_history_html' )
+				? pepselect_child_transform_points_history_html( $pepselect_slots['history'] )
+				: $pepselect_slots['history']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- YITH's own history table, points figures reframed as dollars.
+			?>
 		</section>
 	<?php endif; ?>
 
