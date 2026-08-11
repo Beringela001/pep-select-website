@@ -125,7 +125,6 @@ function pepselect_child_research_purpose_field() {
 			'required'          => true,
 			'options'           => pepselect_child_research_purpose_options(),
 			'custom_attributes' => array(
-				'required'      => 'required',
 				'aria-required' => 'true',
 			),
 		),
@@ -173,7 +172,6 @@ function pepselect_child_required_checkboxes() {
 			'label'             => esc_html( $defs['compliance'] ),
 			'required'          => true,
 			'custom_attributes' => array(
-				'required'      => 'required',
 				'aria-required' => 'true',
 			),
 		),
@@ -189,7 +187,6 @@ function pepselect_child_required_checkboxes() {
 			'label'             => $policy_label,
 			'required'          => true,
 			'custom_attributes' => array(
-				'required'      => 'required',
 				'aria-required' => 'true',
 			),
 		),

@@ -6,6 +6,14 @@ All notable changes to the Pep Select child theme are documented here.
 
 Previously live: **0.17.0-beta.1**, deployed to production on 2026-07-23.
 
+## 0.20.0-beta.12 - 2026-08-11
+
+- M12-1 hotfix: the HTML required attribute added in beta.11 broke the inline validation. WooCommerce applies the required custom attribute to the Research Purpose select but not to the checkboxes, so with all three fields empty the empty required select failed the browser constraint (checkValidity() false) and Fluid Checkout's own validation, which keys on that, blocked the submit before the custom validator could run. No error rendered and Place order looked dead, hitting every first-time customer who left all three empty.
+- Route B was chosen over adding novalidate. The checkout form already carries novalidate, yet it was still broken, which proves Fluid Checkout validates independently of that attribute, so novalidate cannot suppress it. Instead the HTML required attribute was removed from all three fields, keeping aria-required and WooCommerce's own required argument (which supplies the asterisk and the validate-required class). This reverts to the beta.10 field configuration that worked, while keeping beta.11's Research Purpose client-side validation and dynamic aria-describedby.
+- All three fields (compliance_acknowledgment, policy_agreement, research_purpose) are now consistent: no HTML required attribute, aria-required="true", the validate-required class and required asterisk from WooCommerce, and aria-invalid plus aria-describedby set and cleared by the script.
+- Verified on the deployed script with the field in the fixed state: all three empty then Place order shows three inline errors at once ("Please select a research purpose to continue." plus the two acknowledgment messages), focus moves to the first invalid field (Research Purpose), aria-invalid and aria-describedby are set on all three, and no native browser bubble competes; clearing each field removes only its own error and aria-describedby; with all three satisfied placement proceeds. The server-side bypass POST to /?wc-ajax=checkout with the fields stripped still returns failure with all three messages. At 390px the three errors are visible with no horizontal overflow, the compliance label is not truncated (137px), and Place order stays on screen.
+- Server-side validation, order meta with timestamp and wording version, the legacy consent admin block, label text, links, rel="noopener", and the BAC upsell are all unchanged. Validated with php-parser (no JS or CSS changed).
+
 ## 0.20.0-beta.11 - 2026-08-11
 
 - M12-1 follow-up: four checkout compliance fixes. The verified-working parts (server-side validation, order meta with timestamp and wording version, admin block for new orders, label text, links, inline errors, focus, aria-invalid) are unchanged.
