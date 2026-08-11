@@ -1,11 +1,14 @@
 /**
- * Client-side validation for the checkout compliance Acknowledgments (M12-1).
+ * Client-side validation for the checkout Research Purpose and the two
+ * compliance Acknowledgments (M12-1).
  *
- * Shows an inline error next to each unticked required box and moves focus to
- * the first one, rather than a generic top-of-page notice. This is UX only; the
- * server-side check in inc/checkout-fields.php is the authoritative gate that
- * actually blocks placement and records acceptance, so it cannot be bypassed by
- * disabling JavaScript.
+ * Shows an inline error next to each invalid required field and moves focus to
+ * the first one, in page order, rather than a generic top-of-page notice. When an
+ * error is shown the field's aria-describedby is pointed at the error node so a
+ * screen reader announces the reason; it is removed when the error clears. This
+ * is UX only; the server-side checks in inc/checkout-fields.php are the
+ * authoritative gate that blocks placement and records acceptance, so nothing
+ * here can be bypassed by disabling JavaScript.
  */
 ( function ( $ ) {
 	'use strict';
@@ -23,6 +26,20 @@
 		};
 	}
 
+	// A checkbox is satisfied when checked; any other control (the Research
+	// Purpose select) when it has a non-empty value.
+	function isFilled( input ) {
+		if ( ! input ) {
+			return false;
+		}
+
+		if ( 'checkbox' === input.type ) {
+			return input.checked;
+		}
+
+		return '' !== ( input.value || '' );
+	}
+
 	function setError( field, show ) {
 		var n = nodes( field );
 
@@ -34,6 +51,12 @@
 		if ( n.input ) {
 			n.input.setAttribute( 'aria-invalid', show ? 'true' : 'false' );
 
+			if ( show ) {
+				n.input.setAttribute( 'aria-describedby', field.error );
+			} else {
+				n.input.removeAttribute( 'aria-describedby' );
+			}
+
 			var row = n.input.closest( '.form-row' );
 
 			if ( row ) {
@@ -42,14 +65,14 @@
 		}
 	}
 
-	// Returns true when every required box is ticked. On failure it flags each
-	// unticked box and focuses the first, then returns false to block placement.
+	// Flag every invalid required field and focus the first, then return false to
+	// block placement.
 	function validate() {
 		var first = null;
 
 		cfg.fields.forEach( function ( field ) {
 			var n = nodes( field );
-			var ok = !! ( n.input && n.input.checked );
+			var ok = isFilled( n.input );
 
 			setError( field, ! ok );
 
@@ -66,10 +89,10 @@
 		return true;
 	}
 
-	// Clear a box's error as soon as it is ticked.
+	// Clear a field's error as soon as it is satisfied.
 	cfg.fields.forEach( function ( field ) {
 		$( document ).on( 'change', '#' + field.input, function () {
-			if ( this.checked ) {
+			if ( isFilled( this ) ) {
 				setError( field, false );
 			}
 		} );

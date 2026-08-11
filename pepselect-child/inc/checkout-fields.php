@@ -119,14 +119,20 @@ function pepselect_child_research_purpose_field() {
 	woocommerce_form_field(
 		'research_purpose',
 		array(
-			'type'     => 'select',
-			'class'    => array( 'form-row', 'research-purpose-field' ),
-			'label'    => __( 'Research Purpose', 'pepselect-child' ),
-			'required' => true,
-			'options'  => pepselect_child_research_purpose_options(),
+			'type'              => 'select',
+			'class'             => array( 'form-row', 'research-purpose-field' ),
+			'label'             => __( 'Research Purpose', 'pepselect-child' ),
+			'required'          => true,
+			'options'           => pepselect_child_research_purpose_options(),
+			'custom_attributes' => array(
+				'required'      => 'required',
+				'aria-required' => 'true',
+			),
 		),
 		''
 	);
+
+	echo '<span class="pepselect-ack__error pepselect-ack__error--field" id="research_purpose_error" role="alert" hidden></span>';
 }
 add_action( 'woocommerce_review_order_before_submit', 'pepselect_child_research_purpose_field', 10 );
 
@@ -167,8 +173,8 @@ function pepselect_child_required_checkboxes() {
 			'label'             => esc_html( $defs['compliance'] ),
 			'required'          => true,
 			'custom_attributes' => array(
-				'aria-required'    => 'true',
-				'aria-describedby' => 'compliance_acknowledgment_error',
+				'required'      => 'required',
+				'aria-required' => 'true',
 			),
 		),
 		''
@@ -183,8 +189,8 @@ function pepselect_child_required_checkboxes() {
 			'label'             => $policy_label,
 			'required'          => true,
 			'custom_attributes' => array(
-				'aria-required'    => 'true',
-				'aria-describedby' => 'policy_agreement_error',
+				'required'      => 'required',
+				'aria-required' => 'true',
 			),
 		),
 		''
@@ -220,6 +226,11 @@ function pepselect_child_ack_assets() {
 		'pepselectAck',
 		array(
 			'fields' => array(
+				array(
+					'input'   => 'research_purpose',
+					'error'   => 'research_purpose_error',
+					'message' => __( 'Please select a research purpose to continue.', 'pepselect-child' ),
+				),
 				array(
 					'input'   => 'compliance_acknowledgment',
 					'error'   => 'compliance_acknowledgment_error',
@@ -346,17 +357,34 @@ function pepselect_child_admin_display_agreements( $order ) {
 	}
 
 	// Legacy orders placed before M12-1: fall back to the original consent meta.
+	// The migrated code stored these under the leading-underscore keys; the
+	// no-underscore forms are read too as a safety net, so a key-shape mismatch
+	// cannot hide a real acceptance on an older order.
 	$privacy = (string) $order->get_meta( '_privacy_agreement' );
-	$terms   = (string) $order->get_meta( '_terms_agreement_custom' );
 
+	if ( '' === $privacy ) {
+		$privacy = (string) $order->get_meta( 'privacy_agreement' );
+	}
+
+	$terms = (string) $order->get_meta( '_terms_agreement_custom' );
+
+	if ( '' === $terms ) {
+		$terms = (string) $order->get_meta( 'terms_agreement_custom' );
+	}
+
+	// Neither shape present: render nothing rather than an empty block.
 	if ( '' === $privacy && '' === $terms ) {
 		return;
 	}
 
+	// These pre-change orders carry no acceptance timestamp or wording version;
+	// show them as not recorded rather than fabricating a value.
 	echo '<div class="pepselect-admin-agreements">';
-	echo '<p><strong>' . esc_html__( 'Consent (legacy)', 'pepselect-child' ) . '</strong></p>';
+	echo '<p><strong>' . esc_html__( 'Legacy consent (pre-2026-08-11 wording)', 'pepselect-child' ) . '</strong></p>';
 	echo '<p>' . esc_html__( 'Privacy Policy', 'pepselect-child' ) . ': ' . esc_html( '' !== $privacy ? $privacy : 'No' ) . '</p>';
 	echo '<p>' . esc_html__( 'Terms & Conditions', 'pepselect-child' ) . ': ' . esc_html( '' !== $terms ? $terms : 'No' ) . '</p>';
+	echo '<p>' . esc_html__( 'Accepted at', 'pepselect-child' ) . ': ' . esc_html__( 'not recorded', 'pepselect-child' ) . '</p>';
+	echo '<p>' . esc_html__( 'Wording version', 'pepselect-child' ) . ': ' . esc_html__( 'not recorded', 'pepselect-child' ) . '</p>';
 	echo '</div>';
 }
 add_action( 'woocommerce_admin_order_data_after_billing_address', 'pepselect_child_admin_display_agreements', 10, 1 );

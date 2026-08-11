@@ -1007,6 +1007,10 @@ li.wc_payment_method.payment_method_bacs .payment_box {
 	display: none;
 }
 
+.pepselect-ack__error--field {
+	margin-left: 0;
+}
+
 .pepselect-acknowledgments .pepselect-ack--error input[type="checkbox"] {
 	outline: 2px solid var(--pep-color-red);
 	outline-offset: 2px;
