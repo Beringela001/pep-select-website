@@ -6,6 +6,13 @@ All notable changes to the Pep Select child theme are documented here.
 
 Previously live: **0.17.0-beta.1**, deployed to production on 2026-07-23.
 
+## 0.20.0-beta.24 - 2026-08-12
+
+- (A) The order summary is one card again. 0.20.0-beta.23 cleared the inner wrapper's background, border and radius but left the drop shadow Fluid paints on it, so it still read as a floating panel inside the blue card. The shadow is removed, including the separate flyout-open variant that sets its own. Source confirmed as Fluid's checkout-steps-424.min.css rule on div.woocommerce .fc-wrapper .fc-checkout-order-review .fc-checkout-order-review__inner, not theme CSS.
+- Correction to the reported cause: the inner wrapper was not narrower than the panel content box. Measured, its width already equals the panel's border-box width minus its two 1px borders and 28px padding on each side (242px inside a 300px panel at the width tested; 428px minus 58px gives the 369.5px reported on production). No width change was made or needed - the inset edge was the shadow alone.
+- (C) A hairline divider now separates the cash-back block from the totals, on tr.cart-subtotal, using the same 1px --pep-color-border treatment as the dividers above it, with 20px of breathing room either side (padding-bottom on tr.pep-redeem-slot, padding-top on the subtotal row). foundations.css defines no spacing token, so this follows the px scale already used by the dividers in checkout.css.
+- Unchanged by request: the hairline dividers above, the centred content alignment, the amber Square panel and its own card treatment, and the BAC product image and its side-by-side layout. This release is CSS only - no PHP, markup, validation or order-meta changes.
+
 ## 0.20.0-beta.23 - 2026-08-12
 
 - (A) The orphaned "Payment method" heading in the left column is removed - the payment box it labelled moved to the summary panel in 0.20.0-beta.22, and the block below it carries its own Acknowledgments heading. Done through Fluid's fc_register_checkout_substep_args filter by setting the payment substep title to null, which Fluid supports (it does the same when the coupon section title is disabled), so the substep still registers and step structure is intact. The relocated payment section now has its own heading in the panel, "Payment method", reusing the panel's existing h3.fc-checkout-order-review-title treatment set by "Order summary". No new copy.

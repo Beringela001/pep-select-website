@@ -1647,3 +1647,48 @@ html.pep-redeem-ready .pep-redeem-native-wrap {
 		gap: 12px;
 	}
 }
+
+/* =========================================================================
+   M12-11: remove the inner card, divide the totals.
+   A: the inner wrapper's background and border were already cleared, but Fluid
+   still paints a drop shadow on it
+   (div.woocommerce .fc-wrapper .fc-checkout-order-review .fc-checkout-order-review__inner
+   in checkout-steps-424.min.css, 0 3px 8px var(--fluidcheckout--order-summary--shadow-color)),
+   which is what still read as a floating card. The shadow is removed here, and
+   the flyout-open variant that sets its own shadow is covered too. Its width
+   needed no change: measured, the inner already fills the panel content box
+   exactly (panel border-box minus its 1px borders and 28px padding). The 20px
+   bottom margin is restated so the gap before the payment block cannot collapse.
+   C: a hairline between the cash-back block and the totals, with matching
+   breathing room either side. foundations.css defines no spacing token, so this
+   uses the same px scale as the dividers already in this file.
+   ========================================================================= */
+
+.fc-checkout-order-review .fc-checkout-order-review__inner,
+body.has-flyout--open-fc-checkout-order-review .fc-checkout-order-review .fc-checkout-order-review__inner {
+	box-shadow: none !important;
+	margin-bottom: 20px;
+}
+
+/* C: separate the cash-back block from the totals.
+   Fluid's boxed design template sets cell padding at very high specificity
+   (body.has-fc-design-template--boxed div.woocommerce .fc-wrapper #order_review
+   table.woocommerce-checkout-review-order-table td|th { padding: 5px !important }
+   in design-template-boxed-404.min.css), which beats a plain
+   .fc-checkout-order-review selector. That selector includes an id, which no
+   number of classes can outweigh, so the rules below repeat the same chain
+   including #order_review and add the row class to win. The shorter selector is
+   kept alongside for the second summary instance, which renders outside
+   #order_review. Border colour and weight match the dividers above. */
+.fc-checkout-order-review tr.pep-redeem-slot > td,
+body.has-fc-design-template--boxed div.woocommerce .fc-wrapper #order_review table.woocommerce-checkout-review-order-table tr.pep-redeem-slot > td {
+	padding-bottom: 20px !important;
+}
+
+.fc-checkout-order-review tr.cart-subtotal th,
+.fc-checkout-order-review tr.cart-subtotal td,
+body.has-fc-design-template--boxed div.woocommerce .fc-wrapper #order_review table.woocommerce-checkout-review-order-table tr.cart-subtotal th,
+body.has-fc-design-template--boxed div.woocommerce .fc-wrapper #order_review table.woocommerce-checkout-review-order-table tr.cart-subtotal td {
+	border-top: 1px solid var(--pep-color-border) !important;
+	padding-top: 20px !important;
+}
