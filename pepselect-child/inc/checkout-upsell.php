@@ -124,7 +124,22 @@ function pepselect_child_render_bacwater_upsell() {
 	</div>
 	<?php
 }
-add_action( 'fc_checkout_before_step_payment_fields', 'pepselect_child_render_bacwater_upsell' );
+/**
+ * Render the upsell inside the order summary, below the line items.
+ *
+ * woocommerce_review_order_after_cart_contents fires inside the review table's
+ * tbody, after the line items and before the totals in tfoot, which is the
+ * required position. Because the insertion point is inside a table, the card is
+ * wrapped in a full-width row; the card markup itself is unchanged.
+ *
+ * @return void
+ */
+function pepselect_child_render_bacwater_upsell_summary_row() {
+	echo '<tr class="pepselect-summary-row pepselect-summary-row--bac"><td colspan="2">';
+	pepselect_child_render_bacwater_upsell();
+	echo '</td></tr>';
+}
+add_action( 'woocommerce_review_order_after_cart_contents', 'pepselect_child_render_bacwater_upsell_summary_row', 10 );
 
 /**
  * Toggle the Bacteriostatic Water line in the cart. Runs through the WooCommerce

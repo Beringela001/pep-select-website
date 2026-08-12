@@ -229,6 +229,68 @@ function pepselect_child_checkout_item_strength_pill( $name, $cart_item, $cart_i
 add_filter( 'woocommerce_cart_item_name', 'pepselect_child_checkout_item_strength_pill', 20, 3 );
 
 /**
+ * Remove Fluid Checkout's progress bar from the DOM.
+ *
+ * Fluid renders it with FluidCheckout_Steps::output_checkout_progress_bar() on
+ * woocommerce_before_checkout_form at priority 4. Earlier CSS only hid the
+ * "STEP n OF 4" label, leaving .fc-progress-bar and its children in the
+ * document; unhooking the renderer removes the markup itself. Runs on wp at a
+ * priority after Fluid's own late hooks (it registers on wp at 100) and is
+ * guarded so a missing or renamed class is a no-op rather than a fatal.
+ *
+ * @return void
+ */
+function pepselect_child_remove_fluid_progress_bar() {
+	if ( ! class_exists( 'FluidCheckout_Steps' ) || ! method_exists( 'FluidCheckout_Steps', 'instance' ) ) {
+		return;
+	}
+
+	$steps = FluidCheckout_Steps::instance();
+
+	if ( ! is_object( $steps ) || ! method_exists( $steps, 'output_checkout_progress_bar' ) ) {
+		return;
+	}
+
+	remove_action( 'woocommerce_before_checkout_form', array( $steps, 'output_checkout_progress_bar' ), 4 );
+}
+add_action( 'wp', 'pepselect_child_remove_fluid_progress_bar', 200 );
+
+/**
+ * Move Fluid's coupon code section into the order summary.
+ *
+ * Fluid renders coupons as a checkout substep inside the payment step (body
+ * class has-fc-coupon-code--substep-before-payment). fc_coupon_code_displayed_as_substep
+ * is Fluid's own documented filter for suppressing that substep, so the section
+ * is not duplicated, and the same render method is called inside the summary
+ * instead. This keeps Fluid's AJAX apply/remove endpoints untouched - the
+ * section is field-based, not a nested <form>, so it is safe inside form.checkout.
+ *
+ * @return void
+ */
+function pepselect_child_render_coupon_in_summary() {
+	if ( ! class_exists( 'FluidCheckout_CouponCodes' ) || ! method_exists( 'FluidCheckout_CouponCodes', 'instance' ) ) {
+		return;
+	}
+
+	$coupons = FluidCheckout_CouponCodes::instance();
+
+	if ( ! is_object( $coupons ) || ! method_exists( $coupons, 'output_section_coupon_codes_fields' ) ) {
+		return;
+	}
+
+	if ( method_exists( $coupons, 'is_feature_enabled' ) && ! $coupons->is_feature_enabled() ) {
+		return;
+	}
+
+	echo '<tr class="pepselect-summary-row pepselect-summary-row--coupon"><td colspan="2">';
+	echo '<div class="pepselect-inner-card pepselect-inner-card--coupon">';
+	$coupons->output_section_coupon_codes_fields();
+	echo '</div></td></tr>';
+}
+add_action( 'woocommerce_review_order_after_cart_contents', 'pepselect_child_render_coupon_in_summary', 20 );
+add_filter( 'fc_coupon_code_displayed_as_substep', '__return_false' );
+
+/**
  * Enqueue checkout and cart presentation styles.
  *
  * @return void

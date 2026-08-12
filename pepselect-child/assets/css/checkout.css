@@ -1289,3 +1289,120 @@ html.pep-redeem-ready .pep-redeem-native-wrap {
 	white-space: nowrap;
 	vertical-align: middle;
 }
+
+/* =========================================================================
+   M12-8: right panel completion.
+   A: the TOTAL row read lighter than the rows above it. Subtotal/Shipping/Tax
+   were already reduced to 13px/400 in M12-6 (verified on beta.19), so only the
+   TOTAL label needed promoting - it was still Plus Jakarta Sans 15px/600 while
+   its figure was already mono 18px/600. The whole row is now mono 18px/600 navy.
+   C: BAC, coupon and cash back render inside the summary below the line items.
+   Their rows sit inside the review table, so each is a full-width cell with the
+   table's own cell chrome removed.
+   ========================================================================= */
+
+/* A: TOTAL row - label and figure both mono, 18px, 600, navy. */
+.fc-checkout-order-review .order-total th,
+.fc-checkout-order-review .order-total td,
+.fc-checkout-order-review .order-total .woocommerce-Price-amount {
+	font-family: var(--pep-font-technical) !important;
+	font-size: 18px !important;
+	font-weight: 600 !important;
+	color: var(--pep-color-navy) !important;
+}
+
+/* C: full-width rows injected into the review table. */
+.fc-checkout-order-review .pepselect-summary-row > td {
+	padding: 0 0 14px !important;
+	border: 0 !important;
+}
+
+.fc-checkout-order-review .pepselect-summary-row .pepselect-bacwater-standalone {
+	margin: 0;
+}
+
+/* C2/C3: shared inner-card treatment. */
+.pepselect-inner-card,
+.fc-checkout-order-review .pep-redeem {
+	box-sizing: border-box;
+	padding: 16px;
+	border: 1px solid var(--pep-color-border);
+	border-radius: 6px;
+	background: var(--pep-color-cyan-soft);
+	font-family: var(--pep-font-interface);
+}
+
+/* The coupon section inherits Fluid's substep spacing; neutralise it inside
+   the card so the card owns the padding. */
+.pepselect-inner-card--coupon .fc-step__substep,
+.pepselect-inner-card--coupon .fc-step__substep-inner,
+.pepselect-inner-card--coupon .expansible-section__content {
+	margin: 0 !important;
+	padding: 0 !important;
+	border: 0 !important;
+	background: transparent !important;
+}
+
+.pepselect-inner-card--coupon .expansible-section__toggle-plus {
+	font-family: var(--pep-font-interface);
+	font-size: 13px;
+	font-weight: var(--pep-font-weight-semibold);
+}
+
+/* C: applied coupon / applied redemption render as removable pills. */
+.fc-checkout-order-review .cart-discount th,
+.fc-checkout-order-review .cart-discount td {
+	border: 0 !important;
+	padding-top: 6px !important;
+	padding-bottom: 6px !important;
+}
+
+.fc-checkout-order-review .cart-discount th {
+	font-size: 0 !important;
+}
+
+.fc-checkout-order-review .cart-discount th .woocommerce-remove-coupon,
+.fc-checkout-order-review .cart-discount th > * {
+	font-size: 12px !important;
+}
+
+.fc-checkout-order-review .cart-discount th::before {
+	content: attr(data-pep-label);
+}
+
+/* Pill shell for an applied discount label. */
+.fc-checkout-order-review .cart-discount th,
+.pep-redeem__applied {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 4px 10px;
+	border: 1px solid var(--pep-color-cyan);
+	border-radius: var(--pep-radius-pill);
+	background: var(--pep-color-cyan-soft);
+	color: var(--pep-color-navy);
+	font-family: var(--pep-font-interface);
+	font-size: 12px !important;
+	font-weight: var(--pep-font-weight-semibold);
+	line-height: 1.5;
+}
+
+.fc-checkout-order-review .cart-discount .woocommerce-remove-coupon,
+.pep-redeem__remove {
+	color: var(--pep-color-navy);
+	font-weight: 700;
+	text-decoration: none;
+	line-height: 1;
+}
+
+.fc-checkout-order-review .cart-discount .woocommerce-remove-coupon:hover,
+.pep-redeem__remove:hover {
+	color: var(--pep-color-cyan);
+}
+
+@media (max-width: 767px) {
+	.pepselect-inner-card,
+	.fc-checkout-order-review .pep-redeem {
+		padding: 14px;
+	}
+}
