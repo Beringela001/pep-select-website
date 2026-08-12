@@ -371,6 +371,11 @@ function pepselect_child_render_payment_in_summary( $step_id = 'payment', $is_si
 	$rendered = true;
 
 	woocommerce_checkout_payment();
+
+	// Close the .pay wrapper opened with the payment heading. The place order
+	// button is printed by Fluid immediately after this, inside the same
+	// container, which is where the mockup has it.
+	echo '</div>';
 }
 add_action( 'fc_place_order', 'pepselect_child_render_payment_in_summary', 5, 2 );
 
@@ -443,7 +448,11 @@ function pepselect_child_render_payment_heading( $step_id = 'payment', $is_sideb
 
 	$rendered = true;
 
-	echo '<h3 class="fc-checkout-order-review-title pepselect-payment-title">' . esc_html__( 'PAYMENT', 'pepselect-child' ) . '</h3>';
+	// .pay in the mockup carries the divider and the top spacing; .paylab carries
+	// only its own type and a 12px bottom margin. Kept as separate elements so
+	// each maps 1:1 to one mockup class.
+	echo '<div class="pepselect-pay-section">';
+	echo '<div class="pepselect-payment-title">' . esc_html__( 'PAYMENT', 'pepselect-child' ) . '</div>';
 }
 add_action( 'fc_place_order', 'pepselect_child_render_payment_heading', 4, 2 );
 
@@ -711,13 +720,17 @@ function pepselect_child_render_summary_totals() {
 	echo '<tr class="pepselect-summary-row pepselect-summary-row--totals"><td colspan="2" class="pepselect-panel-cell">';
 	echo '<div class="pepselect-totals">';
 
-	echo '<div class="pepselect-totals__row"><span>' . esc_html__( 'Subtotal', 'pepselect-child' ) . '</span><span>' . wp_kses_post( $cart->get_cart_subtotal() ) . '</span></div>';
-
+	// Row order is the mockup's, exactly: discount, subtotal, cash back,
+	// shipping, tax, total. The VALUES are live WooCommerce data dropped into
+	// those slots - the subtotal remains WooCommerce's own cart subtotal and is
+	// not recomputed to match the mockup's illustrative figure.
 	foreach ( $groups['discount'] as $code => $coupon ) {
 		/* translators: %s: coupon code. */
 		$label = sprintf( __( 'Discount (%s)', 'pepselect-child' ), strtoupper( $code ) );
 		echo '<div class="pepselect-totals__row pepselect-totals__row--credit"><span>' . esc_html( $label ) . '</span><span>&minus;' . wp_kses_post( pepselect_child_coupon_amount_html( $code ) ) . '</span></div>';
 	}
+
+	echo '<div class="pepselect-totals__row"><span>' . esc_html__( 'Subtotal', 'pepselect-child' ) . '</span><span>' . wp_kses_post( $cart->get_cart_subtotal() ) . '</span></div>';
 
 	foreach ( $groups['cashback'] as $code => $coupon ) {
 		echo '<div class="pepselect-totals__row pepselect-totals__row--credit"><span>' . esc_html__( 'Cash back', 'pepselect-child' ) . '</span><span>&minus;' . wp_kses_post( pepselect_child_coupon_amount_html( $code ) ) . '</span></div>';

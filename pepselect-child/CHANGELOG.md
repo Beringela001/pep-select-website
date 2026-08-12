@@ -6,6 +6,15 @@ All notable changes to the Pep Select child theme are documented here.
 
 Previously live: **0.17.0-beta.1**, deployed to production on 2026-07-23.
 
+## 0.20.0-beta.32 - 2026-08-12
+
+- The summary panel is now a clone of checkout-panel-pepselect.html rather than an interpretation of it. Every declaration in the panel block is copied from that file's own <style>, each rule annotated with the mockup class it mirrors, and mapped onto the live element that plays that role. 46 mockup selectors were mapped and all 46 resolve to a live element.
+- The 8px inner-card radius approved during M12-17 is REVOKED. The file says 6px, so the cards are 6px and --pep-radius-card-inner is back to 6px. The design-token record is corrected to match.
+- Totals rows follow the file's order exactly: discount, subtotal, cash back, shipping, tax, total. The values remain live WooCommerce data dropped into those slots - the subtotal is still WooCommerce's own cart subtotal and is not recomputed to match the mockup's illustrative figure, which would mean printing a number WooCommerce never calculates.
+- The payment divider moves to where the file puts it. In the mockup .pay carries margin-top 20px, padding-top 18px and the 1px #D7E1E9 rule, while .paylab carries only its own type and a 12px bottom margin. A .pepselect-pay-section wrapper now plays .pay, so the two map one to one.
+- The BAC card was rendering before the applied pill and the cash-back card because it shared priority 10 with the discount card. It moves to priority 30, giving the file's order: items, discount, applied, cash back, BAC, totals, pay.
+- Place order takes the file's .cta values, including font-weight 600 and 13px padding, which the theme button rule had been overriding at 700 and 15px.
+
 ## 0.20.0-beta.31 - 2026-08-12
 
 - The line-item overlap reported in 0.20.0-beta.30 is fixed in markup rather than forced with CSS. The quantity line was being appended inside .cart-item__name by the woocommerce_cart_item_name filter, so it had nowhere to wrap to and overflowed its parent onto the discount card. It is now rendered as its own element on Fluid's own fc_order_summary_cart_item_details action at priority 95, alongside the product name (10) and unit price (30), so it participates in normal flow and forms its own row. Measured on the deployed build with the new structure simulated: the overlap of -25.2px becomes a clear gap, and elementFromPoint at the boundary returns the containing cell rather than an overlapping element.

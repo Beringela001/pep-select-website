@@ -158,7 +158,7 @@ Cards and buttons carry **no resting shadow** — shadow appears on **hover** on
 
 ### Radius
 
-`8px` joins the existing scale as the **inner-card radius**, recorded as
+`6px` joins the existing scale as the **inner-card radius**, recorded as
 `--pep-radius-card-inner`. The panel itself uses 16px; the existing small/medium/large/pill tokens
 are unchanged.
 
@@ -166,7 +166,7 @@ are unchanged.
 
 | Token | Value | Why reusable |
 |---|---|---|
-| `--pep-radius-card-inner` | `8px` | inner-card radius, now part of the scale (8px per Paulo in M12-17; the mockup specified 6px) |
+| `--pep-radius-card-inner` | `6px` | inner-card radius, from the approved mockup. An 8px variant was approved in M12-17 and revoked in M12-18; the mockup file is authoritative. |
 | `--pep-surface-card` | `#FFFFFF` | the white-card-on-tint pattern |
 | `--pep-surface-panel` | `#F3F8FC` | the tinted commercial panel |
 | `--pep-color-quiet` | `#7A8793` | tertiary control colour (Remove links) |

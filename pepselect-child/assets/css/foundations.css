@@ -67,7 +67,7 @@
 	   computed-value time, and an invalid var() resolves to unset rather than
 	   falling back to an earlier declaration - which is why the inner cards
 	   rendered transparent with square corners. --- */
-	--pep-radius-card-inner: 8px;
+	--pep-radius-card-inner: 6px;
 	--pep-surface-card: #FFFFFF;
 	--pep-surface-panel: #F3F8FC;
 	--pep-color-quiet: #7A8793;

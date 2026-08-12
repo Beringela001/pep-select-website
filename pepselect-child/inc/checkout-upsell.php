@@ -154,7 +154,10 @@ function pepselect_child_render_bacwater_upsell_summary_row() {
 	pepselect_child_render_bacwater_upsell();
 	echo '</td></tr>';
 }
-add_action( 'woocommerce_review_order_after_cart_contents', 'pepselect_child_render_bacwater_upsell_summary_row', 10 );
+// Priority 30 puts the BAC card after the discount card (10), the applied pills
+// (20) and the redeem slot (25), which is the mockup's order:
+// items -> discount -> applied -> cash back -> BAC -> totals.
+add_action( 'woocommerce_review_order_after_cart_contents', 'pepselect_child_render_bacwater_upsell_summary_row', 30 );
 
 /**
  * Toggle the Bacteriostatic Water line in the cart. Runs through the WooCommerce
