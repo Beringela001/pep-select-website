@@ -2296,3 +2296,174 @@ body.has-fc-design-template--boxed div.woocommerce .fc-wrapper #order_review tab
 		margin: 6px 0 0 !important;
 	}
 }
+
+/* =========================================================================
+   M12-17b: three regressions from 0.20.0-beta.29, with their causes.
+
+   A. The payment heading lost its mono/amber type. Fluid gives that element BOTH
+      classes - fc-checkout-order-review-title AND pepselect-payment-title - and
+      beta.29 re-declared the panel heading rule later in this file than the
+      payment-title rule. Same specificity, later wins, so the panel heading
+      overwrote it. The heading rule below now excludes the payment title
+      explicitly, so the two can never collide again regardless of order.
+
+   B. Edit cart rendered below the rule instead of beside the heading. Fluid's
+      markup is div.fc-checkout-order-review__head > (h3.title, a.edit-cart), and
+      beta.29 put the flex row and the border-bottom on the H3 - which contains
+      only the words - instead of on the head wrapper. The row and the rule now
+      belong to the wrapper, and the H3 is a plain inline heading again.
+
+   C. Line items appeared to overlap the discount card. Two causes: the
+      mispositioned Edit cart from B was landing over the item region, and the
+      line-item price was floated right, which takes it out of flow. The price is
+      now laid out with flex, and the item block carries the mockup's 18px gap.
+   ========================================================================= */
+
+/* ---- B: the heading row is the wrapper, not the words ---- */
+.fc-checkout-order-review .fc-checkout-order-review__head {
+	display: flex !important;
+	width: 100% !important;
+	justify-content: space-between !important;
+	align-items: baseline !important;
+	gap: 12px !important;
+	margin: 0 0 24px !important;
+	padding: 0 0 14px !important;
+	border-bottom: 1px solid #D7E1E9 !important;
+}
+
+.fc-checkout-order-review .fc-checkout-order-review__head .fc-checkout-order-review-title,
+.fc-checkout-order-review .fc-checkout-order-review__head > h3 {
+	display: block !important;
+	flex: 0 1 auto !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	border: 0 !important;
+	font-family: var(--pep-font-interface) !important;
+	font-size: 20px !important;
+	font-weight: 600 !important;
+	line-height: 1.3 !important;
+	color: #002A53 !important;
+	text-transform: none !important;
+	letter-spacing: 0 !important;
+}
+
+.fc-checkout-order-review .fc-checkout-order-review__head .fc-checkout-order-review__edit-cart,
+.fc-checkout-order-review .fc-checkout-order-review__head .fc-checkout-order-review__header-link {
+	flex: 0 0 auto !important;
+	margin: 0 !important;
+	font-family: var(--pep-font-interface) !important;
+	font-size: 13px !important;
+	font-weight: 500 !important;
+	color: #17A1CF !important;
+	text-decoration: none !important;
+}
+
+/* A standalone title (no head wrapper) keeps the row treatment, but the payment
+   heading is explicitly excluded - it shares the class and is its own thing. */
+.fc-checkout-order-review .fc-checkout-order-review-title:not(.pepselect-payment-title) {
+	font-family: var(--pep-font-interface) !important;
+	font-size: 20px !important;
+	font-weight: 600 !important;
+	color: #002A53 !important;
+	text-transform: none !important;
+	letter-spacing: 0 !important;
+}
+
+/* ---- A: payment heading restored, and now immune to the heading rule ---- */
+.fc-checkout-order-review .pepselect-payment-title,
+.fc-checkout-order-review h3.pepselect-payment-title {
+	display: flex !important;
+	width: 100% !important;
+	justify-content: center !important;
+	align-items: center !important;
+	gap: 12px !important;
+	margin: 20px 0 12px !important;
+	padding: 18px 0 0 !important;
+	border-top: 1px solid #D7E1E9 !important;
+	border-bottom: 0 !important;
+	font-family: var(--pep-font-technical) !important;
+	font-size: 12px !important;
+	font-weight: 400 !important;
+	line-height: 1.4 !important;
+	letter-spacing: 2px !important;
+	color: #B46A00 !important;
+	text-align: center !important;
+	text-transform: uppercase !important;
+}
+
+.fc-checkout-order-review .pepselect-payment-title::before,
+.fc-checkout-order-review .pepselect-payment-title::after {
+	content: "" !important;
+	display: block !important;
+	flex: 1 1 auto !important;
+	height: 1px !important;
+	background: #E8C99A !important;
+}
+
+/* ---- Cash-back row: BOTH buttons outline, no solid variant ---- */
+.fc-checkout-order-review .pep-redeem__btn,
+.fc-checkout-order-review .pep-redeem__max {
+	flex: 0 0 auto;
+	padding: 10px 20px !important;
+	border: 1px solid #17A1CF !important;
+	border-radius: 999px !important;
+	background: #FFFFFF !important;
+	color: #002A53 !important;
+	font-family: var(--pep-font-interface) !important;
+	font-size: 13px !important;
+	font-weight: 500 !important;
+	white-space: nowrap;
+	cursor: pointer;
+}
+
+/* Place order stays solid - it is the CTA, not a card control. */
+.fc-checkout-order-review #place_order,
+.fc-checkout-order-review .fc-place-order-button {
+	background: #17A1CF !important;
+	color: #FFFFFF !important;
+}
+
+/* --- M12-17b follow-up: two measurements corrected the first attempt. ---
+   B: Fluid's head wrapper carries flex-wrap:wrap and the h3 computes to the full
+   362px, so Edit cart was pushed onto a second line even once it was inside the
+   row. The row is now nowrap and the heading sizes to its text.
+   C: the line item renders TWO amounts - .cart-item__price inside the details
+   flex row, and a separate .product-total block beneath it. That second block was
+   most of the 50px the items were adding. It is hidden, and the 18px the mockup
+   puts below the items is placed on the discount card's row so it lands exactly
+   between the qty line and the card. */
+
+.fc-checkout-order-review .fc-checkout-order-review__head {
+	flex-wrap: nowrap !important;
+}
+
+.fc-checkout-order-review .fc-checkout-order-review__head .fc-checkout-order-review-title,
+.fc-checkout-order-review .fc-checkout-order-review__head > h3 {
+	width: auto !important;
+	max-width: none !important;
+	flex: 0 1 auto !important;
+	white-space: nowrap;
+}
+
+.fc-checkout-order-review .fc-checkout-order-review__head .fc-checkout-order-review__header-link,
+.fc-checkout-order-review .fc-checkout-order-review__head .fc-checkout-order-review__edit-cart {
+	flex: 0 0 auto !important;
+	white-space: nowrap;
+}
+
+/* --- M12-17b, third measurement. ---
+   The qty line is appended by the woocommerce_cart_item_name filter, so it lives
+   INSIDE .cart-item__name, not beside it. That element was inline-flex, which
+   gave the span nowhere to wrap to: it overflowed its parent and sat on top of
+   the discount card (measured -12.8px, i.e. the card began above the qty line).
+   The name element now wraps and the qty line claims a full row, so the item
+   block grows to contain it and the 18px gap is measured from the qty line. */
+
+/* Edit cart flush to the right edge of the row. */
+.fc-checkout-order-review .fc-checkout-order-review__head {
+	justify-content: space-between !important;
+}
+
+.fc-checkout-order-review .fc-checkout-order-review__head > *:last-child {
+	margin-left: auto !important;
+}
