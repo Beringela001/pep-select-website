@@ -108,8 +108,8 @@
 							'<span class="pep-redeem__prefix" aria-hidden="true">$</span>' +
 							'<input type="number" class="pep-redeem__input" inputmode="decimal" step="0.01" min="' + MINIMUM_DOLLARS + '" aria-label="Cash back amount in dollars" />' +
 						'</div>' +
-						'<button type="button" class="pep-redeem__max">Max</button>' +
 						'<button type="button" class="pep-redeem__btn">Apply</button>' +
+						'<button type="button" class="pep-redeem__max">Max</button>' +
 					'</div>' +
 					'<div class="pep-redeem__note">Minimum redemption is $5.00.</div>' +
 				'</div>' +

@@ -228,11 +228,32 @@ function pepselect_child_checkout_item_strength_pill( $name, $cart_item, $cart_i
 
 	$strength = pepselect_child_get_product_strength_label( $product );
 
-	if ( '' === $strength ) {
-		return $name;
+
+	$out = $name;
+
+	if ( '' !== $strength ) {
+		$out .= ' <span class="pepselect-order-strength">' . esc_html( $strength ) . '</span>';
 	}
 
-	return $name . ' <span class="pepselect-order-strength">' . esc_html( $strength ) . '</span>';
+	// The mockup shows one quiet line under the item: "Qty N  Remove". Fluid's
+	// quantity stepper is hidden in CSS on the checkout, so this is the only
+	// quantity control shown here. The remove link is WooCommerce's own cart
+	// remove URL, so it behaves exactly as the cart page's does.
+	$quantity = isset( $cart_item['quantity'] ) ? (int) $cart_item['quantity'] : 0;
+
+	if ( 0 < $quantity ) {
+		$out .= '<span class="pepselect-qty">';
+		/* translators: %d: item quantity. */
+		$out .= esc_html( sprintf( __( 'Qty %d', 'pepselect-child' ), $quantity ) );
+
+		if ( '' !== $cart_item_key && function_exists( 'wc_get_cart_remove_url' ) ) {
+			$out .= '<a href="' . esc_url( wc_get_cart_remove_url( $cart_item_key ) ) . '" class="remove pepselect-qty__remove" aria-label="' . esc_attr__( 'Remove this item', 'pepselect-child' ) . '">' . esc_html__( 'Remove', 'pepselect-child' ) . '</a>';
+		}
+
+		$out .= '</span>';
+	}
+
+	return $out;
 }
 add_filter( 'woocommerce_cart_item_name', 'pepselect_child_checkout_item_strength_pill', 20, 3 );
 
@@ -290,7 +311,7 @@ function pepselect_child_render_coupon_in_summary() {
 		return;
 	}
 
-	echo '<tr class="pepselect-summary-row pepselect-summary-row--coupon"><td colspan="2">';
+	echo '<tr class="pepselect-summary-row pepselect-summary-row--coupon"><td colspan="2" class="pepselect-panel-cell">';
 	echo '<div class="pepselect-inner-card pepselect-inner-card--coupon">';
 	echo '<div class="pepselect-card-label">' . esc_html__( 'DISCOUNT CODE', 'pepselect-child' ) . '</div>';
 

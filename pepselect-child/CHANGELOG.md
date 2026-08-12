@@ -6,6 +6,16 @@ All notable changes to the Pep Select child theme are documented here.
 
 Previously live: **0.17.0-beta.1**, deployed to production on 2026-07-23.
 
+## 0.20.0-beta.29 - 2026-08-12
+
+- The three inner cards rendered transparent with square corners in 0.20.0-beta.28 because the commercial-surface tokens added in that release were written AFTER the closing brace of :root in foundations.css, so they were never defined. An invalid var() resolves to unset rather than falling back to an earlier declaration, so background and border-radius were dropped entirely even though a literal white rule existed above. The tokens now sit inside :root, and every var() in the panel carries a literal fallback so a missing token can never blank a card again.
+- Fluid's .fc-checkout-order-review__inner was still painting a white card of its own inside the panel (white fill, 1px border, 8px radius, 12px/20px padding, 20px bottom margin). It does not exist in the mockup. Its styling is stripped to nothing while the element itself is kept, since it is Fluid's structure.
+- The width cascade is removed. Cards were inheriting a chain of insets - Fluid's inner wrapper, the review table, and the table cell's 10px/20px padding - which left them 84px narrower than the panel. The review table, its body, the summary rows and their cells are now full-width layout boxes with no padding, and the coupon and BAC cells carry the panel-cell class that was previously only on the pills, redeem slot and totals. All three cards now measure 362px, flush to the panel padding.
+- The heading rule was sitting on the "Your Order" text, so it stopped after 104px. It now belongs to the heading row and spans the full content width, with Edit cart on the same baseline.
+- Line items follow the mockup: no thumbnail, name and strength pill on the left with the amount right, and a single quiet "Qty N  Remove" line beneath. The quantity stepper is hidden on the checkout; the remove link uses WooCommerce's own cart remove URL.
+- BAC card puts the toggle, "Add to cart" and the price on one row; the redemption card orders its controls input, Apply, Max.
+- Card radius is 8px, per Paulo's instruction for rounder edges. This differs from the mockup, which specifies 6px, and the token --pep-radius-card-inner is updated to 8px so the recorded design language and the built surface agree.
+
 ## 0.20.0-beta.28 - 2026-08-12
 
 - M12-16 finishes the panel rebuild and removes the cause of it failing. 0.20.0-beta.27 added the correct rules but they never took, because panel blocks from M12-6 through M12-11 were still in the stylesheet and several of their selectors carried .fc-checkout-order-review while the newer ones did not. A scoped !important rule outranks an unscoped one, so the older rules kept stripping the inner cards back to transparent. Those blocks are deleted rather than out-specified, and every rule in the replacement is now scoped to the panel.

@@ -2078,3 +2078,221 @@ body.has-fc-design-template--boxed div.woocommerce .fc-wrapper #order_review tab
 	align-items: center !important;
 	margin: 0 !important;
 }
+
+/* =========================================================================
+   M12-17: remove the white wrapper, make the three cards identical.
+
+   Root cause of the cards rendering transparent and square in 0.20.0-beta.28:
+   the commercial-surface tokens were written after the closing brace of :root
+   in foundations.css, so they were never defined. An invalid var() resolves to
+   unset, NOT to the previous declaration, so background and border-radius were
+   simply dropped. The tokens are now inside :root, and every var() below also
+   carries a literal fallback so a missing token can never blank a card again.
+   ========================================================================= */
+
+/* 1. Fluid's inner wrapper is structure, not a card. Strip it completely. */
+.fc-checkout-order-review .fc-checkout-order-review__inner,
+div.woocommerce .fc-wrapper .fc-checkout-order-review .fc-checkout-order-review__inner {
+	width: 100% !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	border: 0 !important;
+	border-radius: 0 !important;
+	background: transparent !important;
+	box-shadow: none !important;
+}
+
+/* 2. The width cascade: the review table and its cells are layout, not chrome,
+      so nothing between the panel padding and a card may add width or inset. */
+.fc-checkout-order-review .woocommerce-checkout-review-order,
+.fc-checkout-order-review table.woocommerce-checkout-review-order-table,
+.fc-checkout-order-review table.woocommerce-checkout-review-order-table > tbody {
+	display: block !important;
+	width: 100% !important;
+	max-width: 100% !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	border: 0 !important;
+	border-radius: 0 !important;
+	background: transparent !important;
+	table-layout: auto !important;
+}
+
+.fc-checkout-order-review tr.pepselect-summary-row,
+.fc-checkout-order-review tr.cart_item {
+	display: block !important;
+	width: 100% !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	border: 0 !important;
+}
+
+/* Every cell the panel renders into: full width, no inset. The id-bearing
+   selector is repeated because Fluid's boxed template declares cell padding
+   !important behind an id, which nothing weaker can beat. */
+.fc-checkout-order-review td.pepselect-panel-cell,
+.fc-checkout-order-review tr.cart_item > td,
+body.has-fc-design-template--boxed div.woocommerce .fc-wrapper #order_review table.woocommerce-checkout-review-order-table td.pepselect-panel-cell,
+body.has-fc-design-template--boxed div.woocommerce .fc-wrapper #order_review table.woocommerce-checkout-review-order-table tr.cart_item > td {
+	display: block !important;
+	width: 100% !important;
+	max-width: 100% !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	border: 0 !important;
+	background: transparent !important;
+}
+
+/* 3. The three cards, identical. Literal fallbacks alongside every token. */
+.fc-checkout-order-review .pepselect-inner-card,
+.fc-checkout-order-review .pep-redeem,
+.fc-checkout-order-review .pepselect-bacwater-standalone {
+	display: block !important;
+	box-sizing: border-box !important;
+	width: 100% !important;
+	max-width: 100% !important;
+	padding: 16px !important;
+	margin: 0 0 4px !important;
+	border: 1px solid #D7E1E9 !important;
+	border-radius: var(--pep-radius-card-inner, 8px) !important;
+	background: var(--pep-surface-card, #FFFFFF) !important;
+}
+
+/* 4. Heading: the rule belongs to the row, not the words. */
+.fc-checkout-order-review .fc-checkout-order-review-title {
+	display: flex !important;
+	width: 100% !important;
+	justify-content: space-between !important;
+	align-items: baseline !important;
+	gap: 12px !important;
+	margin: 0 0 24px !important;
+	padding: 0 0 14px !important;
+	border-bottom: 1px solid #D7E1E9 !important;
+	font-family: var(--pep-font-interface) !important;
+	font-size: 20px !important;
+	font-weight: 600 !important;
+	color: #002A53 !important;
+	text-transform: none !important;
+	letter-spacing: 0 !important;
+}
+
+/* Any inner span that previously carried the rule gives it up. */
+.fc-checkout-order-review .fc-checkout-order-review-title > span,
+.fc-checkout-order-review .fc-checkout-order-review-title > *:not(a) {
+	border-bottom: 0 !important;
+	padding-bottom: 0 !important;
+	margin-bottom: 0 !important;
+}
+
+/* 5. Line item: name + pill left, amount right, then one quiet qty line. */
+.fc-checkout-order-review tr.cart_item .product-name {
+	display: block !important;
+}
+
+.fc-checkout-order-review tr.cart_item img {
+	display: none !important;
+}
+
+.fc-checkout-order-review .product-details {
+	display: block !important;
+	width: 100% !important;
+}
+
+.fc-checkout-order-review .cart-item__element.cart-item__name {
+	display: inline-flex !important;
+	align-items: center;
+	gap: 8px;
+	font-size: 15px;
+	color: #002A53;
+}
+
+.fc-checkout-order-review .cart-item__element.cart-item__price {
+	float: right;
+	font-family: var(--pep-font-technical);
+	font-size: 14px;
+	color: #002A53;
+}
+
+.fc-checkout-order-review .cart-item__element.cart-item__price .screen-reader-text {
+	display: none;
+}
+
+.fc-checkout-order-review tr.cart_item .quantity,
+.fc-checkout-order-review tr.cart_item .fc-buttons-added,
+.fc-checkout-order-review tr.cart_item button.plus,
+.fc-checkout-order-review tr.cart_item button.minus {
+	display: none !important;
+}
+
+.fc-checkout-order-review .pepselect-qty {
+	clear: both;
+	display: block;
+	padding-top: 2px;
+	margin-bottom: 18px;
+	font-size: 13px;
+	color: #5C7086;
+}
+
+.fc-checkout-order-review .pepselect-qty a,
+.fc-checkout-order-review tr.cart_item a.remove {
+	margin-left: 10px;
+	font-size: 13px;
+	color: var(--pep-color-quiet, #7A8793) !important;
+	text-decoration: none !important;
+}
+
+/* 6. BAC: toggle, label and price on ONE row. */
+.fc-checkout-order-review .pepselect-bacwater__toggle {
+	display: inline-flex !important;
+	align-items: center;
+	gap: 10px;
+	margin: 0 !important;
+}
+
+.fc-checkout-order-review .pepselect-bacwater__price-line {
+	display: inline;
+	margin: 0 0 0 10px !important;
+	font-family: var(--pep-font-technical);
+	font-size: 12px;
+	color: #5C7086;
+}
+
+.fc-checkout-order-review .pepselect-bacwater__body {
+	display: block;
+	min-width: 0;
+}
+
+.fc-checkout-order-review .pepselect-bacwater__row {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+/* 7. Redemption controls: input, Apply, Max. */
+.fc-checkout-order-review .pep-redeem__controls {
+	display: flex !important;
+	gap: 10px !important;
+	align-items: center !important;
+	margin: 0 !important;
+}
+
+.fc-checkout-order-review .pep-redeem__field {
+	order: 1;
+	flex: 1 1 auto;
+	min-width: 0;
+}
+
+.fc-checkout-order-review .pep-redeem__btn {
+	order: 2;
+}
+
+.fc-checkout-order-review .pep-redeem__max {
+	order: 3;
+}
+
+@media (max-width: 480px) {
+	.fc-checkout-order-review .pepselect-bacwater__price-line {
+		display: block;
+		margin: 6px 0 0 !important;
+	}
+}

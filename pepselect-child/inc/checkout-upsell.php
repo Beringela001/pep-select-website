@@ -148,7 +148,7 @@ function pepselect_child_render_bacwater_upsell() {
  * @return void
  */
 function pepselect_child_render_bacwater_upsell_summary_row() {
-	echo '<tr class="pepselect-summary-row pepselect-summary-row--bac"><td colspan="2">';
+	echo '<tr class="pepselect-summary-row pepselect-summary-row--bac"><td colspan="2" class="pepselect-panel-cell">';
 	pepselect_child_render_bacwater_upsell();
 	echo '</td></tr>';
 }
