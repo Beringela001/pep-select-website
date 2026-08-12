@@ -119,7 +119,7 @@ function pepselect_child_render_bacwater_upsell() {
 					<div class="pepselect-bacwater__media" aria-hidden="true"><?php echo wp_kses_post( $image_html ); ?></div>
 				<?php endif; ?>
 				<div class="pepselect-bacwater__body">
-				<p class="pepselect-bacwater__question"><?php esc_html_e( 'Need bacteriostatic water for your research?', 'pepselect-child' ); ?></p>
+				<p class="pepselect-bacwater__question"><?php esc_html_e( 'Need bacteriostatic water?', 'pepselect-child' ); ?></p>
 				<p class="pepselect-bacwater__sub"><?php esc_html_e( 'Compounds ship as lyophilized powder.', 'pepselect-child' ); ?></p>
 				<p class="pepselect-bacwater__price-line">
 					<?php

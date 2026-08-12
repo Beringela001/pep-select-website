@@ -90,21 +90,19 @@
 	}
 
 	function buildCard( review ) {
-		var subtotal = review.querySelector( '.cart-subtotal' );
+		// The slot is rendered server-side in document order (between the applied
+		// pills and the BAC card). Without it there is nowhere correct to put the
+		// card, so the native form is left visible instead.
+		var row = review.querySelector( 'tr.pep-redeem-slot' );
 
-		if ( ! subtotal ) {
+		if ( ! row ) {
 			return null;
 		}
 
-		var row = document.createElement( 'tr' );
-		row.className = 'pep-redeem-slot';
 		row.innerHTML =
-			'<td colspan="2">' +
+			'<td colspan="2" class="pepselect-panel-cell">' +
 				'<div class="pep-redeem">' +
-					'<div class="pep-redeem__row">' +
-						'<span class="pep-redeem__label">Cash back</span>' +
-						'<span class="pep-redeem__balance"></span>' +
-					'</div>' +
+					'<div class="pep-redeem__label">REDEEM CASH BACK <span class="pep-redeem__balance"></span></div>' +
 					'<div class="pep-redeem__controls">' +
 						'<div class="pep-redeem__field">' +
 							'<span class="pep-redeem__prefix" aria-hidden="true">$</span>' +
@@ -116,8 +114,6 @@
 					'<div class="pep-redeem__note">Minimum redemption is $5.00.</div>' +
 				'</div>' +
 			'</td>';
-
-		subtotal.parentNode.insertBefore( row, subtotal );
 
 		var note = row.querySelector( '.pep-redeem__note' );
 		var input = row.querySelector( '.pep-redeem__input' );
@@ -248,7 +244,8 @@
 			}
 		}
 
-		card.querySelector( '.pep-redeem__balance' ).textContent = money( maxDiscount ) + ' available';
+		card.querySelector( '.pep-redeem__balance' ).textContent =
+			'(YOU HAVE ' + money( maxDiscount ).toUpperCase() + ' \u2014 MIN ' + money( MINIMUM_DOLLARS ) + ')';
 
 		var amountInput = card.querySelector( '.pep-redeem__input' );
 

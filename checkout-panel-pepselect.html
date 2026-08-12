@@ -1,0 +1,282 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Checkout summary — Pep Select</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  *{box-sizing:border-box}
+  body{
+    margin:0;background:#fff;padding:32px 20px 80px;
+    font-family:"Plus Jakarta Sans",system-ui,sans-serif;-webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:960px;margin:0 auto}
+  .intro{border-bottom:1px solid #DCE7F1;padding-bottom:18px;margin-bottom:28px}
+  .intro h1{font-family:Georgia,serif;font-size:26px;font-weight:400;margin:0 0 8px;color:#002A53}
+  .intro p{margin:0;color:#5C7086;font-size:13.5px;line-height:1.6;max-width:72ch}
+
+  /* ---- panel: Orbitrex geometry, Pep Select colour ---- */
+  .panel{
+    width:420px;padding:28px;
+    background:#F3F8FC;border:1px solid #D7E1E9;border-radius:16px;
+  }
+
+  .head{
+    display:flex;justify-content:space-between;align-items:baseline;
+    font-size:20px;font-weight:600;color:#002A53;
+    padding:0 0 14px;margin:0 0 24px;border-bottom:1px solid #D7E1E9;
+  }
+  .head a{font-size:13px;font-weight:500;color:#17A1CF;text-decoration:none}
+
+  /* items */
+  .items{margin-bottom:18px}
+  .item{display:flex;justify-content:space-between;align-items:baseline;font-size:15px;color:#002A53}
+  .item .nm{display:flex;align-items:center;gap:8px}
+  .item .amt{font-family:"IBM Plex Mono",monospace;font-size:14px}
+  .pill{
+    font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.05em;
+    color:#002A53;background:#E8F6FB;border:1px solid #D7E1E9;border-radius:999px;padding:2px 8px;
+  }
+  .qty{font-size:13px;color:#5C7086;margin-top:2px}
+  .qty a{color:#7A8793;text-decoration:none;margin-left:10px}
+
+  /* inner cards — A's treatment, Pep Select tint */
+  .card{
+    background:#FFFFFF;border:1px solid #D7E1E9;border-radius:6px;
+    padding:16px;margin-bottom:4px;
+  }
+  .lab{
+    font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:1.54px;
+    color:#002A53;margin-bottom:10px;line-height:1.5;
+  }
+  .lab .muted{color:#5C7086}
+  .row{display:flex;gap:10px}
+  .row input{
+    flex:1;min-width:0;padding:10px 12px;border:1px solid #D7E1E9;border-radius:6px;background:#fff;
+    font-family:"IBM Plex Mono",monospace;font-size:12px;color:#002A53;
+  }
+  .row input::placeholder{color:#A8B4BF}
+  .btn{
+    padding:10px 20px;border:1px solid #17A1CF;border-radius:999px;background:#fff;
+    color:#002A53;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;font-family:inherit;
+  }
+  .btn.solid{background:#17A1CF;border-color:#17A1CF;color:#fff}
+  .hint{font-size:11px;color:#5C7086;margin-top:8px}
+
+  /* applied pill — BLUE, type measured from Orbitrex */
+  .applied{
+    display:inline-flex;align-items:center;gap:9px;margin-bottom:4px;
+    background:#E8F6FB;border:1px solid #17A1CF;border-radius:999px;
+    padding:8px 15px;
+  }
+  .applied b{
+    font-family:"IBM Plex Mono",monospace;font-size:13px;font-weight:600;
+    letter-spacing:-0.13px;color:#002A53;
+  }
+  .applied .det{font-size:12px;font-weight:500;color:#17A1CF}
+  .applied .x{color:#5C7086;cursor:pointer;font-size:18px;line-height:1}
+
+  /* BAC card — same treatment as the others */
+  .bac{display:flex;gap:12px;align-items:flex-start}
+  .bacimg{
+    width:52px;height:52px;flex:0 0 52px;border-radius:6px;background:#E8F6FB;
+    display:grid;place-items:center;color:#7A8793;font-size:9px;text-align:center;line-height:1.3;
+  }
+  .bac .t{font-size:13.5px;font-weight:600;color:#002A53;margin-bottom:2px}
+  .bac .s{font-size:12px;color:#5C7086;margin-bottom:9px;line-height:1.45}
+  .bacrow{display:flex;align-items:center;gap:10px}
+  .sw{width:34px;height:19px;border-radius:999px;background:#D7E1E9;position:relative;flex:0 0 34px;cursor:pointer}
+  .sw::after{content:"";position:absolute;top:2px;left:2px;width:15px;height:15px;border-radius:50%;background:#fff}
+  .bacrow .l{font-size:12.5px;font-weight:600;color:#002A53}
+  .bacrow .p{font-family:"IBM Plex Mono",monospace;font-size:12px;color:#5C7086}
+
+  /* totals — A's rhythm exactly */
+  .totals{padding-top:18px}
+  .r{display:flex;justify-content:space-between;padding-top:6px;font-size:13px;color:#5C7086}
+  .r span:last-child{font-family:"IBM Plex Mono",monospace}
+  .r.credit span:last-child{color:#17A1CF}
+  .r.total{
+    border-top:1px solid #D7E1E9;padding-top:14px;margin-top:12px;
+    font-family:"IBM Plex Mono",monospace;font-size:18px;font-weight:600;color:#002A53;
+  }
+  .r.total span:first-child{font-family:"IBM Plex Mono",monospace}
+
+  /* payment */
+  .pay{margin-top:20px;padding-top:18px;border-top:1px solid #D7E1E9}
+  .paylab{
+    font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:2px;
+    color:#B46A00;margin-bottom:12px;text-align:center;
+    display:flex;align-items:center;gap:12px;
+  }
+  .paylab::before,.paylab::after{content:"";flex:1;height:1px;background:#E8C99A}
+  .amber{
+    border:2px solid #B46A00;border-radius:6px;background:#FFF4DF;padding:16px;
+    font-size:12.5px;color:#13283D;line-height:1.55;
+  }
+  .amber-hd{font-weight:700;color:#002A53;font-size:13.5px;margin-bottom:6px}
+  .amber p{margin:0 0 12px}
+  .amber-box{
+    border:1px solid #B46A00;border-radius:6px;background:#fff;
+    padding:12px 14px;margin-bottom:12px;
+  }
+  .amber-box b{
+    font-family:"IBM Plex Mono",monospace;font-size:14px;font-weight:600;color:#B46A00;
+  }
+  .amber .fine{font-size:11.5px;color:#7A6A52;margin:0 0 6px}
+  .amber .fine:last-child{margin-bottom:0}
+  .cta{
+    margin-top:14px;width:100%;padding:13px;border:0;border-radius:999px;background:#17A1CF;
+    color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;
+  }
+
+  .notes{margin-top:44px;border-top:1px solid #DCE7F1;padding-top:22px}
+  .notes h3{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#5C7086;margin:0 0 12px}
+  .notes ul{margin:0;padding-left:18px;color:#13283D;font-size:13px;line-height:1.85;max-width:78ch}
+  .notes b{color:#002A53}
+</style>
+
+<div class="wrap">
+  <div class="intro">
+    <h1>Checkout summary — revised</h1>
+    <p>Orbitrex's structure, sizing and spacing kept exactly. Pep Select colours throughout, applied pills in blue, their cash-back phrasing, and a bacteriostatic water card in the same treatment below redeem.</p>
+  </div>
+
+  <div class="panel">
+    <div class="head"><span>Your Order</span><a href="#">Edit cart</a></div>
+
+    <div class="items">
+      <div class="item">
+        <span class="nm">GLP-3 R <span class="pill">10MG</span></span>
+        <span class="amt">$159.98</span>
+      </div>
+      <div class="qty">Qty 2 <a href="#">Remove</a></div>
+    </div>
+
+    <div class="card">
+      <div class="lab">DISCOUNT CODE</div>
+      <div class="row">
+        <input placeholder="ENTER DISCOUNT CODE">
+        <button class="btn">Apply</button>
+      </div>
+    </div>
+
+    <div class="applied"><b>WELCOME10</b><span class="det">10% off &minus; $16.00</span><span class="x">&times;</span></div>
+
+    <div class="card">
+      <div class="lab">REDEEM CASH BACK <span class="muted">(YOU HAVE $11.20 &mdash; MIN $5.00)</span></div>
+      <div class="row">
+        <input value="0.00">
+        <button class="btn">Apply</button>
+        <button class="btn">Max</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="bac">
+        <div class="bacimg">BAC<br>WATER</div>
+        <div>
+          <div class="t">Need bacteriostatic water?</div>
+          <div class="s">Compounds ship as lyophilized powder.</div>
+          <div class="bacrow">
+            <span class="sw"></span>
+            <span class="l">Add to cart</span>
+            <span class="p">30mL &mdash; $19.99</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="totals">
+      <div class="r credit"><span>Discount (WELCOME10)</span><span>&minus;$16.00</span></div>
+      <div class="r"><span>Subtotal</span><span>$143.98</span></div>
+      <div class="r credit"><span>Cash back</span><span>&minus;$11.20</span></div>
+      <div class="r"><span>Shipping</span><span>$13.48</span></div>
+      <div class="r"><span>Sales tax (WA)</span><span>$8.62</span></div>
+      <div class="r total"><span>Total</span><span>$154.88</span></div>
+    </div>
+
+    <div class="pay">
+      <div class="paylab">PAYMENT</div>
+      <div class="amber">
+        <div class="amber-hd">Placing your order does not charge you.</div>
+        <p>We email you a secure Square payment link to complete your purchase.</p>
+        <div class="amber-box">
+          When you open the link, enter your order total exactly:
+          <b>$154.88</b>. Payments that do not match your order total cannot be
+          processed and will delay your order.
+        </div>
+        <p class="fine">The email arrives within a few minutes. If you do not see it, check your spam folder.</p>
+        <p class="fine">Orders are held for 90 minutes. Unpaid orders are released after that, and stock is not reserved until payment clears.</p>
+      </div>
+      <button class="cta">Place order</button>
+    </div>
+  </div>
+
+  <div class="notes">
+    <h3>Two things to decide</h3>
+    <ul>
+      <li><b>Removing applied cash back.</b> Above, cash back is unapplied so the field shows. Once applied it should swap to a pill with an &times;, exactly like the coupon &mdash; see the second panel below. Do not use "set 0 and Apply": it is a confusing mental model, and YITH may reject 0 as invalid rather than treating it as a removal, which would strand the discount with no way out. The pill reuses the removal path already working on Live.</li>
+      <li><b>The amber block is the real live copy now</b>, not the simplified two-liner from the previous mockup. All four parts are present and unchanged: the no-charge line, the boxed exact-amount instruction, the spam-folder note, and the 90-minute hold. Emphasis was raised without touching a word: 2px border, white inset box around the amount, amount at 14px mono, and the PAYMENT heading centered between rules in amber.</li>
+    </ul>
+  </div>
+
+  <div class="notes" style="border-top:none;padding-top:8px">
+    <h3>Applied state &mdash; cash back becomes a pill</h3>
+    <div class="panel" style="padding-top:22px;padding-bottom:22px">
+      <div class="card">
+        <div class="lab">DISCOUNT CODE</div>
+        <div class="row">
+          <input placeholder="ENTER DISCOUNT CODE">
+          <button class="btn">Apply</button>
+        </div>
+      </div>
+      <div class="applied"><b>WELCOME10</b><span class="det">10% off &minus; $16.00</span><span class="x">&times;</span></div>
+      <div class="applied"><b>CASH BACK</b><span class="det">&minus;$11.20 applied</span><span class="x">&times;</span></div>
+      <div class="card" style="margin-top:4px">
+        <div class="bac">
+          <div class="bacimg">BAC<br>WATER</div>
+          <div>
+            <div class="t">Need bacteriostatic water?</div>
+            <div class="s">Compounds ship as lyophilized powder.</div>
+            <div class="bacrow">
+              <span class="sw"></span>
+              <span class="l">Add to cart</span>
+              <span class="p">30mL &mdash; $19.99</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p style="font-size:13px;color:#5C7086;max-width:70ch;line-height:1.7;margin-top:14px">
+      The redeem card disappears while a redemption is applied and returns when it is removed. One consistent rule across the panel: anything applied is a pill with an &times;.
+    </p>
+  </div>
+
+  <div class="notes">
+    <h3>The emoji version you asked for, side by side</h3>
+    <div style="display:flex;gap:28px;flex-wrap:wrap;align-items:flex-start">
+      <div style="width:420px">
+        <div class="paylab" style="color:#B46A00">PAYMENT</div>
+        <div class="amber" style="padding:14px 16px">
+          <div class="amber-hd">Placing your order does not charge you.</div>
+          <div class="amber-box" style="margin:10px 0 0">
+            Enter your order total exactly: <b>$154.88</b>
+          </div>
+        </div>
+      </div>
+      <div style="width:420px">
+        <div class="paylab" style="color:#B46A00">&#128680;&#128680; PAYMENT &#128680;&#128680;</div>
+        <div class="amber" style="padding:14px 16px">
+          <div class="amber-hd">Placing your order does not charge you.</div>
+          <div class="amber-box" style="margin:10px 0 0">
+            Enter your order total exactly: <b>$154.88</b>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p style="font-size:13px;color:#13283D;max-width:78ch;line-height:1.8;margin-top:16px">
+      My honest read: the sirens shift the register from clinical to consumer-urgency, which is the tone your brand rules avoid and your buyer profile is described as disliking. It is also the block a payment processor reads most closely during underwriting. The left version gets attention structurally &mdash; centered heading between amber rules, 2px border, white inset box, larger mono amount &mdash; without the register change. Your call; if you still want the sirens after seeing them, I will spec them.
+    </p>
+  </div>
+</div>

@@ -36,9 +36,17 @@ function pepselect_child_payment_instructions_html( $total_html ) {
 
 	$hold = esc_html__( 'Orders are held for 90 minutes. Unpaid orders are released after that, and stock is not reserved until payment clears.', 'pepselect-child' );
 
+	// The mockup splits the first sentence into a bold headline and the sentence
+	// that follows it, and boxes the exact-amount instruction. The wording is
+	// untouched - every one of the four parts is the live string, verbatim.
+	$intro_parts = explode( '. ', $intro, 2 );
+	$headline = isset( $intro_parts[0] ) ? $intro_parts[0] . '.' : $intro;
+	$intro_rest = isset( $intro_parts[1] ) ? $intro_parts[1] : '';
+
 	return '<div class="pepselect-pay">'
-		. '<p class="pepselect-pay__intro">' . $intro . '</p>'
-		. '<p class="pepselect-pay__exact">' . $exact . '</p>'
+		. '<div class="pepselect-pay__hd">' . $headline . '</div>'
+		. ( '' !== $intro_rest ? '<p class="pepselect-pay__intro">' . $intro_rest . '</p>' : '' )
+		. '<div class="pepselect-pay__exact">' . $exact . '</div>'
 		. '<p class="pepselect-pay__line">' . $email . '</p>'
 		. '<p class="pepselect-pay__line pepselect-pay__hold">' . $hold . '</p>'
 		. '</div>';
@@ -310,12 +318,25 @@ function pepselect_child_render_coupon_in_summary() {
 
 	echo '</div></td></tr>';
 }
-add_action( 'woocommerce_review_order_after_cart_contents', 'pepselect_child_render_coupon_in_summary', 20 );
+add_action( 'woocommerce_review_order_after_cart_contents', 'pepselect_child_render_coupon_in_summary', 10 );
 add_filter( 'fc_coupon_code_displayed_as_substep', '__return_false' );
 
 // Belt and braces for the expanded state: Fluid reads this filter when building
 // the expansible section's initial state.
 add_filter( 'fc_coupon_code_field_initially_expanded', '__return_true' );
+
+// Panel heading, per the approved mockup.
+add_filter( 'fc_order_review_title', 'pepselect_child_order_review_title' );
+
+/**
+ * Panel heading text.
+ *
+ * @param string $title Default title.
+ * @return string
+ */
+function pepselect_child_order_review_title( $title ) {
+	return __( 'Your Order', 'pepselect-child' );
+}
 
 /**
  * Render the payment section inside the order summary, directly above Place order.
@@ -458,7 +479,7 @@ function pepselect_child_render_notices_in_summary() {
 	woocommerce_output_all_notices();
 	echo '</div></td></tr>';
 }
-add_action( 'woocommerce_review_order_after_cart_contents', 'pepselect_child_render_notices_in_summary', 15 );
+add_action( 'woocommerce_review_order_after_cart_contents', 'pepselect_child_render_notices_in_summary', 5 );
 
 /**
  * Make the applied-coupon Remove control unable to navigate.
@@ -530,6 +551,164 @@ function pepselect_child_hide_yith_reward_block_on_cart( $content, $block ) {
 	return $content;
 }
 add_filter( 'render_block', 'pepselect_child_hide_yith_reward_block_on_cart', 20, 2 );
+
+/**
+ * Return the applied coupons split into cash back and ordinary discounts.
+ *
+ * YITH implements a redemption as a coupon, so the two are told apart by code
+ * prefix rather than by asking YITH.
+ *
+ * @return array<string,array<int,WC_Coupon>>
+ */
+function pepselect_child_get_applied_coupon_groups() {
+	$groups = array( 'cashback' => array(), 'discount' => array() );
+
+	if ( ! function_exists( 'WC' ) || ! WC()->cart ) {
+		return $groups;
+	}
+
+	foreach ( WC()->cart->get_coupons() as $code => $coupon ) {
+		$key = ( 0 === strpos( (string) $code, 'ywpar' ) ) ? 'cashback' : 'discount';
+		$groups[ $key ][ $code ] = $coupon;
+	}
+
+	return $groups;
+}
+
+/**
+ * Formatted discount amount for one applied coupon.
+ *
+ * @param string $code Coupon code.
+ * @return string
+ */
+function pepselect_child_coupon_amount_html( $code ) {
+	$amount = WC()->cart->get_coupon_discount_amount( $code, WC()->cart->display_cart_ex_tax );
+
+	return wc_price( $amount );
+}
+
+/**
+ * Render applied coupons and cash back as removable pills.
+ *
+ * One rule across the panel: anything applied is a pill with an x. The x reuses
+ * WooCommerce's own remove control - same class and data-coupon attribute - so
+ * the removal path already working on Live handles it, and the href is the "#"
+ * this theme already rewrites so a click can never navigate.
+ *
+ * @return void
+ */
+function pepselect_child_render_applied_pills() {
+	$groups = pepselect_child_get_applied_coupon_groups();
+
+	if ( empty( $groups['discount'] ) && empty( $groups['cashback'] ) ) {
+		return;
+	}
+
+	echo '<tr class="pepselect-summary-row pepselect-summary-row--pills"><td colspan="2" class="pepselect-panel-cell">';
+
+	foreach ( $groups['discount'] as $code => $coupon ) {
+		$detail = '';
+
+		if ( is_a( $coupon, 'WC_Coupon' ) && 'percent' === $coupon->get_discount_type() ) {
+			/* translators: %s: coupon percentage. */
+			$detail = sprintf( __( '%s%% off', 'pepselect-child' ), wc_format_localized_decimal( $coupon->get_amount() ) ) . ' &minus; ';
+		}
+
+		echo '<span class="pepselect-applied">';
+		echo '<b>' . esc_html( strtoupper( $code ) ) . '</b>';
+		echo '<span class="pepselect-applied__det">' . wp_kses_post( $detail ) . wp_kses_post( pepselect_child_coupon_amount_html( $code ) ) . '</span>';
+		echo '<a href="#" class="woocommerce-remove-coupon pepselect-applied__x" data-coupon="' . esc_attr( $code ) . '" aria-label="' . esc_attr( sprintf( __( 'Remove %s', 'pepselect-child' ), $code ) ) . '">&times;</a>';
+		echo '</span>';
+	}
+
+	foreach ( $groups['cashback'] as $code => $coupon ) {
+		echo '<span class="pepselect-applied">';
+		echo '<b>' . esc_html__( 'CASH BACK', 'pepselect-child' ) . '</b>';
+		echo '<span class="pepselect-applied__det">&minus;' . wp_kses_post( pepselect_child_coupon_amount_html( $code ) ) . ' ' . esc_html__( 'applied', 'pepselect-child' ) . '</span>';
+		echo '<a href="#" class="woocommerce-remove-coupon pepselect-applied__x" data-coupon="' . esc_attr( $code ) . '" aria-label="' . esc_attr__( 'Remove cash back', 'pepselect-child' ) . '">&times;</a>';
+		echo '</span>';
+	}
+
+	echo '</td></tr>';
+}
+add_action( 'woocommerce_review_order_after_cart_contents', 'pepselect_child_render_applied_pills', 20 );
+
+/**
+ * Empty row the redemption card is rendered into.
+ *
+ * The card is built client-side from YITH's own form, so the slot is placed
+ * here in document order - between the applied pills and the BAC card, as the
+ * mockup has it - rather than being injected next to the totals.
+ *
+ * @return void
+ */
+function pepselect_child_render_redeem_slot() {
+	$groups = pepselect_child_get_applied_coupon_groups();
+
+	// While cash back is applied the card is replaced by its pill.
+	if ( ! empty( $groups['cashback'] ) ) {
+		return;
+	}
+
+	echo '<tr class="pepselect-summary-row pep-redeem-slot"><td colspan="2" class="pepselect-panel-cell"></td></tr>';
+}
+add_action( 'woocommerce_review_order_after_cart_contents', 'pepselect_child_render_redeem_slot', 25 );
+
+/**
+ * Render the order totals as a flat list, replacing the review table's tfoot.
+ *
+ * The tfoot rows are suppressed in CSS in both tables Fluid renders, so exactly
+ * one visible set of totals remains and this list owns its own spacing. Because
+ * the list is plain divs inside a single cell, Fluid's boxed-template cell
+ * padding - which is declared !important behind an id selector - has to be
+ * beaten once, on that one cell, and never again inside it.
+ *
+ * Row order follows WooCommerce's own semantics: Subtotal is the real cart
+ * subtotal, with discounts below it. The mockup shows the discount above a
+ * reduced subtotal; matching that literally would mean printing a subtotal
+ * WooCommerce never calculated, so the values stay authoritative and only the
+ * order differs.
+ *
+ * @return void
+ */
+function pepselect_child_render_summary_totals() {
+	if ( ! function_exists( 'WC' ) || ! WC()->cart ) {
+		return;
+	}
+
+	$cart = WC()->cart;
+	$groups = pepselect_child_get_applied_coupon_groups();
+
+	echo '<tr class="pepselect-summary-row pepselect-summary-row--totals"><td colspan="2" class="pepselect-panel-cell">';
+	echo '<div class="pepselect-totals">';
+
+	echo '<div class="pepselect-totals__row"><span>' . esc_html__( 'Subtotal', 'pepselect-child' ) . '</span><span>' . wp_kses_post( $cart->get_cart_subtotal() ) . '</span></div>';
+
+	foreach ( $groups['discount'] as $code => $coupon ) {
+		/* translators: %s: coupon code. */
+		$label = sprintf( __( 'Discount (%s)', 'pepselect-child' ), strtoupper( $code ) );
+		echo '<div class="pepselect-totals__row pepselect-totals__row--credit"><span>' . esc_html( $label ) . '</span><span>&minus;' . wp_kses_post( pepselect_child_coupon_amount_html( $code ) ) . '</span></div>';
+	}
+
+	foreach ( $groups['cashback'] as $code => $coupon ) {
+		echo '<div class="pepselect-totals__row pepselect-totals__row--credit"><span>' . esc_html__( 'Cash back', 'pepselect-child' ) . '</span><span>&minus;' . wp_kses_post( pepselect_child_coupon_amount_html( $code ) ) . '</span></div>';
+	}
+
+	if ( $cart->needs_shipping() && $cart->show_shipping() ) {
+		echo '<div class="pepselect-totals__row"><span>' . esc_html__( 'Shipping', 'pepselect-child' ) . '</span><span>' . wp_kses_post( wc_price( $cart->get_shipping_total() ) ) . '</span></div>';
+	}
+
+	if ( wc_tax_enabled() && 0 < count( $cart->get_tax_totals() ) ) {
+		foreach ( $cart->get_tax_totals() as $tax ) {
+			echo '<div class="pepselect-totals__row"><span>' . esc_html( $tax->label ) . '</span><span>' . wp_kses_post( $tax->formatted_amount ) . '</span></div>';
+		}
+	}
+
+	echo '<div class="pepselect-totals__row pepselect-totals__row--total"><span>' . esc_html__( 'Total', 'pepselect-child' ) . '</span><span>' . wp_kses_post( $cart->get_total() ) . '</span></div>';
+
+	echo '</div></td></tr>';
+}
+add_action( 'woocommerce_review_order_after_cart_contents', 'pepselect_child_render_summary_totals', 40 );
 
 /**
  * Enqueue checkout and cart presentation styles.
