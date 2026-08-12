@@ -1,8 +1,8 @@
 # Handoff — Pep Select Checkout Architecture
 
 **Written:** 2026-08-12
-**Theme version at handoff:** `0.20.0-beta.34` (source; build pending). Live was confirmed on `0.20.0-beta.33` before this follow-up.
-**Branch:** `web-2c-homepage` · **Last commit:** `5a66885`
+**Theme version at handoff:** `0.20.0-beta.34` (repo + built ZIP + Live, verified 2026-08-12).
+**Branch:** `codex/checkout-panel-architecture` · **Implementation commit:** `e850dd5`
 **Theme:** `pepselect-child` (Hello Elementor child)
 **Spec file:** `checkout-panel-pepselect.html` at repo root — 13,366 bytes, SHA-256 `c888fb252d994432915ec5ff803fdbd0c79ca36d16054651d1fe3bb0f990c741`
 
@@ -300,12 +300,21 @@ beta.33 closed two of three:
 
 beta.34 follow-up: the live line item exposed Fluid's editable quantity stepper even though the priority-90 callback had been removed. The approved mockup and Orbitrex reference have only `Qty 2` plus `Remove`; beta.34 suppresses the surviving wrapper at Fluid's id-bearing specificity. It also formats the visible tax label as `Sales tax (WA)` from the customer's live state code.
 
-### Still owed (never run on an installed build)
-- Coupon lifecycle: apply → pill → × → survives reload
+### Installed beta.34 verification
+
+- Production `style.css` reports `0.20.0-beta.34`.
+- Fluid quantity wrapper exists for compatibility but computes to `display:none`; only `Qty 2` and `Remove` are visible.
+- Quantity-to-discount-card and `.product-details`-to-card gaps both measure exactly `18px`.
+- Panel width/padding/radius: `420px` / `28px` / `16px`; inner card padding/radius: `16px` / `6px`; Place order padding/weight: `13px` / `600`.
+- Tax row renders `Sales tax (WA)` without changing the calculated amount.
+- Coupon lifecycle passed on Live: remove → card refresh → reapply `WELCOME10` → pill restored → survives reload.
+- Corrected quantity visibility, 18px gap, and tax label survive both checkout fragment refreshes and a full reload.
+- Browser console: zero errors during install, fragment refresh, and reload verification.
+
+### Still owed
 - Cash back: apply → pill → card hides → × → card returns showing $11.20
 - Square amount matches the discounted total with a redemption applied
 - 390px overflow behaviour
-- Console errors
 - A test order end-to-end with redemption applied
 
 Last successful end-to-end test order was **#1443** on staging (beta.21): cash back $7.20 applied as `ywpar_discount_1`, total $98.67 → $91.00, Square panel read $91.00, all acknowledgment meta written, balance $7.20 → $0.00 → restored to $7.20 on cancel.
