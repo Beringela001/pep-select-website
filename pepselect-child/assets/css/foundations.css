@@ -62,6 +62,18 @@
 	--pep-motion-duration: 180ms;
 }
 
+	/* --- Commercial surface tokens (M12-16).
+	   Measured from the approved checkout panel mockup, which is now the
+	   reference for commercial surfaces. Added here only where genuinely
+	   reusable; one-off panel geometry stays in checkout.css. --- */
+	--pep-radius-card-inner: 6px;
+	--pep-surface-card: #FFFFFF;
+	--pep-surface-panel: #F3F8FC;
+	--pep-color-quiet: #7A8793;
+	--pep-color-placeholder: #A8B4BF;
+	--pep-totals-row-gap: 6px;
+	--pep-totals-total-gap: 14px;
+
 @media (max-width: 1024px) {
 	:root {
 		--pep-layout-gutter: var(--pep-gutter-tablet);

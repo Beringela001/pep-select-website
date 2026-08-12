@@ -28,6 +28,16 @@
 - Print the ZIP's SHA-256 after every build.
 - Do not commit the contents of `dist/`.
 
+## Visual Conventions (commercial surfaces)
+- The checkout order-summary panel is the reference surface; it supersedes earlier conventions where they conflict.
+- White inner cards on a tinted panel. Never tint on tint.
+- One card per surface. A nested filled card is a defect.
+- Applied state is always a pill with an x, never an inline row control.
+- Figures are always IBM Plex Mono; labels are always Plus Jakarta Sans.
+- Only the total is emphasised. No dividers between ordinary rows.
+- Amber is reserved for the Square payment instruction, in exactly one container.
+- Inner-card radius is 6px (`--pep-radius-card-inner`). Full detail in `pep-select-design-tokens.md`.
+
 ## Safety Boundaries
 - Live remains untouched unless Paulo explicitly authorizes a deployment milestone.
 - Preserve WooCommerce products, customers, orders, checkout, payments, shipping, rewards, VerifyPass, and COA business logic.

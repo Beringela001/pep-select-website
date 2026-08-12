@@ -202,7 +202,13 @@
 		relabelAppliedLine( review );
 
 		var form = nativeForm();
-		var card = document.querySelector( '.pep-redeem-slot' );
+
+		// The slot row is rendered server-side and starts EMPTY, so its presence
+		// does not mean the card has been built. Treating it as a built card is
+		// what broke 0.20.0-beta.27: buildCard() was skipped, the balance lookup
+		// below threw, the catch stripped html.pep-redeem-ready, and YITH's raw
+		// points bar became visible again. Test for the card itself.
+		var card = document.querySelector( '.pep-redeem' ) ? document.querySelector( 'tr.pep-redeem-slot' ) : null;
 
 		// No apply form present: redemption is already applied (its Remove control
 		// lives in the totals) or the balance is below the minimum. Drop our card.

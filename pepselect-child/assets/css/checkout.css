@@ -133,20 +133,13 @@ button[name="apply_coupon"] {
 	gap: 12px;
 }
 
-/* Make the whole payment-method box an amber attention panel so the pay-by-link
- * instructions stand out from the calm page without reading as an error. */
-.payment_box.payment_method_bacs,
-li.wc_payment_method.payment_method_bacs .payment_box {
-	border: 1px solid var(--pep-color-amber) !important;
-	border-left: 4px solid var(--pep-color-amber) !important;
-	border-radius: var(--pep-radius-medium) !important;
-	background: rgb(180 106 0 / 6%) !important;
-}
-
-/* Neutralize the little pointer triangle WooCommerce adds above payment_box. */
-.payment_box.payment_method_bacs::before {
-	border-bottom-color: rgb(180 106 0 / 6%) !important;
-}
+/* The legacy M7 amber treatment on the gateway's payment box was removed in
+   M12-16. It wrapped the new amber block from the approved mockup, producing two
+   nested amber containers. Its selector
+   (li.wc_payment_method.payment_method_bacs .payment_box) outranked a panel-scoped
+   override, so it is deleted rather than fought. Amber now lives on .pepselect-pay
+   only; the payment_box element itself is untouched and is styled to a transparent
+   pass-through further down this file. */
 
 .pepselect-pay__intro {
 	margin: 0;
@@ -1016,438 +1009,11 @@ li.wc_payment_method.payment_method_bacs .payment_box {
 	outline-offset: 2px;
 }
 
-/* =========================================================================
-   M12-6: Checkout order-summary card + redemption form.
-   Cards the right-hand order review (.fc-checkout-order-review, which in Fluid's
-   layout also holds the acknowledgments and place order), fixes the typography
-   that fell back to the browser system font so nothing read as the answer, and
-   styles the redemption card the checkout-redemption.js script places inside the
-   summary. Existing tokens only. 16px is not a radius token; the nearest
-   data-panel radius, --pep-radius-medium (12px), is used (12 and 20 are
-   equidistant from 16). The surface tint matches the card panels (cards.css);
-   the BAC upsell uses cyan-soft, so the two were not the same token.
-   ========================================================================= */
-
-.fc-checkout-order-review {
-	box-sizing: border-box !important;
-	background: var(--pep-color-surface) !important;
-	border: 1px solid var(--pep-color-border) !important;
-	border-radius: var(--pep-radius-medium) !important;
-	padding: 28px !important;
-	font-family: var(--pep-font-interface);
-}
-
-/* Fluid pads the inner wrapper; the card owns the padding instead. */
-.fc-checkout-order-review .fc-checkout-order-review__inner {
-	padding: 0 !important;
-}
-
-@media (max-width: 767px) {
-	.fc-checkout-order-review {
-		padding: 20px !important;
-	}
-}
-
-/* Kill the -apple-system inheritance: labels in the interface face, currency
-   figures in the technical (mono) face. */
-.fc-checkout-order-review,
-.fc-checkout-order-review th,
-.fc-checkout-order-review td,
-.fc-checkout-order-review .cart_item,
-.fc-checkout-order-review .cart-subtotal,
-.fc-checkout-order-review .order-total {
-	font-family: var(--pep-font-interface) !important;
-}
-
-.fc-checkout-order-review .woocommerce-Price-amount {
-	font-family: var(--pep-font-technical) !important;
-}
-
-/* Subtotal / Shipping / Tax recede: lighter weight, smaller, slate. */
-.fc-checkout-order-review .cart-subtotal th,
-.fc-checkout-order-review .cart-subtotal td,
-.fc-checkout-order-review .cart-subtotal .woocommerce-Price-amount,
-.fc-checkout-order-review .woocommerce-shipping-totals th,
-.fc-checkout-order-review .woocommerce-shipping-totals td,
-.fc-checkout-order-review .woocommerce-shipping-totals .woocommerce-Price-amount,
-.fc-checkout-order-review .tax-total th,
-.fc-checkout-order-review .tax-total td,
-.fc-checkout-order-review .tax-total .woocommerce-Price-amount {
-	font-weight: 400 !important;
-	font-size: 13px !important;
-	color: var(--pep-color-slate) !important;
-}
-
-/* Total is the focal point: mono figure, larger, navy. */
-.fc-checkout-order-review .order-total th {
-	font-size: 15px !important;
-	font-weight: 600 !important;
-	color: var(--pep-color-navy) !important;
-}
-
-.fc-checkout-order-review .order-total td,
-.fc-checkout-order-review .order-total .woocommerce-Price-amount {
-	font-family: var(--pep-font-technical) !important;
-	font-size: 18px !important;
-	font-weight: 600 !important;
-	color: var(--pep-color-navy) !important;
-}
-
-.fc-checkout-order-review .cart_item td,
-.fc-checkout-order-review .cart_item th {
-	font-size: 15px !important;
-	font-weight: 400 !important;
-	color: var(--pep-color-navy) !important;
-}
-
-/* Hide YITH's native redemption form, but only once the script has taken over
-   (see checkout-redemption.js). Absent this class the native form stays visible. */
-html.pep-redeem-ready form.ywpar_apply_discounts,
-html.pep-redeem-ready .pep-redeem-native-wrap {
-	display: none !important;
-}
-
-/* Redemption card, placed by the script below the line items, above the totals. */
-.fc-checkout-order-review .pep-redeem-slot td {
-	padding: 0 0 16px !important;
-	border: 0 !important;
-}
-
-.pep-redeem {
-	padding: 14px 16px;
-	border: 1px solid var(--pep-color-cyan);
-	border-radius: var(--pep-radius-small);
-	background: var(--pep-color-cyan-soft);
-	font-family: var(--pep-font-interface);
-}
-
-.pep-redeem__row {
-	display: flex;
-	align-items: baseline;
-	justify-content: space-between;
-	gap: 12px;
-	margin-bottom: 10px;
-}
-
-.pep-redeem__label {
-	color: var(--pep-color-navy);
-	font-size: 13px;
-	font-weight: var(--pep-font-weight-semibold);
-	letter-spacing: 0.04em;
-	text-transform: uppercase;
-}
-
-.pep-redeem__balance {
-	color: var(--pep-color-navy);
-	font-family: var(--pep-font-technical);
-	font-size: 15px;
-	font-weight: var(--pep-font-weight-medium);
-}
-
-.pep-redeem__btn {
-	display: block;
-	width: 100%;
-	padding: 10px 16px;
-	border: 0;
-	border-radius: var(--pep-radius-small);
-	background: var(--pep-color-cyan);
-	color: var(--pep-color-white);
-	font-family: var(--pep-font-interface);
-	font-size: 14px;
-	font-weight: var(--pep-font-weight-bold);
-	text-align: center;
-	cursor: pointer;
-	transition: background-color var(--pep-motion-duration) ease;
-}
-
-.pep-redeem__btn:hover {
-	background: var(--pep-color-navy);
-}
-
-.pep-redeem__note {
-	margin-top: 8px;
-	color: var(--pep-color-slate);
-	font-size: 12px;
-}
-
-@media (prefers-reduced-motion: reduce) {
-	.pep-redeem__btn {
-		transition: none;
-	}
-}
-
-/* =========================================================================
-   M12-6 (beta.17): checkout cleanup + summary-card overflow fix.
-   Safe, self-contained fixes. The larger Orbitrex column restructure (moving
-   payment/coupon/BAC into the right panel, acknowledgments to the left) is NOT
-   done here: it relocates the money-critical payment/Square/acknowledgment flow
-   and must be staged and verified on its own, per "a working checkout beats a
-   matching layout".
-   ========================================================================= */
-
-/* C1: remove the "STEP n OF 4" progress bar. */
-.woocommerce-checkout .fc-progress-bar {
-	display: none !important;
-}
-
-/* C2: hide YITH's optional date-of-birth field wherever it renders. */
-.woocommerce-checkout .form-row:has( input[name="yith_birthday"] ),
-.woocommerce-checkout input[name="yith_birthday"] {
-	display: none !important;
-}
-
-/* C3: pink link leak (rgb(204,51,102)) -> brand cyan. Scoped to these two
-   controls, not a blanket checkout-anchor restyle. */
-.woocommerce-checkout a.expansible-section__toggle-plus,
-.woocommerce-checkout a.woocommerce-privacy-policy-link {
-	color: var(--pep-color-cyan) !important;
-	text-decoration: none !important;
-}
-
-.woocommerce-checkout a.expansible-section__toggle-plus:hover,
-.woocommerce-checkout a.woocommerce-privacy-policy-link:hover {
-	color: var(--pep-color-navy) !important;
-}
-
-/* A: summary-card overflow. At intermediate widths the two-column layout
-   squeezes the sidebar below the review table's natural width, crowding prices
-   against the rounded border. Constrain the content to fit (shrink the product
-   image, let cells wrap) rather than clip - clipping would risk the research
-   purpose select2 dropdown that lives inside the card. */
-.fc-checkout-order-review .shop_table,
-.fc-checkout-order-review table {
-	width: 100% !important;
-	max-width: 100% !important;
-}
-
-.fc-checkout-order-review .cart_item td,
-.fc-checkout-order-review .cart_item th {
-	overflow-wrap: anywhere;
-	word-break: break-word;
-}
-
-.fc-checkout-order-review .cart_item img {
-	max-width: 44px !important;
-	height: auto !important;
-}
-
-.fc-checkout-order-review .pep-redeem,
-.fc-checkout-order-review .pep-redeem * {
-	max-width: 100%;
-	min-width: 0;
-}
-
-/* =========================================================================
-   M12-7: checkout order-summary panel fixes.
-   A: the order review nests a second card - Fluid/theme style
-   .fc-checkout-order-review__inner as its own panel (white fill, 1px border,
-   8px radius) inside the M12-6 outer card, reading as a double border. Flatten
-   the inner element so only the outer card shows (its padding is already zeroed
-   in the M12-6 block above).
-   B: remove the Country / Region field from view. The store ships US-only and
-   the control is a single-option ("US") select, so hiding it with display:none
-   leaves billing_country / shipping_country posting "US" unchanged - the value
-   is not cleared, only the row is hidden. State / County stays visible.
-   C: drop the line-item thumbnail (the name and its strength pill carry the
-   row) and style the pill appended by pepselect_child_checkout_item_strength_pill().
-   The pill mirrors the compound card strength badge: mono, bordered, uppercase.
-   ========================================================================= */
-
-/* A: flatten the inner panel so the M12-6 outer card is the only card. */
-.fc-checkout-order-review .fc-checkout-order-review__inner {
-	background: transparent !important;
-	border: 0 !important;
-	border-radius: 0 !important;
-}
-
-/* B: hide the US-only country selector; its single-option value still posts. */
-#billing_country_field,
-#shipping_country_field {
-	display: none !important;
-}
-
-/* C: remove the line-item thumbnail (overrides the M12-6 overflow max-width). */
-.fc-checkout-order-review .cart_item img {
-	display: none !important;
-}
-
-/* C: strength pill on the line-item name. */
-.pepselect-order-strength {
-	display: inline-block;
-	margin-left: 6px;
-	padding: 2px 8px;
-	border: 1px solid var(--pep-color-border);
-	border-radius: var(--pep-radius-pill);
-	background: var(--pep-color-surface);
-	color: var(--pep-color-navy);
-	font-family: var(--pep-font-technical);
-	font-size: 10px;
-	font-weight: 600;
-	line-height: 1.4;
-	letter-spacing: 0.08em;
-	text-transform: uppercase;
-	white-space: nowrap;
-	vertical-align: middle;
-}
-
-/* =========================================================================
-   M12-8: right panel completion.
-   A: the TOTAL row read lighter than the rows above it. Subtotal/Shipping/Tax
-   were already reduced to 13px/400 in M12-6 (verified on beta.19), so only the
-   TOTAL label needed promoting - it was still Plus Jakarta Sans 15px/600 while
-   its figure was already mono 18px/600. The whole row is now mono 18px/600 navy.
-   C: BAC, coupon and cash back render inside the summary below the line items.
-   Their rows sit inside the review table, so each is a full-width cell with the
-   table's own cell chrome removed.
-   ========================================================================= */
-
-/* A: TOTAL row - label and figure both mono, 18px, 600, navy. */
-.fc-checkout-order-review .order-total th,
-.fc-checkout-order-review .order-total td,
-.fc-checkout-order-review .order-total .woocommerce-Price-amount {
-	font-family: var(--pep-font-technical) !important;
-	font-size: 18px !important;
-	font-weight: 600 !important;
-	color: var(--pep-color-navy) !important;
-}
-
-/* C: full-width rows injected into the review table. */
-.fc-checkout-order-review .pepselect-summary-row > td {
-	padding: 0 0 14px !important;
-	border: 0 !important;
-}
-
-.fc-checkout-order-review .pepselect-summary-row .pepselect-bacwater-standalone {
-	margin: 0;
-}
-
-/* C2/C3: shared inner-card treatment. */
-.pepselect-inner-card,
-.fc-checkout-order-review .pep-redeem {
-	box-sizing: border-box;
-	padding: 16px;
-	border: 1px solid var(--pep-color-border);
-	border-radius: 6px;
-	background: var(--pep-color-cyan-soft);
-	font-family: var(--pep-font-interface);
-}
-
-/* The coupon section inherits Fluid's substep spacing; neutralise it inside
-   the card so the card owns the padding. */
-.pepselect-inner-card--coupon .fc-step__substep,
-.pepselect-inner-card--coupon .fc-step__substep-inner,
-.pepselect-inner-card--coupon .expansible-section__content {
-	margin: 0 !important;
-	padding: 0 !important;
-	border: 0 !important;
-	background: transparent !important;
-}
-
-.pepselect-inner-card--coupon .expansible-section__toggle-plus {
-	font-family: var(--pep-font-interface);
-	font-size: 13px;
-	font-weight: var(--pep-font-weight-semibold);
-}
-
-/* C: applied coupon / applied redemption render as removable pills. */
-.fc-checkout-order-review .cart-discount th,
-.fc-checkout-order-review .cart-discount td {
-	border: 0 !important;
-	padding-top: 6px !important;
-	padding-bottom: 6px !important;
-}
-
-.fc-checkout-order-review .cart-discount th {
-	font-size: 0 !important;
-}
-
-.fc-checkout-order-review .cart-discount th .woocommerce-remove-coupon,
-.fc-checkout-order-review .cart-discount th > * {
-	font-size: 12px !important;
-}
-
-.fc-checkout-order-review .cart-discount th::before {
-	content: attr(data-pep-label);
-}
-
-/* Pill shell for an applied discount label. */
-.fc-checkout-order-review .cart-discount th,
-.pep-redeem__applied {
-	display: inline-flex;
-	align-items: center;
-	gap: 8px;
-	padding: 4px 10px;
-	border: 1px solid var(--pep-color-cyan);
-	border-radius: var(--pep-radius-pill);
-	background: var(--pep-color-cyan-soft);
-	color: var(--pep-color-navy);
-	font-family: var(--pep-font-interface);
-	font-size: 12px !important;
-	font-weight: var(--pep-font-weight-semibold);
-	line-height: 1.5;
-}
-
-.fc-checkout-order-review .cart-discount .woocommerce-remove-coupon,
-.pep-redeem__remove {
-	color: var(--pep-color-navy);
-	font-weight: 700;
-	text-decoration: none;
-	line-height: 1;
-}
-
-.fc-checkout-order-review .cart-discount .woocommerce-remove-coupon:hover,
-.pep-redeem__remove:hover {
-	color: var(--pep-color-cyan);
-}
-
-@media (max-width: 767px) {
-	.pepselect-inner-card,
-	.fc-checkout-order-review .pep-redeem {
-		padding: 14px;
-	}
-}
-
-/* =========================================================================
-   M12-8 follow-up: the relocated coupon card also prints Fluid's messages
-   container and applied-coupon list, which its script requires. Spacing only.
-   ========================================================================= */
-
-.pepselect-inner-card--coupon .fc-coupon-code-messages:empty {
-	display: none;
-}
-
-.pepselect-inner-card--coupon .fc-coupon-code-messages {
-	margin-top: 10px;
-	font-size: 13px;
-}
-
-.pepselect-inner-card--coupon .fc-step__substep-text-content--coupon-codes:empty {
-	display: none;
-}
-
-.pepselect-inner-card--coupon .fc-coupon-codes__coupon {
-	display: inline-flex;
-	align-items: center;
-	gap: 8px;
-	margin-top: 10px;
-	padding: 4px 10px;
-	border: 1px solid var(--pep-color-cyan);
-	border-radius: var(--pep-radius-pill);
-	background: var(--pep-color-white);
-	color: var(--pep-color-navy);
-	font-size: 12px;
-	font-weight: var(--pep-font-weight-semibold);
-}
-
-.pepselect-inner-card--coupon .fc-coupon-codes__coupon .woocommerce-remove-coupon {
-	color: var(--pep-color-navy);
-	font-weight: 700;
-	text-decoration: none;
-}
-
-.pepselect-inner-card--coupon .fc-coupon-codes__coupon .woocommerce-remove-coupon:hover {
-	color: var(--pep-color-cyan);
-}
+/* M12-6, M12-7 and M12-8 panel blocks removed in M12-16: superseded in full
+   by the M12-14 panel block at the end of this file. They were left in place
+   through earlier builds and, because several of their selectors carried
+   .fc-checkout-order-review while the newer ones did not, they outranked the
+   replacement and stripped the inner cards back to transparent. */
 
 /* =========================================================================
    M12-9: payment and consent swap columns.
@@ -1506,39 +1072,9 @@ html.pep-redeem-ready .pep-redeem-native-wrap {
    payment box is untouched.
    ========================================================================= */
 
-/* B: strip the nested cards. */
-.fc-checkout-order-review .pepselect-inner-card,
-.fc-checkout-order-review .pepselect-inner-card--coupon,
-.fc-checkout-order-review .pep-redeem {
-	padding: 0 !important;
-	border: 0 !important;
-	border-radius: 0 !important;
-	background: transparent !important;
-}
-
-/* Sections separated by hairlines, not boxes. */
-.fc-checkout-order-review .pepselect-summary-row--coupon > td,
-.fc-checkout-order-review .pepselect-summary-row--bac > td {
-	padding: 14px 0 !important;
-	border-top: 1px solid var(--pep-color-border) !important;
-}
-
-.fc-checkout-order-review .pep-redeem-slot td {
-	padding: 14px 0 !important;
-	border-top: 1px solid var(--pep-color-border) !important;
-}
-
-/* C: BAC keeps a distinct read through the panel tint at a lighter value and a
-   hairline, not a second filled card on top of the panel. */
-.fc-checkout-order-review .pepselect-bacwater {
-	display: flex;
-	align-items: center;
-	gap: 14px;
-	padding: 0 !important;
-	border: 0 !important;
-	border-radius: 0 !important;
-	background: transparent !important;
-}
+/* The M12-10 card-strip and hairline rules were removed in M12-16. They made the
+   inner cards transparent and separated blocks with top rules; the approved
+   mockup uses white cards on the tint instead, and those rules outranked it. */
 
 .pepselect-bacwater__media {
 	flex: 0 0 auto;
@@ -2337,4 +1873,208 @@ body.has-fc-design-template--boxed div.woocommerce .fc-wrapper #order_review tab
 	.pepselect-applied {
 		max-width: 100%;
 	}
+}
+
+/* =========================================================================
+   M12-16: the remaining mockup deltas, and the end of the specificity war.
+   Every rule here is scoped under .fc-checkout-order-review so it ranks at or
+   above the older panel rules that survive elsewhere in this file. The blocks
+   that could not be out-ranked were deleted outright rather than fought.
+   ========================================================================= */
+
+/* 1. INNER CARDS - white on the tint. Scoped, so this now outranks anything
+      earlier that tried to strip them. */
+.fc-checkout-order-review .pepselect-inner-card,
+.fc-checkout-order-review .pep-redeem,
+.fc-checkout-order-review .pepselect-bacwater-standalone {
+	box-sizing: border-box !important;
+	padding: 16px !important;
+	margin: 0 0 4px !important;
+	border: 1px solid #D7E1E9 !important;
+	border-radius: var(--pep-radius-card-inner) !important;
+	background: var(--pep-surface-card) !important;
+}
+
+/* The BAC inner element is the card's content, not a second card. */
+.fc-checkout-order-review .pepselect-bacwater {
+	display: flex !important;
+	gap: 12px !important;
+	align-items: flex-start !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	border: 0 !important;
+	border-radius: 0 !important;
+	background: transparent !important;
+}
+
+/* 2. DISCOUNT CODE label. */
+.fc-checkout-order-review .pepselect-card-label {
+	margin-bottom: 10px;
+	font-family: var(--pep-font-technical);
+	font-size: 11px;
+	letter-spacing: 1.54px;
+	line-height: 1.5;
+	color: #002A53;
+}
+
+/* 3. HEADING - title case, 20px/600, ruled. */
+.fc-checkout-order-review .fc-checkout-order-review-title {
+	display: flex !important;
+	justify-content: space-between !important;
+	align-items: baseline !important;
+	margin: 0 0 24px !important;
+	padding: 0 0 14px !important;
+	border-bottom: 1px solid #D7E1E9 !important;
+	font-family: var(--pep-font-interface) !important;
+	font-size: 20px !important;
+	font-weight: 600 !important;
+	line-height: 1.3 !important;
+	color: #002A53 !important;
+	text-transform: none !important;
+	letter-spacing: 0 !important;
+}
+
+/* The payment heading reuses that class but is its own thing. */
+.fc-checkout-order-review .pepselect-payment-title {
+	display: flex !important;
+	justify-content: center !important;
+	align-items: center !important;
+	gap: 12px !important;
+	margin: 20px 0 12px !important;
+	padding: 18px 0 0 !important;
+	border-top: 1px solid #D7E1E9 !important;
+	border-bottom: 0 !important;
+	font-family: var(--pep-font-technical) !important;
+	font-size: 12px !important;
+	font-weight: 400 !important;
+	letter-spacing: 2px !important;
+	color: #B46A00 !important;
+	text-transform: uppercase !important;
+}
+
+.fc-checkout-order-review .pepselect-payment-title::before,
+.fc-checkout-order-review .pepselect-payment-title::after {
+	content: "";
+	flex: 1;
+	height: 1px;
+	background: #E8C99A;
+}
+
+/* 4. LINE ITEM - one quiet qty line, no stepper on checkout. */
+.fc-checkout-order-review .cart_item .quantity,
+.fc-checkout-order-review .cart_item .fc-buttons-added,
+.fc-checkout-order-review .cart_item .quantity .qty,
+.fc-checkout-order-review .cart_item button.plus,
+.fc-checkout-order-review .cart_item button.minus {
+	display: none !important;
+}
+
+.fc-checkout-order-review .cart_item .cart-item__element--quantity,
+.fc-checkout-order-review .pepselect-qty-line {
+	font-size: 13px;
+	color: #5C7086;
+}
+
+.fc-checkout-order-review .cart_item a.remove,
+.fc-checkout-order-review .cart_item .cart-item__remove,
+.fc-checkout-order-review .cart_item .cart-item__element--remove a {
+	margin-left: 10px;
+	font-size: 13px;
+	color: var(--pep-color-quiet) !important;
+	text-decoration: none !important;
+}
+
+/* 5. TOTALS rhythm - scoped so nothing earlier flattens it. */
+.fc-checkout-order-review .pepselect-totals {
+	padding-top: 18px;
+}
+
+.fc-checkout-order-review .pepselect-totals__row {
+	display: flex !important;
+	justify-content: space-between !important;
+	padding: var(--pep-totals-row-gap) 0 0 !important;
+	border: 0 !important;
+	font-size: 13px !important;
+	color: #5C7086 !important;
+}
+
+.fc-checkout-order-review .pepselect-totals__row > span:last-child,
+.fc-checkout-order-review .pepselect-totals__row .woocommerce-Price-amount {
+	font-family: var(--pep-font-technical) !important;
+	font-size: inherit;
+	font-weight: inherit;
+	color: inherit;
+}
+
+.fc-checkout-order-review .pepselect-totals__row--credit > span:last-child,
+.fc-checkout-order-review .pepselect-totals__row--credit .woocommerce-Price-amount {
+	color: #17A1CF !important;
+}
+
+.fc-checkout-order-review .pepselect-totals__row--total {
+	margin-top: 12px !important;
+	padding-top: var(--pep-totals-total-gap) !important;
+	border-top: 1px solid #D7E1E9 !important;
+}
+
+.fc-checkout-order-review .pepselect-totals__row--total > span,
+.fc-checkout-order-review .pepselect-totals__row--total .woocommerce-Price-amount {
+	font-family: var(--pep-font-technical) !important;
+	font-size: 18px !important;
+	font-weight: 600 !important;
+	color: #002A53 !important;
+}
+
+/* 8. DOUBLE AMBER - strip the legacy M7 treatment from the gateway's payment
+      box so .pepselect-pay is the only amber container. The element stays;
+      WooCommerce and the gateway depend on it. Style only. */
+.fc-checkout-order-review .payment_box,
+.fc-checkout-order-review .payment_box.payment_method_bacs {
+	margin: 0 !important;
+	padding: 0 !important;
+	border: 0 !important;
+	border-radius: 0 !important;
+	background: transparent !important;
+	box-shadow: none !important;
+}
+
+.fc-checkout-order-review .payment_box::before,
+.fc-checkout-order-review .payment_box.payment_method_bacs::before {
+	display: none !important;
+	content: none !important;
+}
+
+/* 7. The native YITH points bar never belongs on checkout. The class gate is
+      kept as the fallback path, but the bar is also suppressed unconditionally
+      here so a script failure can no longer expose it. */
+.woocommerce-checkout form.ywpar_apply_discounts,
+.woocommerce-checkout .pep-redeem-native-wrap,
+.woocommerce-checkout .woocommerce-cart-notice-minimum-amount {
+	display: none !important;
+}
+
+/* Redemption card interior, restated at panel scope. */
+.fc-checkout-order-review .pep-redeem__label {
+	display: block;
+	margin-bottom: 10px;
+	font-family: var(--pep-font-technical);
+	font-size: 11px;
+	letter-spacing: 1.54px;
+	line-height: 1.5;
+	color: #002A53;
+}
+
+.fc-checkout-order-review .pep-redeem__balance {
+	font-family: var(--pep-font-technical);
+	font-size: 11px;
+	font-weight: 400;
+	letter-spacing: 1.54px;
+	color: #5C7086;
+}
+
+.fc-checkout-order-review .pep-redeem__controls {
+	display: flex !important;
+	gap: 10px !important;
+	align-items: center !important;
+	margin: 0 !important;
 }

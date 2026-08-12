@@ -292,12 +292,15 @@ function pepselect_child_render_coupon_in_summary() {
 
 	echo '<tr class="pepselect-summary-row pepselect-summary-row--coupon"><td colspan="2">';
 	echo '<div class="pepselect-inner-card pepselect-inner-card--coupon">';
+	echo '<div class="pepselect-card-label">' . esc_html__( 'DISCOUNT CODE', 'pepselect-child' ) . '</div>';
 
 	// Expanded, with no toggle handle: Fluid's own expansible-section arguments
 	// carry the initial state, and passing $output_handle = false suppresses the
 	// "Add coupon code" link entirely, so the field and its Apply button render
 	// open in the panel.
+	add_filter( 'fc_coupon_code_field_placeholder', 'pepselect_child_coupon_placeholder' );
 	$coupons->output_section_coupon_codes_fields( array(), array( 'initial_state' => 'expanded' ), false );
+	remove_filter( 'fc_coupon_code_field_placeholder', 'pepselect_child_coupon_placeholder' );
 
 	// Fluid normally prints these two through fc_before_substep_coupon_codes,
 	// which only fires when its substep renders. Suppressing the substep took
@@ -432,7 +435,7 @@ function pepselect_child_render_payment_heading( $step_id = 'payment', $is_sideb
 
 	$rendered = true;
 
-	echo '<h3 class="fc-checkout-order-review-title pepselect-payment-title">' . esc_html__( 'Payment method', 'pepselect-child' ) . '</h3>';
+	echo '<h3 class="fc-checkout-order-review-title pepselect-payment-title">' . esc_html__( 'PAYMENT', 'pepselect-child' ) . '</h3>';
 }
 add_action( 'fc_place_order', 'pepselect_child_render_payment_heading', 4, 2 );
 
@@ -551,6 +554,16 @@ function pepselect_child_hide_yith_reward_block_on_cart( $content, $block ) {
 	return $content;
 }
 add_filter( 'render_block', 'pepselect_child_hide_yith_reward_block_on_cart', 20, 2 );
+
+/**
+ * Coupon field placeholder, per the approved mockup.
+ *
+ * @param string $placeholder Default placeholder.
+ * @return string
+ */
+function pepselect_child_coupon_placeholder( $placeholder ) {
+	return __( 'ENTER DISCOUNT CODE', 'pepselect-child' );
+}
 
 /**
  * Return the applied coupons split into cash back and ordinary discounts.
