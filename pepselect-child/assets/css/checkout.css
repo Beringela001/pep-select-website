@@ -1175,3 +1175,64 @@ html.pep-redeem-ready .pep-redeem-native-wrap {
 		transition: none;
 	}
 }
+
+/* =========================================================================
+   M12-6 (beta.17): checkout cleanup + summary-card overflow fix.
+   Safe, self-contained fixes. The larger Orbitrex column restructure (moving
+   payment/coupon/BAC into the right panel, acknowledgments to the left) is NOT
+   done here: it relocates the money-critical payment/Square/acknowledgment flow
+   and must be staged and verified on its own, per "a working checkout beats a
+   matching layout".
+   ========================================================================= */
+
+/* C1: remove the "STEP n OF 4" progress bar. */
+.woocommerce-checkout .fc-progress-bar {
+	display: none !important;
+}
+
+/* C2: hide YITH's optional date-of-birth field wherever it renders. */
+.woocommerce-checkout .form-row:has( input[name="yith_birthday"] ),
+.woocommerce-checkout input[name="yith_birthday"] {
+	display: none !important;
+}
+
+/* C3: pink link leak (rgb(204,51,102)) -> brand cyan. Scoped to these two
+   controls, not a blanket checkout-anchor restyle. */
+.woocommerce-checkout a.expansible-section__toggle-plus,
+.woocommerce-checkout a.woocommerce-privacy-policy-link {
+	color: var(--pep-color-cyan) !important;
+	text-decoration: none !important;
+}
+
+.woocommerce-checkout a.expansible-section__toggle-plus:hover,
+.woocommerce-checkout a.woocommerce-privacy-policy-link:hover {
+	color: var(--pep-color-navy) !important;
+}
+
+/* A: summary-card overflow. At intermediate widths the two-column layout
+   squeezes the sidebar below the review table's natural width, crowding prices
+   against the rounded border. Constrain the content to fit (shrink the product
+   image, let cells wrap) rather than clip - clipping would risk the research
+   purpose select2 dropdown that lives inside the card. */
+.fc-checkout-order-review .shop_table,
+.fc-checkout-order-review table {
+	width: 100% !important;
+	max-width: 100% !important;
+}
+
+.fc-checkout-order-review .cart_item td,
+.fc-checkout-order-review .cart_item th {
+	overflow-wrap: anywhere;
+	word-break: break-word;
+}
+
+.fc-checkout-order-review .cart_item img {
+	max-width: 44px !important;
+	height: auto !important;
+}
+
+.fc-checkout-order-review .pep-redeem,
+.fc-checkout-order-review .pep-redeem * {
+	max-width: 100%;
+	min-width: 0;
+}

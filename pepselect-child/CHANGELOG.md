@@ -6,6 +6,12 @@ All notable changes to the Pep Select child theme are documented here.
 
 Previously live: **0.17.0-beta.1**, deployed to production on 2026-07-23.
 
+## 0.20.0-beta.17 - 2026-08-12
+
+- M12-6 checkout cleanup + summary-card overflow fix (CSS only, no flow changes). Removed the "STEP n OF 4" Fluid progress bar; hid YITH's optional date-of-birth field (input[name=yith_birthday]) and its row wherever it renders; fixed the two pink (rgb(204,51,102)) link leaks - a.expansible-section__toggle-plus and a.woocommerce-privacy-policy-link now use brand cyan with no underline, scoped to those controls only.
+- Summary-card overflow: at intermediate widths the two-column layout squeezes the right sidebar below the review table's natural width, crowding line-item prices against the rounded border. Fixed by constraining the content to fit - product image capped at 44px, table forced to 100% width, cells wrap - rather than clipping with overflow:hidden, which would risk the Research Purpose select2 dropdown that renders inside the card. Verified at the 1076px squeeze width: no element extends past the card's right border and the document has no horizontal overflow.
+- NOT done in this release, by deliberate scope decision under "a working checkout beats a matching layout": the Orbitrex column restructure (moving payment method + Square panel + place order into the right panel, moving the BAC upsell and coupon into the right panel as inner cards with removable pills, moving acknowledgments to the left column). That relocation touches the money-critical payment/Square/acknowledgment-validation flow and must be built and verified as a separate, staged pass. The exact Fluid hooks and risk ranking are recorded in the task report.
+
 ## 0.20.0-beta.16 - 2026-08-12
 
 - M12-6 checkout order-summary panel + redemption form styling. The right-hand order review (.fc-checkout-order-review) had no card and every row fell back to the browser system font (-apple-system) at one weight, so nothing read as the answer. It now sits in a card (surface tint matching the card panels, border and 12px radius from tokens, 28px padding / 20px at 767px) with the inherited system font replaced: labels and product names in Plus Jakarta Sans, all currency figures in IBM Plex Mono, Subtotal/Shipping/Tax reduced to 13px/400 slate, and the TOTAL promoted to an 18px mono navy figure so it is the clear focal point.
