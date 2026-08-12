@@ -741,8 +741,25 @@ function pepselect_child_render_summary_totals() {
 	}
 
 	if ( wc_tax_enabled() && 0 < count( $cart->get_tax_totals() ) ) {
+		$customer_state = '';
+
+		if ( WC()->customer ) {
+			$customer_state = WC()->customer->get_shipping_state();
+
+			if ( '' === $customer_state ) {
+				$customer_state = WC()->customer->get_billing_state();
+			}
+		}
+
 		foreach ( $cart->get_tax_totals() as $tax ) {
-			echo '<div class="pepselect-totals__row"><span>' . esc_html( $tax->label ) . '</span><span>' . wp_kses_post( $tax->formatted_amount ) . '</span></div>';
+			$tax_label = $tax->label;
+
+			if ( '' !== $customer_state ) {
+				/* translators: %s: two-letter US state code. */
+				$tax_label = sprintf( __( 'Sales tax (%s)', 'pepselect-child' ), strtoupper( $customer_state ) );
+			}
+
+			echo '<div class="pepselect-totals__row"><span>' . esc_html( $tax_label ) . '</span><span>' . wp_kses_post( $tax->formatted_amount ) . '</span></div>';
 		}
 	}
 

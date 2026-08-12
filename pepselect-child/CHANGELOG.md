@@ -2,9 +2,15 @@
 
 All notable changes to the Pep Select child theme are documented here.
 
-**Live version: 0.20.0-beta.17** — verified 2026-08-12 by reading Version in style.css directly from www.pepselect.com, not from this file. The previous value here (0.19.0-beta.8) was stale and was used once to answer "what is deployed", which produced a wrong call; read the deployed style.css, and treat this line as a summary that is only as fresh as its stated date. Live is missing 0.20.0-beta.18 through 0.20.0-beta.22: the line-item strength pill, the single-card order summary, the hidden country field, the BAC upsell and coupon inside the summary panel, the payment and consent column swap, the restored Military footer link, and the progress bar removal. Per-version detail for every release is in the entries below, which are complete from 0.20.0-beta.1 onward.
+**Live version: 0.20.0-beta.33** — verified 2026-08-12 from the stylesheet loaded by the production checkout. Treat this line as a dated summary; verify the deployed `style.css` before answering what is live.
 
 Previously live: **0.17.0-beta.1**, deployed to production on 2026-07-23.
+
+## 0.20.0-beta.34 - 2026-08-12
+
+- Removes Fluid Checkout's surviving quantity stepper from the order-summary line item at the same id-bearing specificity as Fluid's boxed template. The approved mockup and Orbitrex reference show only the quiet `Qty 2` line and `Remove`; quantity editing remains available through `Edit cart`.
+- Changes the custom summary's visible tax label from the WooCommerce rate name (`WA State Tax`) to the reference format (`Sales tax (WA)`), using the checkout customer's live two-letter shipping or billing state. Tax calculation and amount are unchanged.
+- Confirms the installed beta.33 quantity-to-discount-card gap is exactly 18px. No spacing adjustment is included in this release.
 
 ## 0.20.0-beta.33 - 2026-08-12
 

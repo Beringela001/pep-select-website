@@ -1,7 +1,7 @@
 # Handoff — Pep Select Checkout Architecture
 
 **Written:** 2026-08-12
-**Theme version at handoff:** `0.20.0-beta.33` (repo + built ZIP). Live was on `0.20.0-beta.32` when last verified.
+**Theme version at handoff:** `0.20.0-beta.34` (source; build pending). Live was confirmed on `0.20.0-beta.33` before this follow-up.
 **Branch:** `web-2c-homepage` · **Last commit:** `5a66885`
 **Theme:** `pepselect-child` (Hello Elementor child)
 **Spec file:** `checkout-panel-pepselect.html` at repo root — 13,366 bytes, SHA-256 `c888fb252d994432915ec5ff803fdbd0c79ca36d16054651d1fe3bb0f990c741`
@@ -220,7 +220,7 @@ Row order follows the mockup: **Discount → Subtotal → Cash back → Shipping
 
 > **Deliberate deviation:** the mockup shows a *post-discount* Subtotal ($143.98 from $159.98 − $16.00). The build prints WooCommerce's **real** `get_cart_subtotal()` with discounts below it. Matching the mockup literally would mean displaying a figure WooCommerce never calculates. Row order is the mockup's; values are WooCommerce's.
 
-**Tax label:** live reads "WA State Tax", mockup reads "Sales tax (WA)". This is `$tax->label` — the WooCommerce **tax-rate name**. Change it at *WooCommerce → Settings → Tax → Standard rates → Tax name*. It is deliberately **not** filtered in the theme.
+**Tax label:** beta.34 formats the visible custom-summary label as `Sales tax (WA)`, using the customer's live two-letter shipping state and falling back to billing state. This matches the mockup/reference without changing WooCommerce's tax-rate name, calculation, or amount.
 
 The second, hidden totals table (`table.fc-review-order-totals-table` inside `.fc-place-order__section--main`) is **Fluid Pro** and was left alone — it is `display:none` and cannot affect layout.
 
@@ -296,7 +296,9 @@ beta.33 closed two of three:
 |---|---|
 | Place order 15px/700 → 13px/600 | **Closed.** Legacy M7 rule selects it as `button#place_order.fc-place-order-button` (1,1,1), which outranked panel-scoped `#place_order` |
 | Line item cell `height: 0`, qty overlapping card by −69.2px | **Closed.** Cell was matched by the panel-cell group's id-bearing selector *and* Fluid floats its children. Deduped to one rule + `flow-root`. Cell 0 → 92px, overlap −69.2 → +23px |
-| items→card gap 23px vs mockup 18px | **OPEN.** The 18px is applied and measured; ~5px of residual cell padding sits above the discount card. Three attempts did not converge |
+| items→card gap 23px vs mockup 18px | **Closed on installed beta.33.** Live measurement is exactly 18px from both the quantity line and `.product-details` to the discount card |
+
+beta.34 follow-up: the live line item exposed Fluid's editable quantity stepper even though the priority-90 callback had been removed. The approved mockup and Orbitrex reference have only `Qty 2` plus `Remove`; beta.34 suppresses the surviving wrapper at Fluid's id-bearing specificity. It also formats the visible tax label as `Sales tax (WA)` from the customer's live state code.
 
 ### Still owed (never run on an installed build)
 - Coupon lifecycle: apply → pill → × → survives reload

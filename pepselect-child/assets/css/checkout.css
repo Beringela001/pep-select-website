@@ -2798,6 +2798,15 @@ body.has-fc-design-template--boxed div.woocommerce .fc-wrapper #order_review tab
 	margin-top: 2px !important;
 }
 
+/* Fluid's boxed template can reassert the editable quantity wrapper behind
+   #order_review after the supported priority-90 callback is removed. Match the
+   id-bearing cascade so the approved mockup has exactly one quantity display:
+   the quiet Qty/Remove line below the product name. */
+body.has-fc-design-template--boxed div.woocommerce .fc-wrapper #order_review
+	table.woocommerce-checkout-review-order-table tr.cart_item .product-details > .quantity {
+	display: none !important;
+}
+
 /* .qty a */
 .fc-checkout-order-review .pepselect-qty__remove {
 	color: #7A8793 !important;
