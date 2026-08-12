@@ -104,9 +104,21 @@ function pepselect_child_render_bacwater_upsell() {
 
 	/* translators: %s: full product name, e.g. "Bacteriostatic Water 30mL". */
 	$aria = sprintf( __( 'Add %s to your order', 'pepselect-child' ), $name );
+	// Product image, resolved from the same WC_Product the price and stock come
+	// from - no second lookup, no hard-coded attachment id or URL. Rendered only
+	// when the product actually has a featured image, so a product without one
+	// degrades to the previous text-only block instead of WooCommerce's
+	// placeholder box.
+	$image_html = 0 < (int) $product->get_image_id()
+		? $product->get_image( 'woocommerce_thumbnail', array( 'class' => 'pepselect-bacwater__img' ) )
+		: '';
 	?>
 	<div class="pepselect-bacwater-standalone">
-			<div class="pepselect-bacwater" data-pepselect-bacwater>
+			<div class="pepselect-bacwater<?php echo '' !== $image_html ? ' pepselect-bacwater--has-media' : ''; ?>" data-pepselect-bacwater>
+				<?php if ( '' !== $image_html ) : ?>
+					<div class="pepselect-bacwater__media" aria-hidden="true"><?php echo wp_kses_post( $image_html ); ?></div>
+				<?php endif; ?>
+				<div class="pepselect-bacwater__body">
 				<p class="pepselect-bacwater__question"><?php esc_html_e( 'Need bacteriostatic water for your research?', 'pepselect-child' ); ?></p>
 				<p class="pepselect-bacwater__sub"><?php esc_html_e( 'Reconstitution Solution – for Laboratory Use.', 'pepselect-child' ); ?></p>
 				<label class="pepselect-bacwater__toggle">
@@ -120,6 +132,7 @@ function pepselect_child_render_bacwater_upsell() {
 						<span class="pepselect-bacwater__price">&ndash; <?php echo wp_kses_post( $price_html ); ?></span>
 					</span>
 				</label>
+				</div>
 			</div>
 	</div>
 	<?php

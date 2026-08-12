@@ -367,6 +367,9 @@ add_action( 'fc_checkout_payment', 'pepselect_child_render_consent_terms', 5 );
 function pepselect_child_swap_payment_and_consent() {
 	remove_action( 'fc_checkout_payment', 'woocommerce_checkout_payment', 20 );
 
+	// Notices move into the order summary (see above).
+	remove_action( 'woocommerce_before_checkout_form', 'woocommerce_output_all_notices', 10 );
+
 	if ( ! class_exists( 'FluidCheckout_Steps' ) || ! method_exists( 'FluidCheckout_Steps', 'instance' ) ) {
 		return;
 	}
@@ -378,6 +381,76 @@ function pepselect_child_swap_payment_and_consent() {
 	}
 }
 add_action( 'wp', 'pepselect_child_swap_payment_and_consent', 200 );
+
+/**
+ * Give the relocated payment section a heading in the summary panel.
+ *
+ * The panel's existing convention is a single h3.fc-checkout-order-review-title
+ * ("Order summary"), so payment reuses that class and the string Fluid already
+ * used for the substep it replaces. Priority 4 puts it above the payment box
+ * rendered at 5. Run-once guarded for the same reason as the payment box.
+ *
+ * @param string $step_id    Step id, unused.
+ * @param bool   $is_sidebar Sidebar flag, unused.
+ * @return void
+ */
+function pepselect_child_render_payment_heading( $step_id = 'payment', $is_sidebar = false ) {
+	static $rendered = false;
+
+	if ( $rendered ) {
+		return;
+	}
+
+	$rendered = true;
+
+	echo '<h3 class="fc-checkout-order-review-title pepselect-payment-title">' . esc_html__( 'Payment method', 'pepselect-child' ) . '</h3>';
+}
+add_action( 'fc_place_order', 'pepselect_child_render_payment_heading', 4, 2 );
+
+/**
+ * Drop the now-orphaned "Payment method" substep title in the left column.
+ *
+ * The payment box moved to the summary panel, so that heading labelled nothing;
+ * the block below it carries its own Acknowledgments heading. Fluid supports a
+ * null substep title (it uses one itself when the coupon section title is
+ * disabled), so the substep still registers and the step structure is intact.
+ *
+ * @param array $args Substep registration arguments.
+ * @return array
+ */
+function pepselect_child_clear_payment_substep_title( $args ) {
+	if ( isset( $args['substep_id'] ) && 'payment' === $args['substep_id'] ) {
+		$args['substep_title'] = null;
+	}
+
+	return $args;
+}
+add_filter( 'fc_register_checkout_substep_args', 'pepselect_child_clear_payment_substep_title' );
+
+/**
+ * Render checkout notices inside the order summary, above the coupon block.
+ *
+ * WooCommerce prints them full width at the top of the page through
+ * woocommerce_before_checkout_form (priority 10), far from the controls that
+ * produce them. That action is unhooked in the swap callback below and the same
+ * core function is called here at priority 15 - after the BAC row (10) and
+ * before the coupon row (20). Applies to every cart-level checkout notice, so
+ * the reward-applied, coupon-applied and coupon-removed messages all behave the
+ * same way.
+ *
+ * @return void
+ */
+function pepselect_child_render_notices_in_summary() {
+	if ( ! function_exists( 'woocommerce_output_all_notices' ) ) {
+		return;
+	}
+
+	echo '<tr class="pepselect-summary-row pepselect-summary-row--notices"><td colspan="2">';
+	echo '<div class="pepselect-summary-notices">';
+	woocommerce_output_all_notices();
+	echo '</div></td></tr>';
+}
+add_action( 'woocommerce_review_order_after_cart_contents', 'pepselect_child_render_notices_in_summary', 15 );
 
 /**
  * Enqueue checkout and cart presentation styles.

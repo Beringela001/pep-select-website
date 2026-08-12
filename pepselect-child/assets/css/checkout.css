@@ -1492,3 +1492,158 @@ html.pep-redeem-ready .pep-redeem-native-wrap {
 	max-width: 100%;
 	min-width: 0;
 }
+
+/* =========================================================================
+   M12-10: checkout cleanup.
+   B: one card. The summary panel is the only filled surface; the coupon and
+   cash-back blocks lose their tint, border and radius and are separated by
+   hairline rules and spacing instead. Applied discounts stay as pills, now
+   sitting directly on the panel rather than inside a nested box.
+   C: the BAC upsell gains the product image and keeps a distinct treatment
+   without becoming a second filled card.
+   D: checkout notices render inline in the panel as a line of text.
+   E: with a single gateway the label row and its radio are noise; the amber
+   payment box is untouched.
+   ========================================================================= */
+
+/* B: strip the nested cards. */
+.fc-checkout-order-review .pepselect-inner-card,
+.fc-checkout-order-review .pepselect-inner-card--coupon,
+.fc-checkout-order-review .pep-redeem {
+	padding: 0 !important;
+	border: 0 !important;
+	border-radius: 0 !important;
+	background: transparent !important;
+}
+
+/* Sections separated by hairlines, not boxes. */
+.fc-checkout-order-review .pepselect-summary-row--coupon > td,
+.fc-checkout-order-review .pepselect-summary-row--bac > td {
+	padding: 14px 0 !important;
+	border-top: 1px solid var(--pep-color-border) !important;
+}
+
+.fc-checkout-order-review .pep-redeem-slot td {
+	padding: 14px 0 !important;
+	border-top: 1px solid var(--pep-color-border) !important;
+}
+
+/* C: BAC keeps a distinct read through the panel tint at a lighter value and a
+   hairline, not a second filled card on top of the panel. */
+.fc-checkout-order-review .pepselect-bacwater {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	padding: 0 !important;
+	border: 0 !important;
+	border-radius: 0 !important;
+	background: transparent !important;
+}
+
+.pepselect-bacwater__media {
+	flex: 0 0 auto;
+	width: 60px;
+	height: 60px;
+	overflow: hidden;
+	border-radius: var(--pep-radius-small);
+	background: var(--pep-color-white);
+}
+
+.pepselect-bacwater__img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.pepselect-bacwater__body {
+	flex: 1 1 auto;
+	min-width: 0;
+}
+
+/* D: inline notice, a line of text rather than a page banner. */
+.pepselect-summary-notices:empty {
+	display: none;
+}
+
+.fc-checkout-order-review .pepselect-summary-row--notices > td {
+	padding: 0 0 12px !important;
+	border: 0 !important;
+}
+
+.pepselect-summary-notices .woocommerce-message,
+.pepselect-summary-notices .woocommerce-info,
+.pepselect-summary-notices .woocommerce-error {
+	margin: 0 !important;
+	padding: 8px 0 0 !important;
+	border: 0 !important;
+	background: transparent !important;
+	color: var(--pep-color-slate) !important;
+	font-family: var(--pep-font-interface);
+	font-size: 13px !important;
+	line-height: 1.5;
+	list-style: none !important;
+}
+
+.pepselect-summary-notices .woocommerce-message::before,
+.pepselect-summary-notices .woocommerce-info::before,
+.pepselect-summary-notices .woocommerce-error::before {
+	display: none !important;
+}
+
+.pepselect-summary-notices .woocommerce-message {
+	color: var(--pep-color-green) !important;
+}
+
+.pepselect-summary-notices .woocommerce-error {
+	color: var(--pep-color-red) !important;
+}
+
+.pepselect-summary-notices .button {
+	display: none !important;
+}
+
+/* A: heading for the relocated payment section. */
+.pepselect-payment-title {
+	margin: 18px 0 12px !important;
+}
+
+/* E: single gateway - hide the label row and its radio, keep the amber box.
+   Scoped to the BACS method so a second gateway would still show its label.
+   The radio stays in the DOM and is not disabled, so it still posts. */
+/* The label carries Fluid layout rules that beat a visually-hidden treatment,
+   so it is removed outright; labels do not post. The radio is only visually
+   hidden and stays enabled, so payment_method still submits (verified: reading
+   the checkout FormData with the label hidden returns payment_method=bacs). */
+.fc-checkout-order-review li.wc_payment_method.payment_method_bacs > label {
+	display: none !important;
+}
+
+.fc-checkout-order-review li.wc_payment_method.payment_method_bacs > input[type="radio"] {
+	position: absolute !important;
+	width: 1px !important;
+	height: 1px !important;
+	margin: -1px !important;
+	padding: 0 !important;
+	overflow: hidden !important;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
+	border: 0 !important;
+}
+
+.fc-checkout-order-review li.wc_payment_method.payment_method_bacs {
+	list-style: none !important;
+	background: transparent !important;
+}
+
+/* C: 390px - shrink the image rather than overflow. */
+@media (max-width: 480px) {
+	.pepselect-bacwater__media {
+		width: 48px;
+		height: 48px;
+	}
+
+	.fc-checkout-order-review .pepselect-bacwater {
+		gap: 12px;
+	}
+}
