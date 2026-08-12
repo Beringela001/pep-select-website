@@ -1015,3 +1015,163 @@ li.wc_payment_method.payment_method_bacs .payment_box {
 	outline: 2px solid var(--pep-color-red);
 	outline-offset: 2px;
 }
+
+/* =========================================================================
+   M12-6: Checkout order-summary card + redemption form.
+   Cards the right-hand order review (.fc-checkout-order-review, which in Fluid's
+   layout also holds the acknowledgments and place order), fixes the typography
+   that fell back to the browser system font so nothing read as the answer, and
+   styles the redemption card the checkout-redemption.js script places inside the
+   summary. Existing tokens only. 16px is not a radius token; the nearest
+   data-panel radius, --pep-radius-medium (12px), is used (12 and 20 are
+   equidistant from 16). The surface tint matches the card panels (cards.css);
+   the BAC upsell uses cyan-soft, so the two were not the same token.
+   ========================================================================= */
+
+.fc-checkout-order-review {
+	box-sizing: border-box !important;
+	background: var(--pep-color-surface) !important;
+	border: 1px solid var(--pep-color-border) !important;
+	border-radius: var(--pep-radius-medium) !important;
+	padding: 28px !important;
+	font-family: var(--pep-font-interface);
+}
+
+/* Fluid pads the inner wrapper; the card owns the padding instead. */
+.fc-checkout-order-review .fc-checkout-order-review__inner {
+	padding: 0 !important;
+}
+
+@media (max-width: 767px) {
+	.fc-checkout-order-review {
+		padding: 20px !important;
+	}
+}
+
+/* Kill the -apple-system inheritance: labels in the interface face, currency
+   figures in the technical (mono) face. */
+.fc-checkout-order-review,
+.fc-checkout-order-review th,
+.fc-checkout-order-review td,
+.fc-checkout-order-review .cart_item,
+.fc-checkout-order-review .cart-subtotal,
+.fc-checkout-order-review .order-total {
+	font-family: var(--pep-font-interface) !important;
+}
+
+.fc-checkout-order-review .woocommerce-Price-amount {
+	font-family: var(--pep-font-technical) !important;
+}
+
+/* Subtotal / Shipping / Tax recede: lighter weight, smaller, slate. */
+.fc-checkout-order-review .cart-subtotal th,
+.fc-checkout-order-review .cart-subtotal td,
+.fc-checkout-order-review .cart-subtotal .woocommerce-Price-amount,
+.fc-checkout-order-review .woocommerce-shipping-totals th,
+.fc-checkout-order-review .woocommerce-shipping-totals td,
+.fc-checkout-order-review .woocommerce-shipping-totals .woocommerce-Price-amount,
+.fc-checkout-order-review .tax-total th,
+.fc-checkout-order-review .tax-total td,
+.fc-checkout-order-review .tax-total .woocommerce-Price-amount {
+	font-weight: 400 !important;
+	font-size: 13px !important;
+	color: var(--pep-color-slate) !important;
+}
+
+/* Total is the focal point: mono figure, larger, navy. */
+.fc-checkout-order-review .order-total th {
+	font-size: 15px !important;
+	font-weight: 600 !important;
+	color: var(--pep-color-navy) !important;
+}
+
+.fc-checkout-order-review .order-total td,
+.fc-checkout-order-review .order-total .woocommerce-Price-amount {
+	font-family: var(--pep-font-technical) !important;
+	font-size: 18px !important;
+	font-weight: 600 !important;
+	color: var(--pep-color-navy) !important;
+}
+
+.fc-checkout-order-review .cart_item td,
+.fc-checkout-order-review .cart_item th {
+	font-size: 15px !important;
+	font-weight: 400 !important;
+	color: var(--pep-color-navy) !important;
+}
+
+/* Hide YITH's native redemption form, but only once the script has taken over
+   (see checkout-redemption.js). Absent this class the native form stays visible. */
+html.pep-redeem-ready form.ywpar_apply_discounts,
+html.pep-redeem-ready .pep-redeem-native-wrap {
+	display: none !important;
+}
+
+/* Redemption card, placed by the script below the line items, above the totals. */
+.fc-checkout-order-review .pep-redeem-slot td {
+	padding: 0 0 16px !important;
+	border: 0 !important;
+}
+
+.pep-redeem {
+	padding: 14px 16px;
+	border: 1px solid var(--pep-color-cyan);
+	border-radius: var(--pep-radius-small);
+	background: var(--pep-color-cyan-soft);
+	font-family: var(--pep-font-interface);
+}
+
+.pep-redeem__row {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 12px;
+	margin-bottom: 10px;
+}
+
+.pep-redeem__label {
+	color: var(--pep-color-navy);
+	font-size: 13px;
+	font-weight: var(--pep-font-weight-semibold);
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+}
+
+.pep-redeem__balance {
+	color: var(--pep-color-navy);
+	font-family: var(--pep-font-technical);
+	font-size: 15px;
+	font-weight: var(--pep-font-weight-medium);
+}
+
+.pep-redeem__btn {
+	display: block;
+	width: 100%;
+	padding: 10px 16px;
+	border: 0;
+	border-radius: var(--pep-radius-small);
+	background: var(--pep-color-cyan);
+	color: var(--pep-color-white);
+	font-family: var(--pep-font-interface);
+	font-size: 14px;
+	font-weight: var(--pep-font-weight-bold);
+	text-align: center;
+	cursor: pointer;
+	transition: background-color var(--pep-motion-duration) ease;
+}
+
+.pep-redeem__btn:hover {
+	background: var(--pep-color-navy);
+}
+
+.pep-redeem__note {
+	margin-top: 8px;
+	color: var(--pep-color-slate);
+	font-size: 12px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.pep-redeem__btn {
+		transition: none;
+	}
+}

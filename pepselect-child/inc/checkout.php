@@ -225,6 +225,16 @@ function pepselect_child_enqueue_checkout_assets() {
 			pepselect_child_asset_version( 'assets/js/cart-rewards.js' ),
 			true
 		);
+
+		// Themed, dollar-framed redemption card in the order summary (M12-6).
+		// jQuery is a dependency so it can re-run on updated_checkout.
+		wp_enqueue_script(
+			'pepselect-child-checkout-redemption',
+			get_stylesheet_directory_uri() . '/assets/js/checkout-redemption.js',
+			array( 'jquery' ),
+			pepselect_child_asset_version( 'assets/js/checkout-redemption.js' ),
+			true
+		);
 	}
 }
 add_action( 'wp_enqueue_scripts', 'pepselect_child_enqueue_checkout_assets', 40 );
