@@ -184,6 +184,51 @@ function pepselect_child_hide_cart_page_title( $show ) {
 add_filter( 'hello_elementor_page_title', 'pepselect_child_hide_cart_page_title' );
 
 /**
+ * Append the compound strength as a pill to line-item names in the checkout
+ * order summary. Reuses the homepage strength resolver (product_tag based) so
+ * the badge matches the archive and homepage cards.
+ *
+ * Scoped to the live checkout only. The same filter also runs on the cart page
+ * and the side-cart, where the pill span would render unstyled; is_checkout()
+ * keeps it to the order review, and order-received is excluded (its line items
+ * use woocommerce_order_item_name, not this filter, but the guard is explicit).
+ * wp_kses_post, applied by the review-order template, preserves the span class.
+ *
+ * @param string $name          Product name markup.
+ * @param array  $cart_item     Cart item.
+ * @param string $cart_item_key Cart item key (unused).
+ * @return string
+ */
+function pepselect_child_checkout_item_strength_pill( $name, $cart_item, $cart_item_key = '' ) {
+	if ( ! function_exists( 'is_checkout' ) || ! is_checkout() ) {
+		return $name;
+	}
+
+	if ( function_exists( 'is_wc_endpoint_url' ) && is_wc_endpoint_url( 'order-received' ) ) {
+		return $name;
+	}
+
+	if ( ! function_exists( 'pepselect_child_get_product_strength_label' ) ) {
+		return $name;
+	}
+
+	$product = isset( $cart_item['data'] ) ? $cart_item['data'] : null;
+
+	if ( ! is_a( $product, 'WC_Product' ) ) {
+		return $name;
+	}
+
+	$strength = pepselect_child_get_product_strength_label( $product );
+
+	if ( '' === $strength ) {
+		return $name;
+	}
+
+	return $name . ' <span class="pepselect-order-strength">' . esc_html( $strength ) . '</span>';
+}
+add_filter( 'woocommerce_cart_item_name', 'pepselect_child_checkout_item_strength_pill', 20, 3 );
+
+/**
  * Enqueue checkout and cart presentation styles.
  *
  * @return void

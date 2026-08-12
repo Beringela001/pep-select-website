@@ -6,6 +6,13 @@ All notable changes to the Pep Select child theme are documented here.
 
 Previously live: **0.17.0-beta.1**, deployed to production on 2026-07-23.
 
+## 0.20.0-beta.18 - 2026-08-12
+
+- M12-7 checkout order-summary panel fixes. (A) The order review showed a card inside a card: the M12-6 styling added an outer card on .fc-checkout-order-review while the theme already styled the nested .fc-checkout-order-review__inner as its own panel (white fill, 1px border, 8px radius). The inner panel is now flattened (transparent, no border, no radius) so only the one outer card renders.
+- (B) The Country / Region field is hidden on the checkout. The store ships US-only and the control is a single-option ("US") select, so hiding the row with display:none leaves billing_country and shipping_country posting "US" unchanged - the value is not cleared. State / County is left visible. Verified end to end before this change on staging order #1435: Country recorded United States (US), State Washington, WA state tax applied, acknowledgment meta written, totals correct.
+- (C) The line-item thumbnail is removed from the order summary and each line now shows the compound strength as a pill after the name (e.g. "GLP-3 R 10MG"), with the price right-aligned. The pill reuses the existing homepage/archive strength resolver (pepselect_child_get_product_strength_label, product_tag based) via a woocommerce_cart_item_name filter scoped to the checkout only, and is styled to mirror the compound card badge (IBM Plex Mono, bordered, uppercase).
+- Out of scope and untouched: the Acknowledgments block and its validation/meta, the Research Purpose select, the BAC upsell, the Square instruction panel and its amber framing, the cash-back dollar conversion and the points posted to YITH, and Fluid's four-step flow. (D) A per-item batch number was requested as report-only and is not built - see the delivery note; the storefront cannot know the batch that will actually ship.
+
 ## 0.20.0-beta.17 - 2026-08-12
 
 - M12-6 checkout cleanup + summary-card overflow fix (CSS only, no flow changes). Removed the "STEP n OF 4" Fluid progress bar; hid YITH's optional date-of-birth field (input[name=yith_birthday]) and its row wherever it renders; fixed the two pink (rgb(204,51,102)) link leaks - a.expansible-section__toggle-plus and a.woocommerce-privacy-policy-link now use brand cyan with no underline, scoped to those controls only.

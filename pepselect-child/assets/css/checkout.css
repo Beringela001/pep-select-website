@@ -1236,3 +1236,56 @@ html.pep-redeem-ready .pep-redeem-native-wrap {
 	max-width: 100%;
 	min-width: 0;
 }
+
+/* =========================================================================
+   M12-7: checkout order-summary panel fixes.
+   A: the order review nests a second card - Fluid/theme style
+   .fc-checkout-order-review__inner as its own panel (white fill, 1px border,
+   8px radius) inside the M12-6 outer card, reading as a double border. Flatten
+   the inner element so only the outer card shows (its padding is already zeroed
+   in the M12-6 block above).
+   B: remove the Country / Region field from view. The store ships US-only and
+   the control is a single-option ("US") select, so hiding it with display:none
+   leaves billing_country / shipping_country posting "US" unchanged - the value
+   is not cleared, only the row is hidden. State / County stays visible.
+   C: drop the line-item thumbnail (the name and its strength pill carry the
+   row) and style the pill appended by pepselect_child_checkout_item_strength_pill().
+   The pill mirrors the compound card strength badge: mono, bordered, uppercase.
+   ========================================================================= */
+
+/* A: flatten the inner panel so the M12-6 outer card is the only card. */
+.fc-checkout-order-review .fc-checkout-order-review__inner {
+	background: transparent !important;
+	border: 0 !important;
+	border-radius: 0 !important;
+}
+
+/* B: hide the US-only country selector; its single-option value still posts. */
+#billing_country_field,
+#shipping_country_field {
+	display: none !important;
+}
+
+/* C: remove the line-item thumbnail (overrides the M12-6 overflow max-width). */
+.fc-checkout-order-review .cart_item img {
+	display: none !important;
+}
+
+/* C: strength pill on the line-item name. */
+.pepselect-order-strength {
+	display: inline-block;
+	margin-left: 6px;
+	padding: 2px 8px;
+	border: 1px solid var(--pep-color-border);
+	border-radius: var(--pep-radius-pill);
+	background: var(--pep-color-surface);
+	color: var(--pep-color-navy);
+	font-family: var(--pep-font-technical);
+	font-size: 10px;
+	font-weight: 600;
+	line-height: 1.4;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	white-space: nowrap;
+	vertical-align: middle;
+}
