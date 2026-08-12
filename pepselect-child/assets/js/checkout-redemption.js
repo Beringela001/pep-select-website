@@ -22,6 +22,48 @@
 ( function () {
 	'use strict';
 
+	// The $5.00 floor YITH enforces server-side, mirrored in the field.
+	var MINIMUM_DOLLARS = 5;
+
+	/**
+	 * The ONLY place dollars become points.
+	 *
+	 * The figure the customer sees is DOLLARS; the field POSTed to YITH is
+	 * POINTS. The rate is derived from YITH's own pair of fields
+	 * (ywpar_points_max against ywpar_max_discount) rather than assumed, so it
+	 * cannot drift if the store's rate changes, and the result is always clamped
+	 * to the server-set maximum. Verified against production values
+	 * (1120 points / $11.20): $5.00 -> 500, $7.00 -> 700, $20.00 -> 1120.
+	 *
+	 * @param {*} dollars     Requested amount, in dollars.
+	 * @param {*} pointsMax   Server-set maximum, in points.
+	 * @param {*} maxDollars  Server-set maximum, in dollars.
+	 * @return {number} points, integer, never above pointsMax.
+	 */
+	function dollarsToPoints( dollars, pointsMax, maxDollars ) {
+		var amount = parseFloat( dollars );
+		var maxPts = parseInt( pointsMax, 10 );
+		var maxUsd = parseFloat( maxDollars );
+
+		if ( isNaN( amount ) || amount <= 0 || isNaN( maxPts ) || maxPts <= 0 ) {
+			return 0;
+		}
+
+		var rate = ( ! isNaN( maxUsd ) && maxUsd > 0 ) ? ( maxPts / maxUsd ) : 0;
+
+		if ( ! isFinite( rate ) || rate <= 0 ) {
+			return 0;
+		}
+
+		var points = Math.round( amount * rate );
+
+		if ( points > maxPts ) {
+			points = maxPts;
+		}
+
+		return points < 0 ? 0 : points;
+	}
+
 	function money( value ) {
 		var n = parseFloat( value );
 		return '$' + ( isNaN( n ) ? 0 : n ).toFixed( 2 );
@@ -29,69 +71,6 @@
 
 	function nativeForm() {
 		return document.querySelector( 'form.ywpar_apply_discounts' );
-	}
-
-	// True when a YITH redemption is currently on the cart. Its discount row is
-	// the only marker left once the apply form is gone.
-	function redemptionApplied( review ) {
-		return !! review.querySelector( 'tr.cart-discount[class*="ywpar"], tr[class*="ywpar_discount"]' );
-	}
-
-	var refetching = false;
-	var refetched = false;
-
-	// YITH only prints its apply form on a full page load. If the page was loaded
-	// with a redemption applied, removing it over AJAX leaves no form anywhere in
-	// the document, so the card cannot be rebuilt and the block renders empty
-	// until a reload. Fetch the checkout once in the background, lift the form out
-	// of the response and park it hidden, so the card can return in place.
-	function refetchNativeForm( done ) {
-		if ( refetching || refetched || ! window.fetch ) {
-			return;
-		}
-
-		refetching = true;
-
-		window.fetch( window.location.pathname, { credentials: 'same-origin' } )
-			.then( function ( response ) {
-				return response.ok ? response.text() : '';
-			} )
-			.then( function ( html ) {
-				refetching = false;
-
-				if ( ! html ) {
-					return;
-				}
-
-				var parsed = new DOMParser().parseFromString( html, 'text/html' );
-				var fresh = parsed.querySelector( 'form.ywpar_apply_discounts' );
-
-				// No form in a fresh load either: the balance is genuinely below the
-				// minimum. Stop asking.
-				refetched = true;
-
-				if ( ! fresh ) {
-					return;
-				}
-
-				var holder = document.getElementById( 'pep-redeem-native-holder' );
-
-				if ( ! holder ) {
-					holder = document.createElement( 'div' );
-					holder.id = 'pep-redeem-native-holder';
-					holder.hidden = true;
-					document.body.appendChild( holder );
-				}
-
-				holder.innerHTML = '';
-				holder.appendChild( document.importNode( fresh, true ) );
-
-				done();
-			} )
-			.catch( function () {
-				refetching = false;
-				refetched = true;
-			} );
 	}
 
 	function nativeButton() {
@@ -126,21 +105,88 @@
 						'<span class="pep-redeem__label">Cash back</span>' +
 						'<span class="pep-redeem__balance"></span>' +
 					'</div>' +
-					'<button type="button" class="pep-redeem__btn"></button>' +
+					'<div class="pep-redeem__controls">' +
+						'<div class="pep-redeem__field">' +
+							'<span class="pep-redeem__prefix" aria-hidden="true">$</span>' +
+							'<input type="number" class="pep-redeem__input" inputmode="decimal" step="0.01" min="' + MINIMUM_DOLLARS + '" aria-label="Cash back amount in dollars" />' +
+						'</div>' +
+						'<button type="button" class="pep-redeem__max">Max</button>' +
+						'<button type="button" class="pep-redeem__btn">Apply</button>' +
+					'</div>' +
 					'<div class="pep-redeem__note">Minimum redemption is $5.00.</div>' +
 				'</div>' +
 			'</td>';
 
 		subtotal.parentNode.insertBefore( row, subtotal );
 
-		row.querySelector( '.pep-redeem__btn' ).addEventListener( 'click', function ( event ) {
-			event.preventDefault();
+		var note = row.querySelector( '.pep-redeem__note' );
+		var input = row.querySelector( '.pep-redeem__input' );
+
+		// Apply the requested amount. Max writes the server maximum straight
+		// through, with no conversion round-trip; any other amount goes through
+		// dollarsToPoints once. The field written is always POINTS.
+		//
+		// The redemption is triggered by clicking YITH's own Apply button, which is
+		// what YITH binds its AJAX handler to. A native form submit is not a
+		// substitute: it fires but applies nothing.
+		function apply( useMax ) {
+			var form = nativeForm();
+
+			if ( ! form ) {
+				return;
+			}
+
+			var pointsField = form.querySelector( '[name="ywpar_input_points"]' );
+			var pointsMax = ( form.querySelector( '[name="ywpar_points_max"]' ) || {} ).value || '0';
+			var maxDollars = ( form.querySelector( '[name="ywpar_max_discount"]' ) || {} ).value || '0';
+
+			if ( ! pointsField ) {
+				return;
+			}
+
+			var points;
+
+			if ( useMax ) {
+				points = parseInt( pointsMax, 10 ) || 0;
+			} else {
+				var requested = parseFloat( input ? input.value : '' );
+
+				if ( isNaN( requested ) || requested < MINIMUM_DOLLARS ) {
+					if ( note ) {
+						note.textContent = 'Enter ' + money( MINIMUM_DOLLARS ) + ' or more to redeem.';
+					}
+
+					if ( input ) {
+						input.focus();
+					}
+
+					return;
+				}
+
+				points = dollarsToPoints( requested, pointsMax, maxDollars );
+			}
+
+			if ( points <= 0 ) {
+				return;
+			}
+
+			pointsField.value = points;
 
 			var button = nativeButton();
 
 			if ( button ) {
 				button.click();
 			}
+		}
+
+		row.querySelector( '.pep-redeem__btn' ).addEventListener( 'click', function ( event ) {
+			event.preventDefault();
+			apply( false );
+		} );
+
+		row.querySelector( '.pep-redeem__max' ).addEventListener( 'click', function ( event ) {
+			event.preventDefault();
+			apply( true );
 		} );
 
 		return row;
@@ -162,25 +208,15 @@
 		var form = nativeForm();
 		var card = document.querySelector( '.pep-redeem-slot' );
 
-		// No apply form present. Either a redemption is applied (its Remove control
-		// lives in the totals), or the form was never rendered on this page load
-		// because the page opened with one applied and it has since been removed.
+		// No apply form present: redemption is already applied (its Remove control
+		// lives in the totals) or the balance is below the minimum. Drop our card.
 		if ( ! form ) {
 			if ( card && card.parentNode ) {
 				card.parentNode.removeChild( card );
 			}
 
-			// Nothing applied and no form: recover the form so the button returns
-			// without a reload.
-			if ( ! redemptionApplied( review ) ) {
-				refetchNativeForm( run );
-			}
-
 			return;
 		}
-
-		// A form is available again, so a later removal may need a fresh one.
-		refetched = false;
 
 		// YITH renders the form inside a .woocommerce-cart-notice box that carries
 		// its own border and tint; tag it so the CSS hides the whole box, not just
@@ -213,7 +249,13 @@
 		}
 
 		card.querySelector( '.pep-redeem__balance' ).textContent = money( maxDiscount ) + ' available';
-		card.querySelector( '.pep-redeem__btn' ).textContent = 'Apply ' + money( maxDiscount ) + ' cash back';
+
+		var amountInput = card.querySelector( '.pep-redeem__input' );
+
+		if ( amountInput ) {
+			amountInput.max = maxDiscount;
+			amountInput.placeholder = String( parseFloat( maxDiscount ).toFixed( 2 ) );
+		}
 	}
 
 	function run() {

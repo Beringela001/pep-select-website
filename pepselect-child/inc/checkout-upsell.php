@@ -195,7 +195,18 @@ add_action( 'wc_ajax_pepselect_bacwater_toggle', 'pepselect_child_bacwater_toggl
  * @return void
  */
 function pepselect_child_bacwater_assets() {
-	if ( ! function_exists( 'is_checkout' ) || ! is_checkout() ) {
+	if ( ! function_exists( 'is_checkout' ) ) {
+		return;
+	}
+
+	// The side cart can open on any front-end page, so the toggle script has to
+	// load beyond the checkout now. Loaded only when the plugin is active and the
+	// product is actually offerable, so ordinary pages gain nothing they cannot
+	// use. The script is delegated on document, so it binds to the side cart's
+	// markup even though that is rendered after load.
+	$side_cart_active = class_exists( 'Xoo_Wsc_Core' ) || function_exists( 'xoo_wsc_cart' ) || function_exists( 'xoo_wsc_helper' );
+
+	if ( ! is_checkout() && ! $side_cart_active ) {
 		return;
 	}
 
@@ -221,3 +232,35 @@ function pepselect_child_bacwater_assets() {
 	);
 }
 add_action( 'wp_enqueue_scripts', 'pepselect_child_bacwater_assets', 45 );
+
+/**
+ * Render the upsell in the side cart, between the totals and the buttons.
+ *
+ * Side Cart WooCommerce fires xoo_wsc_before_footer_btns inside its footer
+ * buttons template, which runs after global/footer/totals.php - the slot Paulo
+ * asked for. Using the plugin's own hook avoids a template override, so the
+ * plugin can update without carrying a stale copy in the theme.
+ *
+ * The same resolver as the checkout is used, so an out-of-stock, unpurchasable
+ * or missing product returns null and nothing renders. When the product is
+ * already in the cart the panel is not shown at all - in the side cart the
+ * customer can already see the line item, so re-offering it would be noise.
+ *
+ * @return void
+ */
+function pepselect_child_render_bacwater_side_cart() {
+	$product = pepselect_child_get_bacwater_product();
+
+	if ( ! $product ) {
+		return;
+	}
+
+	if ( '' !== pepselect_child_bacwater_cart_key( $product->get_id() ) ) {
+		return;
+	}
+
+	echo '<div class="pepselect-bacwater-sidecart">';
+	pepselect_child_render_bacwater_upsell();
+	echo '</div>';
+}
+add_action( 'xoo_wsc_before_footer_btns', 'pepselect_child_render_bacwater_side_cart', 10 );

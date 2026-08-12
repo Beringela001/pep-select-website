@@ -285,7 +285,11 @@ function pepselect_child_render_coupon_in_summary() {
 	echo '<tr class="pepselect-summary-row pepselect-summary-row--coupon"><td colspan="2">';
 	echo '<div class="pepselect-inner-card pepselect-inner-card--coupon">';
 
-	$coupons->output_section_coupon_codes_fields();
+	// Expanded, with no toggle handle: Fluid's own expansible-section arguments
+	// carry the initial state, and passing $output_handle = false suppresses the
+	// "Add coupon code" link entirely, so the field and its Apply button render
+	// open in the panel.
+	$coupons->output_section_coupon_codes_fields( array(), array( 'initial_state' => 'expanded' ), false );
 
 	// Fluid normally prints these two through fc_before_substep_coupon_codes,
 	// which only fires when its substep renders. Suppressing the substep took
@@ -308,6 +312,10 @@ function pepselect_child_render_coupon_in_summary() {
 }
 add_action( 'woocommerce_review_order_after_cart_contents', 'pepselect_child_render_coupon_in_summary', 20 );
 add_filter( 'fc_coupon_code_displayed_as_substep', '__return_false' );
+
+// Belt and braces for the expanded state: Fluid reads this filter when building
+// the expansible section's initial state.
+add_filter( 'fc_coupon_code_field_initially_expanded', '__return_true' );
 
 /**
  * Render the payment section inside the order summary, directly above Place order.
