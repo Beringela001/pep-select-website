@@ -6,6 +6,13 @@ All notable changes to the Pep Select child theme are documented here.
 
 Previously live: **0.17.0-beta.1**, deployed to production on 2026-07-23.
 
+## 0.20.0-beta.33 - 2026-08-12
+
+- Closes the two failures found by the computed-style diff run against installed 0.20.0-beta.32. That pass compared the live panel with the mockup rendered in an iframe, property by property across 36 mapped selector pairs: 186 comparisons, 184 PASS, 2 FAIL, both on the Place order button.
+- Place order took 15px padding and weight 700 instead of the mockup's 13px and 600. The legacy M7 rule selects it as button#place_order.fc-place-order-button, which outranks a panel-scoped #place_order, so the panel rule now matches that same shape and wins.
+- The line-item cell measured 0px tall while the item content inside it measured 64px, so the quantity line overflowed and sat 69.2px over the discount card, and the mockup's 18px gap measured 0. Two causes: a floated descendant was not contained by the cell, and margin-bottom is ignored on a table cell. The cell now establishes a block formatting context with flow-root and carries the 18px as padding-bottom.
+- No other change. DOM order was already correct on beta.32 and matches the mockup exactly: head, items, discount card, applied pill, cash-back card, BAC card, totals, pay.
+
 ## 0.20.0-beta.32 - 2026-08-12
 
 - The summary panel is now a clone of checkout-panel-pepselect.html rather than an interpretation of it. Every declaration in the panel block is copied from that file's own <style>, each rule annotated with the mockup class it mirrors, and mapped onto the live element that plays that role. 46 mockup selectors were mapped and all 46 resolve to a live element.

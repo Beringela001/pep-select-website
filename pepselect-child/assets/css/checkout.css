@@ -2131,9 +2131,7 @@ div.woocommerce .fc-wrapper .fc-checkout-order-review .fc-checkout-order-review_
    selector is repeated because Fluid's boxed template declares cell padding
    !important behind an id, which nothing weaker can beat. */
 .fc-checkout-order-review td.pepselect-panel-cell,
-.fc-checkout-order-review tr.cart_item > td,
-body.has-fc-design-template--boxed div.woocommerce .fc-wrapper #order_review table.woocommerce-checkout-review-order-table td.pepselect-panel-cell,
-body.has-fc-design-template--boxed div.woocommerce .fc-wrapper #order_review table.woocommerce-checkout-review-order-table tr.cart_item > td {
+body.has-fc-design-template--boxed div.woocommerce .fc-wrapper #order_review table.woocommerce-checkout-review-order-table td.pepselect-panel-cell {
 	display: block !important;
 	width: 100% !important;
 	max-width: 100% !important;
@@ -2483,12 +2481,7 @@ body.has-fc-design-template--boxed div.woocommerce .fc-wrapper #order_review tab
    claimed as a source-level removal.
    ========================================================================= */
 
-/* ---- line item: two rows ---- */
-.fc-checkout-order-review tr.cart_item > td {
-	display: block !important;
-	padding: 0 0 18px !important;
-	border: 0 !important;
-}
+/* ---- line item: two rows (cell rule consolidated at the end of this file) ---- */
 
 .fc-checkout-order-review .product-name {
 	display: block !important;
@@ -2706,12 +2699,43 @@ body.has-fc-design-template--boxed div.woocommerce .fc-wrapper #order_review tab
 	text-decoration: none !important;
 }
 
-/* .items  (the line-item cell) */
-.fc-checkout-order-review tr.cart_item > td {
-	display: block !important;
-	margin-bottom: 18px !important;
+/* .items  (the line-item cell)
+   Two corrections from the beta.32 verification pass:
+   - the cell measured 0px tall while .product-details inside it measured 64px,
+     because a floated descendant was not being contained; flow-root establishes
+     a block formatting context so the cell wraps its content;
+   - margin-bottom on a table cell is ignored, so the mockup's 18px is applied as
+     padding-bottom instead. Measured before: cell 480..480 h=0, gap 0px, qty
+     overlapping the discount card by 69.2px. */
+.fc-checkout-order-review tr.cart_item > td,
+body.has-fc-design-template--boxed div.woocommerce .fc-wrapper #order_review table.woocommerce-checkout-review-order-table tr.cart_item > td {
+	display: flow-root !important;
+	width: 100% !important;
+	margin: 0 !important;
 	padding: 0 !important;
 	border: 0 !important;
+	background: transparent !important;
+}
+
+/* The mockup puts its 18px on .items, measured from the bottom of the quantity
+   line. Carrying it on the cell instead added the cell's own trailing line box
+   (measured 23px rather than 18px), so it sits on the item block itself. */
+.fc-checkout-order-review tr.cart_item .product-details {
+	margin-bottom: 18px !important;
+}
+
+/* Fluid floats the item name and its details block, which is why the cell
+   measured 0px tall. Unfloated so the cell contains them in normal flow. */
+.fc-checkout-order-review tr.cart_item .product-name,
+.fc-checkout-order-review tr.cart_item .product-details {
+	float: none !important;
+}
+
+.fc-checkout-order-review tr.cart_item .product-name {
+	display: flow-root !important;
+	width: 100% !important;
+	margin: 0 !important;
+	padding: 0 !important;
 }
 
 /* .item  (name + amount row) */
@@ -3109,7 +3133,12 @@ body.has-fc-design-template--boxed div.woocommerce .fc-wrapper #order_review tab
 	margin-bottom: 0 !important;
 }
 
-/* .cta */
+/* .cta
+   The legacy M7 button rule uses button#place_order.fc-place-order-button, which
+   outranks a plain .panel-scoped #place_order, so the button kept 15px padding
+   and weight 700 against the mockup's 13px/600. The selector below matches that
+   shape and adds the panel scope so the file's values win. */
+.fc-checkout-order-review button#place_order.fc-place-order-button,
 .fc-checkout-order-review #place_order,
 .fc-checkout-order-review .fc-place-order-button {
 	margin-top: 14px !important;
