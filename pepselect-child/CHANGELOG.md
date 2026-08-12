@@ -6,6 +6,10 @@ All notable changes to the Pep Select child theme are documented here.
 
 Previously live: **0.17.0-beta.1**, deployed to production on 2026-07-23.
 
+## 0.20.0-beta.19 - 2026-08-12
+
+- M12-7 (F) Restore the Military & First Responder discount. The footer link, hidden in 0.20.0-beta.9 for processor compliance, is restored as the last entry in the footer Support group (label "Military & First responder discount", linking to /military-discount/). The page's noindex is removed - the three page-gated robots filters (wpseo_robots_array, wpseo_robots, wp_robots) are deleted from inc/military-page.php, so /military-discount/ is indexable again. The unused pepselect_child_get_military_url() helper is deleted (it was never called; the footer links via pepselect_child_get_page_url). The page template and the VerifyPass button in the page content are untouched. The restore is recorded in HANDOFF-processor-compliance-wording.md section 4.
+
 ## 0.20.0-beta.18 - 2026-08-12
 
 - M12-7 checkout order-summary panel fixes. (A) The order review showed a card inside a card: the M12-6 styling added an outer card on .fc-checkout-order-review while the theme already styled the nested .fc-checkout-order-review__inner as its own panel (white fill, 1px border, 8px radius). The inner panel is now flattened (transparent, no border, no radius) so only the one outer card renders.

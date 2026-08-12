@@ -170,6 +170,15 @@ single partial, not any product.
 - Page set to noindex
 - Page and template **not** deleted
 
+### RESTORED (0.20.0-beta.19, 2026-08-12)
+
+Section reverted. The footer link is back and the page is indexable again:
+
+- Re-added the Support-group entry in inc/footer-preview.php:
+  `array( 'label' => __( 'Military & First responder discount', 'pepselect-child' ), 'url' => pepselect_child_get_page_url( 'military-discount' ) )`
+- Removed the three noindex filters from inc/military-page.php (wpseo_robots_array, wpseo_robots, wp_robots), so the page is indexable again.
+- Deleted the unused function pepselect_child_get_military_url() from inc/military-page.php (it was never called; the footer links via pepselect_child_get_page_url( 'military-discount' )).
+- The page, its template (page-military-discount.php), and the VerifyPass button in the page content were never touched.
 ### To revert
 
 Unhide the footer link, remove the noindex. Nothing was destroyed.
