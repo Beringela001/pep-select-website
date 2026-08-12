@@ -453,6 +453,77 @@ function pepselect_child_render_notices_in_summary() {
 add_action( 'woocommerce_review_order_after_cart_contents', 'pepselect_child_render_notices_in_summary', 15 );
 
 /**
+ * Make the applied-coupon Remove control unable to navigate.
+ *
+ * WooCommerce renders it as a real link to ?remove_coupon=<code>, and Fluid's
+ * coupon script is what cancels that default. The script is enqueued in the
+ * footer, so a click landing before it binds follows the href instead - the
+ * customer leaves checkout with the discount still applied. Rewriting the href
+ * to "#" removes the only navigable path; removal itself is unchanged and still
+ * runs through Fluid's handler.
+ *
+ * Trade-off, stated deliberately: this drops WooCommerce's no-JS removal
+ * fallback. That fallback is already academic here - Fluid, the acknowledgment
+ * validation and the redemption card all require JavaScript - and a click that
+ * does nothing is strictly better than one that navigates away with the
+ * discount still on the cart.
+ *
+ * @param string $html Coupon HTML.
+ * @return string
+ */
+function pepselect_child_neutralise_coupon_remove_href( $html ) {
+	if ( ! is_string( $html ) || '' === $html ) {
+		return $html;
+	}
+
+	return preg_replace(
+		'/(<a\b[^>]*class="[^"]*\bwoocommerce-remove-coupon\b[^"]*"[^>]*)\shref="[^"]*"/i',
+		'$1 href="#"',
+		preg_replace(
+			'/(<a\b[^>]*)\shref="[^"]*"([^>]*class="[^"]*\bwoocommerce-remove-coupon\b)/i',
+			'$1 href="#"$2',
+			$html
+		)
+	);
+}
+add_filter( 'woocommerce_cart_totals_coupon_html', 'pepselect_child_neutralise_coupon_remove_href', 20 );
+
+/**
+ * Remove YITH's redemption form from the cart page only.
+ *
+ * On /cart/ YITH prints form.ywpar_apply_discounts inside its own block,
+ * wp-block-yith-par-message-reward-cart, above the cash-back pill. Verified on
+ * production that this block contains only the nonces and that form - not the
+ * "you'll earn" message - so dropping it on the cart removes the duplicate
+ * redemption UI and leaves the pill untouched. Checkout is unaffected: the
+ * filter is gated on is_cart(), so the redemption card there still works.
+ *
+ * Done through core's render_block filter rather than by editing YITH.
+ *
+ * @param string $content Rendered block HTML.
+ * @param array  $block   Parsed block.
+ * @return string
+ */
+function pepselect_child_hide_yith_reward_block_on_cart( $content, $block ) {
+	if ( ! function_exists( 'is_cart' ) || ! is_cart() ) {
+		return $content;
+	}
+
+	$name = isset( $block['blockName'] ) ? (string) $block['blockName'] : '';
+
+	if ( '' !== $name && false !== strpos( $name, 'yith-par-message-reward-cart' ) ) {
+		return '';
+	}
+
+	if ( is_string( $content ) && false !== strpos( $content, 'wp-block-yith-par-message-reward-cart' ) ) {
+		return '';
+	}
+
+	return $content;
+}
+add_filter( 'render_block', 'pepselect_child_hide_yith_reward_block_on_cart', 20, 2 );
+
+/**
  * Enqueue checkout and cart presentation styles.
  *
  * @return void

@@ -31,6 +31,69 @@
 		return document.querySelector( 'form.ywpar_apply_discounts' );
 	}
 
+	// True when a YITH redemption is currently on the cart. Its discount row is
+	// the only marker left once the apply form is gone.
+	function redemptionApplied( review ) {
+		return !! review.querySelector( 'tr.cart-discount[class*="ywpar"], tr[class*="ywpar_discount"]' );
+	}
+
+	var refetching = false;
+	var refetched = false;
+
+	// YITH only prints its apply form on a full page load. If the page was loaded
+	// with a redemption applied, removing it over AJAX leaves no form anywhere in
+	// the document, so the card cannot be rebuilt and the block renders empty
+	// until a reload. Fetch the checkout once in the background, lift the form out
+	// of the response and park it hidden, so the card can return in place.
+	function refetchNativeForm( done ) {
+		if ( refetching || refetched || ! window.fetch ) {
+			return;
+		}
+
+		refetching = true;
+
+		window.fetch( window.location.pathname, { credentials: 'same-origin' } )
+			.then( function ( response ) {
+				return response.ok ? response.text() : '';
+			} )
+			.then( function ( html ) {
+				refetching = false;
+
+				if ( ! html ) {
+					return;
+				}
+
+				var parsed = new DOMParser().parseFromString( html, 'text/html' );
+				var fresh = parsed.querySelector( 'form.ywpar_apply_discounts' );
+
+				// No form in a fresh load either: the balance is genuinely below the
+				// minimum. Stop asking.
+				refetched = true;
+
+				if ( ! fresh ) {
+					return;
+				}
+
+				var holder = document.getElementById( 'pep-redeem-native-holder' );
+
+				if ( ! holder ) {
+					holder = document.createElement( 'div' );
+					holder.id = 'pep-redeem-native-holder';
+					holder.hidden = true;
+					document.body.appendChild( holder );
+				}
+
+				holder.innerHTML = '';
+				holder.appendChild( document.importNode( fresh, true ) );
+
+				done();
+			} )
+			.catch( function () {
+				refetching = false;
+				refetched = true;
+			} );
+	}
+
 	function nativeButton() {
 		return document.querySelector( 'form.ywpar_apply_discounts button, form.ywpar_apply_discounts input[type="submit"]' );
 	}
@@ -99,15 +162,25 @@
 		var form = nativeForm();
 		var card = document.querySelector( '.pep-redeem-slot' );
 
-		// No apply form present: redemption is already applied (its Remove control
-		// lives in the totals) or the balance is below the minimum. Drop our card.
+		// No apply form present. Either a redemption is applied (its Remove control
+		// lives in the totals), or the form was never rendered on this page load
+		// because the page opened with one applied and it has since been removed.
 		if ( ! form ) {
 			if ( card && card.parentNode ) {
 				card.parentNode.removeChild( card );
 			}
 
+			// Nothing applied and no form: recover the form so the button returns
+			// without a reload.
+			if ( ! redemptionApplied( review ) ) {
+				refetchNativeForm( run );
+			}
+
 			return;
 		}
+
+		// A form is available again, so a later removal may need a fresh one.
+		refetched = false;
 
 		// YITH renders the form inside a .woocommerce-cart-notice box that carries
 		// its own border and tint; tag it so the CSS hides the whole box, not just

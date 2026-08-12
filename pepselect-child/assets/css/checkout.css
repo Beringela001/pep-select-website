@@ -1692,3 +1692,51 @@ body.has-fc-design-template--boxed div.woocommerce .fc-wrapper #order_review tab
 	border-top: 1px solid var(--pep-color-border) !important;
 	padding-top: 20px !important;
 }
+
+/* =========================================================================
+   M12-12: pink control fix and BAC copy layout.
+   F: rgb(204,51,102) leaks onto YITH's own controls and onto the block-cart
+   item image link. Pinned to brand tokens, scoped to those controls rather
+   than a blanket anchor restyle.
+   G: the toggle now reads "Add to cart", so the price moves to its own line
+   under the subline where it stays visible.
+   ========================================================================= */
+
+button.ywpar_apply_discounts,
+.ywpar_apply_discounts button,
+.ywpar_apply_discounts .button,
+a.ywpar_remove_discounts,
+.ywpar-fixed-discount {
+	color: var(--pep-color-navy) !important;
+	text-decoration: none !important;
+}
+
+button.ywpar_apply_discounts:hover,
+.ywpar_apply_discounts button:hover,
+a.ywpar_remove_discounts:hover {
+	color: var(--pep-color-cyan) !important;
+}
+
+/* Block cart item image link inherits the pink; it wraps an image so the colour
+   is not visible, but it is pinned so nothing inherits it later. */
+.wc-block-cart-item__image a,
+.wc-block-cart-items a,
+.woocommerce-remove-coupon,
+.pep-redeem__remove {
+	color: var(--pep-color-navy);
+	text-decoration: none;
+}
+
+.wc-block-cart-items a:hover,
+.woocommerce-remove-coupon:hover {
+	color: var(--pep-color-cyan);
+}
+
+/* G: price line under the subline. */
+.pepselect-bacwater__price-line {
+	margin: 4px 0 0;
+	color: var(--pep-color-navy);
+	font-family: var(--pep-font-technical);
+	font-size: 13px;
+	font-weight: var(--pep-font-weight-medium);
+}
