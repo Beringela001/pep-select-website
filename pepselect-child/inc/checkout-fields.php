@@ -133,7 +133,10 @@ function pepselect_child_research_purpose_field() {
 
 	echo '<span class="pepselect-ack__error pepselect-ack__error--field" id="research_purpose_error" role="alert" hidden></span>';
 }
-add_action( 'woocommerce_review_order_before_submit', 'pepselect_child_research_purpose_field', 10 );
+// M12-9: the consent block moved to the left column, into the slot the payment
+// section vacated (fc_checkout_payment). Only the hook target changes here - the
+// field markup, labels, validation and order meta are untouched.
+add_action( 'fc_checkout_payment', 'pepselect_child_research_purpose_field', 10 );
 
 /**
  * Render the two required Acknowledgment checkboxes at priority 20, so they
@@ -196,7 +199,7 @@ function pepselect_child_required_checkboxes() {
 
 	echo '</div>';
 }
-add_action( 'woocommerce_review_order_before_submit', 'pepselect_child_required_checkboxes', 20 );
+add_action( 'fc_checkout_payment', 'pepselect_child_required_checkboxes', 20 );
 
 /**
  * Enqueue the client-side Acknowledgments validation on the checkout only. This

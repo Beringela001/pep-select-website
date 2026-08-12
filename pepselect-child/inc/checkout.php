@@ -310,6 +310,76 @@ add_action( 'woocommerce_review_order_after_cart_contents', 'pepselect_child_ren
 add_filter( 'fc_coupon_code_displayed_as_substep', '__return_false' );
 
 /**
+ * Render the payment section inside the order summary, directly above Place order.
+ *
+ * Fluid prints the payment box through fc_checkout_payment (priority 20) inside
+ * the left-hand payment step. That action is unhooked below and the same core
+ * function is called here instead, on fc_place_order at priority 5 - earlier
+ * than Fluid own place-order output at 10 - so the box renders in the same
+ * container as the button, immediately above it. The Square instruction panel is
+ * the BACS gateway description and travels with the payment box unchanged.
+ *
+ * fc_place_order can fire for more than one place-order instance (main and
+ * sidebar). A run-once guard is used rather than the $is_sidebar argument so the
+ * box renders exactly once wherever the button actually is - relying on
+ * $is_sidebar would risk rendering no payment box at all if the layout changes.
+ *
+ * @param string $step_id    Step id, unused.
+ * @param bool   $is_sidebar Whether this is the sidebar instance, unused.
+ * @return void
+ */
+function pepselect_child_render_payment_in_summary( $step_id = 'payment', $is_sidebar = false ) {
+	static $rendered = false;
+
+	if ( $rendered || ! function_exists( 'woocommerce_checkout_payment' ) ) {
+		return;
+	}
+
+	$rendered = true;
+
+	woocommerce_checkout_payment();
+}
+add_action( 'fc_place_order', 'pepselect_child_render_payment_in_summary', 5, 2 );
+
+/**
+ * Render the privacy / terms text with the consent block in the left column.
+ *
+ * Fluid prints checkout/terms.php through fc_checkout_place_order_terms next to
+ * the button; that is unhooked below so the paragraph travels with the
+ * acknowledgments instead. Priority 5 puts it above the Research Purpose field
+ * (10) and the checkboxes (20), preserving the reading order.
+ *
+ * @return void
+ */
+function pepselect_child_render_consent_terms() {
+	wc_get_template( 'checkout/terms.php' );
+}
+add_action( 'fc_checkout_payment', 'pepselect_child_render_consent_terms', 5 );
+
+/**
+ * Unhook Fluid payment and terms output so the two blocks swap columns.
+ *
+ * Runs on wp at a priority after Fluid own late hooks, and is guarded so a
+ * missing or renamed class leaves the default layout intact rather than fatals.
+ *
+ * @return void
+ */
+function pepselect_child_swap_payment_and_consent() {
+	remove_action( 'fc_checkout_payment', 'woocommerce_checkout_payment', 20 );
+
+	if ( ! class_exists( 'FluidCheckout_Steps' ) || ! method_exists( 'FluidCheckout_Steps', 'instance' ) ) {
+		return;
+	}
+
+	$steps = FluidCheckout_Steps::instance();
+
+	if ( is_object( $steps ) && method_exists( $steps, 'output_checkout_place_order_terms' ) ) {
+		remove_action( 'fc_checkout_place_order_terms', array( $steps, 'output_checkout_place_order_terms' ), 10 );
+	}
+}
+add_action( 'wp', 'pepselect_child_swap_payment_and_consent', 200 );
+
+/**
  * Enqueue checkout and cart presentation styles.
  *
  * @return void

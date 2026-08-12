@@ -6,6 +6,15 @@ All notable changes to the Pep Select child theme are documented here.
 
 Previously live: **0.17.0-beta.1**, deployed to production on 2026-07-23.
 
+## 0.20.0-beta.22 - 2026-08-12
+
+- M12-9 payment and consent swap columns. The order summary now ends at TOTAL, then the payment method, the Square instruction panel and Place order. The privacy paragraph, Research Purpose field and Acknowledgments move to the left column, into the slot the payment section vacated.
+- Hooks: payment is unhooked from fc_checkout_payment (priority 20) and rendered on fc_place_order at priority 5, ahead of Fluid's own place-order output at 10, so it lands in the same container as the button, immediately above it. A run-once guard is used instead of the $is_sidebar argument, so the box renders exactly once wherever the button is rather than risking no payment box at all. The consent block moves by retargeting its two existing render hooks to fc_checkout_payment (Research Purpose 10, checkboxes 20); the privacy paragraph moves with it via checkout/terms.php on the same action at priority 5, after unhooking Fluid's fc_checkout_place_order_terms output.
+- Only the hook targets changed in inc/checkout-fields.php. The acknowledgment markup, labels, links, client and server validation, and the order meta are untouched, as is the Square panel copy and its amber treatment.
+- Relocation was proven safe before the code was written by moving the live nodes on the deployed beta.21 and re-running the validation against the moved DOM: focus landed on research_purpose, no submit was attempted, zero checkout AJAX calls, all three fields carried aria-invalid=true and their aria-describedby, and exactly three error nodes were visible.
+- Verified before the change on beta.21, staging order #1443: cash back $7.20 applied as coupon ywpar_discount_1, total $98.67 -> $91.00, Square instruction panel read $91.00 (the discounted total), acknowledgment meta written (both flags Yes, 2026-08-12T06:24:14-04:00, wording version 11b0a95ea858, Academic Research), balance $7.20 -> $0.00, and cancelling the order restored it to $7.20.
+- Known and unchanged: three remove-coupon controls exist when a coupon is applied - one in the relocated coupon card's applied list (the one carrying Fluid's live-refresh fragment) and one in each of Fluid's two order-summary tables, of which the second is hidden. The duplication is Fluid's own dual-summary rendering; it is left alone because removing either row risks the removal handler repaired in 0.20.0-beta.21.
+
 ## 0.20.0-beta.21 - 2026-08-12
 
 - Coupon card completeness fix. Moving the coupon section into the order summary in 0.20.0-beta.20 suppressed Fluid's coupon substep, which also suppressed the two auxiliary containers Fluid prints through fc_before_substep_coupon_codes: .fc-coupon-code-messages (where apply and remove errors are rendered) and .fc-step__substep-text-content--coupon-codes (the applied-coupon list, and the target of Fluid's woocommerce_update_order_review_fragments entry). Both are now printed inside the relocated card.

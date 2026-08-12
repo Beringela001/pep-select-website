@@ -1448,3 +1448,47 @@ html.pep-redeem-ready .pep-redeem-native-wrap {
 .pepselect-inner-card--coupon .fc-coupon-codes__coupon .woocommerce-remove-coupon:hover {
 	color: var(--pep-color-cyan);
 }
+
+/* =========================================================================
+   M12-9: payment and consent swap columns.
+   Payment now renders inside the summary card directly above Place order, and
+   the privacy paragraph, Research Purpose and Acknowledgments render in the
+   left column where payment used to sit. Presentation only - the Square panel
+   keeps its amber treatment and the acknowledgment markup is unchanged.
+   ========================================================================= */
+
+/* Payment inside the summary card: it is no longer a step panel, so drop the
+   chrome it inherited and let the card own the spacing. */
+.fc-checkout-order-review #payment,
+.fc-checkout-order-review .woocommerce-checkout-payment {
+	margin: 0 0 16px !important;
+	padding: 0 !important;
+	border: 0 !important;
+	border-radius: 0 !important;
+	background: transparent !important;
+}
+
+.fc-checkout-order-review #payment ul.payment_methods {
+	margin: 0 0 12px !important;
+	padding: 0 !important;
+	border-bottom: 0 !important;
+	list-style: none !important;
+}
+
+/* The consent block in the left column reads as its own section. */
+.fc-checkout-step .pepselect-acknowledgments,
+.fc-step__substep .pepselect-acknowledgments {
+	margin-top: 16px;
+}
+
+.fc-checkout-step .woocommerce-terms-and-conditions-wrapper,
+.fc-step__substep .woocommerce-terms-and-conditions-wrapper {
+	margin-bottom: 12px;
+}
+
+/* Keep the summary card from clipping the payment box on narrow viewports. */
+.fc-checkout-order-review #payment,
+.fc-checkout-order-review #payment * {
+	max-width: 100%;
+	min-width: 0;
+}
