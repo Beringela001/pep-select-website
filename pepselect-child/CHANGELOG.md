@@ -6,6 +6,12 @@ All notable changes to the Pep Select child theme are documented here.
 
 Previously live: **0.17.0-beta.1**, deployed to production on 2026-07-23.
 
+## 0.20.0-beta.21 - 2026-08-12
+
+- Coupon card completeness fix. Moving the coupon section into the order summary in 0.20.0-beta.20 suppressed Fluid's coupon substep, which also suppressed the two auxiliary containers Fluid prints through fc_before_substep_coupon_codes: .fc-coupon-code-messages (where apply and remove errors are rendered) and .fc-step__substep-text-content--coupon-codes (the applied-coupon list, and the target of Fluid's woocommerce_update_order_review_fragments entry). Both are now printed inside the relocated card.
+- Effect of the omission: coupon removal did reach the server and did clear the cart, but the click produced no loading state (Fluid blocks the applied-list container, which was null), the applied-coupon list never refreshed in place, and any coupon error - including an individual-use conflict between a promo code and a YITH cash-back redemption - was discarded with no message shown. Removal verified working on the deployed beta.20 before this change: coupons [welcome10] -> [], total 9015 -> 9867, fc_remove_coupon_code posted, no console errors, state persisted across a reload.
+- Applied coupons in the relocated list render as removable pills consistent with the rest of the panel.
+
 ## 0.20.0-beta.20 - 2026-08-12
 
 - M12-8 (A) TOTAL row typography. Subtotal/Shipping/Tax were already 13px/400 with mono figures from M12-6 (measured on beta.19), so the remaining fault was the TOTAL label itself, still Plus Jakarta Sans 15px/600 while its figure was mono 18px/600. The whole TOTAL row is now IBM Plex Mono 18px/600 navy, so it reads as the answer.

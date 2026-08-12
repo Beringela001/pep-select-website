@@ -284,7 +284,26 @@ function pepselect_child_render_coupon_in_summary() {
 
 	echo '<tr class="pepselect-summary-row pepselect-summary-row--coupon"><td colspan="2">';
 	echo '<div class="pepselect-inner-card pepselect-inner-card--coupon">';
+
 	$coupons->output_section_coupon_codes_fields();
+
+	// Fluid normally prints these two through fc_before_substep_coupon_codes,
+	// which only fires when its substep renders. Suppressing the substep took
+	// them with it, leaving the section without the container Fluid's own script
+	// reads: .fc-coupon-code-messages is where apply/remove errors are printed,
+	// and .fc-step__substep-text-content--coupon-codes is both the applied-coupon
+	// list and the target of Fluid's woocommerce_update_order_review_fragments
+	// entry. Without them, removal still reaches the server but there is no
+	// loading state, the applied list never refreshes, and any coupon error - such
+	// as an individual-use conflict - is discarded silently.
+	if ( method_exists( $coupons, 'output_coupon_codes_messages_container' ) ) {
+		$coupons->output_coupon_codes_messages_container();
+	}
+
+	if ( method_exists( $coupons, 'output_substep_text_coupon_codes' ) ) {
+		$coupons->output_substep_text_coupon_codes();
+	}
+
 	echo '</div></td></tr>';
 }
 add_action( 'woocommerce_review_order_after_cart_contents', 'pepselect_child_render_coupon_in_summary', 20 );

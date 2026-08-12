@@ -1406,3 +1406,45 @@ html.pep-redeem-ready .pep-redeem-native-wrap {
 		padding: 14px;
 	}
 }
+
+/* =========================================================================
+   M12-8 follow-up: the relocated coupon card also prints Fluid's messages
+   container and applied-coupon list, which its script requires. Spacing only.
+   ========================================================================= */
+
+.pepselect-inner-card--coupon .fc-coupon-code-messages:empty {
+	display: none;
+}
+
+.pepselect-inner-card--coupon .fc-coupon-code-messages {
+	margin-top: 10px;
+	font-size: 13px;
+}
+
+.pepselect-inner-card--coupon .fc-step__substep-text-content--coupon-codes:empty {
+	display: none;
+}
+
+.pepselect-inner-card--coupon .fc-coupon-codes__coupon {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	margin-top: 10px;
+	padding: 4px 10px;
+	border: 1px solid var(--pep-color-cyan);
+	border-radius: var(--pep-radius-pill);
+	background: var(--pep-color-white);
+	color: var(--pep-color-navy);
+	font-size: 12px;
+	font-weight: var(--pep-font-weight-semibold);
+}
+
+.pepselect-inner-card--coupon .fc-coupon-codes__coupon .woocommerce-remove-coupon {
+	color: var(--pep-color-navy);
+	font-weight: 700;
+	text-decoration: none;
+}
+
+.pepselect-inner-card--coupon .fc-coupon-codes__coupon .woocommerce-remove-coupon:hover {
+	color: var(--pep-color-cyan);
+}
