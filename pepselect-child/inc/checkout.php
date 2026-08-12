@@ -229,31 +229,11 @@ function pepselect_child_checkout_item_strength_pill( $name, $cart_item, $cart_i
 	$strength = pepselect_child_get_product_strength_label( $product );
 
 
-	$out = $name;
-
-	if ( '' !== $strength ) {
-		$out .= ' <span class="pepselect-order-strength">' . esc_html( $strength ) . '</span>';
+	if ( '' === $strength ) {
+		return $name;
 	}
 
-	// The mockup shows one quiet line under the item: "Qty N  Remove". Fluid's
-	// quantity stepper is hidden in CSS on the checkout, so this is the only
-	// quantity control shown here. The remove link is WooCommerce's own cart
-	// remove URL, so it behaves exactly as the cart page's does.
-	$quantity = isset( $cart_item['quantity'] ) ? (int) $cart_item['quantity'] : 0;
-
-	if ( 0 < $quantity ) {
-		$out .= '<span class="pepselect-qty">';
-		/* translators: %d: item quantity. */
-		$out .= esc_html( sprintf( __( 'Qty %d', 'pepselect-child' ), $quantity ) );
-
-		if ( '' !== $cart_item_key && function_exists( 'wc_get_cart_remove_url' ) ) {
-			$out .= '<a href="' . esc_url( wc_get_cart_remove_url( $cart_item_key ) ) . '" class="remove pepselect-qty__remove" aria-label="' . esc_attr__( 'Remove this item', 'pepselect-child' ) . '">' . esc_html__( 'Remove', 'pepselect-child' ) . '</a>';
-		}
-
-		$out .= '</span>';
-	}
-
-	return $out;
+	return $name . ' <span class="pepselect-order-strength">' . esc_html( $strength ) . '</span>';
 }
 add_filter( 'woocommerce_cart_item_name', 'pepselect_child_checkout_item_strength_pill', 20, 3 );
 
@@ -432,6 +412,13 @@ function pepselect_child_swap_payment_and_consent() {
 	if ( is_object( $steps ) && method_exists( $steps, 'output_checkout_place_order_terms' ) ) {
 		remove_action( 'fc_checkout_place_order_terms', array( $steps, 'output_checkout_place_order_terms' ), 10 );
 	}
+
+	// Fluid's inline quantity stepper in the order summary. Unhooked through its
+	// own action rather than hidden, so the control is never rendered at all.
+	// Quantities remain editable via Edit cart.
+	if ( is_object( $steps ) && method_exists( $steps, 'output_order_summary_cart_item_quantity' ) ) {
+		remove_action( 'fc_order_summary_cart_item_details', array( $steps, 'output_order_summary_cart_item_quantity' ), 90 );
+	}
 }
 add_action( 'wp', 'pepselect_child_swap_payment_and_consent', 200 );
 
@@ -495,6 +482,14 @@ add_filter( 'fc_register_checkout_substep_args', 'pepselect_child_clear_payment_
  */
 function pepselect_child_render_notices_in_summary() {
 	if ( ! function_exists( 'woocommerce_output_all_notices' ) ) {
+		return;
+	}
+
+	// Render nothing at all when there is no notice. The wrapper WooCommerce
+	// prints is not empty even with no messages, so a :empty CSS rule cannot
+	// collapse it, and the row was adding 12px between the line items and the
+	// discount card.
+	if ( ! function_exists( 'wc_notice_count' ) || 1 > wc_notice_count() ) {
 		return;
 	}
 
@@ -743,6 +738,46 @@ function pepselect_child_render_summary_totals() {
 	echo '</div></td></tr>';
 }
 add_action( 'woocommerce_review_order_after_cart_contents', 'pepselect_child_render_summary_totals', 40 );
+
+/**
+ * Render the quantity line as its own element inside the summary line item.
+ *
+ * Previously this was appended to the product name through
+ * woocommerce_cart_item_name, which put it INSIDE .cart-item__name. A span
+ * nested in that element had nowhere to wrap to and overflowed its parent,
+ * which is what made it sit on top of the discount card. Fluid emits the parts
+ * of a summary line item through fc_order_summary_cart_item_details - product
+ * name at 10, unit price at 30, meta at 40, its own quantity stepper at 90 -
+ * so the line is rendered there instead, at 95, as a sibling of the others. It
+ * therefore participates in normal flow and forms its own row.
+ *
+ * Fluid's stepper at priority 90 is unhooked (see the swap callback below), so
+ * this is the only quantity control in the panel; quantities stay editable
+ * through Edit cart, which opens the cart page.
+ *
+ * @param array  $cart_item     Cart item.
+ * @param string $cart_item_key Cart item key.
+ * @param mixed  $product       Product, unused.
+ * @return void
+ */
+function pepselect_child_render_summary_item_qty( $cart_item = array(), $cart_item_key = '', $product = null ) {
+	$quantity = isset( $cart_item['quantity'] ) ? (int) $cart_item['quantity'] : 0;
+
+	if ( 1 > $quantity ) {
+		return;
+	}
+
+	echo '<div class="cart-item__element pepselect-qty">';
+	/* translators: %d: item quantity. */
+	echo esc_html( sprintf( __( 'Qty %d', 'pepselect-child' ), $quantity ) );
+
+	if ( '' !== $cart_item_key && function_exists( 'wc_get_cart_remove_url' ) ) {
+		echo '<a href="' . esc_url( wc_get_cart_remove_url( $cart_item_key ) ) . '" class="pepselect-qty__remove" aria-label="' . esc_attr__( 'Remove this item', 'pepselect-child' ) . '">' . esc_html__( 'Remove', 'pepselect-child' ) . '</a>';
+	}
+
+	echo '</div>';
+}
+add_action( 'fc_order_summary_cart_item_details', 'pepselect_child_render_summary_item_qty', 95, 3 );
 
 /**
  * Enqueue checkout and cart presentation styles.

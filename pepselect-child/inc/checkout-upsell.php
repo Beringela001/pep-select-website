@@ -121,17 +121,19 @@ function pepselect_child_render_bacwater_upsell() {
 				<div class="pepselect-bacwater__body">
 				<p class="pepselect-bacwater__question"><?php esc_html_e( 'Need bacteriostatic water?', 'pepselect-child' ); ?></p>
 				<p class="pepselect-bacwater__sub"><?php esc_html_e( 'Compounds ship as lyophilized powder.', 'pepselect-child' ); ?></p>
-				<p class="pepselect-bacwater__price-line">
-					<?php
-					/* translators: 1: product volume, e.g. "30mL". 2: formatted price. */
-					echo wp_kses_post( sprintf( __( '%1$s &ndash; %2$s', 'pepselect-child' ), esc_html( $add_lead ), $price_html ) );
-					?>
-				</p>
+				<div class="pepselect-bacwater__row">
 				<label class="pepselect-bacwater__toggle">
 					<input type="checkbox" class="pepselect-bacwater__input" data-pepselect-bacwater-input aria-label="<?php echo esc_attr( $aria ); ?>" <?php checked( $in_cart ); ?> />
 					<span class="pepselect-bacwater__switch" aria-hidden="true"></span>
 					<span class="pepselect-bacwater__text"><?php esc_html_e( 'Add to cart', 'pepselect-child' ); ?></span>
 				</label>
+					<span class="pepselect-bacwater__price-line">
+						<?php
+						/* translators: 1: product volume, e.g. "30mL". 2: formatted price. */
+						echo wp_kses_post( sprintf( __( '%1$s &ndash; %2$s', 'pepselect-child' ), esc_html( $add_lead ), $price_html ) );
+						?>
+					</span>
+				</div>
 				</div>
 			</div>
 	</div>

@@ -2467,3 +2467,197 @@ body.has-fc-design-template--boxed div.woocommerce .fc-wrapper #order_review tab
 .fc-checkout-order-review .fc-checkout-order-review__head > *:last-child {
 	margin-left: auto !important;
 }
+
+/* =========================================================================
+   M12-18: line item rebuilt in markup, discount row, single remove affordance.
+
+   The quantity line is now emitted as its own element on
+   fc_order_summary_cart_item_details (priority 95) instead of being appended
+   inside .cart-item__name, so it is a sibling of the name and price and forms
+   its own row in normal flow. Fluid's stepper at priority 90 is unhooked in PHP.
+
+   Two things in the line item are rendered by Fluid Checkout PRO, whose source
+   is not readable: the second amount (.product-total) and the "Remove item"
+   control (.fc-cart-item-actions). No hook or setting for either could be
+   verified, so they are suppressed in CSS and that is recorded here rather than
+   claimed as a source-level removal.
+   ========================================================================= */
+
+/* ---- line item: two rows ---- */
+.fc-checkout-order-review tr.cart_item > td {
+	display: block !important;
+	padding: 0 0 18px !important;
+	border: 0 !important;
+}
+
+.fc-checkout-order-review .product-name {
+	display: block !important;
+	width: 100% !important;
+}
+
+.fc-checkout-order-review .product-details {
+	display: flex !important;
+	flex-wrap: wrap !important;
+	align-items: baseline !important;
+	justify-content: space-between !important;
+	width: 100% !important;
+	column-gap: 12px;
+}
+
+.fc-checkout-order-review .cart-item__element.cart-item__name {
+	order: 1;
+	flex: 1 1 auto;
+	min-width: 0;
+	display: block !important;
+	float: none !important;
+	font-family: var(--pep-font-interface);
+	font-size: 15px;
+	line-height: 1.4;
+	color: #002A53;
+}
+
+.fc-checkout-order-review .cart-item__element.cart-item__price {
+	order: 2;
+	flex: 0 0 auto;
+	display: block !important;
+	float: none !important;
+	font-family: var(--pep-font-technical);
+	font-size: 14px;
+	color: #002A53;
+	text-align: right;
+}
+
+.fc-checkout-order-review .cart-item__element.cart-item__price .screen-reader-text {
+	display: none !important;
+}
+
+.fc-checkout-order-review .cart-item__element.pepselect-qty {
+	order: 3;
+	flex: 0 0 100%;
+	display: block !important;
+	margin: 2px 0 0 !important;
+	font-family: var(--pep-font-interface);
+	font-size: 13px;
+	line-height: 1.4;
+	color: #5C7086;
+}
+
+.fc-checkout-order-review .pepselect-qty__remove {
+	margin-left: 10px;
+	font-size: 13px;
+	color: #7A8793 !important;
+	text-decoration: none !important;
+}
+
+.fc-checkout-order-review .pepselect-order-strength {
+	display: inline-block;
+	margin-left: 8px;
+	vertical-align: middle;
+}
+
+/* Fluid PRO markup with no readable hook: the duplicate amount and the second
+   remove control. Suppressed here; see the block comment above. */
+.fc-checkout-order-review .product-total,
+.fc-checkout-order-review .fc-cart-item-actions,
+.fc-checkout-order-review tr.cart_item .quantity {
+	display: none !important;
+}
+
+/* ---- discount card: one flex row, input fills ---- */
+.fc-checkout-order-review .pepselect-inner-card--coupon .fc-expansible-form-section,
+.fc-checkout-order-review .pepselect-inner-card--coupon .fc-expansible-form-section__content,
+.fc-checkout-order-review .pepselect-inner-card--coupon .fc-coupon-code-section {
+	display: block !important;
+	width: 100% !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	border: 0 !important;
+	background: transparent !important;
+}
+
+.fc-checkout-order-review .pepselect-inner-card--coupon .fc-coupon-code-section {
+	display: flex !important;
+	align-items: center !important;
+	gap: 10px !important;
+}
+
+.fc-checkout-order-review .pepselect-inner-card--coupon .form-row,
+.fc-checkout-order-review .pepselect-inner-card--coupon .fc-coupon-code-section > p {
+	flex: 1 1 auto !important;
+	width: auto !important;
+	min-width: 0 !important;
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
+.fc-checkout-order-review .pepselect-inner-card--coupon input#coupon_code {
+	width: 100% !important;
+	min-width: 0 !important;
+	padding: 10px 12px !important;
+	border: 1px solid #D7E1E9 !important;
+	border-radius: 6px !important;
+	background: #FFFFFF !important;
+	font-family: var(--pep-font-technical) !important;
+	font-size: 12px !important;
+	color: #002A53 !important;
+}
+
+.fc-checkout-order-review .pepselect-inner-card--coupon input#coupon_code::placeholder {
+	color: #A8B4BF !important;
+}
+
+.fc-checkout-order-review .pepselect-inner-card--coupon .fc-coupon-code__apply {
+	flex: 0 0 auto !important;
+	padding: 10px 20px !important;
+	border: 1px solid #17A1CF !important;
+	border-radius: 999px !important;
+	background: #FFFFFF !important;
+	color: #002A53 !important;
+	font-family: var(--pep-font-interface) !important;
+	font-size: 13px !important;
+	font-weight: 500 !important;
+	white-space: nowrap;
+}
+
+/* Fluid's own applied-coupon list carries a second [Remove] link. The container
+   is kept because Fluid targets it with an update_order_review fragment, but the
+   entries are hidden so the pill's x is the only removal affordance. */
+.fc-checkout-order-review .fc-coupon-codes__coupon {
+	display: none !important;
+}
+
+/* ---- pill: x vertically centred with the code ---- */
+.fc-checkout-order-review .pepselect-applied {
+	display: inline-flex !important;
+	align-items: center !important;
+	gap: 9px !important;
+	padding: 8px 15px !important;
+	border: 1px solid #17A1CF !important;
+	border-radius: 999px !important;
+	background: #E8F6FB !important;
+}
+
+.fc-checkout-order-review .pepselect-applied__x {
+	display: inline-flex !important;
+	align-items: center !important;
+	font-size: 18px !important;
+	line-height: 1 !important;
+	color: #5C7086 !important;
+	text-decoration: none !important;
+}
+
+/* ---- BAC: one row, price on the right ---- */
+.fc-checkout-order-review .pepselect-bacwater__row {
+	display: flex !important;
+	align-items: center !important;
+	gap: 10px !important;
+	width: 100%;
+}
+
+.fc-checkout-order-review .pepselect-bacwater__price-line {
+	margin: 0 0 0 auto !important;
+	font-family: var(--pep-font-technical) !important;
+	font-size: 12px !important;
+	color: #5C7086 !important;
+	white-space: nowrap;
+}

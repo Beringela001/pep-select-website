@@ -6,6 +6,16 @@ All notable changes to the Pep Select child theme are documented here.
 
 Previously live: **0.17.0-beta.1**, deployed to production on 2026-07-23.
 
+## 0.20.0-beta.31 - 2026-08-12
+
+- The line-item overlap reported in 0.20.0-beta.30 is fixed in markup rather than forced with CSS. The quantity line was being appended inside .cart-item__name by the woocommerce_cart_item_name filter, so it had nowhere to wrap to and overflowed its parent onto the discount card. It is now rendered as its own element on Fluid's own fc_order_summary_cart_item_details action at priority 95, alongside the product name (10) and unit price (30), so it participates in normal flow and forms its own row. Measured on the deployed build with the new structure simulated: the overlap of -25.2px becomes a clear gap, and elementFromPoint at the boundary returns the containing cell rather than an overlapping element.
+- Fluid's inline quantity stepper is removed through the supported path - remove_action on fc_order_summary_cart_item_details priority 90 - rather than hidden. Quantities remain editable through Edit cart, which opens the cart page.
+- Two other line-item controls are rendered by Fluid Checkout PRO, whose source is not readable: the duplicate amount (.product-total) and the second remove control (.fc-cart-item-actions, "Remove item"). No hook or setting for either could be verified, so they are suppressed in CSS and that is recorded as a CSS suppression rather than claimed as a source-level removal. After the change exactly one amount and one Remove render per line item.
+- Applied discounts now have exactly one removal affordance. Five were found on the deployed build; the pill's x is kept, the item's own Remove is kept for the line item, and Fluid's applied-coupon list entry, its "Remove item" control and WooCommerce's [Remove] in the suppressed totals row are hidden. Fluid's applied-list container is retained because it is the target of an update_order_review fragment; only its visible entries are hidden.
+- The notices row is no longer rendered when there is nothing to say. WooCommerce prints a wrapper even with no messages, so a :empty rule could not collapse it and the row was adding 12px between the line items and the discount card.
+- Discount card is one flex row with a 10px gap: the coupon input now fills the available width instead of collapsing to 74px, with the mockup's placeholder, border, radius and padding, and an outline Apply button.
+- BAC card puts the toggle, "Add to cart" and the price on one row with the price aligned right, matching the mockup order.
+
 ## 0.20.0-beta.30 - 2026-08-12
 
 - (A) The payment heading had reverted to the panel heading's type - Plus Jakarta Sans 20px/600 navy, left aligned - instead of mono 12px, 2px tracking, #B46A00, centred between amber rules. Fluid gives that element both fc-checkout-order-review-title and pepselect-payment-title, and 0.20.0-beta.29 re-declared the panel heading rule later in the stylesheet than the payment-title rule; at equal specificity the later declaration won. The heading rule now excludes .pepselect-payment-title explicitly, so the two cannot collide again whatever order they appear in. Restored and verified: IBM Plex Mono, 12px, 2px letter-spacing, rgb(180,106,0), centred, over a 1px #D7E1E9 divider.
