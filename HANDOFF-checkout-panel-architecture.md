@@ -1,8 +1,8 @@
 # Handoff — Pep Select Checkout Architecture
 
 **Written:** 2026-08-12
-**Theme version at handoff:** `0.20.0-beta.44` (repo + built ZIP + Live, verified 2026-08-12).
-**Branch:** `codex/checkout-panel-architecture` · **Latest implementation commit:** `727b068`
+**Theme version at handoff:** `0.20.0-beta.45` (repo + built ZIP + Live, verified 2026-08-12).
+**Branch:** `codex/checkout-panel-architecture` · **Latest implementation commit:** `def9983`
 **Theme:** `pepselect-child` (Hello Elementor child)
 **Spec file:** `checkout-panel-pepselect.html` at repo root — 13,366 bytes, SHA-256 `c888fb252d994432915ec5ff803fdbd0c79ca36d16054651d1fe3bb0f990c741`
 
@@ -365,6 +365,14 @@ beta.34 follow-up: the live line item exposed Fluid's editable quantity stepper 
 - The phone rule keeps 16px card padding while retaining the 56px thumbnail and slightly larger type. At 390px the card is 331px wide × 137px high, the row stays inside the card, and both buttons remain visible.
 - Live sweep passed at 360, 375, 390, 430, 768, and 1024px: exact 12px card/button gap, no clipping, no horizontal overflow, and no missing buttons. Narrower 360/375px layouts wrap the label and price naturally inside the card rather than shrinking or overflowing them.
 
+### Installed beta.45 shared BAC image and price verification
+
+- The shared upsell renderer now prints the live WooCommerce price only. The visible price is `$19.99` in checkout and the side cart; the former parsed `30mL –` prefix is absent. The full product name remains in the checkbox's accessible label.
+- The product image is 72×72px on both surfaces. In the desktop side cart it now fills the card content height without increasing the 113px card height; the existing 12px card-to-button gap remains unchanged.
+- The 390px side cart is 331px wide × 127px high, with the 72px image, `$19.99` price, both footer buttons visible, no clipping, and no horizontal overflow.
+- Checkout passed at 390, 440, 768, 1024, 1199, 1200, and 1440px: 72×72px image, price only, card and row inside the panel, and no horizontal overflow. The iPhone 16 Pro Max-width card remains fully contained.
+- Live add/remove passed after the markup change: cart 2 → 3 with BAC and back to 2 after removal; the offer hid and returned correctly. Zero upsell-script console errors, and the test cart was restored.
+
 ### Still owed
 - Square amount matches the discounted total with a redemption applied
 - A test order end-to-end with redemption applied
@@ -401,9 +409,9 @@ Release   bump style.css → CHANGELOG entry → commit → push
 
 `dist/` is gitignored. ZIPs are built with `git archive --format=zip -o dist/... HEAD -- pepselect-child`.
 
-Current verified release: `dist/pepselect-child-0.20.0-beta.44.zip` · 274,629 bytes · SHA-256 `9ead955841169d18f5befb626cbc3fc9e0ec659bbd10305d165d9a50a4bf91cb`.
+Current verified release: `dist/pepselect-child-0.20.0-beta.45.zip` · 274,500 bytes · SHA-256 `910bf9abcd01db25b8994df4ad131c88bf01207f04190a231a1a385578ddc1d9`.
 
-Immediate rollback: `dist/pepselect-child-0.20.0-beta.43.zip` · 274,445 bytes · SHA-256 `2588c205b771b8f28480a89b6df87fad6db47ee781c438ebc4e8cf545f980bde`.
+Immediate rollback: `dist/pepselect-child-0.20.0-beta.44.zip` · 274,629 bytes · SHA-256 `9ead955841169d18f5befb626cbc3fc9e0ec659bbd10305d165d9a50a4bf91cb`.
 
 Deployment is a **manual ZIP upload through WordPress**. Nothing auto-deploys. Live and staging drift — always verify the deployed `style.css` version from production, never assume, and never trust the "Live version" line in `CHANGELOG.md` by itself (it was stale once and caused a wrong call).
 
