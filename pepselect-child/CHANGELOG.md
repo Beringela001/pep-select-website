@@ -6,6 +6,10 @@ All notable changes to the Pep Select child theme are documented here.
 
 Previously live: **0.17.0-beta.1**, deployed to production on 2026-07-23.
 
+## 0.20.0-beta.39 - 2026-08-12
+
+- Extends the beta.38 expanded mobile order flow through Fluid Checkout's real narrow-layout range, 0–999px. Fluid keeps relocating the order table into the top collapsible at tablet widths even while the body still carries its `two_columns` class; the permanent desktop sidebar behavior begins at 1000px.
+
 ## 0.20.0-beta.38 - 2026-08-12
 
 - Mobile checkout now follows the Orbitrex reference structure: contact, shipping, billing, and acknowledgments first, followed by one fully expanded order card containing products, discount/cash-back, BAC upsell, totals, payment, and Place order.

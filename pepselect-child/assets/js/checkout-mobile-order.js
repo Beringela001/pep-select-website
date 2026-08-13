@@ -11,7 +11,9 @@
 ( function () {
 	'use strict';
 
-	var mobileQuery = window.matchMedia( '(max-width: 749px)' );
+	// Fluid keeps the order review in its narrow-layout collapsible through
+	// 999px; its permanent two-column/sidebar placement begins at 1000px.
+	var mobileQuery = window.matchMedia( '(max-width: 999px)' );
 	var scheduled = false;
 
 	function syncMobileOrder() {
