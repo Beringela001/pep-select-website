@@ -194,8 +194,8 @@ function pepselect_child_bacwater_toggle() {
 add_action( 'wc_ajax_pepselect_bacwater_toggle', 'pepselect_child_bacwater_toggle' );
 
 /**
- * Enqueue the upsell script on the checkout page only, and only when the product
- * is actually offered, so nothing loads when the block will not render.
+ * Enqueue the upsell assets wherever the checkout or side cart can render it,
+ * and only when the product is actually offerable.
  *
  * @return void
  */
@@ -217,6 +217,15 @@ function pepselect_child_bacwater_assets() {
 
 	if ( ! pepselect_child_get_bacwater_product() ) {
 		return;
+	}
+
+	if ( $side_cart_active ) {
+		wp_enqueue_style(
+			'pepselect-child-side-cart-upsell',
+			get_stylesheet_directory_uri() . '/assets/css/side-cart-upsell.css',
+			array( 'pepselect-child-foundations' ),
+			pepselect_child_asset_version( 'assets/css/side-cart-upsell.css' )
+		);
 	}
 
 	wp_enqueue_script(

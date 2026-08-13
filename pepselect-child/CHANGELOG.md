@@ -6,6 +6,11 @@ All notable changes to the Pep Select child theme are documented here.
 
 Previously live: **0.17.0-beta.1**, deployed to production on 2026-07-23.
 
+## 0.20.0-beta.43 - 2026-08-12
+
+- Restore the compact Bacteriostatic Water upsell in the side cart on every storefront page. Its markup and behavior were already shared with checkout, but its presentation lived only in the checkout/cart stylesheet, so pages such as Home rendered a full-width product image and native checkbox.
+- Add a small side-cart-only stylesheet, loaded only when the Xootix drawer is available and the BAC product is offerable. The drawer now matches the checkout card: 52px thumbnail, white bordered card, compact copy, branded switch, and one-line price.
+
 ## 0.20.0-beta.42 - 2026-08-12
 
 - Hide the redundant billing and shipping country rows while retaining their US value for shipping, tax, and order records.

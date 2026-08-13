@@ -1,0 +1,182 @@
+/*
+ * Compact Bacteriostatic Water upsell inside the Xootix side cart.
+ *
+ * The drawer can open on every storefront page, while checkout.css is loaded
+ * only on checkout/cart surfaces. Keep this small component stylesheet global
+ * so the shared PHP markup matches the checkout card everywhere it appears.
+ */
+
+.pepselect-bacwater-sidecart {
+	box-sizing: border-box;
+	width: 100%;
+	margin: 12px 0 0;
+	padding: 12px 0 0;
+	border-top: 1px solid var(--pep-color-border, #D7E1E9);
+}
+
+.pepselect-bacwater-sidecart .pepselect-bacwater-standalone {
+	box-sizing: border-box;
+	width: 100%;
+	margin: 0 !important;
+	padding: 16px !important;
+	border: 1px solid var(--pep-color-border, #D7E1E9) !important;
+	border-radius: var(--pep-radius-card-inner, 6px) !important;
+	background: var(--pep-surface-card, #FFFFFF) !important;
+}
+
+.pepselect-bacwater-sidecart .pepselect-bacwater {
+	display: flex !important;
+	align-items: flex-start !important;
+	gap: 12px !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	border: 0 !important;
+	background: transparent !important;
+	color: var(--pep-color-navy, #002A53);
+	font-family: var(--pep-font-interface, "Plus Jakarta Sans", sans-serif);
+	text-align: left;
+}
+
+.pepselect-bacwater-sidecart .pepselect-bacwater__media {
+	display: block;
+	flex: 0 0 52px !important;
+	width: 52px !important;
+	height: 52px !important;
+	margin: 0;
+	overflow: hidden;
+	border-radius: 6px;
+	background: var(--pep-color-cyan-soft, #E8F6FB);
+}
+
+.pepselect-bacwater-sidecart .pepselect-bacwater__img {
+	display: block;
+	width: 100% !important;
+	height: 100% !important;
+	margin: 0 !important;
+	object-fit: cover;
+}
+
+.pepselect-bacwater-sidecart .pepselect-bacwater__body {
+	flex: 1 1 auto;
+	min-width: 0;
+}
+
+.pepselect-bacwater-sidecart .pepselect-bacwater__question {
+	margin: 0 0 2px !important;
+	color: var(--pep-color-navy, #002A53);
+	font-size: 13.5px !important;
+	font-weight: 600;
+	line-height: 1.4;
+}
+
+.pepselect-bacwater-sidecart .pepselect-bacwater__sub {
+	margin: 0 0 9px !important;
+	color: var(--pep-color-slate, #5C7086);
+	font-size: 12px !important;
+	line-height: 1.45;
+}
+
+.pepselect-bacwater-sidecart .pepselect-bacwater__row {
+	display: flex !important;
+	align-items: center !important;
+	gap: 10px !important;
+	width: 100%;
+}
+
+.pepselect-bacwater-sidecart .pepselect-bacwater__toggle {
+	display: inline-flex !important;
+	align-items: center;
+	gap: 10px;
+	margin: 0 !important;
+	cursor: pointer;
+}
+
+.pepselect-bacwater-sidecart .pepselect-bacwater__input {
+	position: absolute !important;
+	width: 1px !important;
+	height: 1px !important;
+	margin: -1px !important;
+	padding: 0 !important;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	border: 0 !important;
+	opacity: 0;
+	white-space: nowrap;
+}
+
+.pepselect-bacwater-sidecart .pepselect-bacwater__switch {
+	position: relative;
+	flex: 0 0 44px;
+	width: 44px;
+	height: 26px;
+	border-radius: var(--pep-radius-pill, 999px);
+	background: var(--pep-color-border, #D7E1E9);
+	transition: background-color var(--pep-motion-duration, 160ms) ease;
+}
+
+.pepselect-bacwater-sidecart .pepselect-bacwater__switch::after {
+	content: "";
+	position: absolute;
+	top: 3px;
+	left: 3px;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	background: var(--pep-color-white, #FFFFFF);
+	box-shadow: 0 1px 3px rgb(0 42 83 / 25%);
+	transition: transform var(--pep-motion-duration, 160ms) ease;
+}
+
+.pepselect-bacwater-sidecart .pepselect-bacwater__input:checked + .pepselect-bacwater__switch {
+	background: var(--pep-color-cyan, #17A1CF);
+}
+
+.pepselect-bacwater-sidecart .pepselect-bacwater__input:checked + .pepselect-bacwater__switch::after {
+	transform: translateX(18px);
+}
+
+.pepselect-bacwater-sidecart .pepselect-bacwater__input:focus-visible + .pepselect-bacwater__switch {
+	box-shadow: 0 0 0 3px rgb(23 161 207 / 30%);
+}
+
+.pepselect-bacwater-sidecart .pepselect-bacwater__input:disabled + .pepselect-bacwater__switch {
+	opacity: 0.55;
+}
+
+.pepselect-bacwater-sidecart .pepselect-bacwater__text {
+	color: var(--pep-color-navy, #002A53);
+	font-size: 12.5px !important;
+	font-weight: 600;
+	line-height: 1.4;
+}
+
+.pepselect-bacwater-sidecart .pepselect-bacwater__price-line {
+	margin: 0 0 0 auto !important;
+	color: var(--pep-color-slate, #5C7086);
+	font-family: var(--pep-font-technical, "IBM Plex Mono", monospace);
+	font-size: 12px !important;
+	white-space: nowrap;
+}
+
+.pepselect-bacwater-sidecart .pepselect-bacwater.is-busy .pepselect-bacwater__text {
+	opacity: 0.55;
+}
+
+.pepselect-bacwater-sidecart .pepselect-bacwater.is-busy .pepselect-bacwater__toggle {
+	cursor: progress;
+}
+
+.pepselect-bacwater-sidecart .pepselect-bacwater__message {
+	margin: 8px 0 0;
+	color: var(--pep-color-red, #C7354B);
+	font-size: 12px;
+	line-height: 1.45;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.pepselect-bacwater-sidecart .pepselect-bacwater__switch,
+	.pepselect-bacwater-sidecart .pepselect-bacwater__switch::after {
+		transition: none;
+	}
+}
