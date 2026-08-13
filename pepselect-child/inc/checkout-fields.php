@@ -99,6 +99,23 @@ function pepselect_child_customize_checkout_field_copy( $fields ) {
 add_filter( 'woocommerce_checkout_fields', 'pepselect_child_customize_checkout_field_copy', 1000 );
 
 /**
+ * WooCommerce rebuilds address labels from its locale-aware default fields
+ * after the checkout-field filter. Set City at that source as well so Fluid
+ * Checkout cannot restore the US default "Town / City" label.
+ *
+ * @param array<string,array<string,mixed>> $fields Default address fields.
+ * @return array<string,array<string,mixed>>
+ */
+function pepselect_child_customize_default_address_field_copy( $fields ) {
+	if ( isset( $fields['city'] ) ) {
+		$fields['city']['label'] = __( 'City', 'pepselect-child' );
+	}
+
+	return $fields;
+}
+add_filter( 'woocommerce_default_address_fields', 'pepselect_child_customize_default_address_field_copy', 1000 );
+
+/**
  * The Research Purpose options, keyed by stored value. Keys equal labels, and
  * the stored value is the raw label, so this is also the allow-list used to
  * validate a submitted value before it is saved. The empty first entry is the

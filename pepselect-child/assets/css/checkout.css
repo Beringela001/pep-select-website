@@ -3365,7 +3365,8 @@ body.woocommerce-checkout #shipping_phone_field {
 /* Selected shipping rates use the Pep Select blue state, not Fluid's gray. */
 body.woocommerce-checkout #shipping_method input.shipping_method:checked + .shipping-method__option-label {
 	border-color: var(--pep-color-cyan, #17A1CF) !important;
-	background: var(--pep-color-cyan-soft, #E8F6FB) !important;
+	background-color: #E8F6FB !important;
+	background-image: none !important;
 	color: var(--pep-color-navy, #002A53) !important;
 	box-shadow: 0 0 0 1px rgb(23 161 207 / 12%) !important;
 }

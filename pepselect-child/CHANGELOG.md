@@ -6,6 +6,10 @@ All notable changes to the Pep Select child theme are documented here.
 
 Previously live: **0.17.0-beta.1**, deployed to production on 2026-07-23.
 
+## 0.20.0-beta.49 - 2026-08-12
+
+- Complete the beta.48 left-column refinement against Fluid Checkout's live cascade: set City through WooCommerce's locale-aware default-address filter so `Town / City` cannot return, and explicitly replace the selected shipping rate's gray background color with the Pep Select soft blue.
+
 ## 0.20.0-beta.48 - 2026-08-12
 
 - Refine the left checkout column without changing the completed order-summary panel: Contact, Shipping address, Shipping, and Billing address now read as one continuous white card with a soft shadow; the acknowledgments/privacy card remains separate.
