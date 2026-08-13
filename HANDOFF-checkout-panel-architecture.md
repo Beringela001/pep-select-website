@@ -1,8 +1,8 @@
 # Handoff — Pep Select Checkout Architecture
 
 **Written:** 2026-08-12
-**Theme version at handoff:** `0.20.0-beta.41` (repo + built ZIP + Live, verified 2026-08-12).
-**Branch:** `codex/checkout-panel-architecture` · **Latest implementation commit:** `a36ab48`
+**Theme version at handoff:** `0.20.0-beta.42` (repo + built ZIP + Live, verified 2026-08-12).
+**Branch:** `codex/checkout-panel-architecture` · **Latest implementation commit:** `98a277d`
 **Theme:** `pepselect-child` (Hello Elementor child)
 **Spec file:** `checkout-panel-pepselect.html` at repo root — 13,366 bytes, SHA-256 `c888fb252d994432915ec5ff803fdbd0c79ca36d16054651d1fe3bb0f990c741`
 
@@ -342,6 +342,14 @@ beta.34 follow-up: the live line item exposed Fluid's editable quantity stepper 
 - Verified at 1199px: the same centered 800px stacked geometry. At 1200px: custom success class absent and Fluid's normal 662.5px + 420px desktop columns restored.
 - Live viewport transitions 1024 → 1200 → 1024 passed without reload. The order review stayed in the correct sidebar card, both layouts returned their exact widths, and `checkout-mobile-order.js` logged zero errors.
 
+### Installed beta.42 country, birthday, and link verification
+
+- Both country rows are hidden at checkout, but the underlying billing and shipping country controls remain present and submit `US`. Tax, shipping, and order country data are therefore preserved.
+- YITH's optional `yith_birthday` field is removed through `woocommerce_checkout_fields` before Fluid Checkout builds its expandable section. On Live, the input, toggle, and wrapper all return zero DOM nodes.
+- Every visible link inside `.fc-checkout-steps` computes to Pep Select cyan `rgb(23, 161, 207)`; zero checkout links retain WooCommerce pink `rgb(204, 51, 102)`.
+- Live sweep passed at 390, 440, 768, 900, 1024, 1199, 1200, and 1440px. Every width retained US values, no birthday markup, visible cart products, no horizontal overflow, and zero checkout-script console errors.
+- The intended layout boundary remains exact: stacked fields-then-order through 1199px; normal side-by-side desktop columns at 1200px and above.
+
 ### Still owed
 - Square amount matches the discounted total with a redemption applied
 - A test order end-to-end with redemption applied
@@ -378,11 +386,11 @@ Release   bump style.css → CHANGELOG entry → commit → push
 
 `dist/` is gitignored. ZIPs are built with `git archive --format=zip -o dist/... HEAD -- pepselect-child`.
 
-Current verified release: `dist/pepselect-child-0.20.0-beta.41.zip` · 271,996 bytes · SHA-256 `d2dedd97a2b1720f3b7522cb0c627504ab794d19b2351ab5a8b6d463405a385a`.
+Current verified release: `dist/pepselect-child-0.20.0-beta.42.zip` · 277,790 bytes · SHA-256 `427e9010caa703471aaf8f877473b6299311fcc3543016fad90f66e60683ff77`.
 
-Immediate rollback: `dist/pepselect-child-0.20.0-beta.39.zip` · 271,407 bytes · SHA-256 `fe367c3c72ec86072dd4d7e70bca21169b0b9ec7600e831ac4474693ecbbb5da`.
+Immediate rollback: `dist/pepselect-child-0.20.0-beta.41.zip` · 271,996 bytes · SHA-256 `d2dedd97a2b1720f3b7522cb0c627504ab794d19b2351ab5a8b6d463405a385a`.
 
-Deployment is **manual ZIP upload by Paulo**. Nothing auto-deploys. Live and staging drift — always verify the deployed `style.css` version by fetching it, never assume, and never trust the "Live version" line in `CHANGELOG.md` (it was stale once and caused a wrong call).
+Deployment is a **manual ZIP upload through WordPress**. Nothing auto-deploys. Live and staging drift — always verify the deployed `style.css` version from production, never assume, and never trust the "Live version" line in `CHANGELOG.md` by itself (it was stale once and caused a wrong call).
 
 ---
 
