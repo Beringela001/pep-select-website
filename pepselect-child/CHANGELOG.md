@@ -6,6 +6,11 @@ All notable changes to the Pep Select child theme are documented here.
 
 Previously live: **0.17.0-beta.1**, deployed to production on 2026-07-23.
 
+## 0.20.0-beta.45 - 2026-08-12
+
+- Enlarge the shared BAC product thumbnail to 72px in both checkout and the side cart so it fills the height of the card content instead of leaving dead space below the image.
+- Remove the parsed `30mL –` prefix from the shared upsell price line. Both surfaces now show only the live WooCommerce price, while the full product name remains in the checkbox's accessible label.
+
 ## 0.20.0-beta.44 - 2026-08-12
 
 - Give the side-cart BAC offer a distinct 12px gap above the footer buttons instead of letting the card touch them.

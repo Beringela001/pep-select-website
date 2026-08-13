@@ -95,13 +95,6 @@ function pepselect_child_render_bacwater_upsell() {
 	$price_html = wc_price( wc_get_price_to_display( $product ) );
 	$name       = $product->get_name();
 
-	// The product carries no volume attribute, so the volume is parsed from the
-	// product title (e.g. "Bacteriostatic Water 30mL" -> "30mL") rather than typed
-	// as a literal, and follows the title if it changes. When no volume can be
-	// parsed the toggle falls back to the full product name.
-	$volume   = preg_match( '/(\d+(?:\.\d+)?\s?m[lL])\b/', $name, $matches ) ? $matches[1] : '';
-	$add_lead = '' !== $volume ? $volume : $name;
-
 	/* translators: %s: full product name, e.g. "Bacteriostatic Water 30mL". */
 	$aria = sprintf( __( 'Add %s to your order', 'pepselect-child' ), $name );
 	// Product image, resolved from the same WC_Product the price and stock come
@@ -128,10 +121,7 @@ function pepselect_child_render_bacwater_upsell() {
 					<span class="pepselect-bacwater__text"><?php esc_html_e( 'Add to cart', 'pepselect-child' ); ?></span>
 				</label>
 					<span class="pepselect-bacwater__price-line">
-						<?php
-						/* translators: 1: product volume, e.g. "30mL". 2: formatted price. */
-						echo wp_kses_post( sprintf( __( '%1$s &ndash; %2$s', 'pepselect-child' ), esc_html( $add_lead ), $price_html ) );
-						?>
+						<?php echo wp_kses_post( $price_html ); ?>
 					</span>
 				</div>
 				</div>

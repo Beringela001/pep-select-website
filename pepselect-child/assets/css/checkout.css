@@ -3015,9 +3015,9 @@ body.has-fc-design-template--boxed div.woocommerce .fc-wrapper #order_review
 
 /* .bacimg */
 .fc-checkout-order-review .pepselect-bacwater__media {
-	width: 52px !important;
-	height: 52px !important;
-	flex: 0 0 52px !important;
+	width: 72px !important;
+	height: 72px !important;
+	flex: 0 0 72px !important;
 	border-radius: 6px !important;
 	background: #E8F6FB !important;
 	overflow: hidden;
