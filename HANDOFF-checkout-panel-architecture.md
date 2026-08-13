@@ -1,8 +1,8 @@
 # Handoff — Pep Select Checkout Architecture
 
 **Written:** 2026-08-12
-**Theme version at handoff:** `0.20.0-beta.42` (repo + built ZIP + Live, verified 2026-08-12).
-**Branch:** `codex/checkout-panel-architecture` · **Latest implementation commit:** `98a277d`
+**Theme version at handoff:** `0.20.0-beta.43` (repo + built ZIP + Live, verified 2026-08-12).
+**Branch:** `codex/checkout-panel-architecture` · **Latest implementation commit:** `88c59f1`
 **Theme:** `pepselect-child` (Hello Elementor child)
 **Spec file:** `checkout-panel-pepselect.html` at repo root — 13,366 bytes, SHA-256 `c888fb252d994432915ec5ff803fdbd0c79ca36d16054651d1fe3bb0f990c741`
 
@@ -350,6 +350,14 @@ beta.34 follow-up: the live line item exposed Fluid's editable quantity stepper 
 - Live sweep passed at 390, 440, 768, 900, 1024, 1199, 1200, and 1440px. Every width retained US values, no birthday markup, visible cart products, no horizontal overflow, and zero checkout-script console errors.
 - The intended layout boundary remains exact: stacked fields-then-order through 1199px; normal side-by-side desktop columns at 1200px and above.
 
+### Installed beta.43 side-cart BAC verification
+
+- Root cause: the side-cart hook and shared BAC markup were correct, but their styles lived only in `checkout.css`. Because that file is limited to checkout/cart/order-received, the drawer rendered an unstyled 385×306px image and native checkbox on Home and product pages.
+- `assets/css/side-cart-upsell.css` now carries only the compact drawer component and is enqueued wherever Xootix can open and the BAC product is offerable. Checkout CSS and checkout geometry are unchanged.
+- Live desktop card: 385px wide × 107px high, 16px padding, 1px border, 6px radius, 52×52px thumbnail, 44×26px branded switch. This matches the working checkout component's 107px height and 52px thumbnail.
+- Live 390px drawer: 371px wide inside the viewport, card 331px wide × 116px high, 52×52px thumbnail, no horizontal overflow. The small height increase is the expected one-line wrap in the narrower drawer.
+- Live interaction passed: add changed the cart from 2 to 3 and suppressed the offer; removing the BAC line returned the cart to 2 and restored the compact offer without a reload. Zero upsell-script console errors.
+
 ### Still owed
 - Square amount matches the discounted total with a redemption applied
 - A test order end-to-end with redemption applied
@@ -386,9 +394,9 @@ Release   bump style.css → CHANGELOG entry → commit → push
 
 `dist/` is gitignored. ZIPs are built with `git archive --format=zip -o dist/... HEAD -- pepselect-child`.
 
-Current verified release: `dist/pepselect-child-0.20.0-beta.42.zip` · 277,790 bytes · SHA-256 `427e9010caa703471aaf8f877473b6299311fcc3543016fad90f66e60683ff77`.
+Current verified release: `dist/pepselect-child-0.20.0-beta.43.zip` · 274,445 bytes · SHA-256 `2588c205b771b8f28480a89b6df87fad6db47ee781c438ebc4e8cf545f980bde`.
 
-Immediate rollback: `dist/pepselect-child-0.20.0-beta.41.zip` · 271,996 bytes · SHA-256 `d2dedd97a2b1720f3b7522cb0c627504ab794d19b2351ab5a8b6d463405a385a`.
+Immediate rollback: `dist/pepselect-child-0.20.0-beta.42.zip` · 277,790 bytes · SHA-256 `427e9010caa703471aaf8f877473b6299311fcc3543016fad90f66e60683ff77`.
 
 Deployment is a **manual ZIP upload through WordPress**. Nothing auto-deploys. Live and staging drift — always verify the deployed `style.css` version from production, never assume, and never trust the "Live version" line in `CHANGELOG.md` by itself (it was stale once and caused a wrong call).
 
