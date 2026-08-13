@@ -1,8 +1,8 @@
 # Handoff — Pep Select Checkout Architecture
 
 **Written:** 2026-08-12
-**Theme version at handoff:** `0.20.0-beta.39` (repo + built ZIP + Live, verified 2026-08-12).
-**Branch:** `codex/checkout-panel-architecture` · **Latest implementation commit:** `bc0c8fe`
+**Theme version at handoff:** `0.20.0-beta.41` (repo + built ZIP + Live, verified 2026-08-12).
+**Branch:** `codex/checkout-panel-architecture` · **Latest implementation commit:** `a36ab48`
 **Theme:** `pepselect-child` (Hello Elementor child)
 **Spec file:** `checkout-panel-pepselect.html` at repo root — 13,366 bytes, SHA-256 `c888fb252d994432915ec5ff803fdbd0c79ca36d16054651d1fe3bb0f990c741`
 
@@ -333,6 +333,15 @@ beta.34 follow-up: the live line item exposed Fluid's editable quantity stepper 
 - At 1000px the success class is absent, Fluid's normal permanent desktop sidebar owns `#order_review`, and the top collapsible remains hidden by Fluid itself. This confirms the custom behavior stops at the exact 999/1000 responsive boundary.
 - Logged-in verification at 768px included WELCOME10/cash-back-capable markup and showed the full sequence inside `.fc-sidebar`; Chrome reported no console errors.
 
+### Installed beta.41 iPad Pro verification
+
+- At 1024px, Fluid's native desktop switch produced an 800px checkout wrapper split into a 450px form and 300px sidebar. With the correct 28px panel padding, only 242px remained for order content. No element technically overflowed, but the desktop panel was visibly crushed.
+- Width sampling found the real comfortable breakpoint: Fluid keeps that 800px wrapper through 1199px, then jumps to an 1140px wrapper at 1200px. At 1200px the order panel reaches its intended 420px width and 362px content width.
+- The stacked flow therefore extends through 1199px. A separate 1000–1199px alignment rule removes Fluid's surviving `.fc-inside` float/450px width so both checkout fields and the order panel share the same centered 800px container.
+- Verified at 1024×1366: fields `800px` at x=`112`, order panel `800px` at x=`112`, usable order content `742px`, a `20px` vertical gap, top cart dropdown hidden, product and Place order visible, and body width exactly `1024px` with no horizontal overflow.
+- Verified at 1199px: the same centered 800px stacked geometry. At 1200px: custom success class absent and Fluid's normal 662.5px + 420px desktop columns restored.
+- Live viewport transitions 1024 → 1200 → 1024 passed without reload. The order review stayed in the correct sidebar card, both layouts returned their exact widths, and `checkout-mobile-order.js` logged zero errors.
+
 ### Still owed
 - Square amount matches the discounted total with a redemption applied
 - A test order end-to-end with redemption applied
@@ -369,9 +378,9 @@ Release   bump style.css → CHANGELOG entry → commit → push
 
 `dist/` is gitignored. ZIPs are built with `git archive --format=zip -o dist/... HEAD -- pepselect-child`.
 
-Current verified release: `dist/pepselect-child-0.20.0-beta.39.zip` · 271,407 bytes · SHA-256 `fe367c3c72ec86072dd4d7e70bca21169b0b9ec7600e831ac4474693ecbbb5da`.
+Current verified release: `dist/pepselect-child-0.20.0-beta.41.zip` · 271,996 bytes · SHA-256 `d2dedd97a2b1720f3b7522cb0c627504ab794d19b2351ab5a8b6d463405a385a`.
 
-Immediate rollback: `dist/pepselect-child-0.20.0-beta.37.zip` · 269,099 bytes · SHA-256 `17aa0042d682a1ba170d44dc0b9c28c2273eec2d4ece375602e0445ebf677e7e`.
+Immediate rollback: `dist/pepselect-child-0.20.0-beta.39.zip` · 271,407 bytes · SHA-256 `fe367c3c72ec86072dd4d7e70bca21169b0b9ec7600e831ac4474693ecbbb5da`.
 
 Deployment is **manual ZIP upload by Paulo**. Nothing auto-deploys. Live and staging drift — always verify the deployed `style.css` version by fetching it, never assume, and never trust the "Live version" line in `CHANGELOG.md` (it was stale once and caused a wrong call).
 

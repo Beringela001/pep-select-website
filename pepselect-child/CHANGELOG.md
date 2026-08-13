@@ -2,7 +2,7 @@
 
 All notable changes to the Pep Select child theme are documented here.
 
-**Live version: 0.20.0-beta.39** — installed and verified 2026-08-12 from the stylesheet loaded by the production checkout. Treat this line as a dated summary; verify the deployed `style.css` before answering what is live.
+**Live version: 0.20.0-beta.41** — installed and verified 2026-08-12 from the stylesheet loaded by the production checkout. Treat this line as a dated summary; verify the deployed `style.css` before answering what is live.
 
 Previously live: **0.17.0-beta.1**, deployed to production on 2026-07-23.
 
