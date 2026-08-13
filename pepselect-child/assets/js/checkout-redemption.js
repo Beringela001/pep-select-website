@@ -22,6 +22,7 @@
 
 	// The $5.00 floor YITH enforces server-side, mirrored in the field.
 	var MINIMUM_DOLLARS = 5;
+	var redemptionState = null;
 
 	/**
 	 * The ONLY place dollars become points.
@@ -73,6 +74,28 @@
 
 	function nativeButton() {
 		return document.querySelector( 'form.ywpar_apply_discounts button, form.ywpar_apply_discounts input[type="submit"]' );
+	}
+
+	function readRedemptionState( form ) {
+		if ( ! form ) {
+			return redemptionState;
+		}
+
+		var pointsMax = ( form.querySelector( '[name="ywpar_points_max"]' ) || {} ).value || '0';
+		var maxDollars = ( form.querySelector( '[name="ywpar_max_discount"]' ) || {} ).value || '0';
+		var nonce = ( form.querySelector( '[name="ywpar_input_points_nonce"]' ) || {} ).value || '';
+		var rateMethod = ( form.querySelector( '[name="ywpar_rate_method"]' ) || {} ).value || 'fixed';
+
+		if ( parseInt( pointsMax, 10 ) > 0 && parseFloat( maxDollars ) > 0 ) {
+			redemptionState = {
+				pointsMax: pointsMax,
+				maxDollars: maxDollars,
+				nonce: nonce,
+				rateMethod: rateMethod
+			};
+		}
+
+		return redemptionState;
 	}
 
 	// YITH adds the applied discount as a totals row labelled "Redeem points";
@@ -152,18 +175,13 @@
 		// substitute: it fires but applies nothing.
 		function apply() {
 			var form = nativeForm();
+			var state = readRedemptionState( form );
 
-			if ( ! form ) {
+			if ( ! state ) {
 				return;
 			}
 
-			var pointsField = form.querySelector( '[name="ywpar_input_points"]' );
-			var pointsMax = ( form.querySelector( '[name="ywpar_points_max"]' ) || {} ).value || '0';
-			var maxDollars = ( form.querySelector( '[name="ywpar_max_discount"]' ) || {} ).value || '0';
-
-			if ( ! pointsField ) {
-				return;
-			}
+			var pointsField = form ? form.querySelector( '[name="ywpar_input_points"]' ) : null;
 
 			var requested = parseFloat( input ? input.value : '' );
 
@@ -180,13 +198,15 @@
 				return;
 			}
 
-			var points = dollarsToPoints( requested, pointsMax, maxDollars );
+			var points = dollarsToPoints( requested, state.pointsMax, state.maxDollars );
 
 			if ( points <= 0 ) {
 				return;
 			}
 
-			pointsField.value = points;
+			if ( pointsField ) {
+				pointsField.value = points;
+			}
 
 			var button = nativeButton();
 
@@ -205,12 +225,39 @@
 						setBusy( false );
 					}
 				}, 4000 );
+			} else if ( window.jQuery && window.yith_ywpar_general && window.yith_ywpar_general.wc_ajax_url ) {
+				// After cash back is removed, YITH removes the coupon but does not put
+				// its native form back into Fluid Checkout's fragment. Use the exact
+				// endpoint and payload from YITH 4.27.0 so redemption remains reusable
+				// without a reload or an inert re-created form.
+				setBusy( true );
+				window.jQuery.ajax( {
+					type: 'POST',
+					url: window.yith_ywpar_general.wc_ajax_url.toString().replace( '%%endpoint%%', 'ywpar_apply_points' ),
+					data: {
+						ywpar_points_max: state.pointsMax,
+						ywpar_max_discount: state.maxDollars,
+						ywpar_rate_method: state.rateMethod,
+						ywpar_input_points_nonce: state.nonce,
+						ywpar_input_points: points,
+						ywpar_input_points_check: 1
+					},
+					dataType: 'html'
+				} ).fail( function () {
+					setBusy( false );
+
+					if ( note ) {
+						note.textContent = 'Cash back could not be applied. Please try again.';
+					}
+				} ).done( function () {
+					window.jQuery( document.body ).trigger( 'update_checkout' );
+				} );
 			}
 		}
 
 		function fillMaximum() {
-			var form = nativeForm();
-			var maxDollars = form ? ( ( form.querySelector( '[name="ywpar_max_discount"]' ) || {} ).value || '0' ) : '0';
+			var state = readRedemptionState( nativeForm() );
+			var maxDollars = state ? state.maxDollars : '0';
 
 			if ( ! input ) {
 				return;
@@ -263,6 +310,7 @@
 		relabelAppliedLine( review );
 
 		var form = nativeForm();
+		var state = readRedemptionState( form );
 
 		// The slot row is rendered server-side and starts EMPTY, so its presence
 		// does not mean the card has been built. Treating it as a built card is
@@ -271,9 +319,12 @@
 		// points bar became visible again. Test for the card itself.
 		var card = document.querySelector( '.pep-redeem' ) ? document.querySelector( 'tr.pep-redeem-slot' ) : null;
 
-		// No apply form present: redemption is already applied (its Remove control
-		// lives in the totals) or the balance is below the minimum. Drop our card.
-		if ( ! form ) {
+		// The slot is absent while cash back is applied. Once removal restores the
+		// slot, the remembered server-verified values can rebuild the card at 0
+		// immediately even though YITH does not re-render its native form.
+		var slot = review.querySelector( 'tr.pep-redeem-slot' );
+
+		if ( ! slot || ! state ) {
 			if ( card && card.parentNode ) {
 				card.parentNode.removeChild( card );
 			}
@@ -284,7 +335,7 @@
 		// YITH renders the form inside a .woocommerce-cart-notice box that carries
 		// its own border and tint; tag it so the CSS hides the whole box, not just
 		// the form, leaving no empty styled band behind.
-		var wrapper = form.closest( '.woocommerce-cart-notice' );
+		var wrapper = form ? form.closest( '.woocommerce-cart-notice' ) : null;
 
 		if ( wrapper ) {
 			wrapper.classList.add( 'pep-redeem-native-wrap' );
@@ -292,9 +343,9 @@
 
 		// Apply the full available balance; the posted points field is left at its
 		// own maximum, in points, never converted.
-		var maxDiscount = ( form.querySelector( '[name="ywpar_max_discount"]' ) || {} ).value || '0';
-		var pointsMax = ( form.querySelector( '[name="ywpar_points_max"]' ) || {} ).value || '';
-		var pointsField = form.querySelector( '[name="ywpar_input_points"]' );
+		var maxDiscount = state.maxDollars;
+		var pointsMax = state.pointsMax;
+		var pointsField = form ? form.querySelector( '[name="ywpar_input_points"]' ) : null;
 
 		if ( pointsField && pointsMax ) {
 			pointsField.value = pointsMax;
@@ -346,4 +397,20 @@
 			window.setTimeout( run, 120 );
 		} );
 	}
+
+	// WooCommerce removal still needs its server round-trip, but the click should
+	// never feel dead while that happens. The fragment replaces the marked pill
+	// on success, and a failed refresh leaves it visibly recoverable on reload.
+	document.addEventListener( 'click', function ( event ) {
+		var remove = event.target.closest ? event.target.closest( '.pepselect-applied__x' ) : null;
+
+		if ( remove ) {
+			var pill = remove.closest( '.pepselect-applied' );
+
+			if ( pill ) {
+				pill.classList.add( 'is-removing' );
+				pill.setAttribute( 'aria-busy', 'true' );
+			}
+		}
+	}, true );
 }() );

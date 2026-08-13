@@ -6,6 +6,12 @@ All notable changes to the Pep Select child theme are documented here.
 
 Previously live: **0.17.0-beta.1**, deployed to production on 2026-07-23.
 
+## 0.20.0-beta.36 - 2026-08-12
+
+- Rebuilds the zeroed cash-back card immediately after removal even when YITH omits its native redemption form from Fluid Checkout's refreshed fragment. The retained values come from YITH's own last server-rendered maximum, rate, and nonce.
+- Keeps redemption reusable in that restored state through YITH's own `ywpar_apply_points` endpoint and exact 4.27.0 payload when no native Apply control remains.
+- Gives every applied-pill removal an immediate processing state while WooCommerce completes its checkout recalculation.
+
 ## 0.20.0-beta.35 - 2026-08-12
 
 - Cash-back balance copy now reads only `(YOU HAVE $X.XX)`; the existing minimum-redemption note remains the single place that states the $5.00 floor.

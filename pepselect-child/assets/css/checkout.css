@@ -2942,6 +2942,12 @@ body.has-fc-design-template--boxed div.woocommerce .fc-wrapper #order_review
 	padding: 8px 15px !important;
 }
 
+.fc-checkout-order-review .pepselect-applied.is-removing {
+	opacity: .48 !important;
+	pointer-events: none;
+	transition: opacity 120ms ease;
+}
+
 /* .applied b */
 .fc-checkout-order-review .pepselect-applied b {
 	font-family: "IBM Plex Mono", monospace !important;
