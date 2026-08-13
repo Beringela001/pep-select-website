@@ -6,6 +6,11 @@ All notable changes to the Pep Select child theme are documented here.
 
 Previously live: **0.17.0-beta.1**, deployed to production on 2026-07-23.
 
+## 0.20.0-beta.44 - 2026-08-12
+
+- Give the side-cart BAC offer a distinct 12px gap above the footer buttons instead of letting the card touch them.
+- Increase the card subtly with 18px desktop padding, a 56px thumbnail, and half-pixel type increases. Phone padding remains 16px so the switch, label, and price retain enough horizontal room in the 390px drawer.
+
 ## 0.20.0-beta.43 - 2026-08-12
 
 - Restore the compact Bacteriostatic Water upsell in the side cart on every storefront page. Its markup and behavior were already shared with checkout, but its presentation lived only in the checkout/cart stylesheet, so pages such as Home rendered a full-width product image and native checkbox.
