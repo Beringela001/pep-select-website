@@ -6,6 +6,12 @@ All notable changes to the Pep Select child theme are documented here.
 
 Previously live: **0.17.0-beta.1**, deployed to production on 2026-07-23.
 
+## 0.20.0-beta.42 - 2026-08-12
+
+- Hide the redundant billing and shipping country rows while retaining their US value for shipping, tax, and order records.
+- Remove YITH's optional date-of-birth checkout field before Fluid Checkout renders it, with a CSS fallback for cached plugin markup.
+- Replace remaining WooCommerce/Fluid Checkout pink checkout links with the Pep Select cyan link tone and navy hover/focus tone.
+
 ## 0.20.0-beta.41 - 2026-08-12
 
 - Completes the 1000–1199px tablet layout by removing Fluid's surviving desktop float and 450px width from `.fc-inside` and `.fc-checkout-steps`. On iPad Pro, the checkout fields and the following order card now share the same 800px centered container.

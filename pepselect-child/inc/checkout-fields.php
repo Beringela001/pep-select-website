@@ -46,6 +46,27 @@ function pepselect_child_remove_parent_checkout_hooks() {
 add_action( 'init', 'pepselect_child_remove_parent_checkout_hooks', 5 );
 
 /**
+ * Remove YITH's optional birthday field from checkout.
+ *
+ * The rewards plugin adds this field to WooCommerce's checkout field array.
+ * Removing it here prevents Fluid Checkout from building an empty expandable
+ * section around it, while leaving every rewards and redemption feature intact.
+ *
+ * @param array<string,array<string,array<string,mixed>>> $fields Checkout fields.
+ * @return array<string,array<string,array<string,mixed>>>
+ */
+function pepselect_child_remove_checkout_birthday_field( $fields ) {
+	foreach ( $fields as $group => $group_fields ) {
+		if ( is_array( $group_fields ) && isset( $fields[ $group ]['yith_birthday'] ) ) {
+			unset( $fields[ $group ]['yith_birthday'] );
+		}
+	}
+
+	return $fields;
+}
+add_filter( 'woocommerce_checkout_fields', 'pepselect_child_remove_checkout_birthday_field', 999 );
+
+/**
  * The Research Purpose options, keyed by stored value. Keys equal labels, and
  * the stored value is the raw label, so this is also the allow-list used to
  * validate a submitted value before it is saved. The empty first entry is the

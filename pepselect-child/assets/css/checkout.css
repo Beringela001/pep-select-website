@@ -77,6 +77,33 @@ button#place_order.fc-place-order-button {
 	color: var(--pep-color-navy) !important;
 }
 
+/* Checkout links always use the Pep Select link palette. Fluid Checkout and
+   YITH otherwise leak WooCommerce pink into login, address, and policy links. */
+.woocommerce-checkout .fc-checkout-steps a,
+.woocommerce-checkout .fc-checkout-steps a:visited {
+	color: var(--pep-color-cyan) !important;
+}
+
+.woocommerce-checkout .fc-checkout-steps a:hover,
+.woocommerce-checkout .fc-checkout-steps a:focus-visible {
+	color: var(--pep-color-navy) !important;
+}
+
+/* US-only checkout: preserve the country controls and their submitted US value
+   for tax, shipping, and order data, but do not show a redundant one-option row. */
+.woocommerce-checkout #billing_country_field,
+.woocommerce-checkout #shipping_country_field {
+	display: none !important;
+}
+
+/* Defensive fallback for cached/plugin-generated markup. The PHP field filter
+   removes this before Fluid Checkout renders it on a current page response. */
+.woocommerce-checkout .fc-expansible-form-section:has(input[name="yith_birthday"]),
+.woocommerce-checkout #yith_birthday_field,
+.woocommerce-checkout input[name="yith_birthday"] {
+	display: none !important;
+}
+
 /* Completed-step check icons → cyan/green rather than plugin purple. */
 .fc-step__substep-title::before,
 .fc-step__substep .fc-icon {
