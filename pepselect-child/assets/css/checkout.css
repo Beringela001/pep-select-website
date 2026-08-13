@@ -3393,6 +3393,16 @@ body.woocommerce-checkout #shipping_method input.shipping_method:checked + .ship
 	background: var(--pep-color-cyan, #17A1CF) !important;
 }
 
+body.woocommerce-checkout #shipping_method .shipping-method__option.shipping-method__option .shipping-method__option-label:hover {
+	border-color: var(--pep-color-border, #D7E1E9) !important;
+	background-color: var(--pep-color-white, #FFFFFF) !important;
+}
+
+body.woocommerce-checkout #shipping_method .shipping-method__option.shipping-method__option input.shipping_method:checked + .shipping-method__option-label:hover {
+	border-color: var(--pep-color-cyan, #17A1CF) !important;
+	background-color: var(--pep-color-cyan-soft, #E8F6FB) !important;
+}
+
 /* Match the redemption control's blue focus treatment across every customer
    field, native select and Select2 field in the left checkout column. */
 body.woocommerce-checkout .fc-checkout-steps input.input-text:focus,
@@ -3412,6 +3422,32 @@ body.woocommerce-checkout .fc-checkout-steps input[type="checkbox"]:focus-visibl
 body.woocommerce-checkout .fc-checkout-steps input[type="radio"]:focus-visible {
 	outline: 2px solid var(--pep-color-cyan, #17A1CF) !important;
 	outline-offset: 2px !important;
+}
+
+/* Fluid's accessibility rule carries one extra class of specificity and an
+   !important dark outline. Match its selector shape so blue is the only focus
+   color while preserving the visible 2px keyboard outline. */
+body.woocommerce-checkout div.woocommerce form .fc-checkout-steps .form-row .select2-selection:focus,
+body.woocommerce-checkout div.woocommerce form .fc-checkout-steps .form-row input[type="date"]:focus,
+body.woocommerce-checkout div.woocommerce form .fc-checkout-steps .form-row input[type="email"]:focus,
+body.woocommerce-checkout div.woocommerce form .fc-checkout-steps .form-row input[type="number"]:focus,
+body.woocommerce-checkout div.woocommerce form .fc-checkout-steps .form-row input[type="password"]:focus,
+body.woocommerce-checkout div.woocommerce form .fc-checkout-steps .form-row input[type="search"]:focus,
+body.woocommerce-checkout div.woocommerce form .fc-checkout-steps .form-row input[type="tel"]:focus,
+body.woocommerce-checkout div.woocommerce form .fc-checkout-steps .form-row input[type="text"]:focus,
+body.woocommerce-checkout div.woocommerce form .fc-checkout-steps .form-row input[type="url"]:focus,
+body.woocommerce-checkout div.woocommerce form .fc-checkout-steps .form-row select:focus,
+body.woocommerce-checkout div.woocommerce form .fc-checkout-steps .form-row textarea:focus {
+	outline: 2px solid var(--pep-color-cyan, #17A1CF) !important;
+	outline-offset: 2px !important;
+}
+
+.fc-checkout-order-review .place-order--main {
+	margin-top: -8px !important;
+}
+
+.fc-checkout-order-review .fc-place-order {
+	padding: 8px 0 4px !important;
 }
 
 /* Three columns are comfortable from small tablets upward. Phones retain the
@@ -3479,6 +3515,7 @@ body.woocommerce-checkout .fc-checkout-steps input[type="radio"]:focus-visible {
 
 	body.woocommerce-checkout .fc-wrapper .fc-checkout-steps > .fc-checkout-step[data-step-id="payment"] {
 		flex: 1 0 auto !important;
+		margin-bottom: 0 !important;
 	}
 
 	body.woocommerce-checkout .fc-wrapper .fc-sidebar {
