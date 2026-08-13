@@ -1,8 +1,8 @@
 # Handoff — Pep Select Checkout Architecture
 
 **Written:** 2026-08-12
-**Theme version at handoff:** `0.20.0-beta.37` (repo + built ZIP + Live, verified 2026-08-12).
-**Branch:** `codex/checkout-panel-architecture` · **Latest implementation commit:** `c132f3d`
+**Theme version at handoff:** `0.20.0-beta.39` (repo + built ZIP + Live, verified 2026-08-12).
+**Branch:** `codex/checkout-panel-architecture` · **Latest implementation commit:** `bc0c8fe`
 **Theme:** `pepselect-child` (Hello Elementor child)
 **Spec file:** `checkout-panel-pepselect.html` at repo root — 13,366 bytes, SHA-256 `c888fb252d994432915ec5ff803fdbd0c79ca36d16054651d1fe3bb0f990c741`
 
@@ -323,9 +323,18 @@ beta.34 follow-up: the live line item exposed Fluid's editable quantity stepper 
 - The restored form was used for a second complete Max → Apply → Remove cycle. This exercises the cached-state fallback and YITH `ywpar_apply_points` endpoint, not only the first native-form path.
 - `WELCOME10` was restored after testing and the checkout ended with one WELCOME10 pill, the redemption card at `0`, and no cash back applied.
 
+### Installed beta.39 mobile-flow verification
+
+- Fluid PRO's narrow layout physically moves `#order_review` from `.fc-checkout-order-review__inner` into `.fc-checkout-order-review-collapsible__content .collapsible-content__inner`. That is why the old mobile page showed `Your cart — 2 items` at the top while the bottom `Your Order` card contained only payment.
+- `assets/js/checkout-mobile-order.js` moves the existing `#order_review` node—not a clone—back after `.fc-order-review-table__placeholder--main`. The move retains WooCommerce/YITH handlers and form fields. A mutation observer plus `updated_checkout`, resize, and media-query listeners correct Fluid's later fragment or responsive relocations.
+- The top collapsible is hidden only while `body.pepselect-mobile-order-review-expanded` confirms that the real order table is safely inside the bottom card. If placement ever fails, Fluid's original top dropdown remains visible.
+- Verified at 390, 440, 768, and 900px: checkout fields first; then heading, product, discount, cash back where available, BAC, totals, payment, and Place order. The fields-to-summary gap is 20px and the top collapsible computes to `display:none`.
+- At 390 and 440px, `document.body.scrollWidth === window.innerWidth`; no sidebar descendant crossed either viewport edge. Product and Place order remain visible.
+- At 1000px the success class is absent, Fluid's normal permanent desktop sidebar owns `#order_review`, and the top collapsible remains hidden by Fluid itself. This confirms the custom behavior stops at the exact 999/1000 responsive boundary.
+- Logged-in verification at 768px included WELCOME10/cash-back-capable markup and showed the full sequence inside `.fc-sidebar`; Chrome reported no console errors.
+
 ### Still owed
 - Square amount matches the discounted total with a redemption applied
-- 390px overflow behaviour
 - A test order end-to-end with redemption applied
 
 Last successful end-to-end test order was **#1443** on staging (beta.21): cash back $7.20 applied as `ywpar_discount_1`, total $98.67 → $91.00, Square panel read $91.00, all acknowledgment meta written, balance $7.20 → $0.00 → restored to $7.20 on cancel.
@@ -360,9 +369,9 @@ Release   bump style.css → CHANGELOG entry → commit → push
 
 `dist/` is gitignored. ZIPs are built with `git archive --format=zip -o dist/... HEAD -- pepselect-child`.
 
-Current verified release: `dist/pepselect-child-0.20.0-beta.37.zip` · 269,099 bytes · SHA-256 `17aa0042d682a1ba170d44dc0b9c28c2273eec2d4ece375602e0445ebf677e7e`.
+Current verified release: `dist/pepselect-child-0.20.0-beta.39.zip` · 271,407 bytes · SHA-256 `fe367c3c72ec86072dd4d7e70bca21169b0b9ec7600e831ac4474693ecbbb5da`.
 
-Known-good rollback before this cash-back work: `dist/pepselect-child-0.20.0-beta.34.zip` · 266,924 bytes · SHA-256 `5f65fcd73bd232f63991ced39cc009361bd733965cfb0619e96e2a11c381840e`.
+Immediate rollback: `dist/pepselect-child-0.20.0-beta.37.zip` · 269,099 bytes · SHA-256 `17aa0042d682a1ba170d44dc0b9c28c2273eec2d4ece375602e0445ebf677e7e`.
 
 Deployment is **manual ZIP upload by Paulo**. Nothing auto-deploys. Live and staging drift — always verify the deployed `style.css` version by fetching it, never assume, and never trust the "Live version" line in `CHANGELOG.md` (it was stale once and caused a wrong call).
 
