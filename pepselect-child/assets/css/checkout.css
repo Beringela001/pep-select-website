@@ -3296,3 +3296,131 @@ body.has-fc-design-template--boxed div.woocommerce .fc-wrapper #order_review
 		max-width: 100% !important;
 	}
 }
+
+/* =========================================================================
+   M12-23: compact, continuous customer-details card.
+
+   Contact, Shipping and Billing stay as Fluid Checkout's native steps and
+   retain every field, validation rule and AJAX behavior. Their adjacent outer
+   surfaces are joined visually into one white card; the compliance/payment
+   step remains a separate card below. The completed order panel is untouched.
+   ========================================================================= */
+
+body.woocommerce-checkout .fc-checkout-steps > .fc-checkout-step[data-step-id="contact"],
+body.woocommerce-checkout .fc-checkout-steps > .fc-checkout-step[data-step-id="shipping"],
+body.woocommerce-checkout .fc-checkout-steps > .fc-checkout-step[data-step-id="billing"] {
+	margin-bottom: 0 !important;
+	border-color: var(--pep-color-border, #D7E1E9) !important;
+	border-radius: 0 !important;
+	background: var(--pep-color-white, #FFFFFF) !important;
+	box-shadow: 0 3px 8px rgb(0 42 83 / 8%) !important;
+}
+
+body.woocommerce-checkout .fc-checkout-steps > .fc-checkout-step[data-step-id="contact"] {
+	border-bottom: 0 !important;
+	border-radius: 8px 8px 0 0 !important;
+}
+
+body.woocommerce-checkout .fc-checkout-steps > .fc-checkout-step[data-step-id="shipping"] {
+	border-bottom: 0 !important;
+}
+
+body.woocommerce-checkout .fc-checkout-steps > .fc-checkout-step[data-step-id="billing"] {
+	margin-bottom: 20px !important;
+	border-radius: 0 0 8px 8px !important;
+}
+
+body.woocommerce-checkout .fc-checkout-step[data-step-id="contact"] .fc-step__substep,
+body.woocommerce-checkout .fc-checkout-step[data-step-id="shipping"] .fc-step__substep,
+body.woocommerce-checkout .fc-checkout-step[data-step-id="billing"] .fc-step__substep {
+	margin: 0 !important;
+	padding: 18px 20px !important;
+	border: 0 !important;
+	border-radius: 0 !important;
+	background: var(--pep-color-white, #FFFFFF) !important;
+	overflow: visible !important;
+}
+
+body.woocommerce-checkout .fc-checkout-step[data-step-id="shipping"] .fc-step__substep + .fc-step__substep,
+body.woocommerce-checkout .fc-checkout-step[data-step-id="billing"] .fc-step__substep {
+	border-top: 1px solid var(--pep-color-border, #D7E1E9) !important;
+}
+
+body.woocommerce-checkout .fc-checkout-step[data-step-id="contact"] .fc-step__substep-fields-inner,
+body.woocommerce-checkout .fc-checkout-step[data-step-id="shipping"] .fc-step__substep-fields-inner,
+body.woocommerce-checkout .fc-checkout-step[data-step-id="billing"] .fc-step__substep-fields-inner {
+	padding-top: 8px !important;
+}
+
+body.woocommerce-checkout .fc-checkout-step[data-step-id="contact"] .form-row,
+body.woocommerce-checkout .fc-checkout-step[data-step-id="shipping"] .form-row,
+body.woocommerce-checkout .fc-checkout-step[data-step-id="billing"] .form-row {
+	margin-bottom: 14px !important;
+}
+
+body.woocommerce-checkout #shipping_phone_field {
+	margin-bottom: 0 !important;
+}
+
+/* Selected shipping rates use the Pep Select blue state, not Fluid's gray. */
+body.woocommerce-checkout #shipping_method input.shipping_method:checked + .shipping-method__option-label {
+	border-color: var(--pep-color-cyan, #17A1CF) !important;
+	background: var(--pep-color-cyan-soft, #E8F6FB) !important;
+	color: var(--pep-color-navy, #002A53) !important;
+	box-shadow: 0 0 0 1px rgb(23 161 207 / 12%) !important;
+}
+
+body.woocommerce-checkout #shipping_method input.shipping_method:checked + .shipping-method__option-label::before {
+	border-color: var(--pep-color-cyan, #17A1CF) !important;
+	background: var(--pep-color-cyan, #17A1CF) !important;
+}
+
+/* Three columns are comfortable from small tablets upward. Phones retain the
+   full-width Fluid layout so labels and the state selector never feel pinched. */
+@media (min-width: 600px) {
+	body.woocommerce-checkout #shipping_city_field {
+		float: left !important;
+		clear: both !important;
+		width: 31% !important;
+		margin-right: 3% !important;
+	}
+
+	body.woocommerce-checkout #shipping_state_field {
+		float: left !important;
+		clear: none !important;
+		width: 38% !important;
+		margin-right: 3% !important;
+	}
+
+	body.woocommerce-checkout #shipping_postcode_field {
+		float: left !important;
+		clear: none !important;
+		width: 25% !important;
+		margin-right: 0 !important;
+	}
+
+	body.woocommerce-checkout #shipping_phone_field {
+		float: none !important;
+		clear: both !important;
+		width: 100% !important;
+	}
+}
+
+/* Keep the approved order panel at its current desktop width. Only the
+   customer-details column and the centered wrapper become narrower. */
+@media (min-width: 1200px) {
+	body.woocommerce-checkout .fc-wrapper {
+		max-width: 1080px !important;
+	}
+
+	body.woocommerce-checkout .fc-wrapper .fc-inside,
+	body.woocommerce-checkout .fc-wrapper .fc-checkout-steps {
+		width: 602px !important;
+		max-width: 602px !important;
+	}
+
+	body.woocommerce-checkout .fc-wrapper .fc-sidebar {
+		width: 428px !important;
+		max-width: 428px !important;
+	}
+}

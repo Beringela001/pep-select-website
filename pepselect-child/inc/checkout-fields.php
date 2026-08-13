@@ -67,6 +67,38 @@ function pepselect_child_remove_checkout_birthday_field( $fields ) {
 add_filter( 'woocommerce_checkout_fields', 'pepselect_child_remove_checkout_birthday_field', 999 );
 
 /**
+ * Tighten the customer-facing checkout field labels and guidance.
+ *
+ * Fluid Checkout relocates billing_email into Contact and shipping_phone into
+ * the Shipping address step, but both controls still come from WooCommerce's
+ * checkout field array. Adjusting the field definitions keeps the labels,
+ * descriptions and accessible names in sync without changing submitted data.
+ *
+ * @param array<string,array<string,array<string,mixed>>> $fields Checkout fields.
+ * @return array<string,array<string,array<string,mixed>>>
+ */
+function pepselect_child_customize_checkout_field_copy( $fields ) {
+	if ( isset( $fields['billing']['billing_email'] ) ) {
+		$fields['billing']['billing_email']['description'] = __( 'Use the same email for checkout and payment. We’ll send your Square payment link, order confirmation, and tracking updates here.', 'pepselect-child' );
+	}
+
+	if ( isset( $fields['shipping']['shipping_city'] ) ) {
+		$fields['shipping']['shipping_city']['label'] = __( 'City', 'pepselect-child' );
+	}
+
+	if ( isset( $fields['shipping']['shipping_phone'] ) ) {
+		$fields['shipping']['shipping_phone']['description'] = '';
+	}
+
+	if ( isset( $fields['billing']['billing_phone'] ) ) {
+		$fields['billing']['billing_phone']['description'] = '';
+	}
+
+	return $fields;
+}
+add_filter( 'woocommerce_checkout_fields', 'pepselect_child_customize_checkout_field_copy', 1000 );
+
+/**
  * The Research Purpose options, keyed by stored value. Keys equal labels, and
  * the stored value is the raw label, so this is also the allow-list used to
  * validate a submitted value before it is saved. The empty first entry is the

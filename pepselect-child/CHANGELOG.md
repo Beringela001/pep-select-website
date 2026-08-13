@@ -6,6 +6,13 @@ All notable changes to the Pep Select child theme are documented here.
 
 Previously live: **0.17.0-beta.1**, deployed to production on 2026-07-23.
 
+## 0.20.0-beta.48 - 2026-08-12
+
+- Refine the left checkout column without changing the completed order-summary panel: Contact, Shipping address, Shipping, and Billing address now read as one continuous white card with a soft shadow; the acknowledgments/privacy card remains separate.
+- Narrow the desktop customer-details column while preserving the order panel's existing width. City, State, and ZIP share one row from tablet widths upward and stack on phones; vertical field spacing is reduced slightly.
+- Replace the email helper with a visible reminder to use the same email for checkout and payment, covering the Square payment link, order confirmation, and tracking updates. Rename Town / City to City, remove the shipping-phone helper, and shorten Shipping method to Shipping.
+- Give the selected shipping rate a soft Pep Select blue fill, cyan border, and cyan selection mark instead of Fluid Checkout's gray selected state.
+
 ## 0.20.0-beta.47 - 2026-08-12
 
 - Side cart only: remove Xootix's `Have a Promo Code?` trigger and its matching coupon slider. The full Cart and Checkout coupon fields remain unchanged.

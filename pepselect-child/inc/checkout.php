@@ -457,24 +457,32 @@ function pepselect_child_render_payment_heading( $step_id = 'payment', $is_sideb
 add_action( 'fc_place_order', 'pepselect_child_render_payment_heading', 4, 2 );
 
 /**
- * Drop the now-orphaned "Payment method" substep title in the left column.
+ * Refine the remaining left-column substep titles.
  *
  * The payment box moved to the summary panel, so that heading labelled nothing;
  * the block below it carries its own Acknowledgments heading. Fluid supports a
- * null substep title (it uses one itself when the coupon section title is
- * disabled), so the substep still registers and the step structure is intact.
+ * null substep title. The shipping rates keep their native substep and logic,
+ * while the visible title is shortened from "Shipping method" to "Shipping".
  *
  * @param array $args Substep registration arguments.
  * @return array
  */
-function pepselect_child_clear_payment_substep_title( $args ) {
-	if ( isset( $args['substep_id'] ) && 'payment' === $args['substep_id'] ) {
+function pepselect_child_filter_checkout_substep_titles( $args ) {
+	if ( ! isset( $args['substep_id'] ) ) {
+		return $args;
+	}
+
+	if ( 'payment' === $args['substep_id'] ) {
 		$args['substep_title'] = null;
+	}
+
+	if ( 'shipping_method' === $args['substep_id'] ) {
+		$args['substep_title'] = __( 'Shipping', 'pepselect-child' );
 	}
 
 	return $args;
 }
-add_filter( 'fc_register_checkout_substep_args', 'pepselect_child_clear_payment_substep_title' );
+add_filter( 'fc_register_checkout_substep_args', 'pepselect_child_filter_checkout_substep_titles' );
 
 /**
  * Render checkout notices inside the order summary, above the coupon block.
