@@ -6,6 +6,14 @@ All notable changes to the Pep Select child theme are documented here.
 
 Previously live: **0.17.0-beta.1**, deployed to production on 2026-07-23.
 
+## 0.20.0 - 2026-08-12
+
+- Promote the completed 0.20 checkout work from beta to the stable `0.20.0` release.
+- Match the rounded corners of the continuous Contact/Shipping/Billing card to the separate Acknowledgments card.
+- On desktop, stretch the left and right checkout columns to the same visual height while keeping the approved order panel at 420px and leaving the mobile/tablet stacked flow unchanged.
+- Change the checkout action to `Place your order`, reduce its top gap from 14px to 8px, and tighten its vertical padding by 1px so it sits closer to the amber payment notice.
+- Remove Fluid Checkout's gray shipping-rate hover fill while retaining the soft-blue selected state. Give customer text fields, phone, native selects, Select2 controls, checkboxes, and radios the same cyan focus treatment as the cash-back field.
+
 ## 0.20.0-beta.50 - 2026-08-12
 
 - Finish the selected Shipping state through Fluid Checkout's own checked-option variables, which outrank its high-specificity gray rule without changing any shipping markup or behavior. Center the narrower 1080px desktop checkout wrapper inside Fluid's existing 1140px container.

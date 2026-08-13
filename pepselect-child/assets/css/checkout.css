@@ -3226,9 +3226,9 @@ body.has-fc-design-template--boxed div.woocommerce .fc-wrapper #order_review
 .fc-checkout-order-review button#place_order.fc-place-order-button,
 .fc-checkout-order-review #place_order,
 .fc-checkout-order-review .fc-place-order-button {
-	margin-top: 14px !important;
+	margin-top: 8px !important;
 	width: 100% !important;
-	padding: 13px !important;
+	padding: 12px !important;
 	border: 0 !important;
 	border-radius: 999px !important;
 	background: #17A1CF !important;
@@ -3346,6 +3346,14 @@ body.woocommerce-checkout .fc-checkout-step[data-step-id="billing"] .fc-step__su
 	border-top: 1px solid var(--pep-color-border, #D7E1E9) !important;
 }
 
+body.woocommerce-checkout .fc-checkout-step[data-step-id="contact"] .fc-step__substep {
+	border-radius: 8px 8px 0 0 !important;
+}
+
+body.woocommerce-checkout .fc-checkout-step[data-step-id="billing"] .fc-step__substep {
+	border-radius: 0 0 8px 8px !important;
+}
+
 body.woocommerce-checkout .fc-checkout-step[data-step-id="contact"] .fc-step__substep-fields-inner,
 body.woocommerce-checkout .fc-checkout-step[data-step-id="shipping"] .fc-step__substep-fields-inner,
 body.woocommerce-checkout .fc-checkout-step[data-step-id="billing"] .fc-step__substep-fields-inner {
@@ -3365,7 +3373,9 @@ body.woocommerce-checkout #shipping_phone_field {
 /* Selected shipping rates use the Pep Select blue state, not Fluid's gray. */
 body.woocommerce-checkout #shipping_method {
 	--fluidcheckout--option-box--background-color--checked: #E8F6FB;
+	--fluidcheckout--option-box--background-color--hover: #FFFFFF;
 	--fluidcheckout--option-box--label-border-color--checked: #17A1CF;
+	--fluidcheckout--option-box--label-border-color--hover: #D7E1E9;
 	--fluidcheckout--option-box--label-color--checked: #002A53;
 	--fluidcheckout--option-box--radio-color--checked: #17A1CF;
 }
@@ -3381,6 +3391,27 @@ body.woocommerce-checkout #shipping_method input.shipping_method:checked + .ship
 body.woocommerce-checkout #shipping_method input.shipping_method:checked + .shipping-method__option-label::before {
 	border-color: var(--pep-color-cyan, #17A1CF) !important;
 	background: var(--pep-color-cyan, #17A1CF) !important;
+}
+
+/* Match the redemption control's blue focus treatment across every customer
+   field, native select and Select2 field in the left checkout column. */
+body.woocommerce-checkout .fc-checkout-steps input.input-text:focus,
+body.woocommerce-checkout .fc-checkout-steps input[type="email"]:focus,
+body.woocommerce-checkout .fc-checkout-steps input[type="tel"]:focus,
+body.woocommerce-checkout .fc-checkout-steps input[type="text"]:focus,
+body.woocommerce-checkout .fc-checkout-steps select:focus,
+body.woocommerce-checkout .fc-checkout-steps textarea:focus,
+body.woocommerce-checkout .fc-checkout-steps .select2-container--focus .select2-selection,
+body.woocommerce-checkout .fc-checkout-steps .select2-container--open .select2-selection {
+	outline: none !important;
+	border-color: var(--pep-color-cyan, #17A1CF) !important;
+	box-shadow: 0 0 0 3px rgb(23 161 207 / 15%) !important;
+}
+
+body.woocommerce-checkout .fc-checkout-steps input[type="checkbox"]:focus-visible,
+body.woocommerce-checkout .fc-checkout-steps input[type="radio"]:focus-visible {
+	outline: 2px solid var(--pep-color-cyan, #17A1CF) !important;
+	outline-offset: 2px !important;
 }
 
 /* Three columns are comfortable from small tablets upward. Phones retain the
@@ -3418,19 +3449,57 @@ body.woocommerce-checkout #shipping_method input.shipping_method:checked + .ship
    customer-details column and the centered wrapper become narrower. */
 @media (min-width: 1200px) {
 	body.woocommerce-checkout .fc-wrapper {
+		display: grid !important;
+		grid-template-columns: 602px 428px !important;
+		column-gap: 50px !important;
+		align-items: stretch !important;
 		max-width: 1080px !important;
 		margin-right: auto !important;
 		margin-left: auto !important;
 	}
 
-	body.woocommerce-checkout .fc-wrapper .fc-inside,
+	body.woocommerce-checkout .fc-wrapper .fc-inside {
+		grid-column: 1 !important;
+		display: flex !important;
+		float: none !important;
+		flex-direction: column !important;
+		width: 602px !important;
+		max-width: 602px !important;
+		padding: 5px 0 20px !important;
+		box-sizing: border-box !important;
+	}
+
 	body.woocommerce-checkout .fc-wrapper .fc-checkout-steps {
+		display: flex !important;
+		flex: 1 1 auto !important;
+		flex-direction: column !important;
 		width: 602px !important;
 		max-width: 602px !important;
 	}
 
+	body.woocommerce-checkout .fc-wrapper .fc-checkout-steps > .fc-checkout-step[data-step-id="payment"] {
+		flex: 1 0 auto !important;
+	}
+
 	body.woocommerce-checkout .fc-wrapper .fc-sidebar {
+		grid-column: 2 !important;
+		display: flex !important;
+		float: none !important;
+		align-self: stretch !important;
 		width: 428px !important;
 		max-width: 428px !important;
+	}
+
+	body.woocommerce-checkout .fc-wrapper .fc-sidebar .fc-sidebar__inner {
+		display: flex !important;
+		flex: 1 1 auto !important;
+		padding: 5px 0 20px !important;
+		box-sizing: border-box !important;
+	}
+
+	body.woocommerce-checkout .fc-wrapper .fc-sidebar .fc-checkout-order-review {
+		flex: 1 1 auto !important;
+		width: 420px !important;
+		max-width: 420px !important;
 	}
 }

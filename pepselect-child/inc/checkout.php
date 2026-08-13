@@ -485,6 +485,20 @@ function pepselect_child_filter_checkout_substep_titles( $args ) {
 add_filter( 'fc_register_checkout_substep_args', 'pepselect_child_filter_checkout_substep_titles' );
 
 /**
+ * Use the approved customer-facing checkout action label.
+ *
+ * WooCommerce owns the button and submission behavior; this core filter changes
+ * only its visible text and accessible name.
+ *
+ * @param string $text Default order-button text.
+ * @return string
+ */
+function pepselect_child_checkout_order_button_text( $text ) {
+	return __( 'Place your order', 'pepselect-child' );
+}
+add_filter( 'woocommerce_order_button_text', 'pepselect_child_checkout_order_button_text', 20 );
+
+/**
  * Render checkout notices inside the order summary, above the coupon block.
  *
  * WooCommerce prints them full width at the top of the page through
