@@ -1,8 +1,8 @@
 # Handoff — Pep Select Checkout Architecture
 
 **Written:** 2026-08-12
-**Theme version at handoff:** `0.20.0-beta.50` (repo + built ZIP + Live, verified 2026-08-12).
-**Branch:** `codex/checkout-panel-architecture` · **Latest implementation commit:** `092a2ac`
+**Theme version at handoff:** `0.20.0` (repo + built ZIP + Live, verified 2026-08-12).
+**Branch:** `codex/checkout-panel-architecture` · **Latest implementation commit:** `d61aa92`
 **Theme:** `pepselect-child` (Hello Elementor child)
 **Spec file:** `checkout-panel-pepselect.html` at repo root — 13,366 bytes, SHA-256 `c888fb252d994432915ec5ff803fdbd0c79ca36d16054651d1fe3bb0f990c741`
 
@@ -397,6 +397,14 @@ beta.34 follow-up: the live line item exposed Fluid's editable quantity stepper 
 - Live matrix passed at 1440, 1200, 1024, 768, 440, and 390px: joined-card boundaries exact, four detail substeps white, separate-card gap 20px, all right-panel controls present, and no horizontal overflow. Zero checkout console errors.
 - The responsive pass left the test session on USPS Priority Mail: shipping $8.01 and total $174.39.
 
+### Installed stable 0.20.0 checkout verification
+
+- The joined customer-details card now has matching 8px top and bottom inner corners. The separate privacy/Research Purpose/Acknowledgments card retains its own 8px radius.
+- At 1200px and 1440px, the visible left checkout column and 420px order panel start and end on the exact same pixels. Height matching uses desktop grid stretching, so it follows live content changes instead of relying on a fixed height. At 1024px and below, the existing stacked flow remains natural.
+- The checkout action reads `Place your order`. Fluid's hidden 20px button-wrapper padding is removed; the live amber-to-button gap is 33px.
+- Unselected shipping rates remain white on hover; the selected rate remains soft blue. Email, phone, text, native select, and Select2 focus states all resolve to cyan border, 3px cyan ring, and 2px cyan accessibility outline with no black focus color.
+- Stable matrix passed at 1440, 1200, 1024, 768, 440, and 390px: all order controls present and no horizontal overflow. Zero checkout console errors.
+
 ### Still owed
 - Square amount matches the discounted total with a redemption applied
 - A test order end-to-end with redemption applied
@@ -433,9 +441,9 @@ Release   bump style.css → CHANGELOG entry → commit → push
 
 `dist/` is gitignored. ZIPs are built with `git archive --format=zip -o dist/... HEAD -- pepselect-child`.
 
-Current verified release: `dist/pepselect-child-0.20.0-beta.50.zip` · 277,106 bytes · SHA-256 `ba71bd394b28d76f3279f1c774be11bebf71b7e1c9da74f86b5cdd57e5b28371`.
+Current verified release: `dist/pepselect-child-0.20.0.zip` · 278,110 bytes · SHA-256 `5a09b0cd4a4038357affa3921bf67d0d68c40875915755600355e3102a825139`.
 
-Immediate rollback: `dist/pepselect-child-0.20.0-beta.49.zip` · 276,947 bytes · SHA-256 `ac07c474e986dd3c3cc08bcc0a20a900837bea1066a742a19f034eaf5f7a81c5`.
+Immediate rollback: `dist/pepselect-child-0.20.0-beta.50.zip` · 277,106 bytes · SHA-256 `ba71bd394b28d76f3279f1c774be11bebf71b7e1c9da74f86b5cdd57e5b28371`.
 
 Deployment is a **manual ZIP upload through WordPress**. Nothing auto-deploys. Live and staging drift — always verify the deployed `style.css` version from production, never assume, and never trust the "Live version" line in `CHANGELOG.md` by itself (it was stale once and caused a wrong call).
 
