@@ -1,8 +1,8 @@
 # Handoff — Pep Select Checkout Architecture
 
 **Written:** 2026-08-12
-**Theme version at handoff:** `0.20.0-beta.45` (repo + built ZIP + Live, verified 2026-08-12).
-**Branch:** `codex/checkout-panel-architecture` · **Latest implementation commit:** `def9983`
+**Theme version at handoff:** `0.20.0-beta.46` (repo + built ZIP + Live, verified 2026-08-12).
+**Branch:** `codex/checkout-panel-architecture` · **Latest implementation commit:** `4adaacb`
 **Theme:** `pepselect-child` (Hello Elementor child)
 **Spec file:** `checkout-panel-pepselect.html` at repo root — 13,366 bytes, SHA-256 `c888fb252d994432915ec5ff803fdbd0c79ca36d16054651d1fe3bb0f990c741`
 
@@ -373,6 +373,14 @@ beta.34 follow-up: the live line item exposed Fluid's editable quantity stepper 
 - Checkout passed at 390, 440, 768, 1024, 1199, 1200, and 1440px: 72×72px image, price only, card and row inside the panel, and no horizontal overflow. The iPhone 16 Pro Max-width card remains fully contained.
 - Live add/remove passed after the markup change: cart 2 → 3 with BAC and back to 2 after removal; the offer hid and returned correctly. Zero upsell-script console errors, and the test cart was restored.
 
+### Installed beta.46 cart-only rewards and coupon verification
+
+- Cart only: YITH's `.wp-block-yith-par-message-reward-cart_container` remains in the DOM for plugin compatibility but computes to `display:none`; its top redemption banner is no longer visible.
+- The separate Pep Select cash-back pill remains visible and still reads `You’ll earn $4.80 in cash back`. Its code and styling were not changed.
+- WooCommerce Blocks' coupon form mounts expanded after initial render and after block re-renders. Its accordion handle is hidden, while the existing Enter code input and Apply button remain visible.
+- Desktop and logged-in 390px mobile both passed. Mobile form width is 355px from x=10 to x=365, both controls fit, product count remains one cart line / quantity two, total remains $174.39, and the page has no horizontal overflow.
+- Checkout, side cart, products, totals, shipping, reward earning logic, and coupon application logic were not modified. Zero `cart-rewards.js` console errors.
+
 ### Still owed
 - Square amount matches the discounted total with a redemption applied
 - A test order end-to-end with redemption applied
@@ -409,9 +417,9 @@ Release   bump style.css → CHANGELOG entry → commit → push
 
 `dist/` is gitignored. ZIPs are built with `git archive --format=zip -o dist/... HEAD -- pepselect-child`.
 
-Current verified release: `dist/pepselect-child-0.20.0-beta.45.zip` · 274,500 bytes · SHA-256 `910bf9abcd01db25b8994df4ad131c88bf01207f04190a231a1a385578ddc1d9`.
+Current verified release: `dist/pepselect-child-0.20.0-beta.46.zip` · 275,005 bytes · SHA-256 `7600b797e92c9c00bea15a279c6f81677672bb35ce78d34cfe0627199d584f02`.
 
-Immediate rollback: `dist/pepselect-child-0.20.0-beta.44.zip` · 274,629 bytes · SHA-256 `9ead955841169d18f5befb626cbc3fc9e0ec659bbd10305d165d9a50a4bf91cb`.
+Immediate rollback: `dist/pepselect-child-0.20.0-beta.45.zip` · 274,500 bytes · SHA-256 `910bf9abcd01db25b8994df4ad131c88bf01207f04190a231a1a385578ddc1d9`.
 
 Deployment is a **manual ZIP upload through WordPress**. Nothing auto-deploys. Live and staging drift — always verify the deployed `style.css` version from production, never assume, and never trust the "Live version" line in `CHANGELOG.md` by itself (it was stale once and caused a wrong call).
 
