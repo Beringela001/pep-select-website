@@ -6,6 +6,10 @@ All notable changes to the Pep Select child theme are documented here.
 
 Previously live: **0.17.0-beta.1**, deployed to production on 2026-07-23.
 
+## 0.20.0-beta.47 - 2026-08-12
+
+- Side cart only: remove Xootix's `Have a Promo Code?` trigger and its matching coupon slider. The full Cart and Checkout coupon fields remain unchanged.
+
 ## 0.20.0-beta.46 - 2026-08-12
 
 - Cart page only: hide YITH's duplicate redemption banner injected above the cart while leaving the separate Pep Select cash-back earnings pill unchanged.

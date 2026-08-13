@@ -423,6 +423,17 @@
 	max-width: 100%;
 }
 
+/*
+ * Coupons belong on the full Cart and Checkout pages, not in the compact
+ * Xootix drawer. Hide both the footer trigger and its matching slider panel;
+ * the selectors are scoped to the side-cart plugin so WooCommerce coupon
+ * controls elsewhere remain untouched.
+ */
+.xoo-wsc-modal .xoo-wsc-ftx-coupon,
+.xoo-wsc-slider-modal .xoo-wsc-sl-coupon {
+	display: none !important;
+}
+
 .pepselect-header__menu-toggle {
 	display: none;
 	padding: 8px;
