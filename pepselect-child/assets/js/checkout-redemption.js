@@ -8,12 +8,10 @@
  * order-summary panel (below the line items, above the totals), matching where
  * the reference checkout places redemption.
  *
- * SAFETY: the value POSTed to YITH stays in points. This applies the customer's
- * full available balance - ywpar_input_points is left at its own server-set
- * maximum (ywpar_points_max) - so no points<->dollars conversion is done on the
- * posted amount. The card's Apply button only triggers YITH's own hidden Apply
- * control, which reads the untouched points field. Remove is YITH's native
- * control in the totals row.
+ * SAFETY: the value POSTed to YITH stays in points. The customer-facing dollar
+ * amount is converted once from YITH's own live points/discount pair, clamped
+ * to YITH's server-set maximum, then written to YITH's native points field.
+ * Apply triggers YITH's own bound control; Max only fills the visible field.
  *
  * The native form is hidden by CSS only while html.pep-redeem-ready is present,
  * which this script adds once it has taken over. If the script fails to run the
@@ -106,7 +104,7 @@
 					'<div class="pep-redeem__controls">' +
 						'<div class="pep-redeem__field">' +
 							'<span class="pep-redeem__prefix" aria-hidden="true">$</span>' +
-							'<input type="number" class="pep-redeem__input" inputmode="decimal" step="0.01" min="' + MINIMUM_DOLLARS + '" aria-label="Cash back amount in dollars" />' +
+							'<input type="text" class="pep-redeem__input" inputmode="decimal" value="0" autocomplete="off" aria-label="Cash back amount in dollars" />' +
 						'</div>' +
 						'<button type="button" class="pep-redeem__btn">Apply</button>' +
 						'<button type="button" class="pep-redeem__max">Max</button>' +
@@ -117,15 +115,42 @@
 
 		var note = row.querySelector( '.pep-redeem__note' );
 		var input = row.querySelector( '.pep-redeem__input' );
+		var applyButton = row.querySelector( '.pep-redeem__btn' );
+		var maxButton = row.querySelector( '.pep-redeem__max' );
 
-		// Apply the requested amount. Max writes the server maximum straight
-		// through, with no conversion round-trip; any other amount goes through
-		// dollarsToPoints once. The field written is always POINTS.
+		function resetNote() {
+			if ( note ) {
+				note.textContent = 'Minimum redemption is $5.00.';
+			}
+		}
+
+		function setBusy( busy ) {
+			var card = row.querySelector( '.pep-redeem' );
+
+			if ( card ) {
+				card.classList.toggle( 'is-loading', busy );
+				card.setAttribute( 'aria-busy', busy ? 'true' : 'false' );
+			}
+
+			if ( applyButton ) {
+				applyButton.disabled = busy;
+			}
+
+			if ( maxButton ) {
+				maxButton.disabled = busy;
+			}
+
+			if ( input ) {
+				input.disabled = busy;
+			}
+		}
+
+		// Apply the requested amount. The field written is always POINTS.
 		//
 		// The redemption is triggered by clicking YITH's own Apply button, which is
 		// what YITH binds its AJAX handler to. A native form submit is not a
 		// substitute: it fires but applies nothing.
-		function apply( useMax ) {
+		function apply() {
 			var form = nativeForm();
 
 			if ( ! form ) {
@@ -140,27 +165,22 @@
 				return;
 			}
 
-			var points;
+			var requested = parseFloat( input ? input.value : '' );
 
-			if ( useMax ) {
-				points = parseInt( pointsMax, 10 ) || 0;
-			} else {
-				var requested = parseFloat( input ? input.value : '' );
-
-				if ( isNaN( requested ) || requested < MINIMUM_DOLLARS ) {
-					if ( note ) {
-						note.textContent = 'Enter ' + money( MINIMUM_DOLLARS ) + ' or more to redeem.';
-					}
-
-					if ( input ) {
-						input.focus();
-					}
-
-					return;
+			if ( isNaN( requested ) || requested < MINIMUM_DOLLARS ) {
+				if ( note ) {
+					note.textContent = 'Enter ' + money( MINIMUM_DOLLARS ) + ' or more to redeem.';
 				}
 
-				points = dollarsToPoints( requested, pointsMax, maxDollars );
+				if ( input ) {
+					input.focus();
+					input.select();
+				}
+
+				return;
 			}
+
+			var points = dollarsToPoints( requested, pointsMax, maxDollars );
 
 			if ( points <= 0 ) {
 				return;
@@ -171,18 +191,59 @@
 			var button = nativeButton();
 
 			if ( button ) {
+				// YITH's AJAX handler is bound to this click. Its native submit fallback
+				// is what produced Chrome's "Leave site?" warning whenever that handler
+				// was late or absent, so keep the click and remove only the navigation.
+				button.type = 'button';
+				setBusy( true );
 				button.click();
+
+				// A successful refresh replaces this card. If YITH returns no refresh,
+				// recover the controls instead of leaving the checkout locked.
+				window.setTimeout( function () {
+					if ( document.documentElement.contains( row ) ) {
+						setBusy( false );
+					}
+				}, 4000 );
 			}
 		}
 
-		row.querySelector( '.pep-redeem__btn' ).addEventListener( 'click', function ( event ) {
+		function fillMaximum() {
+			var form = nativeForm();
+			var maxDollars = form ? ( ( form.querySelector( '[name="ywpar_max_discount"]' ) || {} ).value || '0' ) : '0';
+
+			if ( ! input ) {
+				return;
+			}
+
+			input.value = ( parseFloat( maxDollars ) || 0 ).toFixed( 2 );
+			resetNote();
+			input.focus();
+			input.select();
+		}
+
+		if ( input ) {
+			input.addEventListener( 'focus', function () {
+				input.select();
+			} );
+
+			input.addEventListener( 'input', resetNote );
+
+			input.addEventListener( 'blur', function () {
+				if ( '' === input.value || isNaN( parseFloat( input.value ) ) ) {
+					input.value = '0';
+				}
+			} );
+		}
+
+		applyButton.addEventListener( 'click', function ( event ) {
 			event.preventDefault();
-			apply( false );
+			apply();
 		} );
 
-		row.querySelector( '.pep-redeem__max' ).addEventListener( 'click', function ( event ) {
+		maxButton.addEventListener( 'click', function ( event ) {
 			event.preventDefault();
-			apply( true );
+			fillMaximum();
 		} );
 
 		return row;
@@ -251,13 +312,12 @@
 		}
 
 		card.querySelector( '.pep-redeem__balance' ).textContent =
-			'(YOU HAVE ' + money( maxDiscount ).toUpperCase() + ' \u2014 MIN ' + money( MINIMUM_DOLLARS ) + ')';
+			'(YOU HAVE ' + money( maxDiscount ).toUpperCase() + ')';
 
 		var amountInput = card.querySelector( '.pep-redeem__input' );
 
 		if ( amountInput ) {
 			amountInput.max = maxDiscount;
-			amountInput.placeholder = String( parseFloat( maxDiscount ).toFixed( 2 ) );
 		}
 	}
 
@@ -280,12 +340,10 @@
 	// change), when YITH re-renders and Fluid rebuilds the order review.
 	if ( window.jQuery ) {
 		jQuery( document.body ).on( 'updated_checkout', function () {
-			// Twice: Fluid replaces the review fragment asynchronously, so a single
-			// pass can miss the freshly-rendered applied "Redeem points" row. run()
-			// is idempotent (the card is not duplicated, the relabel is a no-op once
-			// applied).
-			window.setTimeout( run, 80 );
-			window.setTimeout( run, 600 );
+			// Paint the new state immediately. The short fallback covers Fluid's
+			// occasional follow-up fragment swap without the old 600ms visible lag.
+			run();
+			window.setTimeout( run, 120 );
 		} );
 	}
 }() );

@@ -6,6 +6,14 @@ All notable changes to the Pep Select child theme are documented here.
 
 Previously live: **0.17.0-beta.1**, deployed to production on 2026-07-23.
 
+## 0.20.0-beta.35 - 2026-08-12
+
+- Cash-back balance copy now reads only `(YOU HAVE $X.XX)`; the existing minimum-redemption note remains the single place that states the $5.00 floor.
+- The amount control starts at `0`, selects its value on focus, and Max fills the visible field with the live YITH maximum without applying or submitting anything.
+- Apply still uses YITH's bound AJAX click, but its native submit fallback is neutralized so it cannot trigger Chrome's leave-site warning. The controls show an immediate busy state and checkout refresh synchronization runs immediately with only a 120ms fallback.
+- The amount control is one bordered field instead of a bordered input nested inside another bordered field.
+- Applied coupon and cash-back pills now have an explicit vertical list wrapper, so any valid combination stacks one pill per line. Removing cash back rebuilds the redemption card at `0` from the refreshed live balance.
+
 ## 0.20.0-beta.34 - 2026-08-12
 
 - Removes Fluid Checkout's surviving quantity stepper from the order-summary line item at the same id-bearing specificity as Fluid's boxed template. The approved mockup and Orbitrex reference show only the quiet `Qty 2` line and `Remove`; quantity editing remains available through `Edit cart`.

@@ -642,7 +642,7 @@ function pepselect_child_render_applied_pills() {
 		return;
 	}
 
-	echo '<tr class="pepselect-summary-row pepselect-summary-row--pills"><td colspan="2" class="pepselect-panel-cell">';
+	echo '<tr class="pepselect-summary-row pepselect-summary-row--pills"><td colspan="2" class="pepselect-panel-cell"><div class="pepselect-applied-list">';
 
 	foreach ( $groups['discount'] as $code => $coupon ) {
 		$detail = '';
@@ -667,7 +667,7 @@ function pepselect_child_render_applied_pills() {
 		echo '</span>';
 	}
 
-	echo '</td></tr>';
+	echo '</div></td></tr>';
 }
 add_action( 'woocommerce_review_order_after_cart_contents', 'pepselect_child_render_applied_pills', 20 );
 

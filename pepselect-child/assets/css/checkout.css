@@ -2876,6 +2876,21 @@ body.has-fc-design-template--boxed div.woocommerce .fc-wrapper #order_review
 	box-shadow: none !important;
 }
 
+/* The dollar field is one control. The wrapper owns the border; the number
+   input inside it must not paint a second rounded rectangle. */
+.fc-checkout-order-review .pep-redeem__field .pep-redeem__input {
+	padding: 10px 12px 10px 4px !important;
+	border: 0 !important;
+	border-radius: 0 !important;
+	background: transparent !important;
+	box-shadow: none !important;
+}
+
+.fc-checkout-order-review .pep-redeem__field:focus-within {
+	border-color: #17A1CF !important;
+	box-shadow: 0 0 0 2px rgba(23, 161, 207, .16) !important;
+}
+
 /* .row input::placeholder */
 .fc-checkout-order-review .pep-redeem__input::placeholder,
 .fc-checkout-order-review .pepselect-inner-card--coupon input#coupon_code::placeholder {
@@ -2900,12 +2915,27 @@ body.has-fc-design-template--boxed div.woocommerce .fc-wrapper #order_review
 	width: auto !important;
 }
 
+.fc-checkout-order-review .pep-redeem.is-loading .pep-redeem__btn,
+.fc-checkout-order-review .pep-redeem.is-loading .pep-redeem__max {
+	opacity: .62;
+	cursor: wait !important;
+}
+
+/* Each confirmed discount owns a line, so a second coupon and cash back stack
+   vertically instead of competing for horizontal space. */
+.fc-checkout-order-review .pepselect-applied-list {
+	display: flex !important;
+	flex-direction: column !important;
+	align-items: flex-start !important;
+	gap: 4px !important;
+}
+
 /* .applied */
 .fc-checkout-order-review .pepselect-applied {
 	display: inline-flex !important;
 	align-items: center !important;
 	gap: 9px !important;
-	margin-bottom: 4px !important;
+	margin: 0 !important;
 	background: #E8F6FB !important;
 	border: 1px solid #17A1CF !important;
 	border-radius: 999px !important;
