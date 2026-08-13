@@ -28,6 +28,22 @@
 	var host = null;
 	var lastPoints = 0;
 	var scanQueued = false;
+	var CART_COUPON_TOGGLE =
+		'.wp-block-woocommerce-cart-order-summary-coupon-form-block ' +
+		'.wc-block-components-panel__button[aria-expanded="false"]';
+
+	/** Keep the cart's existing Woo coupon form mounted instead of collapsed. */
+	function expandCartCoupon() {
+		if ( ! document.body || ! document.body.classList.contains( 'woocommerce-cart' ) ) {
+			return;
+		}
+
+		var toggle = document.querySelector( CART_COUPON_TOGGLE );
+
+		if ( toggle ) {
+			toggle.click();
+		}
+	}
 
 	function toDollars( points ) {
 		return '$' + ( points / POINTS_PER_DOLLAR ).toFixed( 2 );
@@ -134,11 +150,13 @@
 
 		window.requestAnimationFrame( function () {
 			scanQueued = false;
+			expandCartCoupon();
 			render( capturePoints() );
 		} );
 	}
 
 	function init() {
+		expandCartCoupon();
 		render( capturePoints() );
 
 		if ( window.MutationObserver && document.body ) {

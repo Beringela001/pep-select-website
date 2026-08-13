@@ -326,6 +326,19 @@ button[name="apply_coupon"] {
 	display: none !important;
 }
 
+/* Cart only: YITH injects a second redemption form above the cart after PHP's
+   render_block filter has run. The separate Pep Select earn pill below remains. */
+body.woocommerce-cart .wp-block-yith-par-message-reward-cart_container,
+body.woocommerce-cart .wp-block-yith-par-message-reward-cart.yith-par-message-reward-cart {
+	display: none !important;
+}
+
+/* Cart only: cart-rewards.js keeps Woo's coupon form expanded. Remove only the
+   accordion handle so the existing input and Apply button read as a field. */
+body.woocommerce-cart .wp-block-woocommerce-cart-order-summary-coupon-form-block .wc-block-components-panel__button {
+	display: none !important;
+}
+
 /* Enlarged cash-back pill, horizontally centered above the cart. */
 .pepselect-rewards-note-wrap {
 	display: flex;

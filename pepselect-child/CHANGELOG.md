@@ -6,6 +6,11 @@ All notable changes to the Pep Select child theme are documented here.
 
 Previously live: **0.17.0-beta.1**, deployed to production on 2026-07-23.
 
+## 0.20.0-beta.46 - 2026-08-12
+
+- Cart page only: hide YITH's duplicate redemption banner injected above the cart while leaving the separate Pep Select cash-back earnings pill unchanged.
+- Cart page only: keep WooCommerce Blocks' existing coupon form expanded and hide only its accordion handle, so the coupon input and Apply button are always visible like checkout. Side cart, checkout, totals, products, rewards logic, and all other cart presentation remain unchanged.
+
 ## 0.20.0-beta.45 - 2026-08-12
 
 - Enlarge the shared BAC product thumbnail to 72px in both checkout and the side cart so it fills the height of the card content instead of leaving dead space below the image.
