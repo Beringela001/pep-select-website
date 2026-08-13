@@ -1,8 +1,8 @@
 # Handoff — Pep Select Checkout Architecture
 
 **Written:** 2026-08-12
-**Theme version at handoff:** `0.20.0-beta.47` (repo + built ZIP + Live, verified 2026-08-12).
-**Branch:** `codex/checkout-panel-architecture` · **Latest implementation commit:** `30d3ad5`
+**Theme version at handoff:** `0.20.0-beta.50` (repo + built ZIP + Live, verified 2026-08-12).
+**Branch:** `codex/checkout-panel-architecture` · **Latest implementation commit:** `092a2ac`
 **Theme:** `pepselect-child` (Hello Elementor child)
 **Spec file:** `checkout-panel-pepselect.html` at repo root — 13,366 bytes, SHA-256 `c888fb252d994432915ec5ff803fdbd0c79ca36d16054651d1fe3bb0f990c741`
 
@@ -388,6 +388,15 @@ beta.34 follow-up: the live line item exposed Fluid's editable quantity stepper 
 - Logged-in 390px mobile passed: 370.5px drawer inside the 390px viewport, no horizontal overflow, BAC offer and both footer buttons visible, and no promo trigger or input in the rendered accessibility tree.
 - The full Cart coupon input and Checkout discount-code input remain visible. No product, total, reward, shipping, BAC, Cart coupon, or Checkout coupon behavior was changed.
 
+### Installed beta.50 left-column checkout verification
+
+- The approved right order panel is untouched and remains exactly 420px wide on desktop. The centered desktop wrapper is now 1080px: the customer-details column is 602px, the order-panel column is 428px, and the existing panel itself remains 420px.
+- Contact, Shipping address, Shipping, and Billing address retain Fluid Checkout's native step markup and validation but render as one continuous white card with a soft shadow. The privacy, Research Purpose, and Acknowledgments step remains a separate white card with a 20px gap.
+- Email guidance now reads: `Use the same email for checkout and payment. We’ll send your Square payment link, order confirmation, and tracking updates here.` The city label is `City`, the phone helper is absent, and the shipping-rate heading is `Shipping`.
+- City, State, and ZIP share one row at 600px and wider. At 440px and 390px they stack at full width, followed by Phone. The selected shipping rate uses `#E8F6FB` with the cyan border and selection mark.
+- Live matrix passed at 1440, 1200, 1024, 768, 440, and 390px: joined-card boundaries exact, four detail substeps white, separate-card gap 20px, all right-panel controls present, and no horizontal overflow. Zero checkout console errors.
+- The responsive pass left the test session on USPS Priority Mail: shipping $8.01 and total $174.39.
+
 ### Still owed
 - Square amount matches the discounted total with a redemption applied
 - A test order end-to-end with redemption applied
@@ -424,9 +433,9 @@ Release   bump style.css → CHANGELOG entry → commit → push
 
 `dist/` is gitignored. ZIPs are built with `git archive --format=zip -o dist/... HEAD -- pepselect-child`.
 
-Current verified release: `dist/pepselect-child-0.20.0-beta.47.zip` · 275,234 bytes · SHA-256 `4de7f6da2a3983c1362e3d60858345ea70deac7d3899b022591e32a802cef38d`.
+Current verified release: `dist/pepselect-child-0.20.0-beta.50.zip` · 277,106 bytes · SHA-256 `ba71bd394b28d76f3279f1c774be11bebf71b7e1c9da74f86b5cdd57e5b28371`.
 
-Immediate rollback: `dist/pepselect-child-0.20.0-beta.46.zip` · 275,005 bytes · SHA-256 `7600b797e92c9c00bea15a279c6f81677672bb35ce78d34cfe0627199d584f02`.
+Immediate rollback: `dist/pepselect-child-0.20.0-beta.49.zip` · 276,947 bytes · SHA-256 `ac07c474e986dd3c3cc08bcc0a20a900837bea1066a742a19f034eaf5f7a81c5`.
 
 Deployment is a **manual ZIP upload through WordPress**. Nothing auto-deploys. Live and staging drift — always verify the deployed `style.css` version from production, never assume, and never trust the "Live version" line in `CHANGELOG.md` by itself (it was stale once and caused a wrong call).
 
