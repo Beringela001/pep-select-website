@@ -6,6 +6,11 @@ All notable changes to the Pep Select child theme are documented here.
 
 Previously live: **0.17.0-beta.1**, deployed to production on 2026-07-23.
 
+## 0.20.0-beta.41 - 2026-08-12
+
+- Completes the 1000–1199px tablet layout by removing Fluid's surviving desktop float and 450px width from `.fc-inside` and `.fc-checkout-steps`. On iPad Pro, the checkout fields and the following order card now share the same 800px centered container.
+- The alignment override is limited to 1000–1199px; the already-verified 390/440px phone geometry and 1200px desktop geometry are unchanged.
+
 ## 0.20.0-beta.40 - 2026-08-12
 
 - Treats iPad Pro and other 1000–1199px checkout widths as the stacked tablet flow. Fluid switches to two columns at 1000px but holds the checkout to an 800px wrapper through 1199px, producing a 300px panel with only 242px of usable content at 1024px.

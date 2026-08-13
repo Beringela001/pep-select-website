@@ -3243,3 +3243,16 @@ body.has-fc-design-template--boxed div.woocommerce .fc-wrapper #order_review
 		margin-right: 0 !important;
 	}
 }
+
+/* Fluid has already floated and narrowed .fc-inside once the viewport reaches
+   1000px. While the tablet flow is intentionally stacked, restore that column
+   to the full 800px wrapper so the form and order card share one width. Phone
+   widths keep Fluid's existing edge geometry, which was verified at 390/440. */
+@media (min-width: 1000px) and (max-width: 1199px) {
+	body.woocommerce-checkout .fc-wrapper .fc-inside,
+	body.woocommerce-checkout .fc-wrapper .fc-checkout-steps {
+		float: none !important;
+		width: 100% !important;
+		max-width: 100% !important;
+	}
+}
