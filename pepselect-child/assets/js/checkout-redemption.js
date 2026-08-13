@@ -22,6 +22,7 @@
 
 	// The $5.00 floor YITH enforces server-side, mirrored in the field.
 	var MINIMUM_DOLLARS = 5;
+	var STORAGE_KEY = 'pepselectCashBackState';
 	var redemptionState = null;
 
 	/**
@@ -78,6 +79,18 @@
 
 	function readRedemptionState( form ) {
 		if ( ! form ) {
+			if ( ! redemptionState ) {
+				try {
+					var stored = JSON.parse( window.sessionStorage.getItem( STORAGE_KEY ) || 'null' );
+
+					if ( stored && parseInt( stored.pointsMax, 10 ) > 0 && parseFloat( stored.maxDollars ) > 0 ) {
+						redemptionState = stored;
+					}
+				} catch ( e ) {
+					redemptionState = null;
+				}
+			}
+
 			return redemptionState;
 		}
 
@@ -93,6 +106,13 @@
 				nonce: nonce,
 				rateMethod: rateMethod
 			};
+
+			try {
+				window.sessionStorage.setItem( STORAGE_KEY, JSON.stringify( redemptionState ) );
+			} catch ( e ) {
+				// Private browsing or a storage policy may reject session storage. The
+				// in-memory state still covers ordinary AJAX fragment refreshes.
+			}
 		}
 
 		return redemptionState;

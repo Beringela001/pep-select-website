@@ -6,6 +6,10 @@ All notable changes to the Pep Select child theme are documented here.
 
 Previously live: **0.17.0-beta.1**, deployed to production on 2026-07-23.
 
+## 0.20.0-beta.37 - 2026-08-12
+
+- Makes the beta.36 cash-back reset survive YITH's full checkout refresh by retaining the last server-rendered redemption configuration in browser session storage. Only YITH's points maximum, dollar maximum, rate method, and WordPress nonce are retained; the values are refreshed whenever YITH renders a new native form.
+
 ## 0.20.0-beta.36 - 2026-08-12
 
 - Rebuilds the zeroed cash-back card immediately after removal even when YITH omits its native redemption form from Fluid Checkout's refreshed fragment. The retained values come from YITH's own last server-rendered maximum, rate, and nonce.
