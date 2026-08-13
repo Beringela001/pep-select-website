@@ -1,8 +1,8 @@
 # Handoff — Pep Select Checkout Architecture
 
 **Written:** 2026-08-12
-**Theme version at handoff:** `0.20.0-beta.43` (repo + built ZIP + Live, verified 2026-08-12).
-**Branch:** `codex/checkout-panel-architecture` · **Latest implementation commit:** `88c59f1`
+**Theme version at handoff:** `0.20.0-beta.44` (repo + built ZIP + Live, verified 2026-08-12).
+**Branch:** `codex/checkout-panel-architecture` · **Latest implementation commit:** `727b068`
 **Theme:** `pepselect-child` (Hello Elementor child)
 **Spec file:** `checkout-panel-pepselect.html` at repo root — 13,366 bytes, SHA-256 `c888fb252d994432915ec5ff803fdbd0c79ca36d16054651d1fe3bb0f990c741`
 
@@ -358,6 +358,13 @@ beta.34 follow-up: the live line item exposed Fluid's editable quantity stepper 
 - Live 390px drawer: 371px wide inside the viewport, card 331px wide × 116px high, 52×52px thumbnail, no horizontal overflow. The small height increase is the expected one-line wrap in the narrower drawer.
 - Live interaction passed: add changed the cart from 2 to 3 and suppressed the offer; removing the BAC line returned the cart to 2 and restored the compact offer without a reload. Zero upsell-script console errors.
 
+### Installed beta.44 side-cart spacing and size verification
+
+- The BAC card now has a measured 12px gap before the footer buttons at every tested width instead of sharing an edge with them.
+- Desktop card: 385px wide × 113px high, 18px padding, 56×56px thumbnail. Both footer buttons remain fully visible and the drawer has no horizontal overflow.
+- The phone rule keeps 16px card padding while retaining the 56px thumbnail and slightly larger type. At 390px the card is 331px wide × 137px high, the row stays inside the card, and both buttons remain visible.
+- Live sweep passed at 360, 375, 390, 430, 768, and 1024px: exact 12px card/button gap, no clipping, no horizontal overflow, and no missing buttons. Narrower 360/375px layouts wrap the label and price naturally inside the card rather than shrinking or overflowing them.
+
 ### Still owed
 - Square amount matches the discounted total with a redemption applied
 - A test order end-to-end with redemption applied
@@ -394,9 +401,9 @@ Release   bump style.css → CHANGELOG entry → commit → push
 
 `dist/` is gitignored. ZIPs are built with `git archive --format=zip -o dist/... HEAD -- pepselect-child`.
 
-Current verified release: `dist/pepselect-child-0.20.0-beta.43.zip` · 274,445 bytes · SHA-256 `2588c205b771b8f28480a89b6df87fad6db47ee781c438ebc4e8cf545f980bde`.
+Current verified release: `dist/pepselect-child-0.20.0-beta.44.zip` · 274,629 bytes · SHA-256 `9ead955841169d18f5befb626cbc3fc9e0ec659bbd10305d165d9a50a4bf91cb`.
 
-Immediate rollback: `dist/pepselect-child-0.20.0-beta.42.zip` · 277,790 bytes · SHA-256 `427e9010caa703471aaf8f877473b6299311fcc3543016fad90f66e60683ff77`.
+Immediate rollback: `dist/pepselect-child-0.20.0-beta.43.zip` · 274,445 bytes · SHA-256 `2588c205b771b8f28480a89b6df87fad6db47ee781c438ebc4e8cf545f980bde`.
 
 Deployment is a **manual ZIP upload through WordPress**. Nothing auto-deploys. Live and staging drift — always verify the deployed `style.css` version from production, never assume, and never trust the "Live version" line in `CHANGELOG.md` by itself (it was stale once and caused a wrong call).
 
