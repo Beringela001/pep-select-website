@@ -861,6 +861,18 @@ function pepselect_child_enqueue_checkout_assets() {
 			pepselect_child_asset_version( 'assets/js/checkout-redemption.js' ),
 			true
 		);
+
+		// On mobile, keep the checkout fields first and one fully expanded order
+		// card after them instead of Fluid's duplicate top cart dropdown.
+		if ( is_checkout() && ! ( function_exists( 'is_wc_endpoint_url' ) && is_wc_endpoint_url( 'order-received' ) ) ) {
+			wp_enqueue_script(
+				'pepselect-child-checkout-mobile-order',
+				get_stylesheet_directory_uri() . '/assets/js/checkout-mobile-order.js',
+				array( 'jquery' ),
+				pepselect_child_asset_version( 'assets/js/checkout-mobile-order.js' ),
+				true
+			);
+		}
 	}
 }
 add_action( 'wp_enqueue_scripts', 'pepselect_child_enqueue_checkout_assets', 40 );

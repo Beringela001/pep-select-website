@@ -6,6 +6,13 @@ All notable changes to the Pep Select child theme are documented here.
 
 Previously live: **0.17.0-beta.1**, deployed to production on 2026-07-23.
 
+## 0.20.0-beta.38 - 2026-08-12
+
+- Mobile checkout now follows the Orbitrex reference structure: contact, shipping, billing, and acknowledgments first, followed by one fully expanded order card containing products, discount/cash-back, BAC upsell, totals, payment, and Place order.
+- Moves Fluid Checkout's real `#order_review` node back from its narrow-screen collapsible container into the permanent bottom order card. The node is moved rather than cloned, preserving WooCommerce, YITH, coupon, cart-fragment, and form behavior.
+- Removes the redundant `Your cart — X items` dropdown from the top of the mobile checkout only after the order table is confirmed in the bottom card. If the script cannot complete the move, Fluid's dropdown remains visible as a functional fail-safe.
+- Re-runs the placement after Fluid/WooCommerce fragment refreshes, responsive changes, and structural replacements. Desktop layout is unchanged.
+
 ## 0.20.0-beta.37 - 2026-08-12
 
 - Makes the beta.36 cash-back reset survive YITH's full checkout refresh by retaining the last server-rendered redemption configuration in browser session storage. Only YITH's points maximum, dollar maximum, rate method, and WordPress nonce are retained; the values are refreshed whenever YITH renders a new native form.

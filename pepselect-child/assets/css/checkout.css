@@ -3200,3 +3200,46 @@ body.has-fc-design-template--boxed div.woocommerce .fc-wrapper #order_review
 	letter-spacing: normal !important;
 	text-transform: none !important;
 }
+
+/* =========================================================================
+   M12-19: mobile follows the desktop checkout flow.
+
+   Fluid PRO relocates #order_review into a collapsible cart above the checkout
+   steps below 750px. That splits one desktop order panel into two mobile
+   surfaces: a hidden product/totals dropdown at the top and payment at the
+   bottom. checkout-mobile-order.js moves the real #order_review node back into
+   the bottom card. The success class is the fail-safe gate: the top dropdown is
+   hidden only after that move has actually succeeded.
+   ========================================================================= */
+
+@media (max-width: 749px) {
+	body.woocommerce-checkout.pepselect-mobile-order-review-expanded .fc-wrapper .fc-checkout-order-review-collapsible-wrapper {
+		display: none !important;
+	}
+
+	body.woocommerce-checkout .fc-wrapper .fc-sidebar {
+		float: none !important;
+		clear: both !important;
+		width: 100% !important;
+		max-width: 100% !important;
+		margin: 20px 0 0 !important;
+	}
+
+	body.woocommerce-checkout .fc-wrapper .fc-sidebar .fc-sidebar__inner {
+		width: 100% !important;
+		padding-top: 0 !important;
+	}
+
+	body.woocommerce-checkout.pepselect-mobile-order-review-expanded .fc-sidebar .fc-checkout-order-review,
+	body.woocommerce-checkout.pepselect-mobile-order-review-expanded .fc-sidebar #order_review {
+		display: block !important;
+		width: 100% !important;
+		max-width: 100% !important;
+	}
+
+	body.woocommerce-checkout .fc-sidebar .fc-checkout-order-review {
+		box-sizing: border-box !important;
+		margin-left: 0 !important;
+		margin-right: 0 !important;
+	}
+}
