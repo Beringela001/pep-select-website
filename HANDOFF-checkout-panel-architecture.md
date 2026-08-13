@@ -1,8 +1,8 @@
 # Handoff — Pep Select Checkout Architecture
 
 **Written:** 2026-08-12
-**Theme version at handoff:** `0.20.0-beta.34` (repo + built ZIP + Live, verified 2026-08-12).
-**Branch:** `codex/checkout-panel-architecture` · **Implementation commit:** `e850dd5`
+**Theme version at handoff:** `0.20.0-beta.37` (repo + built ZIP + Live, verified 2026-08-12).
+**Branch:** `codex/checkout-panel-architecture` · **Latest implementation commit:** `c132f3d`
 **Theme:** `pepselect-child` (Hello Elementor child)
 **Spec file:** `checkout-panel-pepselect.html` at repo root — 13,366 bytes, SHA-256 `c888fb252d994432915ec5ff803fdbd0c79ca36d16054651d1fe3bb0f990c741`
 
@@ -311,8 +311,19 @@ beta.34 follow-up: the live line item exposed Fluid's editable quantity stepper 
 - Corrected quantity visibility, 18px gap, and tax label survive both checkout fragment refreshes and a full reload.
 - Browser console: zero errors during install, fragment refresh, and reload verification.
 
+### Installed beta.37 cash-back verification
+
+- Balance copy is `REDEEM CASH BACK (YOU HAVE $11.20)`; the only minimum copy is `Minimum redemption is $5.00.`
+- The dollar control starts at `0`. The wrapper owns the single `1px` border; the input computes to `border: 0`, transparent background, and `0px` radius, so there is no nested field.
+- Focus selects the entire value: typing after focus replaced `11.20` with `7` rather than appending.
+- Max changed `0` to `11.20` without applying a coupon, changing totals, navigating, or opening a dialog.
+- Apply produced the separate `CASH BACK −$11.20 applied` pill and `Cash back −$11.20` total with no leave-site dialog.
+- Applied pills are inside `.pepselect-applied-list`, which computes to `flex-direction: column`; valid combinations stack one pill per line. `WELCOME10` itself remains individual-use, so a simultaneous live coupon/cash-back combination was not forced.
+- Removal immediately marks the pill as processing, removes the cash-back total, and restores the card at `0` with `(YOU HAVE $11.20)` even though YITH omits its native form after the refresh.
+- The restored form was used for a second complete Max → Apply → Remove cycle. This exercises the cached-state fallback and YITH `ywpar_apply_points` endpoint, not only the first native-form path.
+- `WELCOME10` was restored after testing and the checkout ended with one WELCOME10 pill, the redemption card at `0`, and no cash back applied.
+
 ### Still owed
-- Cash back: apply → pill → card hides → × → card returns showing $11.20
 - Square amount matches the discounted total with a redemption applied
 - 390px overflow behaviour
 - A test order end-to-end with redemption applied
@@ -348,6 +359,10 @@ Release   bump style.css → CHANGELOG entry → commit → push
 ```
 
 `dist/` is gitignored. ZIPs are built with `git archive --format=zip -o dist/... HEAD -- pepselect-child`.
+
+Current verified release: `dist/pepselect-child-0.20.0-beta.37.zip` · 269,099 bytes · SHA-256 `17aa0042d682a1ba170d44dc0b9c28c2273eec2d4ece375602e0445ebf677e7e`.
+
+Known-good rollback before this cash-back work: `dist/pepselect-child-0.20.0-beta.34.zip` · 266,924 bytes · SHA-256 `5f65fcd73bd232f63991ced39cc009361bd733965cfb0619e96e2a11c381840e`.
 
 Deployment is **manual ZIP upload by Paulo**. Nothing auto-deploys. Live and staging drift — always verify the deployed `style.css` version by fetching it, never assume, and never trust the "Live version" line in `CHANGELOG.md` (it was stale once and caused a wrong call).
 
