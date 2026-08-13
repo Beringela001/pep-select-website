@@ -6,6 +6,10 @@ All notable changes to the Pep Select child theme are documented here.
 
 Previously live: **0.17.0-beta.1**, deployed to production on 2026-07-23.
 
+## 0.20.0-beta.50 - 2026-08-12
+
+- Finish the selected Shipping state through Fluid Checkout's own checked-option variables, which outrank its high-specificity gray rule without changing any shipping markup or behavior. Center the narrower 1080px desktop checkout wrapper inside Fluid's existing 1140px container.
+
 ## 0.20.0-beta.49 - 2026-08-12
 
 - Complete the beta.48 left-column refinement against Fluid Checkout's live cascade: set City through WooCommerce's locale-aware default-address filter so `Town / City` cannot return, and explicitly replace the selected shipping rate's gray background color with the Pep Select soft blue.

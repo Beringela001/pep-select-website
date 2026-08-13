@@ -3363,6 +3363,13 @@ body.woocommerce-checkout #shipping_phone_field {
 }
 
 /* Selected shipping rates use the Pep Select blue state, not Fluid's gray. */
+body.woocommerce-checkout #shipping_method {
+	--fluidcheckout--option-box--background-color--checked: #E8F6FB;
+	--fluidcheckout--option-box--label-border-color--checked: #17A1CF;
+	--fluidcheckout--option-box--label-color--checked: #002A53;
+	--fluidcheckout--option-box--radio-color--checked: #17A1CF;
+}
+
 body.woocommerce-checkout #shipping_method input.shipping_method:checked + .shipping-method__option-label {
 	border-color: var(--pep-color-cyan, #17A1CF) !important;
 	background-color: #E8F6FB !important;
@@ -3412,6 +3419,8 @@ body.woocommerce-checkout #shipping_method input.shipping_method:checked + .ship
 @media (min-width: 1200px) {
 	body.woocommerce-checkout .fc-wrapper {
 		max-width: 1080px !important;
+		margin-right: auto !important;
+		margin-left: auto !important;
 	}
 
 	body.woocommerce-checkout .fc-wrapper .fc-inside,
