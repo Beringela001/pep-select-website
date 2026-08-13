@@ -3212,7 +3212,7 @@ body.has-fc-design-template--boxed div.woocommerce .fc-wrapper #order_review
    hidden only after that move has actually succeeded.
    ========================================================================= */
 
-@media (max-width: 999px) {
+@media (max-width: 1199px) {
 	body.woocommerce-checkout.pepselect-mobile-order-review-expanded .fc-wrapper .fc-checkout-order-review-collapsible-wrapper {
 		display: none !important;
 	}

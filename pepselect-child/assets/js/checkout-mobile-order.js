@@ -11,9 +11,11 @@
 ( function () {
 	'use strict';
 
-	// Fluid keeps the order review in its narrow-layout collapsible through
-	// 999px; its permanent two-column/sidebar placement begins at 1000px.
-	var mobileQuery = window.matchMedia( '(max-width: 999px)' );
+	// Fluid switches to two columns at 1000px, but keeps the whole checkout at an
+	// 800px wrapper through 1199px. That leaves only 242px inside the correctly
+	// padded order panel on an iPad Pro. The full 1140px wrapper and intended
+	// 420px panel begin at 1200px, so the stacked flow owns everything below it.
+	var mobileQuery = window.matchMedia( '(max-width: 1199px)' );
 	var scheduled = false;
 
 	function syncMobileOrder() {

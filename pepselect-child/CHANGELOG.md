@@ -6,6 +6,11 @@ All notable changes to the Pep Select child theme are documented here.
 
 Previously live: **0.17.0-beta.1**, deployed to production on 2026-07-23.
 
+## 0.20.0-beta.40 - 2026-08-12
+
+- Treats iPad Pro and other 1000–1199px checkout widths as the stacked tablet flow. Fluid switches to two columns at 1000px but holds the checkout to an 800px wrapper through 1199px, producing a 300px panel with only 242px of usable content at 1024px.
+- The complete 420px order panel now follows the checkout fields at those widths. Fluid's full 1140px wrapper begins at 1200px, where the intended desktop panel reaches 420px with 362px of content, so the normal two-column desktop layout resumes there.
+
 ## 0.20.0-beta.39 - 2026-08-12
 
 - Extends the beta.38 expanded mobile order flow through Fluid Checkout's real narrow-layout range, 0–999px. Fluid keeps relocating the order table into the top collapsible at tablet widths even while the body still carries its `two_columns` class; the permanent desktop sidebar behavior begins at 1000px.
