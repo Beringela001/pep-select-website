@@ -1,8 +1,8 @@
 # Handoff — Pep Select Checkout Architecture
 
 **Written:** 2026-08-12
-**Theme version at handoff:** `0.20.0-beta.46` (repo + built ZIP + Live, verified 2026-08-12).
-**Branch:** `codex/checkout-panel-architecture` · **Latest implementation commit:** `4adaacb`
+**Theme version at handoff:** `0.20.0-beta.47` (repo + built ZIP + Live, verified 2026-08-12).
+**Branch:** `codex/checkout-panel-architecture` · **Latest implementation commit:** `30d3ad5`
 **Theme:** `pepselect-child` (Hello Elementor child)
 **Spec file:** `checkout-panel-pepselect.html` at repo root — 13,366 bytes, SHA-256 `c888fb252d994432915ec5ff803fdbd0c79ca36d16054651d1fe3bb0f990c741`
 
@@ -381,6 +381,13 @@ beta.34 follow-up: the live line item exposed Fluid's editable quantity stepper 
 - Desktop and logged-in 390px mobile both passed. Mobile form width is 355px from x=10 to x=365, both controls fit, product count remains one cart line / quantity two, total remains $174.39, and the page has no horizontal overflow.
 - Checkout, side cart, products, totals, shipping, reward earning logic, and coupon application logic were not modified. Zero `cart-rewards.js` console errors.
 
+### Installed beta.47 side-cart coupon removal verification
+
+- Side cart only: Xootix's `.xoo-wsc-ftx-coupon` trigger and matching `.xoo-wsc-sl-coupon` slider compute to `display:none`, so `Have a Promo Code?`, `Apply Coupon`, the promo input, and Submit control are no longer reachable or visible in the drawer.
+- Desktop passed with the existing cart state intact: one GLP-3 R line at quantity two, $174.39 total, BAC offer visible, and View Cart / Checkout buttons visible.
+- Logged-in 390px mobile passed: 370.5px drawer inside the 390px viewport, no horizontal overflow, BAC offer and both footer buttons visible, and no promo trigger or input in the rendered accessibility tree.
+- The full Cart coupon input and Checkout discount-code input remain visible. No product, total, reward, shipping, BAC, Cart coupon, or Checkout coupon behavior was changed.
+
 ### Still owed
 - Square amount matches the discounted total with a redemption applied
 - A test order end-to-end with redemption applied
@@ -417,9 +424,9 @@ Release   bump style.css → CHANGELOG entry → commit → push
 
 `dist/` is gitignored. ZIPs are built with `git archive --format=zip -o dist/... HEAD -- pepselect-child`.
 
-Current verified release: `dist/pepselect-child-0.20.0-beta.46.zip` · 275,005 bytes · SHA-256 `7600b797e92c9c00bea15a279c6f81677672bb35ce78d34cfe0627199d584f02`.
+Current verified release: `dist/pepselect-child-0.20.0-beta.47.zip` · 275,234 bytes · SHA-256 `4de7f6da2a3983c1362e3d60858345ea70deac7d3899b022591e32a802cef38d`.
 
-Immediate rollback: `dist/pepselect-child-0.20.0-beta.45.zip` · 274,500 bytes · SHA-256 `910bf9abcd01db25b8994df4ad131c88bf01207f04190a231a1a385578ddc1d9`.
+Immediate rollback: `dist/pepselect-child-0.20.0-beta.46.zip` · 275,005 bytes · SHA-256 `7600b797e92c9c00bea15a279c6f81677672bb35ce78d34cfe0627199d584f02`.
 
 Deployment is a **manual ZIP upload through WordPress**. Nothing auto-deploys. Live and staging drift — always verify the deployed `style.css` version from production, never assume, and never trust the "Live version" line in `CHANGELOG.md` by itself (it was stale once and caused a wrong call).
 
