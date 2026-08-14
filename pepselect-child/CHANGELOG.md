@@ -6,6 +6,10 @@ All notable changes to the Pep Select child theme are documented here.
 
 Previously live: **0.17.0-beta.1**, deployed to production on 2026-07-23.
 
+## 0.20.1-beta.1 - 2026-08-14
+
+- Remove the word `synthetic` from the Retatrutide, TB-500, and Tirzepatide compound descriptions while preserving product names, SKUs, COA relationships, and commerce behavior.
+
 ## 0.20.0 - 2026-08-12
 
 - Promote the completed 0.20 checkout work from beta to the stable `0.20.0` release.
