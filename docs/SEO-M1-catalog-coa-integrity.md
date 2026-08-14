@@ -1,15 +1,16 @@
 # SEO Milestone 1 — Catalog, COA, and URL Integrity
 
-Status: catalog correction complete; COA 0.6.4 remains staging-only  
+Status: final — verified, documented, and backed up  
 Checkpoint date: 2026-08-14  
 Live deployment: GLP-2T catalog correction published by Paulo's explicit request; COA plugin not deployed live
 
 ## Completed on staging
 
 - Created Kinsta backup `Before Milestone 1 catalog COA SEO integrity - 2026-08-14` after deleting only the oldest backup at the bottom of the full list.
+- Created the final live recovery checkpoint `SEO Milestone 1 final - 2026-08-14` after all catalog and metadata corrections. Live manual-backup capacity is now 5/5.
 - Paulo confirmed GLP-2T is 20mg. Corrected product ID 543 across OPS, staging, and live to SKU `GLP2T20`, slug `glp2-t20`, and tag `20mg`.
 - Corrected Glutathione product tag from 10mg to 600mg. SKU remains `GLUTA600`.
-- Verified all 15 WooCommerce products against catalog names, SKUs, tags, images, image alt text, prices/stock source, and public product routes.
+- Verified all 16 WooCommerce product routes against catalog names, SKUs, tags, images, image alt text, prices/stock source, and public product routes.
 - Verified OPS identifies GLP-2T as 20mg and Glutathione as 600mg; neither has a tested lot. No COA record was invented or connected.
 - Verified published failed COA batches remain visible in the public archive as Not Released and remain excluded from Current status and product carousels.
 - Installed and activated Pep Select COA Archive 0.6.4 on staging.
@@ -19,8 +20,9 @@ Live deployment: GLP-2T catalog correction published by Paulo's explicit request
 
 ## Verification
 
-- All 15 product URLs returned 200 with Product and Offer schema, no fatal errors, and no remaining `synthetic` wording.
+- All 16 product URLs returned 200 with Product and Offer schema, no fatal errors, and no remaining `synthetic` wording.
 - GLP-2T now exposes the 20mg tag, SKU `GLP2T20`, and existing `TZ20F` image with alt text `Pep Select GLP-2T 20 mg vial`; Glutathione exposes the 600mg tag.
+- GLP-2T's Yoast title and meta description now say 20mg on staging and live; the public live response contains no remaining `GLP-2T 30mg` metadata.
 - On live and staging, `/product/glp2-t20/` returns 200 and the previous `/product/glp2-t30/` route returns 301 to the corrected URL.
 - COA Product Matching shows GLP-2T as `GLP2T20`, product ID 543, 20 mg, and Not Included on live and staging.
 - The testing sitemap contains 18 public routes; all returned 200 with factual meta descriptions, WebPage/CollectionPage schema, breadcrumb schema, and no fatal errors.
