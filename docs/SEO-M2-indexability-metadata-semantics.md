@@ -48,3 +48,7 @@ Give every indexable Pep Select URL one clear search identity and one semantic p
 - No pricing, inventory, SKU, customer, order, checkout, payment, shipping, rewards, VerifyPass, or OPS business logic was changed.
 - No COA batch identity, result, status, or product relationship was changed.
 - COA Archive 0.6.4 remains staging-only until separately approved for live deployment.
+
+## Next milestone
+
+- SEO Milestone 3 is prepared in `docs/SEO-M3-catalog-schema-internal-discovery.md` for a staging-first kickoff.
