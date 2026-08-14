@@ -1,58 +1,50 @@
 # SEO Milestone 2 — Indexability, Metadata, and Semantic Structure
 
-Status: in progress — baseline crawl complete  
-Kickoff date: 2026-08-14  
-Deployment boundary: staging first; live requires a separate explicit deployment approval
+Status: final — deployed, crawled, and backed up  
+Completion date: 2026-08-14  
+Deployment approval: Paulo approved completion and live deployment after staging verification
 
 ## Goal
 
-Give every indexable Pep Select URL one clear search identity and one semantic page heading, then provide Google with a clean, stable sitemap and verifiable crawl path. This milestone does not rewrite landing-page body copy.
+Give every indexable Pep Select URL one clear search identity and one semantic page heading, then provide Google with a clean, stable sitemap and verifiable crawl path. This milestone did not rewrite landing-page body copy.
 
-## Baseline completed
+## Completed
 
-- Google Search Console accepted `https://pepselect.com/sitemap_index.xml` on 2026-08-14 with status Success and 59 discovered pages. The Page indexing report is still processing.
-- Search Console has insufficient 90-day field data for both mobile and desktop Core Web Vitals, so laboratory and browser measurements will be used until field data exists.
-- The current sitemap index contains six child sitemaps and 44 unique live URLs: 10 pages, 9 compound routes, 9 COA test routes, 16 products, and 1 product category.
-- All 44 live sitemap URLs return 200, expose a canonical matching the final URL, have unique titles, avoid `noindex`, and contain no remaining `synthetic` wording.
-- No duplicate title or duplicate meta-description groups were found.
-- Ten live URLs lack meta descriptions: RUO Disclaimer, Terms & Conditions, Refund & Shipping Policy, Privacy Policy, About Us, Track Your Order, FAQ, Contact, Military Discount, and the Research Compounds product category.
-- The live templates currently expose no true H1 across the 44 sitemap URLs.
-- Representative staging checks show exactly one H1 on GLP-2T, FAQ, Shop, and the COA archive. This points to a live/staging template-version difference rather than 44 separate content defects.
+- Created staging backup `Before SEO Milestone 2 implementation - 2026-08-14` after deleting only the oldest manual backup at the bottom of the full list.
+- Created live backup `Before SEO Milestone 2 live deployment - 2026-08-14` after deleting only the oldest manual backup, `New cart`, at the bottom of the full list.
+- Corrected the original truncated crawl result with an exact-body crawl. The live sitemap contains 45 unique URLs, not 44: 10 pages, 9 compound routes, 9 COA test routes, 16 products, and 1 product category.
+- Confirmed 44 of the 45 URLs already had exactly one H1. Promoted only the existing About Us hero from H2 to H1 without changing its visible words or styling.
+- Added factual Yoast meta descriptions to About Us, Contact, FAQ, Military Discount, Privacy Policy, Refund & Shipping Policy, RUO Disclaimer, Terms & Conditions, Track Your Order, and the Research Compounds product category.
+- Gave the Research Compounds category a distinct title and description so it no longer duplicates the Shop page's search snippet.
+- Deployed child theme `0.20.1-beta.2`, which includes the About Us semantic correction and the previously approved removal of `synthetic` from Retatrutide and TB-500 descriptions.
+- Cleared staging and live caches after deployment.
 
-## Work packages
+## Verification
 
-### 1. Shared semantic-heading release
+- The complete staging crawl checked all 45 live-sitemap paths against staging: 45 returned 200, 45 had exactly one H1, and none contained `synthetic` or stale `GLP-2T 30mg` wording.
+- The final live crawl checked all 45 sitemap URLs: 45 returned 200, 45 had exactly one H1, 45 had a title and meta description, and 45 had a self-referencing canonical.
+- The final live crawl found zero duplicate titles and zero duplicate meta descriptions.
+- No live sitemap URL contains `noindex`, a stale `www` canonical, `synthetic`, or stale GLP-2T 30mg metadata.
+- Shop, cart, checkout, account, testing archive, and the printed-QR NAD500 COA destination returned without fatal errors during staging and final live smoke checks.
+- `www.pepselect.com` still returns 301 to the non-www canonical host. The printed NAD500 QR route still returns 301 to its intended batch page, and the previous GLP-2T 30mg route still returns 301 to the corrected 20mg product.
+- Staging remains intentionally `noindex, nofollow`; live remains indexable.
+- No staging database was pushed to live. Live orders, customers, inventory, SKUs, prices, payments, rewards, VerifyPass, OPS, and COA records were not overwritten.
 
-- Trace the exact child-theme and plugin versions responsible for product, standard-page, archive, and COA headings.
-- Verify one truthful H1 per indexable template on staging without changing visual hierarchy or commerce behavior.
-- Regression-test desktop/mobile product, Shop, FAQ, legal, contact, tracking, military, compound, and COA routes.
-- Package and document only the required shared release; do not promote unrelated staging work.
+## Search Console
 
-### 2. Missing search descriptions
+- Google Search Console accepted `https://pepselect.com/sitemap_index.xml` on 2026-08-14 with status Success and 59 discovered pages.
+- The Page indexing report was still processing at completion, and Core Web Vitals did not yet have enough 90-day field data.
+- Search Console's discovered-page count is historical and refreshes on Google's schedule. The exact live sitemap emitted 45 unique current URLs at completion; no forced resubmission was required because the submitted sitemap remains successful.
 
-- Add factual, compliant Yoast meta descriptions to the ten identified URLs.
-- Keep legal descriptions descriptive rather than promotional.
-- Do not change visible landing-page copy, policies, product claims, prices, stock, or availability.
+## Release artifact
 
-### 3. Sitemap and indexing reconciliation
-
-- Re-crawl all child sitemaps after staging changes.
-- Reconcile Search Console's current 59 discovered-page count with the 44 unique URLs presently emitted by the sitemap.
-- Confirm removed and redirected URLs are absent from the sitemap and resolve with the intended 301 behavior.
-- After an approved live deployment, clear caches, verify canonical/title/description/H1/schema output, and allow Search Console time to refresh.
-
-## Acceptance criteria
-
-- Every intended indexable sitemap URL returns 200 and has one self-referencing canonical.
-- Every intended indexable page has one meaningful H1 in rendered HTML.
-- Every sitemap URL has a unique, factual title and meta description appropriate to its template.
-- No indexable sitemap URL contains `noindex`, stale `www` canonicals, stale GLP-2T 30mg metadata, or `synthetic` wording.
-- Product, checkout, payments, inventory, orders, rewards, VerifyPass, OPS, and COA records remain unchanged.
-- Staging regression checks pass before any live deployment request.
+- Package: `dist/pepselect-child-0.20.1-beta.2.zip`
+- SHA-256: `B5A75F3CCD89672B8D4F7386453B5D5A272F85306B1DEBF294E806DE25C6B2E1`
+- Archive validation: one top-level `pepselect-child/` folder with forward-slash paths and the new `inc/seo-semantics.php` file.
 
 ## Preserved boundaries
 
-- No landing-page body copy rewrite.
-- No pricing, inventory, SKU, customer, order, checkout, payment, shipping, rewards, VerifyPass, or OPS business-logic changes.
-- No COA batch identity, result, status, or product relationship changes.
+- No landing-page body copy was changed.
+- No pricing, inventory, SKU, customer, order, checkout, payment, shipping, rewards, VerifyPass, or OPS business logic was changed.
+- No COA batch identity, result, status, or product relationship was changed.
 - COA Archive 0.6.4 remains staging-only until separately approved for live deployment.

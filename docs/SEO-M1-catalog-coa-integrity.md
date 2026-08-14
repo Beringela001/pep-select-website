@@ -20,7 +20,7 @@ Live deployment: GLP-2T catalog correction published by Paulo's explicit request
 
 ## Verification
 
-- All 16 product URLs returned 200 with Product and Offer schema, no fatal errors, and no remaining `synthetic` wording.
+- All 16 product URLs returned 200 with Product and Offer schema and no fatal errors. The approved `synthetic` wording cleanup was subsequently deployed and live-verified in SEO Milestone 2 with child theme 0.20.1-beta.2.
 - GLP-2T now exposes the 20mg tag, SKU `GLP2T20`, and existing `TZ20F` image with alt text `Pep Select GLP-2T 20 mg vial`; Glutathione exposes the 600mg tag.
 - GLP-2T's Yoast title and meta description now say 20mg on staging and live; the public live response contains no remaining `GLP-2T 30mg` metadata.
 - On live and staging, `/product/glp2-t20/` returns 200 and the previous `/product/glp2-t30/` route returns 301 to the corrected URL.

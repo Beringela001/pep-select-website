@@ -2,9 +2,13 @@
 
 All notable changes to the Pep Select child theme are documented here.
 
-**Live version: 0.20.0** — installed and verified 2026-08-12 from the production checkout and WordPress theme replacement result. Treat this line as a dated summary; verify the deployed `style.css` before answering what is live.
+**Live version: 0.20.1-beta.2** — installed and verified 2026-08-14 through the public SEO crawl and WordPress theme replacement result. Treat this line as a dated summary; verify the deployed `style.css` before answering what is live.
 
 Previously live: **0.17.0-beta.1**, deployed to production on 2026-07-23.
+
+## 0.20.1-beta.2 - 2026-08-14
+
+- Promote the existing About Us hero heading from H2 to H1 in server-rendered output without changing its visible copy or styling.
 
 ## 0.20.1-beta.1 - 2026-08-14
 
