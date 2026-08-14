@@ -57,7 +57,7 @@ function pepselect_child_compound_library() {
 			),
 		),
 		'glp-3 r' => array(
-			'description' => __( 'Retatrutide is a synthetic peptide studied as a triple receptor agonist, engineered to engage the GLP-1, GIP, and glucagon receptors. It is researched for the structural basis of its simultaneous activity across all three receptors.', 'pepselect-child' ),
+			'description' => __( 'Retatrutide is a peptide studied as a triple receptor agonist, engineered to engage the GLP-1, GIP, and glucagon receptors. It is researched for the structural basis of its simultaneous activity across all three receptors.', 'pepselect-child' ),
 			'specs'       => array( 'CAS' => '2381089-83-2', 'Formula' => 'C221H342N46O68', 'Form' => 'Lyophilized powder' ),
 			'context'     => array(
 				array( 'text' => __( 'Studied for metabolic regulation through triple-hormone signaling', 'pepselect-child' ), 'ref' => 1 ),
@@ -136,7 +136,7 @@ function pepselect_child_compound_library() {
 			),
 		),
 		'tb-500' => array(
-			'description' => __( 'TB-500 is a synthetic peptide derived from thymosin beta-4 studied as an actin-sequestering molecule. It is researched for its role in regulating actin filament assembly and cell motility.', 'pepselect-child' ),
+			'description' => __( 'TB-500 is a peptide derived from thymosin beta-4 studied as an actin-sequestering molecule. It is researched for its role in regulating actin filament assembly and cell motility.', 'pepselect-child' ),
 			'specs'       => array( 'CAS' => '[SUPPLY FROM COA]', 'Formula' => '[SUPPLY FROM COA]', 'Form' => 'Lyophilized powder' ),
 			'context'     => array(
 				array( 'text' => __( 'Studied for its role in cell movement and repair signaling', 'pepselect-child' ), 'ref' => 1 ),
@@ -150,7 +150,7 @@ function pepselect_child_compound_library() {
 			),
 		),
 		'glp-2 t' => array(
-			'description' => __( 'Tirzepatide is a synthetic peptide studied as a dual receptor agonist engaging both the GIP and GLP-1 receptors. It is researched for the structural basis of its balanced activity across the two incretin receptors.', 'pepselect-child' ),
+			'description' => __( 'Tirzepatide is a peptide studied as a dual receptor agonist engaging both the GIP and GLP-1 receptors. It is researched for the structural basis of its balanced activity across the two incretin receptors.', 'pepselect-child' ),
 			'specs'       => array( 'CAS' => '2023788-19-2', 'Formula' => 'C225H348N48O68', 'Form' => 'Lyophilized powder' ),
 			'context'     => array(
 				array( 'text' => __( 'Studied for dual-incretin metabolic regulation', 'pepselect-child' ), 'ref' => 1 ),

@@ -27,7 +27,7 @@ SOURCES:
 
 ═══════════════════════════════════════════
 ## 3. GLP-3 R (Retatrutide) — CAS 2381089-83-2 · C₂₂₁H₃₄₂N₄₆O₆₈ · Lyophilized powder
-DESCRIPTION: Retatrutide is a synthetic peptide studied as a triple receptor agonist, engineered to engage the GLP-1, GIP, and glucagon receptors. It is researched for the structural basis of its simultaneous activity across all three receptors.
+DESCRIPTION: Retatrutide is a peptide studied as a triple receptor agonist, engineered to engage the GLP-1, GIP, and glucagon receptors. It is researched for the structural basis of its simultaneous activity across all three receptors.
 RESEARCH CONTEXT:
 - Studied for simultaneous GLP-1, GIP, and glucagon receptor agonism¹
 - Researched for the structural basis of triple receptor engagement²
@@ -93,7 +93,7 @@ SOURCES: [single confirmed source — thin, consider sourcing more at M9]
 
 ═══════════════════════════════════════════
 ## 9. TB-500 — CAS [PENDING COA] · Formula [PENDING COA] · Lyophilized powder
-DESCRIPTION: TB-500 is a synthetic peptide derived from thymosin beta-4 studied as an actin-sequestering molecule. It is researched for its role in regulating actin filament assembly and cell motility.
+DESCRIPTION: TB-500 is a peptide derived from thymosin beta-4 studied as an actin-sequestering molecule. It is researched for its role in regulating actin filament assembly and cell motility.
 RESEARCH CONTEXT:
 - Studied as an actin-sequestering molecule¹
 - Researched for inhibition of actin polymerization²
@@ -106,7 +106,7 @@ NOTE: CAS/formula pending — sheet's 77591-33-4 / C212... are FULL-LENGTH Tβ4,
 
 ═══════════════════════════════════════════
 ## 10. GLP-2 T (Tirzepatide) — CAS 2023788-19-2 · C₂₂₅H₃₄₈N₄₈O₆₈ · Lyophilized powder
-DESCRIPTION: Tirzepatide is a synthetic peptide studied as a dual receptor agonist engaging both the GIP and GLP-1 receptors. It is researched for the structural basis of its balanced activity across the two incretin receptors.
+DESCRIPTION: Tirzepatide is a peptide studied as a dual receptor agonist engaging both the GIP and GLP-1 receptors. It is researched for the structural basis of its balanced activity across the two incretin receptors.
 RESEARCH CONTEXT:
 - Studied as a dual GIP/GLP-1 receptor agonist¹
 - Researched for the structural basis of dual incretin receptor agonism²
