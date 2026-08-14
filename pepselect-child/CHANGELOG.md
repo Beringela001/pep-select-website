@@ -1,5 +1,16 @@
 # Changelog
 
+**Staging candidate: 0.21.0-beta.1** — SEO Milestone 3 catalog consolidation and structured-data release.
+
+## 0.21.0-beta.1 - 2026-08-14
+
+- Consolidate the duplicate Research Compounds archive into the canonical Shop route with a permanent redirect that preserves query parameters.
+- Remove the redirected category term from Yoast XML sitemaps and force the coded Compounds navigation item to the WooCommerce Shop URL.
+- Replace generic product-schema descriptions with the approved description visible on each coded product page; omit descriptions where no visible source exists.
+- Remove WooCommerce's assumed year-end price-validity values unless a real scheduled-sale end date exists.
+- Repair stale Yoast product URLs after catalog slug changes, add the truthful Pep Select brand, and connect a minimal OnlineStore entity to the WebSite graph.
+- Add About us to the crawlable global footer navigation without changing page copy.
+
 All notable changes to the Pep Select child theme are documented here.
 
 **Live version: 0.20.1-beta.2** — installed and verified 2026-08-14 through the public SEO crawl and WordPress theme replacement result. Treat this line as a dated summary; verify the deployed `style.css` before answering what is live.

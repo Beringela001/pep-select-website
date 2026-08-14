@@ -162,6 +162,7 @@ function pepselect_child_get_track_order_url() {
 function pepselect_child_get_footer_link_groups() {
 	return array(
 		__( 'Support', 'pepselect-child' ) => array(
+			array( 'label' => __( 'About us', 'pepselect-child' ), 'url' => pepselect_child_get_page_url( 'about-us' ) ),
 			array( 'label' => __( 'Contact us', 'pepselect-child' ), 'url' => pepselect_child_get_page_url( 'contact' ) ),
 			array( 'label' => __( 'FAQ', 'pepselect-child' ), 'url' => pepselect_child_get_faq_url() ),
 			array( 'label' => __( 'Certificate of Analysis', 'pepselect-child' ), 'url' => home_url( '/testing/' ) ),

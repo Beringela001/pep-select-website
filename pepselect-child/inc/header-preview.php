@@ -558,8 +558,8 @@ function pepselect_child_get_header_navigation_items() {
 		$matched_item = isset( $matches[ $key ] ) ? $matches[ $key ] : null;
 		$menu_url     = $matched_item instanceof WP_Post ? pepselect_child_normalize_internal_menu_url( $matched_item->url ) : '';
 
-		// The canonical COA Archive route always overrides obsolete menu destinations.
-		$url = 'coas' === $key || '' === $menu_url ? $definition['fallback'] : $menu_url;
+		// Canonical Shop and COA routes override obsolete menu destinations.
+		$url = in_array( $key, array( 'compounds', 'coas' ), true ) || '' === $menu_url ? $definition['fallback'] : $menu_url;
 
 		$current_source = 'coas' === $key ? null : $matched_item;
 
