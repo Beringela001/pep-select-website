@@ -9,13 +9,13 @@ Storefront and plugin work items. Ops-app milestones live in the ops repo
 
 ### COA Archive plugin — failed batches do not render on the public /testing/ archive
 
-**Status:** open · **Priority:** high (transparency commitment)
+**Status:** resolved in COA Archive 0.5.6; staging re-verified 2026-08-14 · **Priority:** closed
 
-Failed-status batches are marked Published but never appear on the public archive page.
+Failed-status batches now appear on the public archive page while remaining excluded from Current status and product carousels.
 
-- **Example:** NAD+ batch `PSNAD562926JP`, tested by ILS Labs, status **Failed**, marked **Published** — absent from the public page.
-- **Expected:** per the transparency decision, failed batches **must** publish with a clear "failed — not offered for sale" status. Publishing a failure is a deliberate brand signal, not an edge case.
-- **Investigate:** why failed-status batches are filtered out of the public archive query/render path, and surface them with the failed state displayed distinctly.
+- **Verified:** NAD+ batch `PSNAD562926JP` and Retatrutide 20mg batch `PSRT2062926JP` render on the staging archive as **Not Released**.
+- **Preserved:** failed batches do not become Current and do not appear in product COA carousels.
+- **Resolution:** COA Archive 0.5.6 made lone-failure compounds visible regardless of the retired design toggle.
 
 Related: ops design doc §13 "COA publishing (R4)" — `pass_status` is genuinely variable, and the archive is required to render passed and failed states distinctly.
 

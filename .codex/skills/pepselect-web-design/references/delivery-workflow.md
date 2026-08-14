@@ -11,6 +11,7 @@
 
 1. Confirm staging environment.
 2. Create a named Kinsta manual backup.
+   - If manual backup capacity is full on Staging or Live, delete only the oldest backup at the bottom of the list, then create the newest named backup.
 3. Confirm the correct local repository.
 4. Inspect Git status and current branch.
 5. Export critical Elementor templates when they are in scope.
