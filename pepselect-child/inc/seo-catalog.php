@@ -81,6 +81,75 @@ function pepselect_child_exclude_product_category_sitemap( $excluded, $taxonomy 
 add_filter( 'wpseo_sitemap_exclude_taxonomy', 'pepselect_child_exclude_product_category_sitemap', 20, 2 );
 
 /**
+ * Remove the standard post sitemap while the site has no published posts.
+ *
+ * The exclusion is deliberately data-aware: publishing the first post makes
+ * the sitemap available again without requiring a theme release.
+ *
+ * @param bool   $excluded Whether the post type is excluded.
+ * @param string $post_type Post type name.
+ * @return bool
+ */
+function pepselect_child_exclude_empty_post_sitemap( $excluded, $post_type ) {
+	if ( 'post' !== $post_type ) {
+		return $excluded;
+	}
+
+	$counts = wp_count_posts( 'post' );
+
+	return ! $counts || empty( $counts->publish );
+}
+add_filter( 'wpseo_sitemap_exclude_post_type', 'pepselect_child_exclude_empty_post_sitemap', 20, 2 );
+
+/**
+ * Keep the WooCommerce Shop archive in one sitemap only.
+ *
+ * Yoast includes the Shop archive in the product sitemap. Excluding the same
+ * WordPress page from the page sitemap removes a duplicate discovery signal
+ * without changing the Shop URL, template, canonical, or commerce behavior.
+ *
+ * @param int[] $excluded_post_ids Existing excluded post IDs.
+ * @return int[]
+ */
+function pepselect_child_exclude_shop_page_from_page_sitemap( $excluded_post_ids ) {
+	$shop_page_id = absint( get_option( 'woocommerce_shop_page_id' ) );
+
+	if ( $shop_page_id ) {
+		$excluded_post_ids[] = $shop_page_id;
+	}
+
+	return array_values( array_unique( array_map( 'absint', $excluded_post_ids ) ) );
+}
+add_filter( 'wpseo_exclude_from_sitemap_by_post_ids', 'pepselect_child_exclude_shop_page_from_page_sitemap', 20 );
+
+/**
+ * Give the homepage and Shop page clear, page-specific search titles.
+ *
+ * These filters change document and social metadata only. They do not alter
+ * the visible Elementor headings or landing-page copy.
+ *
+ * @param string $title Existing document or social title.
+ * @return string
+ */
+function pepselect_child_filter_catalog_page_seo_title( $title ) {
+	$site = get_bloginfo( 'name' ) ?: 'Pep Select';
+
+	if ( is_front_page() ) {
+		return sprintf( __( 'Research Peptides with Batch-Matched Lab Reports | %s', 'pepselect-child' ), $site );
+	}
+
+	if ( function_exists( 'is_shop' ) && is_shop() ) {
+		return sprintf( __( 'Shop Research Peptides & Compounds | %s', 'pepselect-child' ), $site );
+	}
+
+	return $title;
+}
+add_filter( 'pre_get_document_title', 'pepselect_child_filter_catalog_page_seo_title', 20 );
+add_filter( 'wpseo_title', 'pepselect_child_filter_catalog_page_seo_title', 20 );
+add_filter( 'wpseo_opengraph_title', 'pepselect_child_filter_catalog_page_seo_title', 20 );
+add_filter( 'wpseo_twitter_title', 'pepselect_child_filter_catalog_page_seo_title', 20 );
+
+/**
  * Return the product identity customers can see: name plus strength when set.
  *
  * @param WC_Product $product Product instance.
@@ -144,8 +213,11 @@ function pepselect_child_filter_product_seo_title( $title ) {
 	$product  = wc_get_product( get_queried_object_id() );
 	$identity = pepselect_child_get_product_search_identity( $product );
 
-	return '' !== $identity ? $identity . ' - ' . get_bloginfo( 'name' ) : $title;
+	$site = get_bloginfo( 'name' ) ?: 'Pep Select';
+
+	return '' !== $identity ? sprintf( __( '%1$s for Research | %2$s', 'pepselect-child' ), $identity, $site ) : $title;
 }
+add_filter( 'pre_get_document_title', 'pepselect_child_filter_product_seo_title', 20 );
 add_filter( 'wpseo_title', 'pepselect_child_filter_product_seo_title', 20 );
 add_filter( 'wpseo_opengraph_title', 'pepselect_child_filter_product_seo_title', 20 );
 add_filter( 'wpseo_twitter_title', 'pepselect_child_filter_product_seo_title', 20 );

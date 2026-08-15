@@ -1,6 +1,16 @@
 # Changelog
 
-**Staging candidate: 0.23.0-beta.1** — Merchant schema and homepage performance.
+**Staging candidate: 0.24.0-beta.1** — Quality Archive authority and crawl consolidation.
+
+## 0.24.0-beta.1 - 2026-08-15
+
+- Remove the standard post sitemap only while there are no published posts; it returns automatically when the first post is published.
+- Keep the WooCommerce Shop archive in the product sitemap and remove its duplicate entry from the page sitemap.
+- Give the homepage, Shop, and each product/strength a page-specific HTML and social title built around research-peptide discovery and visible product identity.
+- Keep the visible landing-page and product copy, current social image, URLs, and canonicals unchanged.
+- Leave the Shop URL, canonical, template, products, SKUs, COA records, and commerce behavior unchanged.
+
+**Previous staging candidate: 0.23.0-beta.1** — Merchant schema and homepage performance.
 
 ## 0.23.0-beta.1 - 2026-08-15
 
