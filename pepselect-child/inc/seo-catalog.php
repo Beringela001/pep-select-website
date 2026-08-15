@@ -179,6 +179,32 @@ add_filter( 'wpseo_opengraph_desc', 'pepselect_child_filter_product_seo_descript
 add_filter( 'wpseo_twitter_description', 'pepselect_child_filter_product_seo_description', 20 );
 
 /**
+ * Suppress the obsolete generic product excerpt on single-product requests.
+ *
+ * The excerpt is already absent from the visible product summary, but a legacy
+ * metadata callback can otherwise emit it as a second meta description.
+ *
+ * @param string       $excerpt Product excerpt.
+ * @param WP_Post|null $post    Post object when provided by WordPress.
+ * @return string
+ */
+function pepselect_child_suppress_generic_product_excerpt( $excerpt, $post = null ) {
+	if ( ! function_exists( 'is_product' ) || ! is_product() ) {
+		return $excerpt;
+	}
+
+	if ( $post instanceof WP_Post && (int) $post->ID !== (int) get_queried_object_id() ) {
+		return $excerpt;
+	}
+
+	$normalized = strtolower( trim( preg_replace( '/\s+/', ' ', wp_strip_all_tags( (string) $excerpt ) ) ) );
+
+	return 'high-purity research peptide' === $normalized ? '' : $excerpt;
+}
+add_filter( 'get_the_excerpt', 'pepselect_child_suppress_generic_product_excerpt', 20, 2 );
+add_filter( 'woocommerce_short_description', 'pepselect_child_suppress_generic_product_excerpt', 20, 2 );
+
+/**
  * Keep product canonical and social URLs on the current WooCommerce permalink.
  *
  * @param string $url Yoast URL value.
