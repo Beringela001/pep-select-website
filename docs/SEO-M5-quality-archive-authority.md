@@ -1,5 +1,9 @@
 # SEO Milestone 5 — Quality Archive Authority and Crawl Consolidation
 
+**Status:** final — deployed and verified on Live on 2026-08-15.
+
+**Live release:** `pepselect-child` `0.25.0-beta.4` and `pepselect-coa-archive` `0.7.0`.
+
 ## Outcome
 
 Help search systems understand that Pep Select publishes batch-specific laboratory records, while removing duplicate and empty sitemap signals. This milestone changes technical search metadata only. It does not rewrite the homepage or other visible landing-page copy.
@@ -125,4 +129,4 @@ The same formula must appear in the HTML title, Open Graph title, and Twitter ti
 
 ## Acceptance gate
 
-Milestone 5 is ready for live consideration only after both the child-theme sitemap changes and COA-plugin dataset semantics pass staging validation together. A partial package is not a live candidate.
+Milestone 5 passed staging validation and was promoted as the complete child-theme and COA-plugin release. Live verification confirmed the approved homepage title and Open Graph title, canonical URL, Quality Archive link, Tesamorelin batch-matching education banner, and batch-specific COA Dataset semantics. The release did not change WooCommerce products, SKUs, prices, stock, orders, customers, checkout, payments, shipping, rewards, VerifyPass, or OPS records.
