@@ -1,6 +1,10 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.3** — Milestone 5 plus Tesamorelin batch-matching education.
+**Release candidate: 0.25.0-beta.4** — Milestone 5 plus Tesamorelin batch-matching education.
+
+## 0.25.0-beta.4 - 2026-08-15
+
+- Lowers the mobile-only `Compound + strength` callout from `bottom: 18%` to `bottom: 10%`, keeping the Tesamorelin `10 mg` label unobstructed without changing desktop.
 
 ## 0.25.0-beta.3 - 2026-08-15
 
