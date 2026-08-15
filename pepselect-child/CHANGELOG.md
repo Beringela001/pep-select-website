@@ -1,6 +1,11 @@
 # Changelog
 
-**Staging candidate: 0.21.0-beta.6** — SEO Milestone 3 catalog consolidation and structured-data release.
+**Staging candidate: 0.21.0-beta.7** — About-page search and footer cleanup.
+
+## 0.21.0-beta.7 - 2026-08-14
+
+- Remove About us from the global footer without deleting or rewriting the page.
+- Mark only `/about-us/` as `noindex, follow` and exclude it from Yoast XML sitemaps.
 
 ## 0.21.0-beta.6 - 2026-08-14
 
