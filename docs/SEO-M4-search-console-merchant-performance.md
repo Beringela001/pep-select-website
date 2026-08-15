@@ -1,12 +1,59 @@
 # SEO Milestone 4 — Search Console, Merchant Eligibility, and Performance
 
 Prepared: 2026-08-15  
-Status: Ready for staging implementation after approval  
-Live baseline: Pep Select child theme `0.22.0-beta.5`
+Status: Complete — deployed and verified on staging and live  
+Live release: Pep Select child theme `0.23.0-beta.1`
 
 ## Outcome
 
 Turn the first useful Search Console signals into one meaningful release: resolve only truthful merchant-listing opportunities, establish a dependable search-performance baseline, and improve measurable page speed without changing landing-page copy or commerce behavior.
+
+## Completion summary
+
+- Deployed the exact staging-verified `0.23.0-beta.1` package to live after named Kinsta backups on both environments.
+- Added one stable `MerchantReturnPolicy` identifier under `OnlineStore`, limited it to the United States, represented the published no-returns policy, and referenced it from every product `Offer`.
+- Verified all 15 product sitemap URLs: every Product retains a Pep Select Brand and SKU, every Offer resolves to the one return policy, and no unsupported review, rating, shipping, validity-date, GTIN, or MPN value was introduced.
+- Deliberately omitted shipping structured data. The United States zone and $200 free-shipping threshold are source-backed, but Easyship rates and carrier transit times are dynamic; a fixed production promise would be misleading.
+- Changed the homepage hero's default responsive request from the 2560 px original to the 768 px derivative. The uncached desktop defect previously began both the approximately 3.4 MB original and approximately 359 KB derivative; verified staging and live now request only the approximately 368 KB responsive file.
+- Shortened the educational identifier value to `Blue cap · silver crimp` on desktop and mobile. It remains one line with zero horizontal overflow at 320, 360, 390, 430, 480, and 1440 px.
+- Preserved the factual amber-vial image and alt text; no landing-page paragraph, product, SKU, COA, shipping rule, checkout, OPS, or order data changed.
+
+## Performance baseline and release evidence
+
+The clean logged-out pre-release baseline used cold page loads. Desktop homepage transfer was the outlier because it fetched both hero sources; Shop, product, archive, and batch pages were already stable with zero measured CLS and zero TBT in this lab pass. The release therefore targeted the isolated homepage asset defect rather than broad speculative optimization.
+
+Representative pre-release desktop measurements:
+
+| Page | TTFB | Load | LCP | CLS | TBT | Requests | Transfer |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Home | 43 ms | 513 ms | 484 ms | 0 | 0 ms | 106 | 4,381 KB |
+| Shop | 582 ms | 1,269 ms | 1,008 ms | 0 | 0 ms | 102 | 671 KB |
+| GLP-3 R | 688 ms | 1,136 ms | 1,036 ms | 0 | 0 ms | 105 | 479 KB |
+| Quality Archive | 616 ms | 1,075 ms | 940 ms | 0 | 0 ms | 80 | 828 KB |
+| NAD batch | 461 ms | 1,033 ms | 880 ms | 0 | 0 ms | 74 | 405 KB |
+
+Representative pre-release 390 px measurements:
+
+| Page | TTFB | Load | LCP | CLS | TBT | Requests | Transfer |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Home | 22 ms | 399 ms | 212 ms | 0.091 | 0 ms | 103 | 689 KB |
+| Shop | 41 ms | 460 ms | 444 ms | 0.001 | 0 ms | 93 | 472 KB |
+| GLP-3 R | 40 ms | 576 ms | 356 ms | 0 | 0 ms | 105 | 504 KB |
+| Quality Archive | 60 ms | 502 ms | 328 ms | 0 | 0 ms | 78 | 442 KB |
+| NAD batch | 39 ms | 436 ms | 144 ms | 0 | 0 ms | 75 | 422 KB |
+
+Live post-release resource inspection confirms the homepage now loads `PS-laying_fam-768x434.png` as the sole hero-family resource in the initial page load; the 2560 px original is no longer requested.
+
+## Release verification
+
+- Package: `dist/pepselect-child-0.23.0-beta.1.zip`
+- SHA-256: `B2E7816372EA40310F01DA860AE404098BCB15B621EE0FF134F5EE9F303A3C60`
+- Staging backup: `Before SEO Milestone 4 implementation - 2026-08-15`
+- Live backup: `Before SEO Milestone 4 live deployment - 2026-08-15`
+- Active version confirmed in WordPress on staging and live: `0.23.0-beta.1`
+- Staging and live smoke checks passed for Home, Shop, GLP-3 R, Cart, My Account, Quality Archive, NAD batch, and the printed-QR legacy redirect.
+- The legacy `/testing/nad-500-mg/progress-1269/` route still resolves to `/testing/nad-500-mg/nd50026205jp/`.
+- Google follow-up: allow a fresh crawl before judging warning clearance. Do not add placeholder data or run `Validate fix` against fields intentionally left absent.
 
 ## Search Console evidence
 
