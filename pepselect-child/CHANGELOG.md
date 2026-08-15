@@ -1,6 +1,12 @@
 # Changelog
 
-**Staging candidate: 0.21.0-beta.1** — SEO Milestone 3 catalog consolidation and structured-data release.
+**Staging candidate: 0.21.0-beta.2** — SEO Milestone 3 catalog consolidation and structured-data release.
+
+## 0.21.0-beta.2 - 2026-08-14
+
+- Preserve valid Yoast schema values while repairing stale same-product URLs.
+- Remove the empty redirected product-category sitemap from the sitemap index.
+- Prefix visible product descriptions with the visible product name for unique, page-grounded Product markup.
 
 ## 0.21.0-beta.1 - 2026-08-14
 

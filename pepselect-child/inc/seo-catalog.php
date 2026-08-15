@@ -62,6 +62,25 @@ function pepselect_child_exclude_research_compounds_from_sitemap( $excluded_term
 add_filter( 'wpseo_exclude_from_sitemap_by_term_ids', 'pepselect_child_exclude_research_compounds_from_sitemap' );
 
 /**
+ * Remove the now-empty product-category sitemap from Yoast's sitemap index.
+ *
+ * The only public product category redirects to Shop, so publishing an empty
+ * taxonomy sitemap adds no discovery value.
+ *
+ * @param bool   $excluded Whether the taxonomy is excluded.
+ * @param string $taxonomy Taxonomy name.
+ * @return bool
+ */
+function pepselect_child_exclude_product_category_sitemap( $excluded, $taxonomy ) {
+	if ( 'product_cat' === $taxonomy ) {
+		return true;
+	}
+
+	return $excluded;
+}
+add_filter( 'wpseo_sitemap_exclude_taxonomy', 'pepselect_child_exclude_product_category_sitemap', 20, 2 );
+
+/**
  * Return the product description that is actually visible in the coded page.
  *
  * @param WC_Product $product Product instance.
@@ -81,8 +100,13 @@ function pepselect_child_get_visible_product_schema_description( $product ) {
 
 	$description = do_shortcode( (string) $description );
 	$description = html_entity_decode( $description, ENT_QUOTES | ENT_HTML5, get_bloginfo( 'charset' ) );
+	$description = trim( preg_replace( '/\s+/', ' ', wp_strip_all_tags( $description ) ) );
 
-	return trim( preg_replace( '/\s+/', ' ', wp_strip_all_tags( $description ) ) );
+	if ( '' === $description ) {
+		return '';
+	}
+
+	return $product->get_name() . '. ' . $description;
 }
 
 /**
@@ -168,9 +192,10 @@ function pepselect_child_rewrite_product_schema_urls( $value, $product_url ) {
 	}
 
 	$product_base = trailingslashit( home_url( '/product/' ) );
-	$pattern      = '#^' . preg_quote( $product_base, '#' ) . '[^/?#]+/?(?=$|\#)#';
+	$pattern      = '~^' . preg_quote( $product_base, '~' ) . '[^/?#]+/?(?=$|#)~';
+	$rewritten    = preg_replace( $pattern, trailingslashit( $product_url ), $value );
 
-	return preg_replace( $pattern, trailingslashit( $product_url ), $value );
+	return is_string( $rewritten ) ? $rewritten : $value;
 }
 
 /**
