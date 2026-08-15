@@ -102,6 +102,31 @@ function pepselect_child_exclude_empty_post_sitemap( $excluded, $post_type ) {
 add_filter( 'wpseo_sitemap_exclude_post_type', 'pepselect_child_exclude_empty_post_sitemap', 20, 2 );
 
 /**
+ * Remove a cached empty post sitemap entry from Yoast's final index.
+ *
+ * Yoast can retain the index entry after the post-type provider is excluded.
+ * Filtering the final index keeps the public sitemap accurate while remaining
+ * data-aware: publishing the first post restores the entry automatically.
+ *
+ * @param string $sitemap_index Yoast sitemap index XML.
+ * @return string
+ */
+function pepselect_child_remove_empty_post_sitemap_from_index( $sitemap_index ) {
+	$counts = wp_count_posts( 'post' );
+
+	if ( $counts && ! empty( $counts->publish ) ) {
+		return $sitemap_index;
+	}
+
+	$post_sitemap_url = set_url_scheme( home_url( '/post-sitemap.xml' ), 'https' );
+	$pattern          = '~\s*<sitemap>\s*<loc>' . preg_quote( esc_url( $post_sitemap_url ), '~' ) . '</loc>.*?</sitemap>~s';
+	$filtered         = preg_replace( $pattern, '', $sitemap_index );
+
+	return is_string( $filtered ) ? $filtered : $sitemap_index;
+}
+add_filter( 'wpseo_sitemap_index', 'pepselect_child_remove_empty_post_sitemap_from_index', 20 );
+
+/**
  * Keep the WooCommerce Shop archive in one sitemap only.
  *
  * Yoast includes the Shop archive in the product sitemap. Excluding the same

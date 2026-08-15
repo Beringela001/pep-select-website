@@ -1,6 +1,10 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.1** — Milestone 5 plus Tesamorelin batch-matching education.
+**Release candidate: 0.25.0-beta.2** — Milestone 5 plus Tesamorelin batch-matching education.
+
+## 0.25.0-beta.2 - 2026-08-15
+
+- Removes Yoast's cached empty `post-sitemap.xml` entry from the final sitemap index when no posts are published.
 
 ## 0.25.0-beta.1 - 2026-08-15
 
