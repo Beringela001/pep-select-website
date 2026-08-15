@@ -606,13 +606,6 @@
 	color: var(--pep-color-navy);
 	background: var(--pep-color-white);
 	box-shadow: 0 22px 52px rgb(0 42 83 / 18%);
-	text-decoration: none;
-	transition: box-shadow 180ms var(--pep-home-ease), transform 180ms var(--pep-home-ease);
-}
-
-.pepselect-home__coa-proof:hover {
-	box-shadow: 0 26px 60px rgb(0 42 83 / 23%);
-	transform: translateY(-2px);
 }
 
 .pepselect-home__coa-proof-label {

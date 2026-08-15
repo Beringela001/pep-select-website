@@ -1,6 +1,16 @@
 # Changelog
 
-**Staging candidate: 0.22.0-beta.2** — NAD batch evidence and mobile trust composition.
+**Staging candidate: 0.22.0-beta.3** — Plain-language batch lesson and static COA evidence.
+
+## 0.22.0-beta.3 - 2026-08-15
+
+- Explain the three matching points in direct language centered on the vial in front of the researcher.
+- Shorten the evidence labels to `What it is`, `Identifiers`, and `Which batch` for faster scanning and safer wrapping.
+- Replace the screenshot-derived COA preview with a high-resolution web asset rendered from the original laboratory PDF.
+- Keep the COA preview static and non-clickable; route the single action to the main Quality Archive at `/testing/`.
+- Remove NAD-specific CTA language so the section remains an educational explanation of Pep Select's documentation approach.
+
+**Previous staging candidate: 0.22.0-beta.2** — NAD batch evidence and mobile trust composition.
 
 ## 0.22.0-beta.2 - 2026-08-15
 

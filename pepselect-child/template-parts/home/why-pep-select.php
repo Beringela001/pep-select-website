@@ -12,19 +12,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$batch_url   = home_url( '/testing/nad-500-mg/nd50026205jp/' );
+$archive_url = home_url( '/testing/' );
 $asset_url   = trailingslashit( get_stylesheet_directory_uri() ) . 'assets/images/why-pep-select/';
 $matches     = array(
 	array(
-		'label' => __( 'Labeled identity', 'pepselect-child' ),
+		'label' => __( 'What it is', 'pepselect-child' ),
 		'value' => __( 'NAD+ · 500 mg', 'pepselect-child' ),
 	),
 	array(
-		'label' => __( 'Physical identifiers', 'pepselect-child' ),
+		'label' => __( 'Identifiers', 'pepselect-child' ),
 		'value' => __( 'Blue cap · silver crimp · amber glass', 'pepselect-child' ),
 	),
 	array(
-		'label' => __( 'Batch record', 'pepselect-child' ),
+		'label' => __( 'Which batch', 'pepselect-child' ),
 		'value' => __( 'ND50026205JP', 'pepselect-child' ),
 	),
 );
@@ -37,7 +37,7 @@ $matches     = array(
 				<span><?php esc_html_e( 'Match the batch.', 'pepselect-child' ); ?></span>
 				<em><?php esc_html_e( 'Match the vial.', 'pepselect-child' ); ?></em>
 			</h2>
-			<p class="pepselect-home__lead"><?php esc_html_e( 'A certificate of analysis should identify the vial behind the report.', 'pepselect-child' ); ?></p>
+			<p class="pepselect-home__lead"><?php esc_html_e( 'You should be able to tell whether a COA belongs to the vial in front of you.', 'pepselect-child' ); ?></p>
 		</div>
 
 		<div class="pepselect-home__match-visual">
@@ -66,21 +66,21 @@ $matches     = array(
 				<span class="pepselect-home__visual-label pepselect-home__visual-label--batch"><?php esc_html_e( 'Batch', 'pepselect-child' ); ?></span>
 			</figure>
 
-			<a class="pepselect-home__coa-proof" href="<?php echo esc_url( $batch_url ); ?>" aria-label="<?php esc_attr_e( 'Review the Pep Select NAD+ 500 mg batch record', 'pepselect-child' ); ?>">
+			<div class="pepselect-home__coa-proof">
 				<span class="pepselect-home__coa-proof-label"><?php esc_html_e( 'Independent laboratory record', 'pepselect-child' ); ?></span>
 				<img
-					src="<?php echo esc_url( $asset_url . 'nad-500mg-coa-source.jpg' ); ?>"
-					width="2550"
-					height="3300"
+					src="<?php echo esc_url( $asset_url . 'nad-500mg-coa-source.webp' ); ?>"
+					width="3400"
+					height="4400"
 					loading="lazy"
 					decoding="async"
 					alt="<?php esc_attr_e( 'Freedom Diagnostics certificate for Pep Select NAD+ 500 mg, batch ND50026205JP.', 'pepselect-child' ); ?>"
 				>
-			</a>
+			</div>
 		</div>
 
 		<div class="pepselect-home__match-copy pepselect-home__match-copy--details">
-			<p class="pepselect-home__match-body"><?php esc_html_e( 'Pep Select submits a finished, labeled vial for independent laboratory testing. The report records the compound, labeled strength, physical identifiers, and batch number so researchers can compare the published COA with the vial received.', 'pepselect-child' ); ?></p>
+			<p class="pepselect-home__match-body"><?php esc_html_e( 'Pep Select sends the finished, labeled vial to an independent laboratory. The report identifies the compound and shows the vial and batch number, giving you three points to match with what is on your bench.', 'pepselect-child' ); ?></p>
 
 			<dl class="pepselect-home__match-list">
 				<?php foreach ( $matches as $index => $match ) : ?>
@@ -91,7 +91,7 @@ $matches     = array(
 				<?php endforeach; ?>
 			</dl>
 
-			<a class="pepselect-home__button pepselect-home__button--primary" href="<?php echo esc_url( $batch_url ); ?>"><?php esc_html_e( 'Review the NAD+ Batch Record', 'pepselect-child' ); ?></a>
+			<a class="pepselect-home__button pepselect-home__button--primary" href="<?php echo esc_url( $archive_url ); ?>"><?php esc_html_e( 'Open the Quality Archive', 'pepselect-child' ); ?></a>
 		</div>
 	</div>
 </section>
