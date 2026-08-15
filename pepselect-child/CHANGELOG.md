@@ -1,6 +1,15 @@
 # Changelog
 
-**Staging candidate: 0.21.0-beta.7** — About-page search and footer cleanup.
+**Staging candidate: 0.22.0-beta.1** — Batch-matching homepage trust section.
+
+## 0.22.0-beta.1 - 2026-08-15
+
+- Replace the generic Why Pep Select homepage block with the batch-matching mission: “Match the batch. Match the vial.”
+- Show a GLP-3 RT 20 mg vial and a factual Freedom Diagnostics report excerpt tied to batch `RT2026205JP`.
+- Call out the labeled identity, cap and crimp, and batch record on desktop; present the same evidence as a readable stacked list on mobile.
+- Keep the Quality Archive authoritative for current records and testing status; no COA, SKU, catalog, checkout, or other commerce logic changes.
+
+**Previous staging candidate: 0.21.0-beta.7** — About-page search and footer cleanup.
 
 ## 0.21.0-beta.7 - 2026-08-14
 
