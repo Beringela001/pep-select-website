@@ -81,6 +81,27 @@ function pepselect_child_exclude_product_category_sitemap( $excluded, $taxonomy 
 add_filter( 'wpseo_sitemap_exclude_taxonomy', 'pepselect_child_exclude_product_category_sitemap', 20, 2 );
 
 /**
+ * Return the product identity customers can see: name plus strength when set.
+ *
+ * @param WC_Product $product Product instance.
+ * @return string
+ */
+function pepselect_child_get_product_search_identity( $product ) {
+	if ( ! is_a( $product, 'WC_Product' ) ) {
+		return '';
+	}
+
+	$name     = trim( $product->get_name() );
+	$strength = function_exists( 'pepselect_child_get_product_strength_label' ) ? pepselect_child_get_product_strength_label( $product ) : '';
+
+	if ( '' !== $strength && false === stripos( preg_replace( '/\s+/', '', $name ), preg_replace( '/\s+/', '', $strength ) ) ) {
+		$name .= ' ' . $strength;
+	}
+
+	return trim( $name );
+}
+
+/**
  * Return the product description that is actually visible in the coded page.
  *
  * @param WC_Product $product Product instance.
@@ -106,8 +127,52 @@ function pepselect_child_get_visible_product_schema_description( $product ) {
 		return '';
 	}
 
-	return $product->get_name() . '. ' . $description;
+	return pepselect_child_get_product_search_identity( $product ) . '. ' . $description;
 }
+
+/**
+ * Give same-compound strengths distinct, visible-fact search titles.
+ *
+ * @param string $title Yoast title.
+ * @return string
+ */
+function pepselect_child_filter_product_seo_title( $title ) {
+	if ( ! function_exists( 'is_product' ) || ! is_product() || ! function_exists( 'wc_get_product' ) ) {
+		return $title;
+	}
+
+	$product  = wc_get_product( get_queried_object_id() );
+	$identity = pepselect_child_get_product_search_identity( $product );
+
+	return '' !== $identity ? $identity . ' - ' . get_bloginfo( 'name' ) : $title;
+}
+add_filter( 'wpseo_title', 'pepselect_child_filter_product_seo_title', 20 );
+
+/**
+ * Replace generic product snippets with concise page-grounded descriptions.
+ *
+ * @param string $description Yoast meta description.
+ * @return string
+ */
+function pepselect_child_filter_product_seo_description( $description ) {
+	if ( ! function_exists( 'is_product' ) || ! is_product() || ! function_exists( 'wc_get_product' ) ) {
+		return $description;
+	}
+
+	$product  = wc_get_product( get_queried_object_id() );
+	$identity = pepselect_child_get_product_search_identity( $product );
+
+	if ( '' === $identity ) {
+		return $description;
+	}
+
+	return sprintf(
+		/* translators: %s: visible product name and strength. */
+		__( 'Review %s from Pep Select, including current price, availability, product details, and research-use information.', 'pepselect-child' ),
+		$identity
+	);
+}
+add_filter( 'wpseo_metadesc', 'pepselect_child_filter_product_seo_description', 20 );
 
 /**
  * Make WooCommerce Product markup mirror visible, approved product content.

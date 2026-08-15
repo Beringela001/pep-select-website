@@ -1,6 +1,11 @@
 # Changelog
 
-**Staging candidate: 0.21.0-beta.2** — SEO Milestone 3 catalog consolidation and structured-data release.
+**Staging candidate: 0.21.0-beta.3** — SEO Milestone 3 catalog consolidation and structured-data release.
+
+## 0.21.0-beta.3 - 2026-08-14
+
+- Distinguish same-compound strengths in Product descriptions using the visible WooCommerce strength tag.
+- Replace repeated generic product search titles and descriptions with unique, visible-fact metadata.
 
 ## 0.21.0-beta.2 - 2026-08-14
 
