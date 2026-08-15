@@ -81,10 +81,12 @@ function pepselect_child_exclude_product_category_sitemap( $excluded, $taxonomy 
 add_filter( 'wpseo_sitemap_exclude_taxonomy', 'pepselect_child_exclude_product_category_sitemap', 20, 2 );
 
 /**
- * Remove the standard post sitemap while the site has no published posts.
+ * Remove the standard post sitemap while it has no indexable published posts.
  *
- * The exclusion is deliberately data-aware: publishing the first post makes
- * the sitemap available again without requiring a theme release.
+ * The exclusion is deliberately data-aware: publishing an indexable post makes
+ * the sitemap available again without requiring a theme release. A published
+ * placeholder that Yoast explicitly marks noindex does not create an empty
+ * sitemap entry.
  *
  * @param bool   $excluded Whether the post type is excluded.
  * @param string $post_type Post type name.
@@ -95,36 +97,31 @@ function pepselect_child_exclude_empty_post_sitemap( $excluded, $post_type ) {
 		return $excluded;
 	}
 
-	$counts = wp_count_posts( 'post' );
+	$indexable_post_ids = get_posts(
+		array(
+			'post_type'      => 'post',
+			'post_status'    => 'publish',
+			'posts_per_page' => 1,
+			'fields'         => 'ids',
+			'no_found_rows'  => true,
+			'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- One-row sitemap-provider check.
+				'relation' => 'OR',
+				array(
+					'key'     => '_yoast_wpseo_meta-robots-noindex',
+					'compare' => 'NOT EXISTS',
+				),
+				array(
+					'key'     => '_yoast_wpseo_meta-robots-noindex',
+					'value'   => '1',
+					'compare' => '!=',
+				),
+			),
+		)
+	);
 
-	return ! $counts || empty( $counts->publish );
+	return empty( $indexable_post_ids );
 }
 add_filter( 'wpseo_sitemap_exclude_post_type', 'pepselect_child_exclude_empty_post_sitemap', 20, 2 );
-
-/**
- * Remove a cached empty post sitemap entry from Yoast's final index.
- *
- * Yoast can retain the index entry after the post-type provider is excluded.
- * Filtering the final index keeps the public sitemap accurate while remaining
- * data-aware: publishing the first post restores the entry automatically.
- *
- * @param string $sitemap_index Yoast sitemap index XML.
- * @return string
- */
-function pepselect_child_remove_empty_post_sitemap_from_index( $sitemap_index ) {
-	$counts = wp_count_posts( 'post' );
-
-	if ( $counts && ! empty( $counts->publish ) ) {
-		return $sitemap_index;
-	}
-
-	$post_sitemap_url = set_url_scheme( home_url( '/post-sitemap.xml' ), 'https' );
-	$pattern          = '~\s*<sitemap>\s*<loc>' . preg_quote( esc_url( $post_sitemap_url ), '~' ) . '</loc>.*?</sitemap>~s';
-	$filtered         = preg_replace( $pattern, '', $sitemap_index );
-
-	return is_string( $filtered ) ? $filtered : $sitemap_index;
-}
-add_filter( 'wpseo_sitemap_index', 'pepselect_child_remove_empty_post_sitemap_from_index', 20 );
 
 /**
  * Keep the WooCommerce Shop archive in one sitemap only.

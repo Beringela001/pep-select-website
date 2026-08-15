@@ -1,10 +1,14 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.2** — Milestone 5 plus Tesamorelin batch-matching education.
+**Release candidate: 0.25.0-beta.3** — Milestone 5 plus Tesamorelin batch-matching education.
+
+## 0.25.0-beta.3 - 2026-08-15
+
+- Treats a published post that Yoast explicitly marks `noindex` as ineligible for the post sitemap, preventing an empty sitemap from appearing in the public index.
 
 ## 0.25.0-beta.2 - 2026-08-15
 
-- Removes Yoast's cached empty `post-sitemap.xml` entry from the final sitemap index when no posts are published.
+- Initial empty-post sitemap hardening; superseded by `0.25.0-beta.3` after the live crawl found a published noindexed placeholder post.
 
 ## 0.25.0-beta.1 - 2026-08-15
 
