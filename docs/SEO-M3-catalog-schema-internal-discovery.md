@@ -1,9 +1,10 @@
 # SEO Milestone 3 — Catalog Consolidation, Structured Data, and Internal Discovery
 
-Status: staging verified — live deployment pending explicit approval  
+Status: final — deployed, verified, and backed up  
 Prepared: 2026-08-14  
 Staging completion: 2026-08-14  
-Deployment boundary: staging first; live deployment requires a fresh backup and explicit approval after verification
+Live completion: 2026-08-14  
+Deployment approval: Paulo explicitly approved the verified Milestone 3 release for live deployment
 
 ## Outcome
 
@@ -51,6 +52,31 @@ This is one coordinated architecture milestone. It does not rewrite landing-page
 
 - The full Yoast root sitemap also exposes 14 default or utility URLs outside the milestone's 44-page intended indexable set: cart, checkout, account, the default post/category/author archives, and strength-tag archives.
 - These routes were not silently redirected or noindexed because product-tag and future editorial dependencies were not part of the approved consolidation decision. They remain a documented SEO cleanup candidate for the next milestone.
+
+## Live deployment completion
+
+### Deployment and recovery
+
+- Verified the live Kinsta environment and full `5 / 5` manual-backup list before changing anything.
+- Deleted only the bottom/oldest live manual backup, `Cards chsnge` from 2026-08-02.
+- Created live backup `Before SEO Milestone 3 live deployment - 2026-08-14` before installing code.
+- Installed the exact staging-verified package `dist/pepselect-child-0.21.0-beta.6.zip`; the active live theme reports `0.21.0-beta.6`.
+- Cleared live WordPress/Kinsta caches after installation.
+- No staging database was pushed to live. Products, customers, orders, checkout, payments, shipping, rewards, VerifyPass, OPS, SKUs, prices, stock, and COA records were not overwritten.
+
+### Live verification
+
+- The final intended live crawl checked 44 URLs: 44 returned `200`, 44 had exactly one H1, 44 had one title, 44 had exactly one meta description, 44 had a self-referencing canonical, and 44 remained indexable.
+- The same crawl found zero duplicate titles, duplicate descriptions, fatal errors, `synthetic`, stale GLP-2T 30mg references, obsolete generic purity metadata, or accidental `noindex` directives.
+- All 15 live product pages passed Product/Offer checks for exact SKU, price, USD currency, availability, image, current URL, brand, and seller. Product titles are 15/15 unique; the 14 products with visible approved descriptions have 14/14 unique schema descriptions; Bacteriostatic Water intentionally omits description.
+- No product emitted an unsourced price-validity date, fabricated rating/review, stale URL, null schema value, or duplicate description tag.
+- GLP-2T live metadata uses `20MG`, SKU `GLP2T20`, `/product/glp2-t20/`, the current HTTPS image, and the current out-of-stock WooCommerce value.
+- `/product-category/research-compounds/` returns `301` to `/shop/` and preserves the tested campaign and sorting parameters.
+- The printed NAD500 QR route still returns `301` to `/testing/nad-500-mg/nd50026205jp/`; the old GLP-2T route still returns `301` to `/product/glp2-t20/`; `www.pepselect.com` still returns `301` to `https://pepselect.com/`.
+- Shop, product, cart, checkout, account, Military Discount/VerifyPass, and the actual live COA batch route had no fatal errors or horizontal overflow across the tested mobile, tablet, and desktop widths.
+- The public GLP-3 R 10MG product page exposes its actual live batch `RT2026205JP` at `/testing/961/rt2026205jp/`; that batch returns `200` with one H1 and correct metadata.
+- Live Pep Select COA Archive remains `0.6.3`. Staging COA Archive `0.6.4` has newer descriptive compound routes and public batch-to-product backlink behavior; it was not part of this theme release and was not silently deployed.
+- The live root sitemap now omits the redirected product-category sitemap. The submitted Search Console sitemap URL is unchanged, so Google can pick up the revised index without a replacement submission.
 
 ## Live baseline
 
