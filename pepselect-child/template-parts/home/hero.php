@@ -35,7 +35,7 @@ $hero_image_id = isset( $args['hero_image_id'] ) ? (int) $args['hero_image_id'] 
 		<?php
 			echo wp_get_attachment_image(
 				$hero_image_id,
-				'full',
+				'medium_large',
 				false,
 				array(
 				'alt'           => __( 'Pep Select research compound lineup', 'pepselect-child' ),

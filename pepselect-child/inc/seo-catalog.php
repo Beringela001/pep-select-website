@@ -300,6 +300,34 @@ function pepselect_child_filter_product_structured_data( $markup, $product ) {
 add_filter( 'woocommerce_structured_data_product', 'pepselect_child_filter_product_structured_data', 20, 2 );
 
 /**
+ * Return the stable identifier for Pep Select's published return policy.
+ *
+ * @return string
+ */
+function pepselect_child_get_merchant_return_policy_id() {
+	return home_url( '/#merchant-return-policy' );
+}
+
+/**
+ * Return the store-level policy backed by the published policy page.
+ *
+ * Pep Select does not accept returns after shipment. Pre-shipment
+ * cancellations and remedies for damaged or incorrect orders remain governed
+ * by the linked policy page and are not represented as merchandise returns.
+ *
+ * @return array
+ */
+function pepselect_child_get_merchant_return_policy_schema() {
+	return array(
+		'@type'                => 'MerchantReturnPolicy',
+		'@id'                  => pepselect_child_get_merchant_return_policy_id(),
+		'applicableCountry'    => 'US',
+		'returnPolicyCategory' => 'https://schema.org/MerchantReturnNotPermitted',
+		'merchantReturnLink'   => pepselect_child_get_page_url( 'refund-shipping-policy' ),
+	);
+}
+
+/**
  * Remove WooCommerce's assumed year-end price-validity date.
  *
  * A real scheduled-sale end date remains intact. Ordinary catalog prices have
@@ -318,6 +346,10 @@ function pepselect_child_filter_product_offer_structured_data( $offer, $product 
 	if ( isset( $offer['seller'] ) && is_array( $offer['seller'] ) ) {
 		$offer['seller']['@type'] = 'OnlineStore';
 	}
+
+	$offer['hasMerchantReturnPolicy'] = array(
+		'@id' => pepselect_child_get_merchant_return_policy_id(),
+	);
 
 	if ( $product->get_date_on_sale_to() ) {
 		return $offer;
@@ -388,10 +420,7 @@ function pepselect_child_filter_yoast_schema_graph( $graph ) {
 			$has_store       = true;
 			$organization_id = isset( $piece['@id'] ) ? $piece['@id'] : $organization_id;
 			$graph[ $index ]['@type']                    = 'OnlineStore';
-			$graph[ $index ]['hasMerchantReturnPolicy'] = array(
-				'@type'              => 'MerchantReturnPolicy',
-				'merchantReturnLink' => pepselect_child_get_page_url( 'refund-shipping-policy' ),
-			);
+			$graph[ $index ]['hasMerchantReturnPolicy'] = pepselect_child_get_merchant_return_policy_schema();
 			break;
 		}
 	}
@@ -413,10 +442,7 @@ function pepselect_child_filter_yoast_schema_graph( $graph ) {
 					'url'   => $logo_url,
 				),
 				'image' => array( '@id' => $organization_id . '#logo' ),
-				'hasMerchantReturnPolicy' => array(
-					'@type'              => 'MerchantReturnPolicy',
-					'merchantReturnLink' => pepselect_child_get_page_url( 'refund-shipping-policy' ),
-				),
+				'hasMerchantReturnPolicy' => pepselect_child_get_merchant_return_policy_schema(),
 			);
 			$has_store = true;
 		}

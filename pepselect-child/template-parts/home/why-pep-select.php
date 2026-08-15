@@ -21,7 +21,7 @@ $matches     = array(
 	),
 	array(
 		'label' => __( 'Identifiers', 'pepselect-child' ),
-		'value' => __( 'Blue cap · silver crimp · amber glass', 'pepselect-child' ),
+		'value' => __( 'Blue cap · silver crimp', 'pepselect-child' ),
 	),
 	array(
 		'label' => __( 'Which batch', 'pepselect-child' ),

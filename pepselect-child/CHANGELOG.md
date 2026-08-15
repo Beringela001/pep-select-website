@@ -1,6 +1,16 @@
 # Changelog
 
-**Staging candidate: 0.22.0-beta.5** — Mobile pointer clearance at 320 px.
+**Staging candidate: 0.23.0-beta.1** — Merchant schema and homepage performance.
+
+## 0.23.0-beta.1 - 2026-08-15
+
+- Give the published US no-returns policy one stable schema identifier and reference it from each WooCommerce product offer.
+- Keep unsupported reviews, ratings, shipping promises, global identifiers, and validity dates out of structured data.
+- Request the responsive 768 px homepage hero source by default so browsers do not begin downloading the 3.4 MB original before selecting a responsive candidate.
+- Shorten the educational evidence row to `Blue cap · silver crimp` on desktop and mobile; the factual amber-vial image and alt text remain unchanged.
+- Leave Easyship rates, checkout, product records, SKUs, COAs, and shipping behavior unchanged.
+
+**Previous staging candidate: 0.22.0-beta.5** — Mobile pointer clearance at 320 px.
 
 ## 0.22.0-beta.5 - 2026-08-15
 
