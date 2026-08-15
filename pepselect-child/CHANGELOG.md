@@ -1,6 +1,13 @@
 # Changelog
 
-**Staging candidate: 0.22.0-beta.4** — Mobile batch-matching pointers.
+**Staging candidate: 0.22.0-beta.5** — Mobile pointer clearance at 320 px.
+
+## 0.22.0-beta.5 - 2026-08-15
+
+- Raise the compound-and-strength pointer label slightly so it clears the overlapping COA preview at the 320 px phone breakpoint.
+- Preserve the restored pointer geometry at 360, 390, and 430 px.
+
+**Previous staging candidate: 0.22.0-beta.4** — Mobile batch-matching pointers.
 
 ## 0.22.0-beta.4 - 2026-08-15
 
