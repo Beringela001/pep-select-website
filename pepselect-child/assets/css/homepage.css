@@ -494,15 +494,29 @@
 /* Batch-matching trust composition introduced in 0.22.0. */
 .pepselect-home__match-grid {
 	display: grid;
+	grid-template-areas:
+		"visual intro"
+		"visual details";
 	grid-template-columns: minmax(0, 1.08fr) minmax(380px, 0.92fr);
-	gap: 88px;
-	align-items: center;
+	column-gap: 88px;
+	row-gap: 0;
+	align-items: start;
 }
 
 .pepselect-home__match-visual {
+	grid-area: visual;
 	position: relative;
+	align-self: center;
 	min-width: 0;
 	padding-bottom: 86px;
+}
+
+.pepselect-home__match-copy--intro {
+	grid-area: intro;
+}
+
+.pepselect-home__match-copy--details {
+	grid-area: details;
 }
 
 .pepselect-home__vial-stage {
@@ -614,7 +628,10 @@
 .pepselect-home__coa-proof img {
 	display: block;
 	width: 100%;
+	aspect-ratio: 1.55 / 1;
 	height: auto;
+	object-fit: cover;
+	object-position: 50% 4%;
 	border: 1px solid rgb(0 42 83 / 8%);
 	border-radius: 7px;
 }
@@ -858,7 +875,7 @@
 
 	.pepselect-home__match-grid {
 		grid-template-columns: minmax(0, 1fr) minmax(340px, 0.92fr);
-		gap: 48px;
+		column-gap: 48px;
 	}
 
 	.pepselect-home__match-visual {
@@ -878,6 +895,26 @@
 	}
 
 
+}
+
+@media (min-width: 768px) and (max-width: 900px) {
+	.pepselect-home__match-grid {
+		grid-template-areas:
+			"intro"
+			"visual"
+			"details";
+		grid-template-columns: minmax(0, 1fr);
+		gap: 36px;
+	}
+
+	.pepselect-home__match-visual {
+		align-self: auto;
+		padding-bottom: 72px;
+	}
+
+	.pepselect-home__match-copy--details {
+		padding-top: 2px;
+	}
 }
 
 @media (max-width: 767px) {
@@ -992,16 +1029,20 @@
 	}
 
 	.pepselect-home__match-grid {
-		gap: 40px;
-	}
-
-	.pepselect-home__match-copy {
-		grid-row: 1;
+		grid-template-areas:
+			"intro"
+			"visual"
+			"details";
+		gap: 28px;
 	}
 
 	.pepselect-home__match-visual {
-		grid-row: 2;
+		align-self: auto;
 		padding-bottom: 0;
+	}
+
+	.pepselect-home__match-copy--details {
+		padding-top: 2px;
 	}
 
 	.pepselect-home__vial-stage {
@@ -1022,7 +1063,7 @@
 	}
 
 	.pepselect-home__match-list {
-		margin-top: 28px;
+		margin-top: 24px;
 	}
 
 	.pepselect-home__editorial-list {

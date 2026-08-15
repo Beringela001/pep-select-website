@@ -12,35 +12,44 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$testing_url = isset( $args['testing_url'] ) ? $args['testing_url'] : home_url( '/testing/' );
+$batch_url   = home_url( '/testing/nad-500-mg/nd50026205jp/' );
 $asset_url   = trailingslashit( get_stylesheet_directory_uri() ) . 'assets/images/why-pep-select/';
 $matches     = array(
 	array(
 		'label' => __( 'Labeled identity', 'pepselect-child' ),
-		'value' => __( 'GLP-3 RT · 20 mg', 'pepselect-child' ),
+		'value' => __( 'NAD+ · 500 mg', 'pepselect-child' ),
 	),
 	array(
 		'label' => __( 'Physical identifiers', 'pepselect-child' ),
-		'value' => __( 'White cap · silver crimp', 'pepselect-child' ),
+		'value' => __( 'Blue cap · silver crimp · amber glass', 'pepselect-child' ),
 	),
 	array(
 		'label' => __( 'Batch record', 'pepselect-child' ),
-		'value' => __( 'RT2026205JP', 'pepselect-child' ),
+		'value' => __( 'ND50026205JP', 'pepselect-child' ),
 	),
 );
 ?>
 <section class="pepselect-home__section pepselect-home__why" aria-labelledby="pepselect-why-title">
 	<div class="pepselect-home__inner pepselect-home__match-grid">
+		<div class="pepselect-home__match-copy pepselect-home__match-copy--intro">
+			<p class="pepselect-home__eyebrow"><?php esc_html_e( 'Why Pep Select is different', 'pepselect-child' ); ?></p>
+			<h2 id="pepselect-why-title">
+				<span><?php esc_html_e( 'Match the batch.', 'pepselect-child' ); ?></span>
+				<em><?php esc_html_e( 'Match the vial.', 'pepselect-child' ); ?></em>
+			</h2>
+			<p class="pepselect-home__lead"><?php esc_html_e( 'A certificate of analysis should identify the vial behind the report.', 'pepselect-child' ); ?></p>
+		</div>
+
 		<div class="pepselect-home__match-visual">
 			<figure class="pepselect-home__vial-stage">
 				<img
 					class="pepselect-home__match-vials"
-					src="<?php echo esc_url( $asset_url . 'glp3-rt-20mg-vial-batch.webp' ); ?>"
+					src="<?php echo esc_url( $asset_url . 'nad-500mg-vial-batch-v3.webp' ); ?>"
 					width="1448"
 					height="1086"
 					loading="lazy"
 					decoding="async"
-					alt="<?php esc_attr_e( 'Front and reverse views of a Pep Select GLP-3 RT 20 mg vial with white cap, silver crimp, and batch RT2026205JP.', 'pepselect-child' ); ?>"
+					alt="<?php esc_attr_e( 'Front and reverse views of a Pep Select NAD+ 500 mg amber vial with blue cap, silver crimp, and batch ND50026205JP.', 'pepselect-child' ); ?>"
 				>
 
 				<svg class="pepselect-home__match-lines" viewBox="0 0 100 75" preserveAspectRatio="none" aria-hidden="true" focusable="false">
@@ -57,27 +66,21 @@ $matches     = array(
 				<span class="pepselect-home__visual-label pepselect-home__visual-label--batch"><?php esc_html_e( 'Batch', 'pepselect-child' ); ?></span>
 			</figure>
 
-			<a class="pepselect-home__coa-proof" href="<?php echo esc_url( $testing_url ); ?>" aria-label="<?php esc_attr_e( 'Review Pep Select batch documentation in the Quality Archive', 'pepselect-child' ); ?>">
+			<a class="pepselect-home__coa-proof" href="<?php echo esc_url( $batch_url ); ?>" aria-label="<?php esc_attr_e( 'Review the Pep Select NAD+ 500 mg batch record', 'pepselect-child' ); ?>">
 				<span class="pepselect-home__coa-proof-label"><?php esc_html_e( 'Independent laboratory record', 'pepselect-child' ); ?></span>
 				<img
-					src="<?php echo esc_url( $asset_url . 'glp3-rt-20mg-coa-evidence.webp' ); ?>"
-					width="1083"
-					height="701"
+					src="<?php echo esc_url( $asset_url . 'nad-500mg-coa-source.jpg' ); ?>"
+					width="2550"
+					height="3300"
 					loading="lazy"
 					decoding="async"
-					alt="<?php esc_attr_e( 'Freedom Diagnostics certificate excerpt for Pep Select GLP3-RT 20 mg, batch RT2026205JP.', 'pepselect-child' ); ?>"
+					alt="<?php esc_attr_e( 'Freedom Diagnostics certificate for Pep Select NAD+ 500 mg, batch ND50026205JP.', 'pepselect-child' ); ?>"
 				>
 			</a>
 		</div>
 
-		<div class="pepselect-home__match-copy">
-			<p class="pepselect-home__eyebrow"><?php esc_html_e( 'Why Pep Select is different', 'pepselect-child' ); ?></p>
-			<h2 id="pepselect-why-title">
-				<span><?php esc_html_e( 'Match the batch.', 'pepselect-child' ); ?></span>
-				<em><?php esc_html_e( 'Match the vial.', 'pepselect-child' ); ?></em>
-			</h2>
-			<p class="pepselect-home__lead"><?php esc_html_e( 'A compound name alone cannot connect a report to a specific vial.', 'pepselect-child' ); ?></p>
-			<p class="pepselect-home__match-body"><?php esc_html_e( 'We submit a finished, labeled vial for independent testing. The laboratory photographs the sample and records its batch. Researchers can compare the labeled identity, cap and crimp, and batch record with the vial they received.', 'pepselect-child' ); ?></p>
+		<div class="pepselect-home__match-copy pepselect-home__match-copy--details">
+			<p class="pepselect-home__match-body"><?php esc_html_e( 'Pep Select submits a finished, labeled vial for independent laboratory testing. The report records the compound, labeled strength, physical identifiers, and batch number so researchers can compare the published COA with the vial received.', 'pepselect-child' ); ?></p>
 
 			<dl class="pepselect-home__match-list">
 				<?php foreach ( $matches as $index => $match ) : ?>
@@ -88,7 +91,7 @@ $matches     = array(
 				<?php endforeach; ?>
 			</dl>
 
-			<a class="pepselect-home__button pepselect-home__button--primary" href="<?php echo esc_url( $testing_url ); ?>"><?php esc_html_e( 'Review Batch Documentation', 'pepselect-child' ); ?></a>
+			<a class="pepselect-home__button pepselect-home__button--primary" href="<?php echo esc_url( $batch_url ); ?>"><?php esc_html_e( 'Review the NAD+ Batch Record', 'pepselect-child' ); ?></a>
 		</div>
 	</div>
 </section>

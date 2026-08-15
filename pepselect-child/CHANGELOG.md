@@ -1,6 +1,17 @@
 # Changelog
 
-**Staging candidate: 0.22.0-beta.1** — Batch-matching homepage trust section.
+**Staging candidate: 0.22.0-beta.2** — NAD batch evidence and mobile trust composition.
+
+## 0.22.0-beta.2 - 2026-08-15
+
+- Replace the GLP-3 RT educational example with the documented NAD+ 500 mg batch `ND50026205JP`.
+- Show a polished front-and-reverse amber vial pair with blue cap, silver crimp, and the matching batch identifier.
+- Link the evidence card and CTA directly to the NAD+ batch record in the Quality Archive.
+- Keep the mission and SEO-supporting explanation as indexable HTML, with factual image alt text and a descriptive internal link.
+- Recompose the section on mobile so the headline leads directly into the evidence visual before the supporting details.
+- Leave the original laboratory report, COA Archive data, product mappings, SKUs, and commerce behavior unchanged.
+
+**Previous staging candidate: 0.22.0-beta.1** — Initial batch-matching homepage trust section.
 
 ## 0.22.0-beta.1 - 2026-08-15
 

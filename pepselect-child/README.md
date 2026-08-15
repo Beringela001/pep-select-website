@@ -1,10 +1,10 @@
 # Pep Select child theme
 
-- Version: 0.22.0-beta.1
+- Version: 0.22.0-beta.2
 - Parent: Hello Elementor (`hello-elementor`)
 - Text domain: `pepselect-child`
 
-Pep Select is the lightweight presentation child theme for the controlled customer-facing rebuild. Version 0.22.0-beta.1 gives the homepage a batch-matching trust section built from a GLP-3 RT vial and its corresponding laboratory record while leaving WooCommerce, COA, checkout, account, rewards, verification, and order behavior unchanged.
+Pep Select is the lightweight presentation child theme for the controlled customer-facing rebuild. Version 0.22.0-beta.2 gives the homepage a batch-matching trust section built from the documented NAD+ 500 mg vial and laboratory record, with a distinct mobile evidence flow, while leaving WooCommerce, COA, checkout, account, rewards, verification, and order behavior unchanged.
 
 ## Requirements and safe failure
 
