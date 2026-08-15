@@ -147,6 +147,8 @@ function pepselect_child_filter_product_seo_title( $title ) {
 	return '' !== $identity ? $identity . ' - ' . get_bloginfo( 'name' ) : $title;
 }
 add_filter( 'wpseo_title', 'pepselect_child_filter_product_seo_title', 20 );
+add_filter( 'wpseo_opengraph_title', 'pepselect_child_filter_product_seo_title', 20 );
+add_filter( 'wpseo_twitter_title', 'pepselect_child_filter_product_seo_title', 20 );
 
 /**
  * Replace generic product snippets with concise page-grounded descriptions.
@@ -173,6 +175,45 @@ function pepselect_child_filter_product_seo_description( $description ) {
 	);
 }
 add_filter( 'wpseo_metadesc', 'pepselect_child_filter_product_seo_description', 20 );
+add_filter( 'wpseo_opengraph_desc', 'pepselect_child_filter_product_seo_description', 20 );
+add_filter( 'wpseo_twitter_description', 'pepselect_child_filter_product_seo_description', 20 );
+
+/**
+ * Keep product canonical and social URLs on the current WooCommerce permalink.
+ *
+ * @param string $url Yoast URL value.
+ * @return string
+ */
+function pepselect_child_filter_product_seo_url( $url ) {
+	if ( ! function_exists( 'is_product' ) || ! is_product() ) {
+		return $url;
+	}
+
+	$product_url = get_permalink( get_queried_object_id() );
+
+	return $product_url ? $product_url : $url;
+}
+add_filter( 'wpseo_canonical', 'pepselect_child_filter_product_seo_url', 20 );
+add_filter( 'wpseo_opengraph_url', 'pepselect_child_filter_product_seo_url', 20 );
+
+/**
+ * Use the current WooCommerce product image for social previews.
+ *
+ * @param string $image_url Yoast image URL.
+ * @return string
+ */
+function pepselect_child_filter_product_social_image( $image_url ) {
+	if ( ! function_exists( 'is_product' ) || ! is_product() || ! function_exists( 'wc_get_product' ) ) {
+		return $image_url;
+	}
+
+	$product = wc_get_product( get_queried_object_id() );
+	$image   = is_a( $product, 'WC_Product' ) ? wp_get_attachment_image_url( $product->get_image_id(), 'full' ) : '';
+
+	return $image ? set_url_scheme( $image, 'https' ) : $image_url;
+}
+add_filter( 'wpseo_opengraph_image', 'pepselect_child_filter_product_social_image', 20 );
+add_filter( 'wpseo_twitter_image', 'pepselect_child_filter_product_social_image', 20 );
 
 /**
  * Make WooCommerce Product markup mirror visible, approved product content.

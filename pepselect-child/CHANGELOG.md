@@ -1,6 +1,12 @@
 # Changelog
 
-**Staging candidate: 0.21.0-beta.3** — SEO Milestone 3 catalog consolidation and structured-data release.
+**Staging candidate: 0.21.0-beta.4** — SEO Milestone 3 catalog consolidation and structured-data release.
+
+## 0.21.0-beta.4 - 2026-08-14
+
+- Apply current strength-specific product metadata to Open Graph and Twitter previews.
+- Repair stale product canonical and Open Graph URLs to the current WooCommerce permalink.
+- Use the current HTTPS WooCommerce image for product social previews.
 
 ## 0.21.0-beta.3 - 2026-08-14
 
