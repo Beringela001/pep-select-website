@@ -16,8 +16,8 @@ $archive_url = home_url( '/testing/' );
 $asset_url   = trailingslashit( get_stylesheet_directory_uri() ) . 'assets/images/why-pep-select/';
 $matches     = array(
 	array(
-		'label' => __( 'What it is', 'pepselect-child' ),
-		'value' => __( 'NAD+ · 500 mg', 'pepselect-child' ),
+		'label' => __( 'Compound name', 'pepselect-child' ),
+		'value' => __( 'Tesamorelin · 10 mg', 'pepselect-child' ),
 	),
 	array(
 		'label' => __( 'Identifiers', 'pepselect-child' ),
@@ -25,7 +25,7 @@ $matches     = array(
 	),
 	array(
 		'label' => __( 'Which batch', 'pepselect-child' ),
-		'value' => __( 'ND50026205JP', 'pepselect-child' ),
+		'value' => __( 'PSTES1071926GX', 'pepselect-child' ),
 	),
 );
 ?>
@@ -44,21 +44,21 @@ $matches     = array(
 			<figure class="pepselect-home__vial-stage">
 				<img
 					class="pepselect-home__match-vials"
-					src="<?php echo esc_url( $asset_url . 'nad-500mg-vial-batch-v3.webp' ); ?>"
+					src="<?php echo esc_url( $asset_url . 'tesamorelin-10mg-vial-batch.webp' ); ?>"
 					width="1448"
 					height="1086"
 					loading="lazy"
 					decoding="async"
-					alt="<?php esc_attr_e( 'Front and reverse views of a Pep Select NAD+ 500 mg amber vial with blue cap, silver crimp, and batch ND50026205JP.', 'pepselect-child' ); ?>"
+					alt="<?php esc_attr_e( 'Front and reverse views of a Pep Select Tesamorelin 10 mg clear vial with blue cap, silver crimp, and batch PSTES1071926GX.', 'pepselect-child' ); ?>"
 				>
 
 				<svg class="pepselect-home__match-lines" viewBox="0 0 100 75" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-					<path d="M 16 11 L 25 11 L 35 15" />
-					<circle cx="35" cy="15" r="0.8" />
-					<path d="M 13 64 L 24 64 L 36 61" />
-					<circle cx="36" cy="61" r="0.8" />
-					<path d="M 88 38 L 81 38 L 70 39" />
-					<circle cx="70" cy="39" r="0.8" />
+					<path d="M 16 11 L 24 11 L 34 19" />
+					<circle cx="34" cy="19" r="0.8" />
+					<path d="M 13 64 L 24 64 L 37 55" />
+					<circle cx="37" cy="55" r="0.8" />
+					<path d="M 88 38 L 80 38 L 64 38" />
+					<circle cx="64" cy="38" r="0.8" />
 				</svg>
 
 				<span class="pepselect-home__visual-label pepselect-home__visual-label--hardware"><?php esc_html_e( 'Cap + crimp', 'pepselect-child' ); ?></span>
@@ -69,12 +69,12 @@ $matches     = array(
 			<div class="pepselect-home__coa-proof">
 				<span class="pepselect-home__coa-proof-label"><?php esc_html_e( 'Independent laboratory record', 'pepselect-child' ); ?></span>
 				<img
-					src="<?php echo esc_url( $asset_url . 'nad-500mg-coa-source.webp' ); ?>"
+					src="<?php echo esc_url( $asset_url . 'tesamorelin-10mg-coa-source.webp' ); ?>"
 					width="3400"
 					height="4400"
 					loading="lazy"
 					decoding="async"
-					alt="<?php esc_attr_e( 'Freedom Diagnostics certificate for Pep Select NAD+ 500 mg, batch ND50026205JP.', 'pepselect-child' ); ?>"
+					alt="<?php esc_attr_e( 'Freedom Diagnostics certificate for Pep Select Tesamorelin 10 mg, batch PSTES1071926GX.', 'pepselect-child' ); ?>"
 				>
 			</div>
 		</div>

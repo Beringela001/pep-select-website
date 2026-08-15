@@ -1,6 +1,13 @@
 # Changelog
 
-**Staging candidate: 0.24.0-beta.1** — Quality Archive authority and crawl consolidation.
+**Release candidate: 0.25.0-beta.1** — Milestone 5 plus Tesamorelin batch-matching education.
+
+## 0.25.0-beta.1 - 2026-08-15
+
+- Replace the homepage batch-matching education example with the documented Tesamorelin 10 mg batch `PSTES1071926GX`.
+- Use a cool, clear-vial product visual and the matching Freedom Diagnostics COA.
+- Correct the callout endpoints so compound strength points to `10 mg`, batch points to the printed lot, and cap/crimp points to the vial hardware.
+- Rename the first evidence row from `What it is` to `Compound name` for faster comprehension.
 
 ## 0.24.0-beta.1 - 2026-08-15
 
