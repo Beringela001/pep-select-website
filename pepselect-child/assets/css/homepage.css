@@ -1042,9 +1042,27 @@
 		border-radius: 24px;
 	}
 
-	.pepselect-home__match-lines,
 	.pepselect-home__visual-label {
-		display: none;
+		min-height: 24px;
+		padding: 5px 8px;
+		font-size: 8px;
+		letter-spacing: 0.055em;
+		white-space: nowrap;
+	}
+
+	.pepselect-home__visual-label--hardware {
+		top: 8%;
+		left: 2.5%;
+	}
+
+	.pepselect-home__visual-label--identity {
+		bottom: 16%;
+		left: 2.5%;
+	}
+
+	.pepselect-home__visual-label--batch {
+		top: 47%;
+		right: 2.5%;
 	}
 
 	.pepselect-home__coa-proof {

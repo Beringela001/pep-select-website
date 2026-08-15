@@ -1,10 +1,10 @@
 # Pep Select child theme
 
-- Version: 0.22.0-beta.3
+- Version: 0.22.0-beta.4
 - Parent: Hello Elementor (`hello-elementor`)
 - Text domain: `pepselect-child`
 
-Pep Select is the lightweight presentation child theme for the controlled customer-facing rebuild. Version 0.22.0-beta.3 gives the homepage a plain-language batch-matching lesson built from a documented NAD+ example, a static high-resolution laboratory preview, and a product-neutral Quality Archive action, while leaving WooCommerce, COA, checkout, account, rewards, verification, and order behavior unchanged.
+Pep Select is the lightweight presentation child theme for the controlled customer-facing rebuild. Version 0.22.0-beta.4 preserves the batch-matching pointer lines and labels on mobile while retaining the plain-language NAD+ educational example, static laboratory preview, and product-neutral Quality Archive action. WooCommerce, COA, checkout, account, rewards, verification, and order behavior remain unchanged.
 
 ## Requirements and safe failure
 

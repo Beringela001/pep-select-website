@@ -1,6 +1,14 @@
 # Changelog
 
-**Staging candidate: 0.22.0-beta.3** — Plain-language batch lesson and static COA evidence.
+**Staging candidate: 0.22.0-beta.4** — Mobile batch-matching pointers.
+
+## 0.22.0-beta.4 - 2026-08-15
+
+- Restore the cap-and-crimp, compound-and-strength, and batch pointer lines on phone layouts.
+- Use smaller mobile annotation pills and move the lower label above the overlapping COA preview.
+- Preserve the verified desktop composition, static COA preview, archive CTA, and all commerce and COA behavior.
+
+**Previous staging candidate: 0.22.0-beta.3** — Plain-language batch lesson and static COA evidence.
 
 ## 0.22.0-beta.3 - 2026-08-15
 
