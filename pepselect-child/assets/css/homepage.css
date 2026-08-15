@@ -620,7 +620,12 @@
 }
 
 .pepselect-home__match-copy h2 {
-	max-width: 12ch;
+	max-width: none;
+}
+
+.pepselect-home__match-copy h2 span,
+.pepselect-home__match-copy h2 em {
+	white-space: nowrap;
 }
 
 .pepselect-home__match-copy h2 em {
@@ -992,10 +997,6 @@
 
 	.pepselect-home__match-copy {
 		grid-row: 1;
-	}
-
-	.pepselect-home__match-copy h2 {
-		max-width: 11ch;
 	}
 
 	.pepselect-home__match-visual {

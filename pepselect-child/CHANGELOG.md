@@ -5,6 +5,7 @@
 ## 0.22.0-beta.1 - 2026-08-15
 
 - Replace the generic Why Pep Select homepage block with the batch-matching mission: “Match the batch. Match the vial.”
+- Keep each half of the mission headline on one intentional line, including at the 320 px phone breakpoint.
 - Show a GLP-3 RT 20 mg vial and a factual Freedom Diagnostics report excerpt tied to batch `RT2026205JP`.
 - Call out the labeled identity, cap and crimp, and batch record on desktop; present the same evidence as a readable stacked list on mobile.
 - Keep the Quality Archive authoritative for current records and testing status; no COA, SKU, catalog, checkout, or other commerce logic changes.
