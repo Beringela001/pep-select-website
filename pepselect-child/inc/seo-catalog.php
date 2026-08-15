@@ -205,6 +205,39 @@ add_filter( 'get_the_excerpt', 'pepselect_child_suppress_generic_product_excerpt
 add_filter( 'woocommerce_short_description', 'pepselect_child_suppress_generic_product_excerpt', 20, 2 );
 
 /**
+ * Remove the exact legacy duplicate description from final product HTML.
+ *
+ * A legacy callback reads the raw post excerpt directly and does not apply
+ * WordPress or WooCommerce excerpt filters. Buffering only product
+ * responses lets us remove that one obsolete tag without changing the stored
+ * product excerpt or any visible product copy.
+ *
+ * @param string $html Final response HTML.
+ * @return string
+ */
+function pepselect_child_filter_product_response_metadata( $html ) {
+	$filtered = preg_replace(
+		'~<meta\s+name=["\']description["\']\s+content=["\']High-purity research peptide["\']\s*/?>\s*~i',
+		'',
+		$html
+	);
+
+	return is_string( $filtered ) ? $filtered : $html;
+}
+
+/**
+ * Start the narrowly scoped product response metadata cleanup.
+ *
+ * @return void
+ */
+function pepselect_child_start_product_response_metadata_cleanup() {
+	if ( ! is_admin() && function_exists( 'is_product' ) && is_product() ) {
+		ob_start( 'pepselect_child_filter_product_response_metadata' );
+	}
+}
+add_action( 'template_redirect', 'pepselect_child_start_product_response_metadata_cleanup', 99 );
+
+/**
  * Keep product canonical and social URLs on the current WooCommerce permalink.
  *
  * @param string $url Yoast URL value.

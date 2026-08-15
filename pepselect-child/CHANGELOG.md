@@ -1,6 +1,10 @@
 # Changelog
 
-**Staging candidate: 0.21.0-beta.5** — SEO Milestone 3 catalog consolidation and structured-data release.
+**Staging candidate: 0.21.0-beta.6** — SEO Milestone 3 catalog consolidation and structured-data release.
+
+## 0.21.0-beta.6 - 2026-08-14
+
+- Remove the exact obsolete duplicate product meta-description tag from final product HTML without changing stored or visible product copy.
 
 ## 0.21.0-beta.5 - 2026-08-14
 
