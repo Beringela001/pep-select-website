@@ -1,7 +1,8 @@
 # SEO Milestone 3 — Catalog Consolidation, Structured Data, and Internal Discovery
 
-Status: prepared — ready for staging kickoff  
+Status: staging verified — live deployment pending explicit approval  
 Prepared: 2026-08-14  
+Staging completion: 2026-08-14  
 Deployment boundary: staging first; live deployment requires a fresh backup and explicit approval after verification
 
 ## Outcome
@@ -10,9 +11,50 @@ Make the catalog easier for search engines and researchers to understand by choo
 
 This is one coordinated architecture milestone. It does not rewrite landing-page copy, launch articles, change product names, or alter commerce data.
 
+## Staging completion
+
+### Release and recovery
+
+- Deleted only the verified bottom/oldest staging backup, `Before NAD500 QR redirect 0.6.3 - 2026-08-14`.
+- Created staging backup `Before SEO Milestone 3 implementation - 2026-08-14` before installing code.
+- Active staging release: Pep Select child theme `0.21.0-beta.6`.
+- Package: `dist/pepselect-child-0.21.0-beta.6.zip`.
+- SHA-256: `8E06B980F88792F85DB7384816750D93DFD823D8A62C92132F9C4D0895827433`.
+- Package validation: one portable top-level `pepselect-child/` directory; `inc/seo-catalog.php` and `style.css` are present.
+- Active staging dependencies recorded before implementation: WordPress `7.0.4`, WooCommerce `10.9.4`, Yoast SEO `28.1`, and Pep Select COA Archive `0.6.4`.
+
+### Implemented
+
+- Made `/shop/` the primary catalog and permanently redirect `/product-category/research-compounds/` to it while preserving safe campaign, sorting, and filter query parameters.
+- Removed the redirected product category and its empty taxonomy sitemap from Yoast's sitemap index.
+- Replaced generic or empty Product descriptions with approved visible product content; Bacteriostatic Water keeps the description property absent until visible approved copy exists.
+- Made same-compound strengths distinct using the already-visible WooCommerce strength tag. No product name, tag, SKU, price, stock, or COA relationship was changed.
+- Added factual `Brand: Pep Select`, repaired current product URLs across Yoast/WooCommerce metadata, removed unsourced year-end price-validity values, and retained source-backed Offer fields.
+- Added one `OnlineStore` graph node using the existing Yoast organization ID, current name, URL, logo, and verified Refund & Shipping Policy link. No loyalty, rating, review, shipping-time, medical, or purity claim was invented.
+- Applied current product identity, description, URL, and HTTPS image values consistently to search, Open Graph, and Twitter metadata.
+- Forced the global Compounds navigation destination to Shop and added a crawlable About Us link to the existing footer Support group.
+- Preserved all COA plugin-owned batch and product relationships; no COA record or business logic moved into the theme.
+
+### Verification
+
+- The focused intended crawl now contains 44 URLs: the original 45-page set minus the consolidated product category. All 44 returned `200`, had exactly one H1 and a title, and contained zero fatal errors, `synthetic`, stale GLP-2T 30mg references, or obsolete generic purity metadata.
+- All 15 products passed Product/Offer checks for name, SKU, price, USD currency, availability, seller type, current URL, image, and brand. Fourteen have unique visible-content descriptions; Bacteriostatic Water intentionally omits description. No product emitted `priceValidUntil`, nested `validThrough`, rating, review, stale URL, or null schema value.
+- All 15 product document titles and meta descriptions are unique. GLP-3 R 10MG, 20MG, and 30MG now have distinct search and social identities while preserving their exact SKUs and commerce values.
+- GLP-2T emits one description tag, the current `/product/glp2-t20/` URL, a current HTTPS image, and valid WebPage, Breadcrumb, WebSite, OnlineStore, Product, and Offer graph values.
+- The catalog route, printed NAD500 QR route, and old GLP-2T route each return exact `301` redirects to their intended destinations.
+- The GLP-3 R 10MG product still links to batch `RT2026205JP`, and its compound record still links back to `/product/glp3-r10/`.
+- Shop, in-stock product, out-of-stock product, Bacteriostatic Water, cart, checkout, account, testing archive, NAD500 QR destination, and GLP-2T correction routes had no fatal errors or horizontal overflow in browser smoke tests.
+- Shop, product, and COA batch surfaces passed at `390`, `768`, and `1440` pixels. Cart, checkout, account, and Military Discount/VerifyPass entry surfaces passed at `390` and `1440` pixels.
+- Staging remains intentionally `noindex, nofollow`; Yoast therefore omits live-style canonicals there. Self-referencing canonicals and live indexability must be rechecked only after an explicitly approved live deployment.
+
+### Follow-up discovered during the complete root-index audit
+
+- The full Yoast root sitemap also exposes 14 default or utility URLs outside the milestone's 44-page intended indexable set: cart, checkout, account, the default post/category/author archives, and strength-tag archives.
+- These routes were not silently redirected or noindexed because product-tag and future editorial dependencies were not part of the approved consolidation decision. They remain a documented SEO cleanup candidate for the next milestone.
+
 ## Live baseline
 
-- The current sitemap emits 45 unique, valid, indexable URLs.
+- The prior intended crawl set contains 45 unique URLs. The complete root-index audit described above found additional default and utility archive URLs that earlier milestone counts did not include.
 - Every sitemap URL has at least one internal link; there are no sitemap orphans.
 - Three URLs have only one inbound sitemap-page link: About Us, Bacteriostatic Water 30mL, and the Research Compounds product category.
 - Shop and the Research Compounds product category are separate indexable URLs with substantially overlapping catalog purpose. Milestone 2 gave them unique snippets, but the primary-catalog decision remains unresolved.
