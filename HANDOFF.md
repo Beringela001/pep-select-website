@@ -1,14 +1,15 @@
 # Pep Select Website Redesign Handoff
 
-State captured: July 17, 2026
+State captured: August 15, 2026 (full state audit). Sections below dated July 17, 2026
+describe the WEB-2 rebuild and remain accurate for that scope unless corrected here.
 
 Repository: `C:\Users\paulo\Documents\Pep Select Website`
 
-Current branch: `web-2c-homepage`
+Current branch: `codex/checkout-panel-architecture`
 
-Current source commit: `f51a701` (`WEB-2C promote beta.3 homepage for staging release`)
+Current source commit: `1463baf` (`Close SEO milestone 5 live release`, 2026-08-15)
 
-Child-theme version: `0.4.0-beta.3`
+Child-theme version: `0.25.0-beta.4`
 
 ## 1. Read this first
 
@@ -20,14 +21,40 @@ Live has not been modified by WEB-2. Work is Staging-first.
 
 ### Current release state
 
-- The coded header and footer were activated and verified on Staging as child-theme version `0.3.1`.
-- The approved WEB-2C beta.3 homepage is complete in source.
-- Commit `f51a701` makes the coded homepage the normal output for supported front-page requests. It no longer requires `?pepselect_home_preview=1`, authentication, or `manage_options`.
-- The Elementor Home page remains stored and unchanged as the rollback source.
-- A release ZIP was created outside the repository at `C:\Users\paulo\Documents\Pep Select Website Releases\pepselect-child-0.4.0-beta.3.zip`.
-- ZIP SHA-256: `3E928EB5623E0819FD0EA0D270621DA62DE78D56966B83FD42C655BC7FA3D162`.
-- The promoted `f51a701` build has **not** been deployed or browser-verified on Staging. Deployment stopped before any Staging change because MyKinsta and WordPress were signed out.
-- The last documented Staging theme state is `0.3.1`; verify the installed version before proceeding.
+**Audited 2026-08-15.** Verify the deployed `style.css` before answering what is live; the
+CHANGELOG "Live version" line is a dated summary, not a live probe.
+
+- Child-theme version in source: `0.25.0-beta.4`. CHANGELOG records it as a release candidate
+  ("Milestone 5 plus Tesamorelin batch-matching education"). The last line recorded as installed
+  and verified on Live is `0.20.1-beta.2` (2026-08-14).
+- `0.20.0` was the stable checkout release (2026-08-12). Everything from `0.20.1-beta.1` onward is
+  SEO and homepage work.
+- **Branch state:** `codex/checkout-panel-architecture` is the active branch and is **32 commits
+  ahead of its own remote**. Those 32 commits — the entire SEO milestone 1-5 body of work plus the
+  homepage batch-matching section — exist **only on this machine**. They are not on GitHub.
+- The GitHub default branch is still `web-2c-homepage`, which sits at `5a66885` and is **64 commits
+  behind** the active branch. Anyone cloning the repository gets the checkout work at `0.20.0-beta.33`
+  and none of the SEO work.
+- Release ZIPs now live in `dist/` at the repository root (gitignored), per AGENTS.md, not in the
+  external Releases folder referenced by the July notes. Newest is
+  `dist/pepselect-child-0.25.0-beta.4.zip`, SHA-256
+  `e375b2f8203939ae7055194bc19309beb05e013bf4f1421f61fce22832041dd3`.
+- ZIP size grew from ~278 KB to ~1.29 MB when the six `assets/images/why-pep-select/` WebP assets
+  were added for the homepage batch-matching section.
+
+### Checkout architecture
+
+The checkout order-summary panel, its Fluid Checkout and YITH integration points, and the
+specificity traps that repeatedly caused regressions are documented separately in
+`HANDOFF-checkout-panel-architecture.md`. Read that before touching checkout. Three passages in it
+were written before the `0.20.0` stable release and are superseded:
+
+- the substep-title filter callback is now `pepselect_child_filter_checkout_substep_titles`, not
+  `pepselect_child_clear_payment_substep_title`;
+- the tax label is computed in the theme as `Sales tax (XX)` from the customer's live state, so the
+  instruction to change it in wp-admin no longer applies;
+- the cash-back card now survives removal without a page reload (session-persisted YITH config plus
+  a fallback to YITH's own `ywpar_apply_points` endpoint).
 
 Several older WEB-2C documents and `pepselect-child/README.md` still describe the homepage as an administrator-only preview. That is documentation drift. The runtime source at `f51a701` is authoritative.
 
@@ -445,6 +472,102 @@ After beta.3 installation:
 - `docs/WEB-2B-global-navigation-plan.md`: coded-shell architecture, integrations, packages, Staging activation, and rollback.
 - `docs/WEB-2C-homepage-journey.md`: product-first journey and compliance boundary; preview-status language is stale after `f51a701`.
 - `docs/WEB-2C-homepage-copy-draft.md`: approved beta.3 copy; preview-status language is stale after `f51a701`.
+## 12. SEO — what exists and where it lives
+
+Added 2026-08-14/15 across SEO milestones 1-5. Milestone records are in `docs/SEO-M1..M5-*.md`.
+All of it is **Yoast-based**: the theme owns no titles, meta, canonicals or schema of its own — it
+filters Yoast's output. There is no Rank Math, AIOSEO or SEOPress code anywhere in the theme.
+
+### Files
+
+| File | Purpose |
+|---|---|
+| `pepselect-child/inc/seo-catalog.php` (557 lines) | Catalog SEO: the Shop consolidation redirect, sitemap exclusions, product and catalog titles/descriptions, social metadata repair, and all WooCommerce/Yoast schema filtering |
+| `pepselect-child/inc/seo-semantics.php` (99 lines) | Page-specific semantic fixes, currently only the About page |
+
+Both are loaded from `inc/setup.php`.
+
+### Redirects
+
+One PHP-level redirect, no `.htaccess` in the repository:
+
+- `pepselect_child_redirect_research_compounds_archive()` — `template_redirect` priority 1.
+  301s the `research-compounds` product category to the Shop URL and **preserves query parameters**
+  (campaign attribution, sorting, filters, direct add-to-cart) while dropping `product_cat`,
+  `paged` and `page`.
+
+### Sitemaps
+
+No sitemap files or generators in the repository; Yoast generates them. The theme only excludes:
+
+- the redirected `research-compounds` term (`wpseo_exclude_from_sitemap_by_term_ids`);
+- the empty product-category sitemap (`wpseo_sitemap_exclude_taxonomy`);
+- the post sitemap **while no eligible published post exists** — a published post that Yoast marks
+  `noindex` is treated as ineligible, so a placeholder cannot produce an empty public sitemap
+  (`wpseo_sitemap_exclude_post_type`);
+- the Shop page from the *page* sitemap, since it belongs in the product sitemap
+  (`wpseo_exclude_from_sitemap_by_post_ids`);
+- the About page (`seo-semantics.php`).
+
+### Titles, descriptions, social
+
+Catalog and product titles are filtered onto four surfaces each — `pre_get_document_title`,
+`wpseo_title`, `wpseo_opengraph_title`, `wpseo_twitter_title` — so the HTML title and the social
+previews cannot drift apart. Product descriptions likewise cover `wpseo_metadesc`,
+`wpseo_opengraph_desc` and `wpseo_twitter_description`.
+
+Product identity is **strength-specific**: same-compound strengths are distinguished using the
+visible WooCommerce strength tag, which is what stopped several products sharing one generic title.
+
+Two cleanups run against legacy output: `pepselect_child_suppress_generic_product_excerpt()` blocks
+an obsolete generic excerpt that a legacy callback was emitting as a second meta description, and
+`pepselect_child_filter_product_response_metadata()` strips a surviving duplicate meta tag from the
+final product HTML via an output buffer opened on `template_redirect` priority 99.
+
+Canonicals, OG URLs and social images are repaired to the current WooCommerce permalink and the
+current HTTPS product image after catalog slug changes.
+
+### Structured data — what is emitted, and what is deliberately absent
+
+Filtered through `woocommerce_structured_data_product`, `woocommerce_structured_data_product_offer`
+and `wpseo_schema_graph`:
+
+- **Product** — description replaced with the approved copy visible on the page, or omitted entirely
+  when no visible source exists. `brand` set to the site name.
+- **Offer** — `seller` typed as `OnlineStore`; `hasMerchantReturnPolicy` referenced by `@id`.
+- **MerchantReturnPolicy** — one store-level entity at `home_url('/#merchant-return-policy')`,
+  `applicableCountry: US`, `returnPolicyCategory: MerchantReturnNotPermitted`, linking to the
+  published refund/shipping policy page. This mirrors the real published policy: no returns after
+  shipment.
+- **Price validity** — WooCommerce's assumed year-end `priceValidUntil` and the matching
+  `validThrough` are **removed** unless the product has a genuine scheduled-sale end date.
+
+**Compliance check performed during this audit:** the theme emits **no** `aggregateRating`,
+`reviewCount`, `ratingValue`, `review`, `gtin` or `mpn` anywhere. Nothing fabricates social proof or
+identifiers. That property is worth preserving — an underwriter or a Google manual action would both
+look here first.
+
+### noindex — current state of every page that has one
+
+- **About** (`/about-us/`) — `noindex, follow`, applied through all three robots layers
+  (`wpseo_robots_array`, `wpseo_robots`, `wp_robots`) and excluded from sitemaps. Removed from the
+  global footer; the page itself was not deleted or rewritten.
+- **Military & First Responder** (`/military-discount/`) — the theme's noindex filters were
+  **removed** in `0.20.0-beta.19` and the footer link restored. The page carries no theme-level
+  noindex today. Any noindex still observed on Live is Yoast's stored per-page setting and must be
+  cleared in wp-admin.
+
+### Homepage batch-matching section
+
+`template-parts/home/why-pep-select.php` plus six WebP assets. The current example is Tesamorelin
+10 mg, batch `PSTES1071926GX`, with the matching Freedom Diagnostics COA.
+
+**The batch number, compound, strength and COA image are hardcoded in the template**, not pulled
+from the COA Archive. They are presented as an educational example rather than a live record, and
+the section routes to `/testing/` as the authoritative source. This is a deliberate, documented
+trade-off, but it means **the template must be updated by hand whenever that batch is superseded**,
+or the homepage will show a batch that no longer matches anything shippable. Tracked in BACKLOG.
+
 - `docs/WEB-2C-homepage-implementation.md`: beta.3 implementation and design evolution; preview-status language is stale after `f51a701`.
 - `.agents/product-marketing.md`: tracked public positioning, voice, claims, and compliance guardrails.
 - `site-exports/elementor/`: historical Elementor JSON evidence; not a complete or current site backup.

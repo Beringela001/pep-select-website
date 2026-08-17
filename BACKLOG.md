@@ -55,6 +55,34 @@ Resilience to preserve: if the plugin is deactivated or the lookup fails, the ch
 
 ---
 
+### Homepage batch-matching example is hardcoded
+
+**Status:** open · **Surface:** `pepselect-child/template-parts/home/why-pep-select.php`
+
+The homepage batch-matching section hardcodes the compound, strength, batch number
+(`PSTES1071926GX`) and COA image rather than reading the COA Archive. It is framed as an
+educational example and links to `/testing/` as authoritative, so it is not a correctness bug
+today — but it will silently go stale when that batch is superseded, and it has already been
+rewritten three times (GLP-3 RT, then NAD+, then Tesamorelin) as examples changed.
+
+Decide one of: accept the manual step and add it to the batch-retirement checklist, or source the
+example from the COA Archive so it follows the current batch automatically.
+
+### www / non-www is not handled anywhere in the theme
+
+**Status:** open, unverified scope · **Priority:** check before any further SEO work
+
+A repository-wide search finds **no** `www.` handling in the theme — no canonical host enforcement,
+no redirect, no cart/session bridging. The known split-cart symptom between the apex and `www`
+hosts is therefore not addressed in code. It may be handled at the host or DNS layer, which would be
+the right place for it, but that has not been verified.
+
+Confirm which host is canonical, that the other 301s to it with the path preserved, and that a cart
+started on one host survives the redirect. An unresolved host split also splits SEO signals, so this
+sits underneath the milestone 1-5 work rather than beside it.
+
+---
+
 ## Notes
 
 ### Batch numbering — existing numbers predate R6, do not "fix"
