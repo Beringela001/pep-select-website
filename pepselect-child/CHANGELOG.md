@@ -1,6 +1,11 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.15** — Responsive payment-confirmed email.
+**Release candidate: 0.25.0-beta.16** — Mobile-safe payment-confirmed email.
+
+## 0.25.0-beta.16 - 2026-08-18
+
+- Keep the payment-confirmation check icon circular when its supporting sentence wraps on narrow mobile email clients.
+- Preserve the approved beta.15 copy, live WooCommerce order data, responsive order summary, and shared shipped-order canvas.
 
 ## 0.25.0-beta.15 - 2026-08-18
 
