@@ -1,6 +1,11 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.10** — Responsive payment-required email with support-routed replies.
+**Release candidate: 0.25.0-beta.11** — More readable payment-required email typography.
+
+## 0.25.0-beta.11 - 2026-08-18
+
+- Increase the supporting payment-link, bank-statement, order-summary, product, total, address, support, and footer text by one pixel for easier reading on desktop and mobile.
+- Preserve the approved layout, wording, WooCommerce product and order bindings, Square destination, responsive stacking, and support-routed replies.
 
 ## 0.25.0-beta.10 - 2026-08-18
 
