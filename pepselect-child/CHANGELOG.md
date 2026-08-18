@@ -1,6 +1,11 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.13** — Mobile-safe shipped-order email.
+**Release candidate: 0.25.0-beta.14** — Mockup-matched, mobile-safe shipped-order email.
+
+## 0.25.0-beta.14 - 2026-08-18
+
+- Restore the approved connected desktop progress treatment while keeping the same status markup safe and readable on mobile.
+- Preserve beta.13's WooCommerce-safe carrier, tracking, order, and shipping sections.
 
 ## 0.25.0-beta.13 - 2026-08-18
 
