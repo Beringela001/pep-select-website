@@ -2,170 +2,218 @@
 /**
  * Customer on-hold order email — Pep Select child theme override.
  *
- * Based on the WooCommerce 10.4.0 template. Moved here from
- * hello-elementor/woocommerce/emails/ so parent-theme updates cannot
- * remove the Square payment block. Styled to the storefront: navy headings,
- * cyan Square button, amber exact-amount block.
+ * Owns the complete responsive email canvas. WooCommerce remains the source
+ * of truth for order items, product images, quantities, totals, addresses,
+ * and customer data.
  *
- * Email-client safe: table layout, inline styles, no flexbox or grid.
- *
- * @package PepSelect_Child\WooCommerce\Templates\Emails
- * @version 10.4.0
+ * @package WooCommerce\Templates\Emails
+ * @version 10.9.0
  */
-
-use Automattic\WooCommerce\Utilities\FeaturesUtil;
 
 defined( 'ABSPATH' ) || exit;
 
-$email_improvements_enabled = FeaturesUtil::feature_is_enabled( 'email_improvements' );
-
 $pep = function_exists( 'pepselect_child_email_tokens' ) ? pepselect_child_email_tokens() : array(
-	'navy'        => '#002A53',
-	'ink'         => '#001D3A',
-	'slate'       => '#5E6F80',
-	'cyan'        => '#17A1CF',
-	'amber'       => '#B46A00',
-	'amber_soft'  => '#FDF6EA',
-	'amber_ink'   => '#5C3A00',
-	'border'      => '#D7E1E9',
-	'white'       => '#FFFFFF',
-	'font'        => "'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
-	'font_mono'   => "'IBM Plex Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', 'Courier New', Courier, monospace",
-	'radius_pill' => '999px',
-	'radius'      => '8px',
+	'navy' => '#002A53', 'ink' => '#001D3A', 'slate' => '#5E6F80', 'neutral' => '#7A8793',
+	'cyan' => '#17A1CF', 'cyan_soft' => '#E8F6FB', 'amber' => '#B46A00', 'amber_soft' => '#FDF6EA',
+	'amber_ink' => '#5C3A00', 'border' => '#D7E1E9', 'white' => '#FFFFFF',
+	'font' => "'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif",
+	'font_mono' => "'IBM Plex Mono','SFMono-Regular',Consolas,'Liberation Mono','Courier New',Courier,monospace",
 );
 
-$pep_square_link = 'https://square.link/u/QUyZwLLC';
-$pep_body        = 'font-family:' . $pep['font'] . ';font-size:15px;line-height:1.7;color:' . $pep['ink'] . ';';
+$pep_support_email = function_exists( 'pepselect_child_email_support_address' ) ? pepselect_child_email_support_address() : 'support@pepselect.com';
+$pep_square_link   = 'https://square.link/u/QUyZwLLC';
+$pep_logo_url      = 'https://pepselect.com/wp-content/uploads/2026/06/Logo_Pepselect_Whitebackground-1.png';
+$pep_qr_url        = trailingslashit( get_stylesheet_directory_uri() ) . 'assets/images/email/square-payment-qr.png';
+$pep_order_number  = $order->get_order_number();
+$pep_order_date    = $order->get_date_created() ? wc_format_datetime( $order->get_date_created(), 'M j, Y' ) : '';
+$pep_first_name    = trim( (string) $order->get_billing_first_name() );
+$pep_first_name    = '' !== $pep_first_name ? $pep_first_name : __( 'there', 'pepselect-child' );
+$pep_order_items   = $order->get_items( apply_filters( 'woocommerce_purchase_order_item_types', 'line_item' ) );
+$pep_order_totals  = $order->get_order_item_totals();
 
-/*
- * @hooked WC_Emails::email_header()
- */
-do_action( 'woocommerce_email_header', $email_heading, $email );
-?>
+/* Read compatible email metadata without inheriting third-party markup. */
+$pep_email_meta     = apply_filters( 'woocommerce_email_order_meta_fields', array(), false, $order );
+$pep_research_value = trim( (string) $order->get_meta( '_research_purpose' ) );
+$pep_points_value   = '';
 
-<?php echo $email_improvements_enabled ? '<div class="email-introduction">' : ''; ?>
-
-<p style="<?php echo esc_attr( $pep_body ); ?>">
-<?php
-if ( ! empty( $order->get_billing_first_name() ) ) {
-	printf( esc_html__( 'Hi %s,', 'woocommerce' ), esc_html( $order->get_billing_first_name() ) );
-} else {
-	esc_html_e( 'Hi,', 'woocommerce' );
-}
-?>
-</p>
-
-<p style="<?php echo esc_attr( $pep_body ); ?>">
-	Thank you for your order. It has been received and is <strong>on hold</strong> until your payment clears.
-</p>
-
-<!-- PAYMENT BOX -->
-<table cellpadding="0" cellspacing="0" border="0" width="100%" role="presentation" style="margin:30px 0;border:1px solid <?php echo esc_attr( $pep['border'] ); ?>;border-radius:12px;background:<?php echo esc_attr( $pep['white'] ); ?>;">
-	<tr>
-		<td style="padding:30px;font-family:<?php echo esc_attr( $pep['font'] ); ?>;color:<?php echo esc_attr( $pep['ink'] ); ?>;">
-
-			<h2 style="margin:0 0 12px;font-family:<?php echo esc_attr( $pep['font'] ); ?>;font-size:22px;font-weight:600;line-height:1.3;color:<?php echo esc_attr( $pep['navy'] ); ?>;">
-				Complete your payment
-			</h2>
-
-			<p style="margin:0 0 20px;<?php echo esc_attr( $pep_body ); ?>">
-				To complete your purchase, submit your payment through our secure Square payment link.
-			</p>
-
-			<!-- EXACT AMOUNT REMINDER -->
-			<table cellpadding="0" cellspacing="0" border="0" width="100%" role="presentation" style="margin:0 0 5px;border:1px solid <?php echo esc_attr( $pep['amber'] ); ?>;border-left:4px solid <?php echo esc_attr( $pep['amber'] ); ?>;border-radius:<?php echo esc_attr( $pep['radius'] ); ?>;background:<?php echo esc_attr( $pep['amber_soft'] ); ?>;">
-				<tr>
-					<td style="padding:18px 22px;font-family:<?php echo esc_attr( $pep['font'] ); ?>;color:<?php echo esc_attr( $pep['amber_ink'] ); ?>;">
-						<p style="margin:0 0 8px;font-size:15px;line-height:1.6;">
-							When you open the payment link, enter your order total exactly:
-						</p>
-						<p style="margin:0 0 8px;font-size:24px;font-weight:600;font-family:<?php echo esc_attr( $pep['font_mono'] ); ?>;color:<?php echo esc_attr( $pep['amber'] ); ?>;">
-							<?php echo wp_kses_post( $order->get_formatted_order_total() ); ?>
-						</p>
-						<p style="margin:0;font-size:13px;line-height:1.6;">
-							Payments that do not match your order total cannot be processed and will delay your order.
-						</p>
-					</td>
-				</tr>
-			</table>
-
-			<table align="center" cellpadding="0" cellspacing="0" border="0" role="presentation" style="margin:28px auto;">
-				<tr>
-					<td bgcolor="<?php echo esc_attr( $pep['cyan'] ); ?>" style="border-radius:<?php echo esc_attr( $pep['radius_pill'] ); ?>;">
-						<a href="<?php echo esc_url( $pep_square_link ); ?>"
-						   target="_blank"
-						   style="display:inline-block;padding:14px 34px;font-family:<?php echo esc_attr( $pep['font'] ); ?>;color:<?php echo esc_attr( $pep['white'] ); ?>;font-size:16px;font-weight:600;text-decoration:none;border-radius:<?php echo esc_attr( $pep['radius_pill'] ); ?>;">
-							Complete payment
-						</a>
-					</td>
-				</tr>
-			</table>
-
-			<p style="margin:20px 0 10px;<?php echo esc_attr( $pep_body ); ?>">
-				If the button above does not work, use this link:
-			</p>
-
-			<p style="margin:0;word-break:break-all;font-family:<?php echo esc_attr( $pep['font_mono'] ); ?>;font-size:13px;">
-				<a href="<?php echo esc_url( $pep_square_link ); ?>" target="_blank" style="color:<?php echo esc_attr( $pep['cyan'] ); ?>;">
-					<?php echo esc_html( $pep_square_link ); ?>
-				</a>
-			</p>
-
-			<hr style="border:none;border-top:1px solid <?php echo esc_attr( $pep['border'] ); ?>;margin:25px 0;">
-
-			<p style="margin:0 0 15px;<?php echo esc_attr( $pep_body ); ?>">
-				Once your payment is submitted, our team reviews and verifies it. After confirmation, your order is processed and you receive another email with your updated order status.
-			</p>
-
-			<p style="margin:0 0 15px;<?php echo esc_attr( $pep_body ); ?>">
-				<strong>Important:</strong> Your payment will appear as
-				<strong>&ldquo;3BS Holdings LLC&rdquo;</strong>, our verified Square business account.
-			</p>
-
-			<p style="margin:0;<?php echo esc_attr( $pep_body ); ?>">
-				If you have any questions, contact us at
-				<a href="mailto:support@pepselect.com" style="color:<?php echo esc_attr( $pep['cyan'] ); ?>;">support@pepselect.com</a>.
-			</p>
-
-		</td>
-	</tr>
-</table>
-
-<?php echo $email_improvements_enabled ? '</div>' : ''; ?>
-
-<?php
-/*
- * Order Details
- */
-do_action( 'woocommerce_email_order_details', $order, $sent_to_admin, $plain_text, $email );
-
-/*
- * Order Meta
- */
-do_action( 'woocommerce_email_order_meta', $order, $sent_to_admin, $plain_text, $email );
-
-/*
- * Customer Details
- */
-do_action( 'woocommerce_email_customer_details', $order, $sent_to_admin, $plain_text, $email );
-
-/*
- * Additional Content
- */
-if ( $additional_content ) {
-	echo $email_improvements_enabled
-		? '<table border="0" cellpadding="0" cellspacing="0" width="100%" role="presentation"><tr><td class="email-additional-content">'
-		: '';
-
-	echo wp_kses_post( wpautop( wptexturize( $additional_content ) ) );
-
-	echo $email_improvements_enabled
-		? '</td></tr></table>'
-		: '';
+foreach ( (array) $pep_email_meta as $pep_meta_field ) {
+	$pep_meta_label = isset( $pep_meta_field['label'] ) ? wp_strip_all_tags( (string) $pep_meta_field['label'] ) : '';
+	$pep_meta_value = isset( $pep_meta_field['value'] ) ? wp_strip_all_tags( (string) $pep_meta_field['value'] ) : '';
+	if ( '' === $pep_research_value && preg_match( '/research purpose/i', $pep_meta_label ) ) {
+		$pep_research_value = trim( $pep_meta_value );
+	}
+	if ( '' === $pep_points_value && preg_match( '/point/i', $pep_meta_label ) && preg_match( '/[0-9]+/', $pep_meta_value, $pep_point_match ) ) {
+		$pep_points_value = $pep_point_match[0];
+	}
 }
 
-/*
- * Footer
- */
-do_action( 'woocommerce_email_footer', $email );
+if ( '' === $pep_points_value ) {
+	foreach ( array( '_ywpar_points_earned', 'ywpar_points_earned', '_ywpar_points_from_cart', 'ywpar_points_from_cart' ) as $pep_points_key ) {
+		$pep_points_candidate = $order->get_meta( $pep_points_key );
+		if ( is_numeric( $pep_points_candidate ) && (float) $pep_points_candidate > 0 ) {
+			$pep_points_value = (string) absint( $pep_points_candidate );
+			break;
+		}
+	}
+}
+
+$pep_billing_address  = $order->get_formatted_billing_address();
+$pep_shipping_address = $order->get_formatted_shipping_address();
+if ( '' === $pep_shipping_address ) {
+	$pep_shipping_address = $pep_billing_address;
+}
+
+$pep_addresses_same = '' === trim( (string) $order->get_shipping_address_1() );
+if ( ! $pep_addresses_same ) {
+	$pep_addresses_same = true;
+	foreach ( array( 'first_name', 'last_name', 'company', 'address_1', 'address_2', 'city', 'state', 'postcode', 'country' ) as $pep_address_key ) {
+		if ( trim( (string) $order->{'get_shipping_' . $pep_address_key}() ) !== trim( (string) $order->{'get_billing_' . $pep_address_key}() ) ) {
+			$pep_addresses_same = false;
+			break;
+		}
+	}
+}
+?>
+<!doctype html>
+<html lang="<?php echo esc_attr( get_bloginfo( 'language' ) ); ?>">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=<?php echo esc_attr( get_bloginfo( 'charset' ) ); ?>">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="color-scheme" content="light">
+	<meta name="supported-color-schemes" content="light">
+	<title><?php esc_html_e( 'Thank you for your order', 'pepselect-child' ); ?></title>
+	<style type="text/css">
+		body,table,td,a,p,h1,h2,h3{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%}
+		table,td{mso-table-lspace:0;mso-table-rspace:0}table{border-collapse:separate;border-spacing:0}
+		img{-ms-interpolation-mode:bicubic;border:0;display:block;height:auto;line-height:100%;outline:none;text-decoration:none}
+		.pep-email-mobile-only{display:none;font-size:0;line-height:0;max-height:0;mso-hide:all;overflow:hidden}
+		@media only screen and (max-width:520px){
+			.pep-email-outer-pad{padding:8px!important}.pep-email-card{border-radius:18px!important}
+			.pep-email-header{padding:28px 22px 22px!important}.pep-email-main{padding:0 22px 26px!important}.pep-email-footer{padding:0 22px 28px!important}
+			.pep-email-heading{font-size:27px!important;letter-spacing:-.6px!important;line-height:1.18!important}
+			.pep-email-payment-card,.pep-email-address-card{padding-left:18px!important;padding-right:18px!important}
+			.pep-email-status-step{width:50%!important}.pep-email-status-later,.pep-email-desktop-only,.pep-email-desktop-addresses,.pep-email-qr{display:none!important;font-size:0!important;line-height:0!important;max-height:0!important;mso-hide:all!important;overflow:hidden!important}
+			.pep-email-mobile-only,.pep-email-mobile-addresses{display:block!important;font-size:inherit!important;line-height:inherit!important;max-height:none!important;overflow:visible!important}
+			.pep-email-summary-column{display:block!important;width:100%!important}.pep-email-total-column{border-left:0!important;border-top:1px solid <?php echo esc_attr( $pep['border'] ); ?>!important}
+			.pep-email-button-table{width:100%!important}.pep-email-button{display:block!important;width:auto!important}
+		}
+	</style>
+</head>
+<body style="background-color:#E9EEF4;margin:0;min-width:100%;padding:0;width:100%;">
+	<div aria-hidden="true" style="font-size:1px;line-height:1px;max-height:1px;opacity:0;overflow:hidden;mso-hide:all;">
+		<?php printf( esc_html__( 'We received order #%s and will hold it for 90 minutes while you complete payment.', 'pepselect-child' ), esc_html( $pep_order_number ) ); ?>
+	</div>
+	<table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%" style="background-color:#E9EEF4;width:100%;">
+		<tr><td align="center" class="pep-email-outer-pad" style="padding:32px 16px;">
+			<!--[if mso]><table border="0" cellpadding="0" cellspacing="0" role="presentation" width="680"><tr><td><![endif]-->
+			<table border="0" cellpadding="0" cellspacing="0" class="pep-email-card" role="presentation" width="100%" style="background-color:<?php echo esc_attr( $pep['white'] ); ?>;border-radius:18px;box-shadow:0 18px 46px rgba(0,42,83,.14);max-width:680px;overflow:hidden;width:100%;">
+				<tr><td style="font-size:0;line-height:0;padding:0;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%"><tr><td bgcolor="<?php echo esc_attr( $pep['navy'] ); ?>" height="6" style="background-color:<?php echo esc_attr( $pep['navy'] ); ?>;border-radius:18px 0 0 0;font-size:0;height:6px;line-height:6px;width:75%;">&nbsp;</td><td bgcolor="<?php echo esc_attr( $pep['cyan'] ); ?>" height="6" style="background-color:<?php echo esc_attr( $pep['cyan'] ); ?>;border-radius:0 18px 0 0;font-size:0;height:6px;line-height:6px;width:25%;">&nbsp;</td></tr></table></td></tr>
+				<tr><td class="pep-email-header" style="padding:38px 44px 28px;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%"><tr><td align="left" valign="middle"><a href="<?php echo esc_url( home_url( '/' ) ); ?>" style="display:inline-block;text-decoration:none;" target="_blank"><img alt="Pep Select" src="<?php echo esc_url( $pep_logo_url ); ?>" width="132" style="height:auto;max-width:132px;width:132px;"></a></td><td align="right" class="pep-email-desktop-only" style="color:<?php echo esc_attr( $pep['slate'] ); ?>;font-family:<?php echo esc_attr( $pep['font_mono'] ); ?>;font-size:10px;font-weight:600;letter-spacing:1.4px;line-height:1.4;text-transform:uppercase;" valign="middle"><?php printf( esc_html__( 'Order #%s', 'pepselect-child' ), esc_html( $pep_order_number ) ); ?></td></tr><tr><td colspan="2" style="border-bottom:1px solid <?php echo esc_attr( $pep['border'] ); ?>;font-size:0;line-height:0;padding-top:28px;">&nbsp;</td></tr></table></td></tr>
+				<tr><td class="pep-email-main" style="padding:0 44px 34px;">
+					<p style="color:#0D708E;font-family:<?php echo esc_attr( $pep['font_mono'] ); ?>;font-size:10px;font-weight:700;letter-spacing:1.5px;line-height:1.5;margin:0 0 12px;text-transform:uppercase;"><?php printf( esc_html__( 'Order #%s · Payment needed', 'pepselect-child' ), esc_html( $pep_order_number ) ); ?></p>
+					<h1 class="pep-email-heading" style="color:<?php echo esc_attr( $pep['ink'] ); ?>;font-family:<?php echo esc_attr( $pep['font'] ); ?>;font-size:32px;font-weight:750;letter-spacing:-.9px;line-height:1.18;margin:0 0 18px;"><?php esc_html_e( 'Thank you for your order', 'pepselect-child' ); ?></h1>
+					<p style="color:<?php echo esc_attr( $pep['ink'] ); ?>;font-family:<?php echo esc_attr( $pep['font'] ); ?>;font-size:16px;font-weight:600;line-height:1.55;margin:0 0 4px;"><?php printf( esc_html__( 'Hi %s,', 'pepselect-child' ), esc_html( $pep_first_name ) ); ?></p>
+					<p style="color:<?php echo esc_attr( $pep['slate'] ); ?>;font-family:<?php echo esc_attr( $pep['font'] ); ?>;font-size:16px;line-height:1.55;margin:0 0 26px;"><?php printf( esc_html__( 'We received order #%s and will hold it for 90 minutes while you complete payment. Once we confirm your payment, our team will begin preparing your order and creating your shipping label.', 'pepselect-child' ), esc_html( $pep_order_number ) ); ?></p>
+					<table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%" style="background-color:#F8FAFC;border:1px solid <?php echo esc_attr( $pep['border'] ); ?>;border-radius:8px;margin:0 0 22px;overflow:hidden;"><tr>
+						<td class="pep-email-status-step" style="padding:15px 16px;width:25%;" valign="top"><p style="color:#1E9467;font-family:<?php echo esc_attr( $pep['font'] ); ?>;font-size:18px;font-weight:700;line-height:1;margin:0 0 6px;">&#10003;</p><p style="color:<?php echo esc_attr( $pep['ink'] ); ?>;font-family:<?php echo esc_attr( $pep['font'] ); ?>;font-size:11px;font-weight:700;line-height:1.35;margin:0;"><?php esc_html_e( 'Order received', 'pepselect-child' ); ?></p></td>
+						<td class="pep-email-status-step" style="border-left:1px solid <?php echo esc_attr( $pep['border'] ); ?>;padding:15px 16px;width:25%;" valign="top"><p style="color:<?php echo esc_attr( $pep['cyan'] ); ?>;font-family:Arial,Helvetica,sans-serif;font-size:18px;line-height:1;margin:0 0 6px;">&#9675;</p><p style="color:<?php echo esc_attr( $pep['ink'] ); ?>;font-family:<?php echo esc_attr( $pep['font'] ); ?>;font-size:11px;font-weight:700;line-height:1.35;margin:0;"><?php esc_html_e( 'Payment needed', 'pepselect-child' ); ?></p></td>
+						<td class="pep-email-status-step pep-email-status-later" style="border-left:1px solid <?php echo esc_attr( $pep['border'] ); ?>;padding:15px 16px;width:25%;" valign="top"><p style="color:#B8C4CE;font-family:Arial,Helvetica,sans-serif;font-size:18px;line-height:1;margin:0 0 6px;">&#9675;</p><p style="color:<?php echo esc_attr( $pep['slate'] ); ?>;font-family:<?php echo esc_attr( $pep['font'] ); ?>;font-size:11px;font-weight:700;line-height:1.35;margin:0;"><?php esc_html_e( 'Processing', 'pepselect-child' ); ?></p></td>
+						<td class="pep-email-status-step pep-email-status-later" style="border-left:1px solid <?php echo esc_attr( $pep['border'] ); ?>;padding:15px 16px;width:25%;" valign="top"><p style="color:#B8C4CE;font-family:Arial,Helvetica,sans-serif;font-size:18px;line-height:1;margin:0 0 6px;">&#9675;</p><p style="color:<?php echo esc_attr( $pep['slate'] ); ?>;font-family:<?php echo esc_attr( $pep['font'] ); ?>;font-size:11px;font-weight:700;line-height:1.35;margin:0;"><?php esc_html_e( 'Shipped', 'pepselect-child' ); ?></p></td>
+					</tr></table>
+
+					<table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%" style="border:1px solid <?php echo esc_attr( $pep['border'] ); ?>;border-radius:8px;margin:0 0 24px;overflow:hidden;"><tr><td class="pep-email-payment-card" style="padding:24px;">
+						<p style="color:#0D708E;font-family:<?php echo esc_attr( $pep['font_mono'] ); ?>;font-size:10px;font-weight:700;letter-spacing:1.5px;line-height:1.5;margin:0 0 8px;text-transform:uppercase;"><?php esc_html_e( 'Next step', 'pepselect-child' ); ?></p>
+						<h2 style="color:<?php echo esc_attr( $pep['navy'] ); ?>;font-family:Georgia,'Times New Roman',serif;font-size:21px;font-weight:700;line-height:1.3;margin:0 0 8px;"><?php esc_html_e( 'Complete your payment', 'pepselect-child' ); ?></h2>
+						<p style="color:<?php echo esc_attr( $pep['slate'] ); ?>;font-family:<?php echo esc_attr( $pep['font'] ); ?>;font-size:14px;line-height:1.55;margin:0 0 18px;"><?php esc_html_e( 'To complete your purchase, submit your payment through our secure Square payment link. Choose whichever option works best for you.', 'pepselect-child' ); ?></p>
+						<table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%" style="background-color:<?php echo esc_attr( $pep['amber_soft'] ); ?>;border:1px solid <?php echo esc_attr( $pep['amber'] ); ?>;border-left:4px solid <?php echo esc_attr( $pep['amber'] ); ?>;border-radius:8px;margin:0 0 18px;"><tr><td style="color:<?php echo esc_attr( $pep['amber_ink'] ); ?>;font-family:<?php echo esc_attr( $pep['font'] ); ?>;padding:16px 18px;">
+							<p style="font-size:13px;line-height:1.5;margin:0 0 4px;"><?php esc_html_e( 'Your order total', 'pepselect-child' ); ?></p>
+							<p style="color:<?php echo esc_attr( $pep['amber'] ); ?>;font-family:<?php echo esc_attr( $pep['font_mono'] ); ?>;font-size:24px;font-weight:700;line-height:1.3;margin:0 0 4px;"><?php echo wp_kses_post( $order->get_formatted_order_total() ); ?></p>
+							<p style="font-size:12px;line-height:1.5;margin:0;"><?php printf( esc_html__( 'Please enter this amount on the Square payment page so we can match your payment to order #%s.', 'pepselect-child' ), esc_html( $pep_order_number ) ); ?></p>
+						</td></tr></table>
+						<table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%"><tr>
+							<td style="padding-right:16px;" valign="top">
+								<p style="color:#0D708E;font-family:<?php echo esc_attr( $pep['font_mono'] ); ?>;font-size:9px;font-weight:700;letter-spacing:1.3px;line-height:1.5;margin:0 0 8px;text-transform:uppercase;"><?php esc_html_e( 'Pay on this device', 'pepselect-child' ); ?></p>
+								<table border="0" cellpadding="0" cellspacing="0" class="pep-email-button-table" role="presentation" width="100%" style="margin:0 0 8px;width:100%;"><tr><td align="center" bgcolor="<?php echo esc_attr( $pep['cyan'] ); ?>" style="background-color:<?php echo esc_attr( $pep['cyan'] ); ?>;border-radius:999px;"><a class="pep-email-button" href="<?php echo esc_url( $pep_square_link ); ?>" style="border:1px solid <?php echo esc_attr( $pep['cyan'] ); ?>;border-radius:999px;color:#FFF;display:block;font-family:<?php echo esc_attr( $pep['font'] ); ?>;font-size:14px;font-weight:700;line-height:20px;padding:13px 20px;text-align:center;text-decoration:none;" target="_blank"><?php esc_html_e( 'Open our Square payment link', 'pepselect-child' ); ?></a></td></tr></table>
+								<p style="color:<?php echo esc_attr( $pep['slate'] ); ?>;font-family:<?php echo esc_attr( $pep['font'] ); ?>;font-size:11px;line-height:1.5;margin:0 0 10px;">This opens <strong>square.link</strong> in a new window.</p>
+								<p style="color:<?php echo esc_attr( $pep['ink'] ); ?>;font-family:<?php echo esc_attr( $pep['font'] ); ?>;font-size:11px;font-weight:700;line-height:1.5;margin:0 0 5px;"><?php esc_html_e( 'Or use the visible link', 'pepselect-child' ); ?></p>
+								<p style="background-color:#F8FAFC;border:1px solid <?php echo esc_attr( $pep['border'] ); ?>;border-radius:6px;font-family:<?php echo esc_attr( $pep['font_mono'] ); ?>;font-size:11px;line-height:1.5;margin:0;padding:10px;word-break:break-all;"><a href="<?php echo esc_url( $pep_square_link ); ?>" style="color:#0D708E;text-decoration:underline;" target="_blank"><?php echo esc_html( $pep_square_link ); ?></a></p>
+							</td>
+							<td align="center" class="pep-email-qr" style="width:150px;" valign="top" width="150">
+								<p style="color:#0D708E;font-family:<?php echo esc_attr( $pep['font_mono'] ); ?>;font-size:9px;font-weight:700;letter-spacing:1.3px;line-height:1.5;margin:0 0 8px;text-transform:uppercase;"><?php esc_html_e( 'Pay on your phone', 'pepselect-child' ); ?></p>
+								<img alt="QR code for the Square payment link" src="<?php echo esc_url( $pep_qr_url ); ?>" width="120" style="border:1px solid <?php echo esc_attr( $pep['border'] ); ?>;border-radius:6px;height:120px;margin:0 auto 8px;width:120px;">
+								<p style="color:<?php echo esc_attr( $pep['slate'] ); ?>;font-family:<?php echo esc_attr( $pep['font'] ); ?>;font-size:11px;line-height:1.45;margin:0;"><?php esc_html_e( 'Open your phone camera and scan this code.', 'pepselect-child' ); ?></p>
+							</td>
+						</tr></table>
+						<table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%" style="background-color:#F3F6F8;border-radius:6px;margin-top:18px;"><tr><td style="color:<?php echo esc_attr( $pep['slate'] ); ?>;font-family:<?php echo esc_attr( $pep['font'] ); ?>;font-size:12px;line-height:1.55;padding:13px 15px;"><strong style="color:<?php echo esc_attr( $pep['ink'] ); ?>;">Bank statement:</strong> Your payment will appear as &ldquo;3BS Holdings LLC.&rdquo; After we confirm your payment, we&rsquo;ll email your updated order status.</td></tr></table>
+					</td></tr></table>
+
+					<table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%" style="background-color:#F8FAFC;border:1px solid <?php echo esc_attr( $pep['border'] ); ?>;border-radius:8px;margin:0 0 16px;overflow:hidden;">
+						<tr><td colspan="2" style="border-bottom:1px solid <?php echo esc_attr( $pep['border'] ); ?>;padding:18px 20px;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%"><tr><td><h2 style="color:<?php echo esc_attr( $pep['navy'] ); ?>;font-family:Georgia,'Times New Roman',serif;font-size:21px;line-height:1.3;margin:0;"><?php esc_html_e( 'Order summary', 'pepselect-child' ); ?></h2></td><td align="right" style="color:<?php echo esc_attr( $pep['slate'] ); ?>;font-family:<?php echo esc_attr( $pep['font_mono'] ); ?>;font-size:9px;line-height:1.5;"><?php echo esc_html( '#' . $pep_order_number ); ?><br><?php echo esc_html( $pep_order_date ); ?></td></tr></table></td></tr>
+						<tr>
+							<td class="pep-email-summary-column" style="padding:0 20px;width:62%;" valign="top" width="62%">
+								<?php foreach ( $pep_order_items as $pep_item_id => $pep_item ) : ?>
+									<?php
+									$pep_product  = $pep_item->get_product();
+									$pep_image_id = $pep_product ? $pep_product->get_image_id() : 0;
+									if ( ! $pep_image_id && $pep_product && $pep_product->is_type( 'variation' ) ) {
+										$pep_parent_product = wc_get_product( $pep_product->get_parent_id() );
+										$pep_image_id       = $pep_parent_product ? $pep_parent_product->get_image_id() : 0;
+									}
+									$pep_image_url  = $pep_image_id ? wp_get_attachment_image_url( $pep_image_id, 'woocommerce_thumbnail' ) : wc_placeholder_img_src( 'woocommerce_thumbnail' );
+									$pep_item_note  = '';
+									$pep_item_meta  = $pep_item->get_formatted_meta_data( '' );
+									foreach ( (array) $pep_item_meta as $pep_item_meta_value ) {
+										$pep_item_meta_key = isset( $pep_item_meta_value->display_key ) ? wp_strip_all_tags( (string) $pep_item_meta_value->display_key ) : '';
+										if ( preg_match( '/batch|lot/i', $pep_item_meta_key ) ) {
+											$pep_item_note = isset( $pep_item_meta_value->display_value ) ? wp_strip_all_tags( (string) $pep_item_meta_value->display_value ) : '';
+											break;
+										}
+									}
+									if ( '' === $pep_item_note && $pep_product && $pep_product->get_sku() ) {
+										$pep_item_note = $pep_product->get_sku();
+									}
+									?>
+									<table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%" style="border-bottom:1px solid <?php echo esc_attr( $pep['border'] ); ?>;"><tr>
+										<td style="padding:14px 0;width:58px;" valign="middle" width="58"><img alt="<?php echo esc_attr( $pep_item->get_name() ); ?>" src="<?php echo esc_url( $pep_image_url ); ?>" width="46" style="background-color:#EEF3F6;border-radius:6px;height:46px;object-fit:contain;width:46px;"></td>
+										<td style="padding:14px 8px 14px 0;" valign="middle"><p style="color:<?php echo esc_attr( $pep['navy'] ); ?>;font-family:<?php echo esc_attr( $pep['font'] ); ?>;font-size:14px;font-weight:700;line-height:1.4;margin:0 0 2px;"><?php echo esc_html( $pep_item->get_name() ); ?></p><?php if ( '' !== $pep_item_note ) : ?><p style="color:<?php echo esc_attr( $pep['slate'] ); ?>;font-family:<?php echo esc_attr( $pep['font_mono'] ); ?>;font-size:9px;line-height:1.45;margin:0;"><?php echo esc_html( $pep_item_note ); ?></p><?php endif; ?></td>
+										<td align="right" style="color:<?php echo esc_attr( $pep['ink'] ); ?>;font-family:<?php echo esc_attr( $pep['font_mono'] ); ?>;font-size:11px;font-weight:700;line-height:1.45;padding:14px 0;white-space:nowrap;" valign="middle">&times;<?php echo esc_html( $pep_item->get_quantity() ); ?><br><?php echo wp_kses_post( $order->get_formatted_line_subtotal( $pep_item ) ); ?></td>
+									</tr></table>
+								<?php endforeach; ?>
+							</td>
+							<td class="pep-email-summary-column pep-email-total-column" style="border-left:1px solid <?php echo esc_attr( $pep['border'] ); ?>;padding:12px 20px;width:38%;" valign="top" width="38%">
+								<table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%">
+									<?php foreach ( $pep_order_totals as $pep_total_key => $pep_total_data ) : ?>
+										<?php if ( 'payment_method' === $pep_total_key ) { continue; } ?>
+										<tr><td style="<?php echo 'order_total' === $pep_total_key ? 'border-top:1px solid ' . esc_attr( $pep['border'] ) . ';color:' . esc_attr( $pep['navy'] ) . ';font-weight:700;padding-top:12px;' : 'color:' . esc_attr( $pep['slate'] ) . ';'; ?>font-family:<?php echo esc_attr( $pep['font'] ); ?>;font-size:11px;line-height:1.45;padding-bottom:8px;"><?php echo wp_kses_post( $pep_total_data['label'] ); ?></td><td align="right" style="<?php echo 'order_total' === $pep_total_key ? 'border-top:1px solid ' . esc_attr( $pep['border'] ) . ';color:' . esc_attr( $pep['navy'] ) . ';font-size:15px;font-weight:700;padding-top:12px;' : 'color:' . esc_attr( $pep['ink'] ) . ';'; ?>font-family:<?php echo esc_attr( $pep['font_mono'] ); ?>;font-size:11px;line-height:1.45;padding-bottom:8px;white-space:nowrap;"><?php echo wp_kses_post( $pep_total_data['value'] ); ?></td></tr>
+									<?php endforeach; ?>
+								</table>
+							</td>
+						</tr>
+						<?php if ( '' !== $pep_research_value || '' !== $pep_points_value ) : ?>
+							<tr><td colspan="2" style="border-top:1px solid <?php echo esc_attr( $pep['border'] ); ?>;padding:12px 20px;">
+								<?php if ( '' !== $pep_research_value ) : ?><span style="border:1px solid <?php echo esc_attr( $pep['border'] ); ?>;border-radius:999px;color:<?php echo esc_attr( $pep['slate'] ); ?>;display:inline-block;font-family:<?php echo esc_attr( $pep['font'] ); ?>;font-size:10px;line-height:1.4;margin:2px 6px 2px 0;padding:5px 10px;"><?php printf( esc_html__( 'Research purpose · %s', 'pepselect-child' ), esc_html( $pep_research_value ) ); ?></span><?php endif; ?>
+								<?php if ( '' !== $pep_points_value ) : ?><span style="border:1px solid <?php echo esc_attr( $pep['border'] ); ?>;border-radius:999px;color:<?php echo esc_attr( $pep['slate'] ); ?>;display:inline-block;font-family:<?php echo esc_attr( $pep['font'] ); ?>;font-size:10px;line-height:1.4;margin:2px 6px 2px 0;padding:5px 10px;"><?php printf( esc_html__( '%s points earned', 'pepselect-child' ), esc_html( $pep_points_value ) ); ?></span><?php endif; ?>
+							</td></tr>
+						<?php endif; ?>
+					</table>
+
+					<table border="0" cellpadding="0" cellspacing="0" class="pep-email-desktop-addresses" role="presentation" width="100%" style="margin:0 0 16px;"><tr>
+						<td style="padding-right:6px;width:50%;" valign="top" width="50%"><table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%" style="border:1px solid <?php echo esc_attr( $pep['border'] ); ?>;border-radius:8px;"><tr><td class="pep-email-address-card" style="color:<?php echo esc_attr( $pep['slate'] ); ?>;font-family:<?php echo esc_attr( $pep['font'] ); ?>;font-size:12px;line-height:1.45;padding:17px;"><h3 style="color:<?php echo esc_attr( $pep['navy'] ); ?>;font-family:<?php echo esc_attr( $pep['font'] ); ?>;font-size:14px;line-height:1.4;margin:0 0 7px;"><?php esc_html_e( 'Billing address', 'pepselect-child' ); ?></h3><?php echo wp_kses_post( $pep_billing_address ); ?><?php if ( $order->get_billing_email() ) : ?><br><a href="mailto:<?php echo esc_attr( $order->get_billing_email() ); ?>" style="color:#0D708E;text-decoration:none;"><?php echo esc_html( $order->get_billing_email() ); ?></a><?php endif; ?></td></tr></table></td>
+						<td style="padding-left:6px;width:50%;" valign="top" width="50%"><table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%" style="border:1px solid <?php echo esc_attr( $pep['border'] ); ?>;border-radius:8px;"><tr><td class="pep-email-address-card" style="color:<?php echo esc_attr( $pep['slate'] ); ?>;font-family:<?php echo esc_attr( $pep['font'] ); ?>;font-size:12px;line-height:1.45;padding:17px;"><h3 style="color:<?php echo esc_attr( $pep['navy'] ); ?>;font-family:<?php echo esc_attr( $pep['font'] ); ?>;font-size:14px;line-height:1.4;margin:0 0 7px;"><?php esc_html_e( 'Shipping address', 'pepselect-child' ); ?></h3><?php echo wp_kses_post( $pep_shipping_address ); ?><?php if ( $order->get_shipping_phone() || $order->get_billing_phone() ) : ?><br><?php echo esc_html( $order->get_shipping_phone() ? $order->get_shipping_phone() : $order->get_billing_phone() ); ?><?php endif; ?></td></tr></table></td>
+					</tr></table>
+
+					<div class="pep-email-mobile-addresses pep-email-mobile-only" style="display:none;max-height:0;mso-hide:all;overflow:hidden;">
+						<table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%" style="border:1px solid <?php echo esc_attr( $pep['border'] ); ?>;border-radius:8px;margin:0 0 16px;"><tr><td class="pep-email-address-card" style="color:<?php echo esc_attr( $pep['slate'] ); ?>;font-family:<?php echo esc_attr( $pep['font'] ); ?>;font-size:12px;line-height:1.45;padding:17px;"><h3 style="color:<?php echo esc_attr( $pep['navy'] ); ?>;font-family:<?php echo esc_attr( $pep['font'] ); ?>;font-size:14px;line-height:1.4;margin:0 0 7px;"><?php echo esc_html( $pep_addresses_same ? __( 'Shipping and billing', 'pepselect-child' ) : __( 'Shipping address', 'pepselect-child' ) ); ?></h3><?php echo wp_kses_post( $pep_shipping_address ); ?><?php if ( $order->get_shipping_phone() || $order->get_billing_phone() ) : ?><br><?php echo esc_html( $order->get_shipping_phone() ? $order->get_shipping_phone() : $order->get_billing_phone() ); ?><?php endif; ?><?php if ( $pep_addresses_same ) : ?><br><?php esc_html_e( 'Billing address is the same.', 'pepselect-child' ); ?><?php endif; ?></td></tr></table>
+						<?php if ( ! $pep_addresses_same ) : ?><table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%" style="border:1px solid <?php echo esc_attr( $pep['border'] ); ?>;border-radius:8px;margin:0 0 16px;"><tr><td class="pep-email-address-card" style="color:<?php echo esc_attr( $pep['slate'] ); ?>;font-family:<?php echo esc_attr( $pep['font'] ); ?>;font-size:12px;line-height:1.45;padding:17px;"><h3 style="color:<?php echo esc_attr( $pep['navy'] ); ?>;font-family:<?php echo esc_attr( $pep['font'] ); ?>;font-size:14px;line-height:1.4;margin:0 0 7px;"><?php esc_html_e( 'Billing address', 'pepselect-child' ); ?></h3><?php echo wp_kses_post( $pep_billing_address ); ?><?php if ( $order->get_billing_email() ) : ?><br><a href="mailto:<?php echo esc_attr( $order->get_billing_email() ); ?>" style="color:#0D708E;text-decoration:none;"><?php echo esc_html( $order->get_billing_email() ); ?></a><?php endif; ?></td></tr></table><?php endif; ?>
+					</div>
+
+					<?php if ( $additional_content ) : ?><div style="color:<?php echo esc_attr( $pep['slate'] ); ?>;font-family:<?php echo esc_attr( $pep['font'] ); ?>;font-size:13px;line-height:1.55;margin:0 0 16px;"><?php echo wp_kses_post( wpautop( wptexturize( $additional_content ) ) ); ?></div><?php endif; ?>
+					<table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%" style="background-color:#F3F6F8;border-radius:6px;margin:0;"><tr><td style="color:<?php echo esc_attr( $pep['slate'] ); ?>;font-family:<?php echo esc_attr( $pep['font'] ); ?>;font-size:12px;line-height:1.55;padding:13px 15px;">Questions about this order? Contact <a href="mailto:<?php echo esc_attr( $pep_support_email ); ?>" style="color:#0D708E;font-weight:700;text-decoration:underline;"><?php echo esc_html( $pep_support_email ); ?></a>.</td></tr></table>
+				</td></tr>
+				<tr><td class="pep-email-footer" style="padding:0 44px 34px;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%"><tr><td align="center" style="border-top:1px solid <?php echo esc_attr( $pep['border'] ); ?>;padding-top:24px;"><p style="color:<?php echo esc_attr( $pep['navy'] ); ?>;font-family:<?php echo esc_attr( $pep['font'] ); ?>;font-size:12px;font-weight:700;line-height:1.45;margin:0 0 2px;">Pep Select</p><p style="color:#0D708E;font-family:<?php echo esc_attr( $pep['font'] ); ?>;font-size:11px;line-height:1.45;margin:0 0 8px;"><a href="<?php echo esc_url( home_url( '/' ) ); ?>" style="color:#0D708E;text-decoration:none;">pepselect.com</a> · <a href="mailto:<?php echo esc_attr( $pep_support_email ); ?>" style="color:#0D708E;text-decoration:none;">Support</a></p><p class="pep-email-desktop-only" style="color:<?php echo esc_attr( $pep['slate'] ); ?>;display:block;font-family:<?php echo esc_attr( $pep['font'] ); ?>;font-size:10px;line-height:1.45;margin:0;"><?php esc_html_e( 'For laboratory research use only.', 'pepselect-child' ); ?></p></td></tr></table></td></tr>
+			</table>
+			<!--[if mso]></td></tr></table><![endif]-->
+		</td></tr>
+	</table>
+</body>
+</html>

@@ -1,6 +1,15 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.6** — Warmer account-created email subject and title.
+**Release candidate: 0.25.0-beta.7** — Responsive payment-required email.
+
+## 0.25.0-beta.7 - 2026-08-18
+
+- Replace the customer on-hold email with the approved Pep Select desktop and mobile payment-required layout.
+- Thank the customer, explain that the order is held for 90 minutes, and describe what happens after payment confirmation without punitive wording.
+- Show one amber order-total reminder, a named Square button, a visible fallback link, and a desktop-only QR code that opens the same Square payment page.
+- Explain that the payment appears as `3BS Holdings LLC` and that an updated order-status email follows confirmation.
+- Pull every ordered product name, variation image, parent-image fallback, quantity, line amount, order total, address, research-purpose value, and compatible rewards value from WooCommerce order data.
+- Preserve the account-created and completed-order email templates, WooCommerce order status logic, Square link, checkout, payments, shipping, rewards, and customer records.
 
 ## 0.25.0-beta.6 - 2026-08-18
 
