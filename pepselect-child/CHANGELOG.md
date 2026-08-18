@@ -1,6 +1,12 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.14** — Mockup-matched, mobile-safe shipped-order email.
+**Release candidate: 0.25.0-beta.15** — Responsive payment-confirmed email.
+
+## 0.25.0-beta.15 - 2026-08-18
+
+- Add the approved payment-confirmed customer email with warm subject and title, clear fulfillment expectations, and a no-action-needed confirmation card.
+- Render canonical WooCommerce product images, item details, paid totals, rewards metadata, and billing/shipping addresses in the approved desktop and mobile layouts.
+- Reuse the mobile-safe transactional email canvas while preserving the shipped-order email state and tracking flow.
 
 ## 0.25.0-beta.14 - 2026-08-18
 
