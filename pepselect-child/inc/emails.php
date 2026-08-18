@@ -53,6 +53,36 @@ function pepselect_child_email_support_address() {
 }
 
 /**
+ * Put the order's creation date and number at the front of the admin alert.
+ *
+ * The order timestamp is formatted in the store timezone by WooCommerce, so
+ * the inbox date matches the date shown inside the order record.
+ *
+ * @param string   $subject Existing email subject.
+ * @param WC_Order $order   Order being emailed.
+ * @param WC_Email $email   WooCommerce email object.
+ * @return string
+ */
+function pepselect_child_new_order_email_subject( $subject, $order, $email ) {
+	unset( $email );
+
+	if ( ! is_a( $order, 'WC_Order' ) ) {
+		return $subject;
+	}
+
+	$created    = $order->get_date_created();
+	$order_date = $created ? wc_format_datetime( $created, 'M j, Y' ) : wp_date( 'M j, Y' );
+
+	return sprintf(
+		/* translators: 1: order creation date, 2: order number. */
+		__( '[%1$s] New order #%2$s', 'pepselect-child' ),
+		$order_date,
+		$order->get_order_number()
+	);
+}
+add_filter( 'woocommerce_email_subject_new_order', 'pepselect_child_new_order_email_subject', 10, 3 );
+
+/**
  * Keep the customer on-hold subject aligned with the approved payment email.
  *
  * The full HTML template owns its visible title, so the inbox subject is

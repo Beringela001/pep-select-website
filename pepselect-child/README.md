@@ -1,10 +1,10 @@
 # Pep Select child theme
 
-- Version: 0.25.0-beta.16
+- Version: 0.25.0-beta.18
 - Parent: Hello Elementor (`hello-elementor`)
 - Text domain: `pepselect-child`
 
-Pep Select is the lightweight presentation child theme for the controlled customer-facing rebuild. Version 0.25.0-beta.16 adds the approved responsive payment-confirmed email with appreciative messaging, clear fulfillment expectations, dynamic WooCommerce order details, and a fixed circular confirmation icon on narrow mobile screens. WooCommerce remains the source of truth for product images, item data, totals, addresses, accounts, shipping methods, and order status.
+Pep Select is the lightweight presentation child theme for the controlled customer-facing rebuild. Version 0.25.0-beta.18 adds a responsive admin new-order email with date-first inbox subjects, scannable operational details, canonical WooCommerce product images and order data, and a direct order-review action. WooCommerce remains the source of truth for product images, item data, totals, addresses, accounts, shipping methods, and order status.
 
 ## Requirements and safe failure
 
