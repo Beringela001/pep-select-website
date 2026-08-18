@@ -71,6 +71,35 @@ function pepselect_child_on_hold_email_subject( $subject, $order, $email ) {
 add_filter( 'woocommerce_email_subject_customer_on_hold_order', 'pepselect_child_on_hold_email_subject', 10, 3 );
 
 /**
+ * Route replies from every WooCommerce customer email to customer support.
+ *
+ * The authenticated From address remains owned by WP Mail SMTP so this does
+ * not weaken Gmail authentication or change delivery behavior.
+ *
+ * @param string   $headers  Existing email headers.
+ * @param string   $email_id WooCommerce email identifier.
+ * @param mixed    $object   Object associated with the email.
+ * @param WC_Email $email    WooCommerce email object.
+ * @return string
+ */
+function pepselect_child_customer_email_reply_to( $headers, $email_id, $object, $email ) {
+	unset( $email_id, $object );
+
+	if ( ! is_object( $email ) || ! method_exists( $email, 'is_customer_email' ) || ! $email->is_customer_email() ) {
+		return $headers;
+	}
+
+	if ( false !== stripos( $headers, 'Reply-To:' ) ) {
+		return $headers;
+	}
+
+	$name = wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES );
+
+	return $headers . sprintf( "Reply-To: %s <%s>\r\n", $name, pepselect_child_email_support_address() );
+}
+add_filter( 'woocommerce_email_headers', 'pepselect_child_customer_email_reply_to', 20, 4 );
+
+/**
  * Report whether a value actually looks like a shipment tracking number.
  *
  * Some integrations store flags under tracking-shaped meta keys, so a key name

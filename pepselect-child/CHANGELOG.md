@@ -1,6 +1,12 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.9** — Responsive payment-required email with mobile-safe order summary.
+**Release candidate: 0.25.0-beta.10** — Responsive payment-required email with support-routed replies.
+
+## 0.25.0-beta.10 - 2026-08-18
+
+- Add `Reply-To: Pep Select <support@pepselect.com>` to every WooCommerce customer email when another integration has not already provided a reply address.
+- Leave the authenticated From address under WP Mail SMTP so the Gmail connection and sender authentication remain intact.
+- Preserve the approved beta.9 subject, copy, responsive rendering, WooCommerce data bindings, and Square payment destination.
 
 ## 0.25.0-beta.9 - 2026-08-18
 
