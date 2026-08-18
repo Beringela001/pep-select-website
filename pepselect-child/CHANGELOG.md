@@ -1,13 +1,6 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.18** — Responsive admin new-order email.
-
-## 0.25.0-beta.18 - 2026-08-18
-
-- Replace WooCommerce's default admin new-order email with the approved Pep Select transactional canvas and a compact operations-first hierarchy.
-- Set inbox subjects from the order creation date and number, for example `[Aug 18, 2026] New order #1519`.
-- Keep WooCommerce authoritative for product images, item metadata, quantities, totals, payment, shipping, coupons, rewards metadata, research purpose, customer notes, and addresses.
-- Add a direct order-review button and distinct desktop/mobile compositions without changing order or fulfillment behavior.
+**Release candidate: 0.25.0-beta.16** — Mobile-safe payment-confirmed email.
 
 ## 0.25.0-beta.16 - 2026-08-18
 
