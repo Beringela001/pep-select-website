@@ -147,9 +147,6 @@ if ( '' === $pep_points_value ) {
 						<table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%" style="background-color:<?php echo esc_attr( $pep['cyan_soft'] ); ?>;border:1px solid <?php echo esc_attr( $pep['cyan'] ); ?>;border-radius:8px;margin:0 0 16px;"><tr><td style="padding:15px 17px;"><p style="color:#0D708E;font-family:<?php echo esc_attr( $pep['font_mono'] ); ?>;font-size:9px;font-weight:700;letter-spacing:1.2px;line-height:1.4;margin:0 0 5px;text-transform:uppercase;"><?php esc_html_e( 'Customer note', 'pepselect-child' ); ?></p><p style="color:<?php echo esc_attr( $pep['ink'] ); ?>;font-family:<?php echo esc_attr( $pep['font'] ); ?>;font-size:13px;line-height:1.55;margin:0;"><?php echo nl2br( esc_html( $pep_customer_note ) ); ?></p></td></tr></table>
 					<?php endif; ?>
 
-					<?php if ( ! empty( $additional_content ) ) : ?>
-						<table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%" style="background-color:#F3F6F8;border-radius:6px;margin:0;"><tr><td style="color:<?php echo esc_attr( $pep['slate'] ); ?>;font-family:<?php echo esc_attr( $pep['font'] ); ?>;font-size:13px;line-height:1.55;padding:13px 15px;"><?php echo wp_kses_post( wpautop( wptexturize( $additional_content ) ) ); ?></td></tr></table>
-					<?php endif; ?>
 				</td></tr>
 				<tr><td class="pep-admin-footer" style="padding:0 44px 34px;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%"><tr><td align="center" style="border-top:1px solid <?php echo esc_attr( $pep['border'] ); ?>;padding-top:22px;"><p style="color:<?php echo esc_attr( $pep['navy'] ); ?>;font-family:<?php echo esc_attr( $pep['font'] ); ?>;font-size:12px;font-weight:700;line-height:1.45;margin:0;"><?php printf( esc_html__( 'Pep Select · Order #%s', 'pepselect-child' ), esc_html( $pep_order_number ) ); ?></p></td></tr></table></td></tr>
 			</table>
