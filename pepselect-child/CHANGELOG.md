@@ -1,6 +1,13 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.11** — More readable payment-required email typography.
+**Release candidate: 0.25.0-beta.12** — Responsive shipped-order email.
+
+## 0.25.0-beta.12 - 2026-08-18
+
+- Replace the hybrid completed-order email with the approved full-canvas desktop and mobile shipped-order design.
+- Lock the inbox subject to `Thank you for choosing Pep Select. Your order is on the way` and use the visible title `Thank you. Your order is on the way`.
+- Keep tracking number, carrier, shipping service, tracking URL, product images, items, totals, research purpose, points, and shipping address dynamic from WooCommerce and the existing tracking resolver.
+- Preserve order status, shipment integration, customer data, support reply routing, and the existing account and payment-required emails.
 
 ## 0.25.0-beta.11 - 2026-08-18
 

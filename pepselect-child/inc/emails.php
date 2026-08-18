@@ -71,6 +71,21 @@ function pepselect_child_on_hold_email_subject( $subject, $order, $email ) {
 add_filter( 'woocommerce_email_subject_customer_on_hold_order', 'pepselect_child_on_hold_email_subject', 10, 3 );
 
 /**
+ * Keep the completed-order subject warm, clear, and identifiable in the inbox.
+ *
+ * @param string   $subject Existing email subject.
+ * @param WC_Order $order   Order being emailed.
+ * @param WC_Email $email   WooCommerce email object.
+ * @return string
+ */
+function pepselect_child_completed_order_email_subject( $subject, $order, $email ) {
+	unset( $subject, $order, $email );
+
+	return __( 'Thank you for choosing Pep Select. Your order is on the way', 'pepselect-child' );
+}
+add_filter( 'woocommerce_email_subject_customer_completed_order', 'pepselect_child_completed_order_email_subject', 10, 3 );
+
+/**
  * Route replies from every WooCommerce customer email to customer support.
  *
  * The authenticated From address remains owned by WP Mail SMTP so this does
