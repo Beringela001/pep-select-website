@@ -1,6 +1,11 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.12** — Responsive shipped-order email.
+**Release candidate: 0.25.0-beta.13** — Mobile-safe shipped-order email.
+
+## 0.25.0-beta.13 - 2026-08-18
+
+- Rework the shipped-order status, carrier/service, and shipping-address sections as single-source responsive structures so WooCommerce's email processor cannot strip mobile content.
+- Preserve the approved beta.12 subject, title, copy, live order data, tracking action, and desktop presentation.
 
 ## 0.25.0-beta.12 - 2026-08-18
 
