@@ -60,7 +60,7 @@ $pep_logo_url = 'https://pepselect.com/wp-content/uploads/2026/06/Logo_Pepselect
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="color-scheme" content="light">
 	<meta name="supported-color-schemes" content="light">
-	<title><?php esc_html_e( 'Your Pep Select account is ready', 'pepselect-child' ); ?></title>
+	<title><?php esc_html_e( 'Your account is ready', 'pepselect-child' ); ?></title>
 	<style type="text/css">
 		body,
 		table,
@@ -225,7 +225,7 @@ $pep_logo_url = 'https://pepselect.com/wp-content/uploads/2026/06/Logo_Pepselect
 								<?php esc_html_e( 'Account created', 'pepselect-child' ); ?>
 							</p>
 							<h1 class="pep-email-heading" style="color:<?php echo esc_attr( $pep['ink'] ); ?>; font-family:<?php echo esc_attr( $pep['font'] ); ?>; font-size:32px; font-weight:750; letter-spacing:-0.9px; line-height:1.18; margin:0 0 18px;">
-								<?php esc_html_e( 'Your ', 'pepselect-child' ); ?><span class="pep-email-desktop-only" style="display:inline;"><?php esc_html_e( 'Pep Select ', 'pepselect-child' ); ?></span><?php esc_html_e( 'account is ready', 'pepselect-child' ); ?>
+								<?php esc_html_e( 'Your account is ready', 'pepselect-child' ); ?>
 							</h1>
 							<p style="color:<?php echo esc_attr( $pep['ink'] ); ?>; font-family:<?php echo esc_attr( $pep['font'] ); ?>; font-size:16px; font-weight:600; line-height:1.55; margin:0 0 4px;">
 								<?php

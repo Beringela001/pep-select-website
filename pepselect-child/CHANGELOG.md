@@ -1,6 +1,12 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.5** — Account-created transactional email.
+**Release candidate: 0.25.0-beta.6** — Warmer account-created email subject and title.
+
+## 0.25.0-beta.6 - 2026-08-18
+
+- Use `Welcome to Pep Select` as the customer new-account inbox subject.
+- Use `Your account is ready` as the in-email title on desktop and mobile.
+- Keep the approved account email layout, content, links, sender, and authenticated support routing unchanged.
 
 ## 0.25.0-beta.5 - 2026-08-18
 

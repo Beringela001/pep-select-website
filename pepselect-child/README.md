@@ -1,10 +1,10 @@
 # Pep Select child theme
 
-- Version: 0.25.0-beta.5
+- Version: 0.25.0-beta.6
 - Parent: Hello Elementor (`hello-elementor`)
 - Text domain: `pepselect-child`
 
-Pep Select is the lightweight presentation child theme for the controlled customer-facing rebuild. Version 0.25.0-beta.5 adds the approved responsive account-created transactional email and centralizes the public support mailbox used by customer email links. WooCommerce remains the source of truth for account data, customer names, usernames, email recipients, password-setup links, and My Account URLs.
+Pep Select is the lightweight presentation child theme for the controlled customer-facing rebuild. Version 0.25.0-beta.6 gives the account-created email a warmer inbox subject and a shorter, clearer in-email title. The responsive account email and shared public support mailbox remain unchanged. WooCommerce remains the source of truth for account data, customer names, usernames, email recipients, password-setup links, and My Account URLs.
 
 ## Requirements and safe failure
 
