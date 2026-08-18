@@ -40,6 +40,19 @@ function pepselect_child_email_tokens() {
 }
 
 /**
+ * Customer-support mailbox used by transactional email links.
+ *
+ * Delivery authentication and routing remain owned by WP Mail SMTP. Keeping
+ * the public support address in one helper prevents the customer templates
+ * from drifting apart as the email system is completed one message at a time.
+ *
+ * @return string
+ */
+function pepselect_child_email_support_address() {
+	return 'support@pepselect.com';
+}
+
+/**
  * Report whether a value actually looks like a shipment tracking number.
  *
  * Some integrations store flags under tracking-shaped meta keys, so a key name

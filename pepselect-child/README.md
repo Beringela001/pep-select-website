@@ -1,10 +1,10 @@
 # Pep Select child theme
 
-- Version: 0.25.0-beta.4
+- Version: 0.25.0-beta.5
 - Parent: Hello Elementor (`hello-elementor`)
 - Text domain: `pepselect-child`
 
-Pep Select is the lightweight presentation child theme for the controlled customer-facing rebuild. Version 0.25.0-beta.4 completes SEO Milestone 5, removes the empty noindexed-post sitemap from Yoast's public sitemap index, updates the homepage batch-matching education example to the documented Tesamorelin 10 mg batch `PSTES1071926GX`, and lowers the mobile compound-and-strength callout so the printed strength remains visible. WooCommerce, COA, checkout, account, rewards, verification, shipping, and order behavior remain unchanged.
+Pep Select is the lightweight presentation child theme for the controlled customer-facing rebuild. Version 0.25.0-beta.5 adds the approved responsive account-created transactional email and centralizes the public support mailbox used by customer email links. WooCommerce remains the source of truth for account data, customer names, usernames, email recipients, password-setup links, and My Account URLs.
 
 ## Requirements and safe failure
 
@@ -23,7 +23,7 @@ Installing a ZIP does not activate a theme automatically. The child theme is alr
 - Defines the approved WEB-2A colors, font-family roles, layout widths/gutters, radii, transition duration, and reduced-motion value as CSS custom properties.
 - Bundles no font files. Georgia and system fallbacks remain available when Plus Jakarta Sans or IBM Plex Mono are not supplied by an approved site-level font source.
 - Adds no business logic, database access, migration, analytics, tracking, remote request, dependency, or administrative asset.
-- Adds no WooCommerce template override and does not modify WooCommerce behavior.
+- Uses narrow WooCommerce presentation overrides while preserving WooCommerce data, triggers, calculations, and customer-account behavior.
 - Renders the coded header and footer by default on normal front-end requests while preserving Elementor page content between them.
 - Suppresses Elementor Header #1323 and Footer #391 only for requests where the coded shell is active; it does not change or delete their stored conditions.
 - Keeps `?pepselect_header_preview=1`, `?pepselect_footer_preview=1`, and `?pepselect_shell_preview=1` as administrator-only compatibility controls.

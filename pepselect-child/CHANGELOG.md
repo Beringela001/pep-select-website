@@ -1,6 +1,13 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.4** — Milestone 5 plus Tesamorelin batch-matching education.
+**Release candidate: 0.25.0-beta.5** — Account-created transactional email.
+
+## 0.25.0-beta.5 - 2026-08-18
+
+- Add a WooCommerce 10.9-compatible customer new-account template matching the approved Pep Select desktop and mobile mockup.
+- Preserve WooCommerce-owned names, usernames, recipient addresses, My Account links, and generated-password setup links.
+- Add one shared `support@pepselect.com` helper for transactional email recovery and footer links; mail authentication and connection routing remain owned by WP Mail SMTP.
+- Keep the account email isolated from the existing on-hold and completed-order templates while the four-email system is implemented one message at a time.
 
 ## 0.25.0-beta.4 - 2026-08-15
 
