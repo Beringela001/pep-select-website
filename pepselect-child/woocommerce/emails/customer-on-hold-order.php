@@ -94,7 +94,7 @@ if ( ! $pep_addresses_same ) {
 			.pep-email-payment-card,.pep-email-address-card{padding-left:18px!important;padding-right:18px!important}
 			.pep-email-status-step{width:50%!important}.pep-email-status-later,.pep-email-desktop-only,.pep-email-desktop-addresses,.pep-email-qr{display:none!important;font-size:0!important;line-height:0!important;max-height:0!important;mso-hide:all!important;overflow:hidden!important}
 			.pep-email-mobile-only,.pep-email-mobile-addresses{display:block!important;font-size:inherit!important;line-height:inherit!important;max-height:none!important;overflow:visible!important}
-			.pep-email-summary-column{display:block!important;width:100%!important}.pep-email-total-column{border-left:0!important;border-top:1px solid <?php echo esc_attr( $pep['border'] ); ?>!important}
+			.pep-email-summary-column{box-sizing:border-box!important;display:block!important;width:100%!important}.pep-email-total-column{border-left:0!important;border-top:1px solid <?php echo esc_attr( $pep['border'] ); ?>!important}
 			.pep-email-button-table{width:100%!important}.pep-email-button{display:block!important;width:auto!important}
 		}
 	</style>

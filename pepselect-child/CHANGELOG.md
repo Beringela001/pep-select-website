@@ -1,6 +1,12 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.8** — Responsive payment-required email with locked inbox copy.
+**Release candidate: 0.25.0-beta.9** — Responsive payment-required email with mobile-safe order summary.
+
+## 0.25.0-beta.9 - 2026-08-18
+
+- Keep stacked mobile order-summary cells inside their card by including horizontal padding in the declared 100% width.
+- Prevent price and total values from being clipped at 390px and narrower email canvases.
+- Preserve the approved subject, copy, layout, WooCommerce data bindings, and Square payment destination from beta.8.
 
 ## 0.25.0-beta.8 - 2026-08-18
 

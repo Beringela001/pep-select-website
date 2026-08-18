@@ -1,10 +1,10 @@
 # Pep Select child theme
 
-- Version: 0.25.0-beta.8
+- Version: 0.25.0-beta.9
 - Parent: Hello Elementor (`hello-elementor`)
 - Text domain: `pepselect-child`
 
-Pep Select is the lightweight presentation child theme for the controlled customer-facing rebuild. Version 0.25.0-beta.8 adds the approved responsive payment-required email with desktop QR access, a visible Square fallback link, a friendlier 90-minute hold explanation, an approved inbox subject, and a WooCommerce-sourced order summary. WooCommerce remains the source of truth for product images, item data, totals, addresses, accounts, and order status.
+Pep Select is the lightweight presentation child theme for the controlled customer-facing rebuild. Version 0.25.0-beta.9 adds the approved responsive payment-required email with desktop QR access, a visible Square fallback link, a friendlier 90-minute hold explanation, an approved inbox subject, and a mobile-safe WooCommerce order summary. WooCommerce remains the source of truth for product images, item data, totals, addresses, accounts, and order status.
 
 ## Requirements and safe failure
 
