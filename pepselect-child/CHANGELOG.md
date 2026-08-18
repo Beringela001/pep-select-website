@@ -1,6 +1,12 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.7** — Responsive payment-required email.
+**Release candidate: 0.25.0-beta.8** — Responsive payment-required email with locked inbox copy.
+
+## 0.25.0-beta.8 - 2026-08-18
+
+- Lock the customer on-hold inbox subject to `Thank you for your order. Payment is the next step` in source control.
+- Keep WooCommerce's database-level additional-content default from adding a duplicate closing message beneath the approved layout.
+- Preserve the responsive beta.7 layout, dynamic WooCommerce order and product data, Square destination, and all commerce behavior.
 
 ## 0.25.0-beta.7 - 2026-08-18
 

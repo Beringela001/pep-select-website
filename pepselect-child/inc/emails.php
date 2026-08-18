@@ -53,6 +53,24 @@ function pepselect_child_email_support_address() {
 }
 
 /**
+ * Keep the customer on-hold subject aligned with the approved payment email.
+ *
+ * The full HTML template owns its visible title, so the inbox subject is
+ * intentionally managed here instead of relying on a database-only setting.
+ *
+ * @param string   $subject Existing email subject.
+ * @param WC_Order $order   Order being emailed.
+ * @param WC_Email $email   WooCommerce email object.
+ * @return string
+ */
+function pepselect_child_on_hold_email_subject( $subject, $order, $email ) {
+	unset( $subject, $order, $email );
+
+	return __( 'Thank you for your order. Payment is the next step', 'pepselect-child' );
+}
+add_filter( 'woocommerce_email_subject_customer_on_hold_order', 'pepselect_child_on_hold_email_subject', 10, 3 );
+
+/**
  * Report whether a value actually looks like a shipment tracking number.
  *
  * Some integrations store flags under tracking-shaped meta keys, so a key name
