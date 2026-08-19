@@ -1,6 +1,16 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.36** - Claude SEO Milestone 4 combined batch 3 and 4 product trust placement.
+**Release candidate: 0.25.0-beta.39** - Claude SEO measured render-path cleanup, built on the Control Ops beta.38 restocking changes.
+
+## 0.25.0-beta.39 - 2026-08-19
+
+- Consolidate Elementor's four Google Fonts stylesheets into one request while preserving the same four families and every requested weight and italic variant.
+- Inline the small Pep Select foundation, header, footer, back-in-stock, and side-cart shell styles on the four audited SEO templates without changing their source rules or cascade order.
+- Stop loading rewards, dynamic-pricing, back-in-stock, Select2, and native WooCommerce page-layout styles on the Quality Archive, where verified live markup contains none of those components.
+- Add early connection hints for the consolidated Google Fonts stylesheet and font files.
+- Preserve WooCommerce, checkout, pricing, rewards, side-cart, product, and COA scripts and business logic.
+
+**Previous release candidate: 0.25.0-beta.36** - Claude SEO Milestone 4 combined batch 3 and 4 product trust placement.
 
 ## 0.25.0-beta.36 - 2026-08-19
 
