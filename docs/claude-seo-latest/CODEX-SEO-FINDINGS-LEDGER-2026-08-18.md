@@ -97,6 +97,15 @@
 - Live smoke checks pass for Home, Shop, product, Testing, Cart, My Account, Checkout shell, Terms redirect/destination, compound history, and NAD printed-QR redirect. Shop exposes 14 product destinations; Testing exposes eight product links; the existing cart line and checkout payment shell remain present.
 - Full release evidence and rollback details: [LIVE-SEO-RELEASE-2026-08-18.md](LIVE-SEO-RELEASE-2026-08-18.md).
 
+### Search Console and PageSpeed checkpoint — 2026-08-19
+
+- Four mobile PageSpeed reruns are complete: Homepage 79, Shop 79, NAD+ 84, and Quality Archive 80. LCP remains 3.6–4.4 seconds, while TBT is 0–120 ms and CLS is 0–0.084. `PERF-01` and `PERF-02` therefore remain partially open for measured LCP/render-blocking work; the former quota blocker is closed.
+- Search Console confirms NAD+ is indexed with valid HTTPS and one valid Product, Merchant, and Breadcrumb item. Non-critical Product and Merchant issues remain for review.
+- Shop and Quality Archive are discovered but not indexed. The documentation guide and Retatrutide 10 mg were unknown to Google at inspection time.
+- Google accepted indexing/recrawl requests for Shop, Quality Archive, the documentation guide, NAD+, and Retatrutide 10 mg.
+- Search Console and PageSpeed still have no real-user field/Core Web Vitals data. No indexing, ranking, traffic, or conversion improvement is claimed from the accepted requests.
+- Full evidence: [SEO-CHECKPOINT-GSC-PAGESPEED-2026-08-19.md](SEO-CHECKPOINT-GSC-PAGESPEED-2026-08-19.md).
+
 ## Complete finding register
 
 | ID | Original priority | Original category | Original title | Original evidence/source | Existing Pep state | Decision and reason/dependency | Work package / affected surface | Acceptance / rollback |

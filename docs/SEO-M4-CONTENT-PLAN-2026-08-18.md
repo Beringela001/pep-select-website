@@ -88,7 +88,7 @@ No `[VERIFY CLAIM]` text may reach Staging or Live.
 
 ## Batch 3 — Research documentation hub and compliant question coverage
 
-**Status (2026-08-19): Combined with Batch 4 and implemented on Staging.** Batch 2's approved documentation guide already answers the four candidate topics with Pep Select records and visual evidence. A second hub, duplicate guide, and repetitive FAQ set were intentionally not created. The existing FAQ can link to the guide later only where a genuine visitor question is missing.
+**Status (2026-08-19): Combined with Batch 4, deployed, and verified on Live.** Batch 2's approved documentation guide already answers the four candidate topics with Pep Select records and visual evidence. A second hub, duplicate guide, and repetitive FAQ set were intentionally not created. The existing FAQ can link to the guide later only where a genuine visitor question is missing.
 
 **Purpose:** Organize verified citations and answer useful questions that fit Pep Select’s research-only limits.
 
@@ -105,7 +105,7 @@ Questions about personal effects, dosing, medical risks, or consumer use are exc
 
 ## Batch 4 — Product depth and Shop trust density
 
-**Status (2026-08-19): Combined with Batch 3 and implemented on Staging for visual review.** The approved simple product descriptions and layouts remain unchanged. A compact, dynamically selected current/latest/incoming batch-documentation card now appears directly after the purchase or back-in-stock action and before the dilution notice. The complete testing-history carousel remains lower on the page. Products with only failed or otherwise ineligible records receive no compact card, and product pages link to the exact eligible batch record rather than to the general guide.
+**Status (2026-08-19): Combined with Batch 3, deployed, and verified on Live in child theme `0.25.0-beta.36` and COA Archive `0.7.5`.** The approved simple product descriptions and layouts remain unchanged. A compact, dynamically selected current/latest/incoming batch-documentation card appears directly after the purchase or back-in-stock action and before the dilution notice. The complete testing-history carousel remains lower on the page. Products with only failed or otherwise ineligible records receive no compact card, and product pages link to the exact eligible batch record rather than to the general guide. Release evidence: [`claude-seo-latest/LIVE-SEO-M4-COMBINED-BATCH-3-4-RELEASE-2026-08-19.md`](claude-seo-latest/LIVE-SEO-M4-COMBINED-BATCH-3-4-RELEASE-2026-08-19.md).
 
 **Purpose:** Replace the rigid catalog-wide description pattern with useful, compound-specific material and show accurate documentation status closer to the Shop decision point.
 
