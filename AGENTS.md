@@ -21,6 +21,12 @@
 - Use Graphify only when dependency, architecture, or data-flow relationships genuinely require graph analysis.
 - Do not build a Graphify graph for simple searches, isolated files, or straightforward edits.
 
+## GitHub Ledger
+- GitHub is the authoritative project ledger and universal record of completed Pep Select changes.
+- A completed code, documentation, configuration, or deployment change is not finished until it is committed, pushed to the current approved GitHub branch, and verified so local `HEAD` matches the remote branch.
+- Preserve and incorporate concurrent approved work from other Pep Select tasks; never overwrite it merely to restore an older local baseline.
+- Skip the final push only when Paulo explicitly instructs that the change must remain local.
+
 ## Build Artifacts
 - Write every installable build ZIP, theme or plugin, to the `dist/` folder at the repository root.
 - Name it `<package>-<version>.zip`, for example `dist/pepselect-child-0.17.0-beta.3.zip`.
