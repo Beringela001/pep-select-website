@@ -44,8 +44,8 @@ while ( have_posts() ) :
 						</div>
 						<dl>
 							<div><dt><?php esc_html_e( 'Batch code', 'pepselect-child' ); ?></dt><dd><?php esc_html_e( 'Exact match', 'pepselect-child' ); ?></dd></div>
-							<div><dt><?php esc_html_e( 'Lab + report', 'pepselect-child' ); ?></dt><dd><?php esc_html_e( 'Named', 'pepselect-child' ); ?></dd></div>
-							<div><dt><?php esc_html_e( 'Method + result', 'pepselect-child' ); ?></dt><dd><?php esc_html_e( 'Read together', 'pepselect-child' ); ?></dd></div>
+							<div><dt><?php esc_html_e( 'Vial + packaging', 'pepselect-child' ); ?></dt><dd><?php esc_html_e( 'Visible', 'pepselect-child' ); ?></dd></div>
+							<div><dt><?php esc_html_e( 'Lab + report', 'pepselect-child' ); ?></dt><dd><?php esc_html_e( 'Cross-check', 'pepselect-child' ); ?></dd></div>
 							<div><dt><?php esc_html_e( 'Release status', 'pepselect-child' ); ?></dt><dd><?php esc_html_e( 'Check last', 'pepselect-child' ); ?></dd></div>
 						</dl>
 						<p><?php esc_html_e( 'A single number never replaces the full record.', 'pepselect-child' ); ?></p>
@@ -57,10 +57,11 @@ while ( have_posts() ) :
 				<aside class="pepselect-guide__rail" aria-label="On this page">
 					<p><?php esc_html_e( 'On this page', 'pepselect-child' ); ?></p>
 					<a href="#batch-match"><?php esc_html_e( 'Match the batch', 'pepselect-child' ); ?></a>
-					<a href="#identity-purity"><?php esc_html_e( 'Identity and purity', 'pepselect-child' ); ?></a>
-					<a href="#methods-status"><?php esc_html_e( 'Methods and status', 'pepselect-child' ); ?></a>
-					<a href="#compare-records"><?php esc_html_e( 'Compare records', 'pepselect-child' ); ?></a>
-					<a href="#vendor-questions"><?php esc_html_e( 'Questions to ask', 'pepselect-child' ); ?></a>
+					<a href="#visual-record"><?php esc_html_e( 'See the record', 'pepselect-child' ); ?></a>
+					<a href="#lab-source"><?php esc_html_e( 'Verify the source', 'pepselect-child' ); ?></a>
+					<a href="#corrected-strength"><?php esc_html_e( 'Corrected strength', 'pepselect-child' ); ?></a>
+					<a href="#rejected-batches"><?php esc_html_e( 'Rejected batches', 'pepselect-child' ); ?></a>
+					<a href="#vendor-questions"><?php esc_html_e( 'Use the checklist', 'pepselect-child' ); ?></a>
 				</aside>
 
 				<div class="pepselect-guide__content">

@@ -1,6 +1,15 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.29** — Claude SEO Milestone 4 content batch 2 Staging review.
+**Release candidate: 0.25.0-beta.30** — Claude SEO Milestone 4 content batch 2 visual evidence revision.
+
+## 0.25.0-beta.30 - 2026-08-19
+
+- Add real Quality Archive and Freedom Diagnostics screenshots to the documentation guide with numbered, responsive explanations for batch identity, photographed vials, cap/crimp matching, laboratory-source verification, corrected strength, and rejected-batch decisions.
+- Preserve Retatrutide batch `RT2026205JP` as the documented corrected-strength example and NAD+ `PSNAD562926JP` plus Retatrutide `PSRT2062926JP` as public not-released examples without changing their records or release decisions.
+- Keep the comparison evidence-led without unsupported superiority or absolute-guarantee language.
+- Preserve all storefront, WooCommerce, account, checkout, email, and COA business behavior.
+
+**Previous release: 0.25.0-beta.29** — Claude SEO Milestone 4 content batch 2 initial Staging review.
 
 ## 0.25.0-beta.29 - 2026-08-19
 

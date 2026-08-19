@@ -1,6 +1,6 @@
 # SEO Milestone 4, Batch 2: Approval Draft
 
-**Status:** Copy and page contract approved for Staging and implemented there on August 19, 2026. The rendered page is awaiting Paulo's visual approval before Live deployment. Live remains unchanged.
+**Status:** Original copy and page contract approved for Staging and implemented there on August 19, 2026. Paulo then directed a visual evidence revision using current, corrected-strength, and rejected batch records. The original contract remains historical evidence; the active revision is recorded in [`SEO-M4-BATCH-2-VISUAL-EVIDENCE-REVISION-2026-08-19.md`](SEO-M4-BATCH-2-VISUAL-EVIDENCE-REVISION-2026-08-19.md). Live remains unchanged.
 
 ## Page contract
 

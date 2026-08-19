@@ -51,6 +51,40 @@ Permitted use: demonstrate how a reader matches the compound, strength, batch co
 
 Permitted use: demonstrate that a reported purity value does not replace an identity result or a release decision. The guide must keep `100% Reported` separate from `Pass`.
 
+### Corrected-strength example
+
+- Public record: `https://pepselect.com/testing/retatrutide-10mg/rt2026205jp/`
+- Compound presentation: Retatrutide 10 mg
+- Batch: `RT2026205JP`
+- Laboratory: Freedom Diagnostics Testing
+- Laboratory COA reference/search code: `PepS2607280575`
+- Supplier packaging shown in the laboratory photograph: 20 mg
+- Net content reported by the laboratory: 11.51 mg
+- Identity: confirmed as Retatrutide
+- Purity: 99.63%
+- Public-record handling: the original batch number and mismatch explanation remain visible; Pep Select lists and prices the batch as 10 mg to match the measured content.
+- Source PDF supplied by Paulo: `C:\Users\paulo\Downloads\coa\PepS2607280575.pdf`
+
+Permitted use: demonstrate how Pep Select preserves the original submitted-vial evidence and batch number while presenting the product at the measured strength. Do not convert 11.51 mg into an exact 10.00 mg laboratory result.
+
+### Rejected NAD+ example
+
+- Public record: `https://pepselect.com/testing/nad-500-mg/psnad562926jp/`
+- Compound and labeled strength: NAD+ 500 mg
+- Batch: `PSNAD562926JP`
+- Laboratory: ILS Labs
+- Cap: Gold
+- Crimp: Orange
+- Public release decision: purity fell below Pep Select's release threshold; the lot was rejected and no vials from the lot were sold.
+
+Permitted use: demonstrate that the archive preserves the batch identity, packaging identifiers, rejection reason, and no-sale decision for a failed release review.
+
+### Laboratory-source verification example
+
+- The public batch-page design can show the named laboratory, COA reference, analysis date, `View Verified Lab Report`, and `Download Original PDF` actions together.
+- The guide may explain that a record hosted on the named laboratory's own domain gives the reader an independent copy to compare against Pep Select's page and PDF.
+- The guide may not describe an external link as an absolute guarantee. Readers must still verify the destination domain and matching report identifiers.
+
 ## Archive vocabulary
 
 The COA plugin documentation defines distinct public states:
@@ -73,6 +107,9 @@ The guide must not merge these labels or infer a result from an empty field.
 - A release decision is separate from an individual test result.
 - One batch report does not automatically document another batch.
 - Pep Select's public archive contains both approved/current records and a published record for a batch that was not released for sale.
+- Public batch records can expose a photographed vial, batch code, cap, crimp, laboratory reference, original PDF, and external laboratory verification link when those source materials are available.
+- Pep Select preserves the documented Retatrutide batch `RT2026205JP` label mismatch and presents the batch as 10 mg to match the measured net content rather than the supplier's 20 mg packaging label.
+- Pep Select preserves the public rejection reason and sale-release decision for NAD+ batch `PSNAD562926JP` and Retatrutide batch `PSRT2062926JP`.
 - Pep Select requires independent laboratory testing before a batch is released for sale. This is an owner-confirmed policy, not proof that every archive field has a completed result.
 
 ### Not allowed without new evidence and approval
@@ -108,7 +145,7 @@ The guide must not merge these labels or infer a result from an empty field.
 ## Proposed metadata
 
 - SEO title: `How to Review Research Peptide Documentation | Pep Select`
-- Meta description: `Learn how to compare a research peptide COA by batch number, identity, labeled strength, lab, test method, result, report date, and release status.`
+- Meta description: `Learn how Pep Select connects a research peptide COA to the photographed vial, batch number, cap, crimp, laboratory report, results, and release decision.`
 - Slug: `how-to-review-research-peptide-documentation`
 - Canonical: the final public guide URL
 - Social title: same as SEO title
@@ -122,6 +159,8 @@ The guide must not merge these labels or infer a result from an empty field.
 | Opening/intro | `Quality Archive` | `https://pepselect.com/testing/` | Explain where records live |
 | Approved example | `NAD+ 500 mg batch ND50026205JP` | `https://pepselect.com/testing/nad-500-mg/nd50026205jp/` | Direct supporting evidence |
 | Not-released example | `Retatrutide 20 mg batch PSRT2062926JP` | `https://pepselect.com/testing/retatrutide-20mg/psrt2062926jp/` | Direct supporting evidence |
+| Corrected-strength example | `Retatrutide 10 mg batch RT2026205JP` | `https://pepselect.com/testing/retatrutide-10mg/rt2026205jp/` | Submitted-label and measured-content evidence |
+| Rejected NAD+ example | `NAD+ batch PSNAD562926JP` | `https://pepselect.com/testing/nad-500-mg/psnad562926jp/` | Public rejection reason and packaging identifiers |
 | Final secondary CTA | `Browse Research Compounds` | `https://pepselect.com/shop/` | Commercial path after education |
 
 Product-page links are intentionally excluded from the examples until Staging confirms the current product URLs and stock/release relationship for each cited batch.
@@ -153,7 +192,7 @@ Product-page links are intentionally excluded from the examples until Staging co
 - One indexable canonical URL returns HTTP 200.
 - H1, title, description, canonical, Open Graph, and Article schema agree.
 - Yoast exposes the guide in `post-sitemap.xml` and the root sitemap includes that child sitemap.
-- The page links to the Quality Archive and both supporting records.
+- The page links to the Quality Archive and all four supporting records.
 - The guide appears in a visible site navigation path or content hub; sitemap-only discovery is insufficient.
 
 ### Experience
