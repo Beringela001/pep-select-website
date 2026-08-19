@@ -1,0 +1,273 @@
+I'll run a deep single-page SEO analysis on the pepselect.com homepage.
+  Listed 2 directories, ran 18 shell commands
+Deep Page Analysis — https://pepselect.com/
+Fetched: 2026-08-18 · HTTP 200 · raw HTML (no SPA shell — full content server-rendered)
+Detected type: E-commerce (WooCommerce 10.9.4 + Elementor 4.1.5, Yoast SEO, Kinsta/Cloudflare) — research-compound vertical, high-trust/YMYL-adjacent
+---
+Page Score Card
+Overall Score: 69/100
+On-Page SEO:     72/100  ███████░░░
+Content Quality: 66/100  ███████░░░
+Technical:       74/100  ███████░░░
+Schema:          68/100  ███████░░░
+Images:          70/100  ███████░░░
+Performance:     48/100  █████░░░░░
+AI Search (GEO): 78/100  ████████░░
+Performance is the outlier and it is dragging a page that is otherwise well-built. No CrUX/PSI key is configured, so CWV below is inferred from HTML only — not field data.
+---
+What's Already Right
+Worth stating, because these are the things audits usually find broken:
+- Canonicalization is clean. http://, www., /home/, /index.php all 301 to https://pepselect.com/ in a single hop. Self-referencing canonical present.
+- Alt text is exemplary. 10/10 images have alt attributes, and they are genuinely descriptive: "Front and reverse views of a Pep Select Tesamorelin 10 mg clear vial with blue cap, silver crimp, and batch PSTES1071926GX." That is the standard, not the exception.
+- Heading hierarchy is valid — one H1, no skipped levels, H2→H3 nesting correct throughout.                                 - Lazy loading is correctly split — above-fold imagh", below-fold loading="lazy" (native).
+- No FAQPage schema on a page with 5 FAQs. This is correct. Google retired FAQ rich results for all sites on 2026-05-07. Do not add it.                                                                                                                     - hasMerchantReturnPolicy is present on the Onlineed, and it matters for Merchant listings.
+- E-E-A-T through specificity. Naming the lab (Freedom Diagnostics), the exact batch (PSTES1071926GX), the cap/crimp identifiers, the 10:00 AM ET cutoff, the 90-minute payment expiry, the 72-hour damage window — this is first-hand operational detail that cannot be faked by a competitor scraping you. It is the strongest asset on the page.
+---                                                                                                                         
+Issues Found
+                                                                                                                            🔴 Critical
+1. Hero LCP image is a 368 KB PNG                                                                                           /wp-content/uploads/2026/07/PS-laying_fam-768x434.s PNG, fetchpriority="high", loading="eager". Thisis almost certainly the LCP element on desktop.                                                                             
+Every other product image on the page is already WebP (RT10F is 7 KB). This one file is ~50× the weight of its neighbours.
+- First principle: LCP is bounded by the byte count of the largest above-fold paint. 368 KB over a median mobile connection is ~1.2s of transfer alone, before decode.
+- Fix: Re-upload as WebP (expect ~45–60 KB, 85% reduction) and add <link rel="preload" as="image" fetchpriority="high"      imagesrcset="..."> in <head>.
+- Falsifiability: If LCP does not improve after conversion, the LCP element is not this image — it is the research-gate card, and the real fix is different (see Technical #3).                                                                               - Leading indicator: PSI lab LCP on mobile, before
+---                                                                                                                         
+🟠 High
+                                                                                                                            2. 48 render-blocking stylesheets + 43 scripts in
+Measured payload: 416 KB JS (compressed) + 77 KB CSS, across 92 external assets. 48 <link rel=stylesheet> are in <head> and block first paint.                                                                                                                
+Notable passengers on a homepage that needs none of them:
+┌─────────────────────────────────────┬────────┬─────────────────────────────────────────────┐
+│                Asset                │  Size  │                Why it's here                │
+├─────────────────────────────────────┼────────┼─────────────────────────────────────────────┤
+│ gtag/js (GTM)                       │ 187 KB │ analytics — largest single file on the page │
+├─────────────────────────────────────┼────────┼─────────────────────────────────────────────┤
+│ confetti.js                         │ 34 KB  │ side-cart plugin celebration effect         │                              ├─────────────────────────────────────┼────────┼────────────────┤
+│ sweetalert2.min.js                  │ 19 KB  │ back-in-stock notifier                      │                              ├─────────────────────────────────────┼────────┼────────────────┤
+│ selectWoo.full.min.js               │ 20 KB  │ Woo dropdowns (no dropdowns on homepage)    │
+├─────────────────────────────────────┼────────┼─────────────────────────────────────────────┤
+│ owl.carousel.min.js + modals.min.js │ 25 KB  │ YITH dynamic pricing                        │
+└─────────────────────────────────────┴────────┴─────────────────────────────────────────────┘
+                                                                                                                            - First principle: Render-blocking CSS in <head> sthe slowest of 48 requests. Plugin CSS/JS isenqueued globally by default in WooCommerce; almost none of it is needed at /.
+- Fix: Conditionally dequeue plugin assets where is_front_page(). Highest-value dequeues: confetti, sweetalert2, selectWoo, owl.carousel, YITH modals. Then consolidate the re
+- Depends on: nothing. Unblocks: any meaningful INP/LCP gain — #1 alone won't move the needle while 48 stylesheets block paint.
+- Falsifiability: If request count drops below ~50 and LCP is unchanged, the bottleneck is TTFB (x-kinsta-cache: MISS, CF-Cache-Status: DYNAMIC — the homepage is not edg
+                                                                                                                              3. Four Google Fonts stylesheets, each loading all
+Roboto, Roboto Slab, Plus Jakarta Sans, IBM Plex Mono — every one requested as 100,100italic,…,900,900italic. Four render-blocking cross-origin requests, and no preconnect to fonts.gstatic.com (only a dns-prefetch for googletagmanager).                     
+- Fix: Restrict to the 2–3 weights actually rendered per family in Elementor's font settings; add <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>. Roboto Slab is not visibly used on this page — likely an Elementor default worth removing entirely.
+4. H1 carries zero keyword signal
+▎ "The label is the easy part. What's behind it matters."
+The title tag targets research peptides · batch-matched lab reports. The H1 targets nothing. There is no topical bridge between the two.
+- First principle: The H1 is the page's strongest single on-page relevance signal after the title. A pure brand-voice H1 forfeits it.
+- Fix — keep the voice, add the anchor. The eyebrow text "Research Without the Runaround" already sits directly above the H1. Promote a keyword-bearing line into the H1 and demub-headline. E.g. "Research peptides, with the
+batch record attached." — same tone, same promise,
+- Falsifiability: If impressions for peptide head terms don't rise within ~6 weeks in GSC, the constraint is domain authority, not on-page relevance, and effort should move to the COA archive as a link asset.
+5. Featured product grid has visible prices and no
+Four compounds with strengths and prices are rendered on the page (GLP-3 R $79.99 · GHK-CU $33.99 · NAD+ $51.99 · TB-500 $49.99). The schema graph contains WebPage, ImageObject, BreadcrumbList, WebSite, OnlineStore — no product entities.
+- Fix: Add an ItemList of Product nodes referencing the canonical product URLs (JSON-LD below). This does not replace per-product schema on /product/* pages — it declares the homepage's merchandising relationship to them.
+- Caveat, stated plainly: Google restricts merchant/shopping rich results in regulated categories, and research chemicals may not surface price snippets. The durable win here is entity clarity for AI search, not stars-and-prices in the SERP. Do it for that reason; treat a rich result as upside.
+---
+🟡 Medium
+6. Social preview image is the wrong shape
+og:image = RT30F-scaled.webp at 2062×2560 (portrait 0.8:1), paired with twitter:card=summary_large_image which expects 1200×630
+(1.91:1). Every share will be centre-cropped into .
+Also missing: og:image:width, og:image:height, og:image:alt, twitter:description, twitter:image.
+7. Schema title contradicts the title tag
+WebPage.name = "Research Compounds & Batch Documentation | Pep Select"
+<title> = "Research Peptides with Batch-Matched Lab Reports | Pep Select"
+Two different declared page names. Align them in Yoast (this is a stale Yoast SEO-title override).
+8. OnlineStore entity has no identity graph
+No sameAs, no contactPoint, no address, no email — despite support@pepselect.com being on the page. For a brand that has to earn trust to convert, the entity is currently undisambiguated for both Google's Knowledge Graph and LLM retrieval.
+9. COA image is 3400×4400 with no srcset
+tesamorelin-10mg-coa-source.webp — 308 KB, intrinsic 3400×4400, hand-coded <img> in the child theme with no srcset/sizes. Every visitor downloads a 15-megapixel certificate scan to view it at a few hundred pixels wide.
+10. Zero outbound authority links
+The only external link on the page is mailto:suppomes an independent laboratory as its central trustclaim and does not link to it.
+- First principle: Verifiability is the mechanism ment. An unlinked lab name is an assertion; alinked one is a citation.
+- Fix: Link "independent laboratory" / "Freedom Di(rel="nofollow" if you prefer not to pass equity).Cheapest E-E-A-T gain available on the page.
+11. Meta description leaves 16 characters unused and has no differentiator
+134 chars of 160. It describes the catalog but omies this site: batch-matched documentation and free
+12. Four internal links with empty anchor text
+Each product card links twice — once as a wrapped image with text: "", once as "Learn more". Eight links, four destinations, no descriptive anchor among them. "Learn more" ×4 is also anchor-text waste.
+---
+🔵 Low / Informational
+13. Research gate is a full-viewport interstitial in the initial HTML
+#psag-gate is position:fixed; inset:0; z-index:9999999 with no default display:none — it paints over everything and is removed by JS on consent.
+Assessment: not a penalty risk. All page content ships in the raw HTML and is fully crawlable, and Google's intrusive-interstitial
+policy explicitly exempts legally-required age vero real consequences remain:
+- For a rendering crawler, the visible above-the-fold region is the gate, not your hero. This is what makes #1's falsifiability
+check meaningful.
+- html.psag-open{overflow:hidden} is applied by JS, so there is a pre-JS window where the page scrolls behind the gate.
+Verification: run URL Inspection → Live Test → View Rendered Screenshot in Search Console to confirm what Googlebot actually
+paints.
+econd User-agent: * with an empty Disallow:. Per RFC 9309, Google merges same-agent groups, so your /wp-admin/ and ?add-to-cart= rules still apply — no functional problem. It reads as a contradiction to humans and to less careful parsers. Consolidate into one group.
+15. llms.txt returns 404
+Optional and ignored by Google Search. Listed for completeness only — this is not a ranking factor and I would not prioritize it.
+16. Security headers are thin
+Only X-Content-Type-Options: nosniff. No HSTS, CSP, or Referrer-Policy. Negligible direct ranking impact; non-trivial trust impact for a site whose entire pitch is rigor.
+17. Gate logo <img> has no width/height
+The one image on the page missing intrinsic dimensions — a CLS contributor inside the gate card.
+---
+Content Assessment
+834 words total — but roughly 430 of those are the research-gate attestation and FDA disclaimer boilerplate, which repeats a
+near-identical block in the footer. Effective uniq.
+For an e-commerce homepage in a vertical where trust is the product, that is thin — not penalty-thin, but under-built relative to what the brand can credibly say. The quality of what's there is high; there simply isn't much of it.
+The strongest section is "Match the batch. Match the vial." — a concrete, three-point verification procedure (compound + strength · cap/crimp · batch number) tied to a real document. That is a differentiated, defensible claim and it currently occupies about 90 words. It deserves more room, and it deserves to be the thing the H1 points at.
+Missing trust surface: no About link, no physical address, no phone, no team or credentials, no company registration detail. In a category where buyers are actively screening for legitimacy, the absence is conspicuous.
+---
+Ready-to-Use Schema
+Add alongside the existing Yoast graph (do not replace it):
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "@id": "https://pepselect.com/#featured-compounds",
+  "name": "Featured Research Compounds",
+  "itemListOrder": "https://schema.org/ItemListUnordered",
+  "numberOfItems": 4,
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1,
+      "item": { "@type": "Product", "name": "GLP-3 R 10mg",
+        "url": "https://pepselect.com/product/glp3-r10/",
+        "image": "https://pepselect.com/wp-content0.webp",
+        "brand": { "@id": "https://pepselect.com/#organization" },
+        "offers": { "@type": "Offer", "price": "79
+          "availability": "https://schema.org/InStock",
+          "url": "https://pepselect.com/product/glp3-r10/",
+          "hasMerchantReturnPolicy": { "@id": "https://pepselect.com/#merchant-return-policy" } } } },
+    { "@type": "ListItem", "position": 2,
+      "item": { "@type": "Product", "name": "GHK-CU 50mg",
+        "url": "https://pepselect.com/product/ghk-
+        "image": "https://pepselect.com/wp-content/uploads/2026/06/GHK50F-300x300.webp",
+        "brand": { "@id": "https://pepselect.com/#organization" },
+        "offers": { "@type": "Offer", "price": "33
+          "availability": "https://schema.org/InStock",
+          "url": "https://pepselect.com/product/gh
+    { "@type": "ListItem", "position": 3,
+      "item": { "@type": "Product", "name": "NAD+ 500mg",
+        "url": "https://pepselect.com/product/nad/",
+        "image": "https://pepselect.com/wp-content300.webp",
+: "Offer", "price": "51.99", "priceCurrency": "USD",
+          "availability": "https://schema.org/InStock",
+          "url": "https://pepselect.com/product/nad/" } } },
+    { "@type": "ListItem", "position": 4,
+      "item": { "@type": "Product", "name": "TB-500 10mg",
+        "url": "https://pepselect.com/product/tb500-10/",
+        "image": "https://pepselect.com/wp-content/uploads/2026/06/TB10F-300x300.webp",
+        "brand": { "@id": "https://pepselect.com/#organization" },
+        "offers": { "@type": "Offer", "price": "49.99", "priceCurrency": "USD",
+          "availability": "https://schema.org/InStock",
+          "url": "https://pepselect.com/product/tb500-10/" } } }
+  ]
+}
+And extend the existing #organization node (Yoast pseo_schema_organization filter):
+{
+  "@id": "https://pepselect.com/#organization",
+  "email": "support@pepselect.com",
+  "contactPoint": {
+    "@type": "ContactPoint",
+lect.com",
+    "availableLanguage": "English"
+  },
+  "sameAs": [
+    "https://www.instagram.com/<handle>",
+    "https://x.com/<handle>"
+  ]
+}
+▎ Replace the sameAs placeholders with real, owned profiles only — a sameAs pointing at a nonexistent or unclaimed profile is worse than omitting the property.
+---
+Prioritized Action Plan
+┌─────┬───────────────────────────────────────────────────┬──────────────────────────────────────┐
+│  #  │                           Action                           │ Priority │ Effort │          Blocks / Unblocks           │
+├─────┼────────────────────────────────────────────────────────────┼──────────┼────────┼──────────────────────────────────────┤
+│ 1   │ Dequeue plugin CSS/JS on is_front_page() (confetti,        │ 🔴       │ M      │ Unblocks all CWV work — do first     │
+│     │ sweetalert2, selectWoo, owl, YITH modals)         │                                      │
+────────────────────────────────────────┼──────────┼────────┼──────────────────────────────────────┤
+│ 2   │ Convert hero PNG → WebP + preload it                       │ 🔴       │ S      │ Depends on #1 to be measurable       │
+├─────┼────────────────────────────────────────────────────────────┼──────────┼────────┼──────────────────────────────────────┤
+│ 3   │ Trim Google Fonts to used weights; add preconnect to       │ 🟠       │ S      │ Independent                          │
+│     │ fonts.gstatic.com                                          │          │        │                                      │
+├─────┼────────────────────────────────────────────────────────────┼──────────┼────────┼──────────────────────────────────────┤
+│ 4   │ Rewrite H1 to carry the primary term; demote current line  │ 🟠       │ S      │ Independent — highest                │
+│     │ to sub-head                                                │          │        │ relevance-per-minute on the page     │
+├─────┼────────────────────────────────────────────────────────────┼──────────┼────────┼──────────────────────────────────────┤
+│ 5   │ Add ItemList/Product JSON-LD                               │ 🟠       │ S      │ Independent                          │
+├─────┼────────────────────────────────────────────────────────────┼──────────┼────────┼──────────────────────────────────────┤
+│ 6   │ New 1200×630 og:image + og:image:width/height/alt,         │ 🟡       │ S      │ Independent                          │
+│     │ twitter:description, twitter:image                         │          │        │                                      │
+├─────┼────────────────────────────────────────────────────────────┼──────────┼────────┼──────────────────────────────────────┤
+│ 7   │ Align WebPage.name with <title> in Yoast   XS     │ Independent                          │
+├─────┼───────────────────────────────────────────────────┼──────────────────────────────────────┤
+│ 8   │ Extend #organization with sameAs / contactPoint / email    │ 🟡       │ S      │ Feeds AI-search entity resolution    │
+├─────┼────────────────────────────────────────────────────────────┼──────────┼────────┼──────────────────────────────────────┤
+│ 9   │ Add srcset/sizes to the COA image in the child theme       │ 🟡       │ S      │ Independent                          │
+├─────┼───────────────────────────────────────────────────┼──────────────────────────────────────┤
+│ 10  │ Link the independent-lab mention outbound                  │ 🟡       │ XS     │ Cheapest E-E-A-T gain available      │
+├─────┼────────────────────────────────────────────────────────────┼──────────┼────────┼──────────────────────────────────────┤
+│ 11  │ Expand meta description to ~155 chars with batch/shipping  │ 🟡       │ XS     │ Independent                          │
+│     │ differentiator                                             │          │        │                                      │
+├─────┼────────────────────────────────────────────────────────────┼──────────┼────────┼──────────────────────────────────────┤
+│ 12  │ Give product-card image links real anchor text; vary the   │ 🟡       │ S      │ Independent                          │
+│     │ four "Learn more"                                          │          │        │                                      │
+├─────┼────────────────────────────────────────────────────────────┼──────────┼────────┼──────────────────────────────────────┤
+│ 13  │ Expand "Match the batch" section; add About/trust surface  │ 🟡       │ L      │ Depends on #4 for message alignment  │
+├─────┼────────────────────────────────────────────────────────────┼──────────┼────────┼──────────────────────────────────────┤
+│ 14  │ Consolidate the duplicate User-agent: * groups in          │ 🔵       │ XS     │ Cosmetic                             │
+│     │ robots.txt                                                 │          │        │                                      │
+├─────┼───────────────────────────────────────────────────┼──────────────────────────────────────┤
+│ 15  │ Add HSTS / Referrer-Policy / CSP at Cloudflare             │ 🔵       │ S      │ Trust, not ranking                   │
+└─────┴────────────────────────────────────────────────────────────┴──────────┴────────┴──────────────────────────────────────┘
+Monitor without re-auditing: GSC Search Analytics terms (tests #4), PSI mobile LCP (tests #1–3), andRich Results Test on / (tests #5).
+---
+Two Things I Could Not Measure
+1. Real Core Web Vitals. No GOOGLE_API_KEY is configured, so there is no CrUX field data or PSI lab run behind the performance score — it is inferred from HTML structure and measured asset weights only. Run /seo google after adding a key for actual numbers.
+2. What Googlebot paints. The research gate means rendered-viewport behaviour can only be confirmed via Search Console's live
+rendered screenshot. Worth doing before you act on
+Want me to implement any of these? Items 4–12 are  functions.php change I can draft against the child theme.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Built by agricidaniel — Join the AI Marketing Hub community
+🆓 Free  → https://www.skool.com/ai-marketing-hub
+⚡ Pro   → https://www.skool.com/ai-marketing-hub-
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✻ Worked for 5m 41s
+Prioritized Action Plan
+┌─────┬────────────────────────────────────────────────────────────┬──────────┬────────┬──────────────────────────────────────┐
+│  #  │                           Action                           │ Priority │ Effort │          Blocks / Unblocks           │
+├─────┼────────────────────────────────────────────────────────────┼──────────┼────────┼──────────────────────────────────────┤
+│ 1   │ Dequeue plugin CSS/JS on is_front_page() ( M      │ Unblocks all CWV work — do first     │
+───────────────────────────────────────┼──────────┼────────┼──────────────────────────────────────┤
+│ 4   │ Rewrite H1 to carry the primary term; demote current line  │ 🟠       │ S      │ Independent — highest                │
+│     │ to sub-head                                                │          │        │ relevance-per-minute on the page     │
+├─────┼────────────────────────────────────────────────────────────┼──────────┼────────┼──────────────────────────────────────┤
+│ 5   │ Add ItemList/Product JSON-LD                               │ 🟠       │ S      │ Independent                          │
+├─────┼────────────────────────────────────────────────────────────┼──────────┼────────┼──────────────────────────────────────┤
+│ 6   │ New 1200×630 og:image + og:image:width/height/alt,         │ 🟡       │ S      │ Independent                          │
+│     │ twitter:description, twitter:image                         │          │        │                                      │
+├─────┼────────────────────────────────────────────────────────────┼──────────┼────────┼──────────────────────────────────────┤
+│ 7   │ Align WebPage.name with <title> in Yoast   XS     │ Independent                          │
+├─────┼───────────────────────────────────────────────────┼──────────────────────────────────────┤
+│ 8   │ Extend #organization with sameAs / contactPoint / email    │ 🟡       │ S      │ Feeds AI-search entity resolution    │
+├─────┼────────────────────────────────────────────────────────────┼──────────┼────────┼──────────────────────────────────────┤
+│ 9   │ Add srcset/sizes to the COA image in the child theme       │ 🟡       │ S      │ Independent                          │
+├─────┼───────────────────────────────────────────────────┼──────────────────────────────────────┤
+───────────────────────────────────────┼──────────┼────────┼──────────────────────────────────────┤
+│ 12  │ Give product-card image links real anchor text; vary the   │ 🟡       │ S      │ Independent                          │
+│     │ four "Learn more"                                          │          │        │                                      │
+├─────┼────────────────────────────────────────────────────────────┼──────────┼────────┼──────────────────────────────────────┤
+│ 13  │ Expand "Match the batch" section; add About/trust surface  │ 🟡       │ L      │ Depends on #4 for message alignment  │
+├─────┼────────────────────────────────────────────────────────────┼──────────┼────────┼──────────────────────────────────────┤
+│ 14  │ Consolidate the duplicate User-agent: * groups in          │ 🔵       │ XS     │ Cosmetic                             │
+│     │ robots.txt                                                 │          │        │                                      │
+├─────┼────────────────────────────────────────────────────────────┼──────────┼────────┼──────────────────────────────────────┤
+│ 15  │ Add HSTS / Referrer-Policy / CSP at Cloudf S      │ Trust, not ranking                   │
+└─────┴────────────────────────────────────────────────────────────┴──────────┴────────┴──────────────────────────────────────┘
+Monitor without re-auditing: GSC Search Analytics impressions for peptide head terms (tests #4), PSI mobile LCP (tests #1–3), and
+Rich Results Test on / (tests #5).
+---
+Two Things I Could Not Measure
+1. Real Core Web Vitals. No GOOGLE_API_KEY is configured, so there is no CrUX field data or PSI lab run behind the performance score — it is inferred from HTML structure and measured asset weights only. Run /seo google after adding a key for actual numbers.
+2. What Googlebot paints. The research gate means rendered-viewport behaviour can only be confirmed via Search Console's live
+rendered screenshot. Worth doing before you act on
+Want me to implement any of these? Items 4–12 are  functions.php change I can draft against the child theme.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Built by agricidaniel — Join the AI Marketing Hub community
+🆓 Free  → https://www.skool.com/ai-marketing-hub
+⚡ Pro   → https://www.skool.com/ai-marketing-hub-
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✻ Worked for 5m 41s

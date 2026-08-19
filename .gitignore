@@ -30,3 +30,9 @@ Thumbs.db
 # Build artifacts (see AGENTS.md)
 dist/
 /*.zip
+
+# Local agent sessions, scratch worktrees, and generated graph caches
+.claude/
+.tmp/
+tmp/
+graphify-out/

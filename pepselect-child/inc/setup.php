@@ -33,6 +33,7 @@ require_once get_stylesheet_directory() . '/inc/legacy-shortcodes.php';
 require_once get_stylesheet_directory() . '/inc/emails.php';
 require_once get_stylesheet_directory() . '/inc/seo-semantics.php';
 require_once get_stylesheet_directory() . '/inc/seo-catalog.php';
+require_once get_stylesheet_directory() . '/inc/performance.php';
 
 /**
  * Determine whether the required Hello Elementor parent theme is available.

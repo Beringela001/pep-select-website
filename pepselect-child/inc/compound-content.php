@@ -39,7 +39,7 @@ function pepselect_child_compound_library() {
 			'sources'     => array(
 				'Lu SC. Biochim Biophys Acta. 2013. DOI:10.1016/j.bbagen.2012.10.008',
 				'Weschawalit S, et al. Clin Cosmet Investig Dermatol. 2017. DOI:10.2147/CCID.S128278',
-				'Allen EMG, Mieyal JJ. Antioxidants. 2023. [VERIFY DOI]',
+				'Allen EMG, Mieyal JJ. Antioxid Redox Signal. 2012. DOI:10.1089/ars.2012.4644',
 			),
 		),
 		'pt-141' => array(
@@ -91,7 +91,7 @@ function pepselect_child_compound_library() {
 				array( 'text' => __( 'Investigated for system-wide metabolic regulation', 'pepselect-child' ), 'ref' => 1 ),
 			),
 			'sources'     => array(
-				'Canto C, Menzies KJ, Auwerx J. Cell Metab. 2015. [VERIFY DOI]',
+				'Canto C, Menzies KJ, Auwerx J. Cell Metab. 2015. DOI:10.1016/j.cmet.2015.05.023',
 			),
 		),
 		'ss-31' => array(
@@ -105,7 +105,7 @@ function pepselect_child_compound_library() {
 			'sources'     => array(
 				'Chavez JD, et al. Proc Natl Acad Sci USA. 2020. DOI:10.1073/pnas.2002250117',
 				'Pharaoh G, et al. J Physiol. 2023. PMID:37462785',
-				'Wu J, et al. Mol Neurobiol. 2019. [VERIFY DOI]',
+				'Wu J, et al. Mol Neurobiol. 2015. DOI:10.1007/s12035-014-8918-z',
 			),
 		),
 		'glp-1 s' => array(
@@ -172,9 +172,9 @@ function pepselect_child_compound_library() {
 				array( 'text' => __( 'Investigated for inflammation-linked metabolic pathways', 'pepselect-child' ), 'ref' => 3 ),
 			),
 			'sources'     => array(
-				'Kong BS, et al. Diabetes Metab J. 2023. [VERIFY DOI]',
+				'Kong BS, et al. Diabetes Metab J. 2023. DOI:10.4093/dmj.2022.0333',
 				'Mohtashami Z, et al. Int J Mol Sci. 2022.',
-				'Zheng Y, et al. Front Endocrinol. 2023. [VERIFY DOI]',
+				'Zheng Y, et al. Front Endocrinol. 2023. DOI:10.3389/fendo.2023.1120533',
 			),
 		),
 		'bpc-157' => array(

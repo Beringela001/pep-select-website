@@ -10,6 +10,31 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Redirect the legacy Terms URL used by the research gate.
+ *
+ * The published legal page uses /terms-conditions/. Keeping this narrow
+ * fallback prevents old gate markup, bookmarks, and external links from
+ * sending visitors to a 404 while the gate's separate source is corrected.
+ *
+ * @return void
+ */
+function pepselect_child_redirect_legacy_terms_url() {
+	if ( is_admin() || ! is_404() || empty( $_SERVER['REQUEST_URI'] ) ) {
+		return;
+	}
+
+	$request_path = wp_parse_url( wp_unslash( $_SERVER['REQUEST_URI'] ), PHP_URL_PATH );
+
+	if ( '/terms-of-service' !== untrailingslashit( (string) $request_path ) ) {
+		return;
+	}
+
+	wp_safe_redirect( home_url( '/terms-conditions/' ), 301, 'Pep Select' );
+	exit;
+}
+add_action( 'template_redirect', 'pepselect_child_redirect_legacy_terms_url', 0 );
+
+/**
  * Redirect the duplicate Research Compounds archive to the primary Shop URL.
  *
  * Query parameters are retained so campaign attribution, sorting, filters,
@@ -394,6 +419,24 @@ function pepselect_child_filter_product_structured_data( $markup, $product ) {
 add_filter( 'woocommerce_structured_data_product', 'pepselect_child_filter_product_structured_data', 20, 2 );
 
 /**
+ * Normalize WooCommerce's root JSON-LD context to Yoast's value.
+ *
+ * WooCommerce wraps its generated graph in this context after the individual
+ * Product filter runs, so the root-context filter is the correct owner hook.
+ *
+ * @param array $context Structured-data context wrapper.
+ * @return array
+ */
+function pepselect_child_filter_woocommerce_schema_context( $context ) {
+	if ( is_array( $context ) ) {
+		$context['@context'] = 'https://schema.org';
+	}
+
+	return $context;
+}
+add_filter( 'woocommerce_structured_data_context', 'pepselect_child_filter_woocommerce_schema_context', 20 );
+
+/**
  * Return the stable identifier for Pep Select's published return policy.
  *
  * @return string
@@ -437,9 +480,12 @@ function pepselect_child_filter_product_offer_structured_data( $offer, $product 
 		return $offer;
 	}
 
-	if ( isset( $offer['seller'] ) && is_array( $offer['seller'] ) ) {
-		$offer['seller']['@type'] = 'OnlineStore';
-	}
+	$offer['seller'] = array(
+		'@type' => 'OnlineStore',
+		'@id'   => home_url( '/#organization' ),
+		'name'  => get_bloginfo( 'name' ),
+		'url'   => home_url( '/' ),
+	);
 
 	$offer['hasMerchantReturnPolicy'] = array(
 		'@id' => pepselect_child_get_merchant_return_policy_id(),

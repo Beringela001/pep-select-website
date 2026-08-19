@@ -1,17 +1,58 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.16** — Mobile-safe payment-confirmed email.
+**Release candidate: 0.25.0-beta.26** — Claude SEO Milestone 3 unified Live release.
 
-## 0.25.0-beta.16 - 2026-08-18
+## 0.25.0-beta.26 - 2026-08-18
 
-- Keep the payment-confirmation check icon circular when its supporting sentence wraps on narrow mobile email clients.
-- Preserve the approved beta.15 copy, live WooCommerce order data, responsive order summary, and shared shipped-order canvas.
+- Preserve the complete Live 0.25.0-beta.23 storefront and transactional-email release, including the responsive admin new-order email.
+- Return HTTP 404 for impossible `/shop/page/2/` and higher URLs because the complete catalog intentionally renders on one page.
+- Normalize WooCommerce's final root JSON-LD context to the exact Schema.org context emitted by Yoast.
+- Connect every WooCommerce Offer seller to the existing Pep Select `/#organization` entity without inventing business data.
+- Pair with COA Archive 0.7.2, which connects Dataset creator to the same organization and publishes the real WordPress record date.
 
-## 0.25.0-beta.15 - 2026-08-18
+## 0.25.0-beta.23 - 2026-08-18
 
-- Add the approved payment-confirmed customer email with warm subject and title, clear fulfillment expectations, and a no-action-needed confirmation card.
-- Render canonical WooCommerce product images, item details, paid totals, rewards metadata, and billing/shipping addresses in the approved desktop and mobile layouts.
-- Reuse the mobile-safe transactional email canvas while preserving the shipped-order email state and tracking flow.
+- Remove WooCommerce's inherited `Congratulations on the sale!` additional content from the internal order alert.
+- Preserve beta.22's date-first subject, operational hierarchy, live order data, direct review action, and responsive presentation.
+
+## 0.25.0-beta.22 - 2026-08-18
+
+- Preserve the complete Live 0.25.0-beta.21 theme baseline, including its SEO, responsive image, access, COA, checkout, and customer-email work.
+- Replace WooCommerce's default admin new-order email with the Pep Select transactional canvas and a compact operations-first hierarchy.
+- Set inbox subjects from the order creation date and number, for example `[Aug 18, 2026] New order #1519`.
+- Keep WooCommerce authoritative for product images, item metadata, quantities, totals, payment, shipping, coupons, rewards metadata, research purpose, customer notes, and addresses.
+- Add a direct order-review button and distinct desktop/mobile compositions without changing order or fulfillment behavior.
+
+## 0.25.0-beta.21 - 2026-08-18
+- Preserves the exact email templates and email behavior deployed on Live in 0.25.0-beta.16.
+- Carries forward the staging-verified Claude SEO milestone 1 trust/crawl work already present in the Live baseline.
+- Adds the milestone 2 responsive WebP homepage hero, optimized evidence images, and audited-template render-path improvements from 0.25.0-beta.20.
+- Intentionally excludes the later email-development delta that was present on staging but was not part of this SEO deployment authorization.
+
+## 0.25.0-beta.20 - 2026-08-18
+
+- Match the saved hero attachment by its public filename family so the responsive WebP source is selected even when WordPress stores a generated/scaled original path.
+- Include the WordPress posts-page request used by the Testing archive in the audited-template asset cleanup.
+- Preserve beta.19 as the verified installation baseline while correcting only the two output conditions that its post-deployment HTML exposed.
+
+## 0.25.0-beta.19 - 2026-08-18
+
+- Serve the existing homepage hero artwork through a responsive WebP source set while retaining the Media Library PNG as the fallback.
+- Stop loading unused Marquee Addons files on the four SEO performance templates.
+- Stop loading block, Jetpack form, and media-player styles on those templates when their components are not present.
+- Preserve the staging-verified `0.25.0-beta.18` image fixes and all commerce behavior.
+
+## 0.25.0-beta.18 - 2026-08-18
+
+- Right-size and recompress the two homepage evidence images while preserving their content and layout.
+- Reduce their combined transfer size from 421,930 bytes to 96,112 bytes (77.2%).
+- Preserve the staging-verified `0.25.0-beta.17` SEO fixes and exact `0.25.0-beta.14` functional baseline.
+
+## 0.25.0-beta.17 - 2026-08-18
+
+- Redirect the retired `/terms-of-service/` route to the canonical `/terms-conditions/` page.
+- Replace five visible `[VERIFY DOI]` placeholders with publication-verified citation details and DOI links.
+- Preserve the exact staging `0.25.0-beta.14` baseline and all commerce behavior.
 
 ## 0.25.0-beta.14 - 2026-08-18
 

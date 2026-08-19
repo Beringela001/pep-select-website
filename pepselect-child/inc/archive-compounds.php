@@ -116,3 +116,24 @@ function pepselect_child_compounds_archive_per_page( $query ) {
 	}
 }
 add_action( 'pre_get_posts', 'pepselect_child_compounds_archive_per_page' );
+
+/**
+ * Return a real 404 for impossible Shop pagination.
+ *
+ * The catalog intentionally renders every visible product on one page, so
+ * `/shop/page/2/` and higher are duplicate crawl traps rather than valid
+ * archive pages.
+ *
+ * @return void
+ */
+function pepselect_child_reject_shop_pagination() {
+	if ( is_admin() || ! function_exists( 'is_shop' ) || ! is_shop() || 2 > absint( get_query_var( 'paged' ) ) ) {
+		return;
+	}
+
+	global $wp_query;
+	$wp_query->set_404();
+	status_header( 404 );
+	nocache_headers();
+}
+add_action( 'template_redirect', 'pepselect_child_reject_shop_pagination', 2 );

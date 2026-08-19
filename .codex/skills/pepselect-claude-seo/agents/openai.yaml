@@ -1,0 +1,4 @@
+interface:
+  display_name: "Pep Select Claude SEO"
+  short_description: "Apply Claude SEO findings safely to Pep Select"
+  default_prompt: "Use $pepselect-claude-seo to turn this Claude SEO report into a safe Pep Select implementation plan."
