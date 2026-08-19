@@ -255,9 +255,31 @@ function pepselect_child_register_dilution_notice() {
 		return;
 	}
 
-	add_action( 'woocommerce_single_product_summary', 'pepselect_child_render_dilution_notice', pepselect_child_dilution_notice_priority() );
+	// The promotion-pill formatter buffers the summary through priority 999.
+	// Render these complete components after that buffer closes so neither can
+	// be mistaken for plugin promotion copy while retaining their requested
+	// order immediately after the purchase/back-in-stock section.
+	$after_action_priority = max( 1000, pepselect_child_dilution_notice_priority() );
+	add_action( 'woocommerce_single_product_summary', 'pepselect_child_render_product_coa_summary', $after_action_priority );
+	add_action( 'woocommerce_single_product_summary', 'pepselect_child_render_dilution_notice', $after_action_priority + 1 );
 }
 add_action( 'wp', 'pepselect_child_register_dilution_notice' );
+
+/**
+ * Render the COA plugin's compact current/incoming summary after the purchase
+ * or back-in-stock action and before the dilution notice. The plugin remains
+ * the sole owner of record selection, status wording, and report links.
+ *
+ * @return void
+ */
+function pepselect_child_render_product_coa_summary() {
+	if ( ! shortcode_exists( 'pepselect_product_coa_carousel' ) ) {
+		return;
+	}
+
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Trusted plugin shortcode escapes its own complete output.
+	echo do_shortcode( '[pepselect_product_coa_carousel variant="compact"]' );
+}
 
 /**
  * Product promotion pills (WEB M7).

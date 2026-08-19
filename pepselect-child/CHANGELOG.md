@@ -1,6 +1,21 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.34** — Claude SEO Milestone 4 content batch 2 public metadata refinement.
+**Release candidate: 0.25.0-beta.36** - Claude SEO Milestone 4 combined batch 3 and 4 product trust placement.
+
+## 0.25.0-beta.36 - 2026-08-19
+
+- Render the compact COA summary and dilution notice after the existing promotion-pill output buffer closes so dynamic batch content cannot be mistaken for promotional text.
+- Preserve the approved card order directly after the purchase or back-in-stock section.
+
+**Previous release candidate: 0.25.0-beta.35**
+
+## 0.25.0-beta.35 - 2026-08-19
+
+- Place the COA plugin's compact current or incoming batch summary directly after the purchase or back-in-stock action and before the existing dilution notice.
+- Keep the simple compound descriptions, complete testing-history carousel, WooCommerce commerce controls, and COA source records unchanged.
+- Pair with COA Archive 0.7.4 so the compact summary and full history read the same automatic product-to-compound relationship and public report model.
+
+**Previous release: 0.25.0-beta.34** - Claude SEO Milestone 4 content batch 2 public metadata refinement.
 
 ## 0.25.0-beta.34 - 2026-08-19
 

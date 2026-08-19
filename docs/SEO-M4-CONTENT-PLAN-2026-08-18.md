@@ -88,6 +88,8 @@ No `[VERIFY CLAIM]` text may reach Staging or Live.
 
 ## Batch 3 — Research documentation hub and compliant question coverage
 
+**Status (2026-08-19): Combined with Batch 4 and implemented on Staging.** Batch 2's approved documentation guide already answers the four candidate topics with Pep Select records and visual evidence. A second hub, duplicate guide, and repetitive FAQ set were intentionally not created. The existing FAQ can link to the guide later only where a genuine visitor question is missing.
+
 **Purpose:** Organize verified citations and answer useful questions that fit Pep Select’s research-only limits.
 
 **Findings:** `CONT-05`, `GEO-03`, `GEO-06`, `SXO-03`, and `CONT-14`.
@@ -102,6 +104,8 @@ Candidate topics:
 Questions about personal effects, dosing, medical risks, or consumer use are excluded.
 
 ## Batch 4 — Product depth and Shop trust density
+
+**Status (2026-08-19): Combined with Batch 3 and implemented on Staging for visual review.** The approved simple product descriptions and layouts remain unchanged. A compact, dynamically selected current/latest/incoming batch-documentation card now appears directly after the purchase or back-in-stock action and before the dilution notice. The complete testing-history carousel remains lower on the page. Products with only failed or otherwise ineligible records receive no compact card, and product pages link to the exact eligible batch record rather than to the general guide.
 
 **Purpose:** Replace the rigid catalog-wide description pattern with useful, compound-specific material and show accurate documentation status closer to the Shop decision point.
 
