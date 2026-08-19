@@ -11,7 +11,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 $logo_html    = pepselect_child_get_footer_logo_html();
 $support_mail = 'support@pepselect.com';
-$testing_url  = home_url( '/testing/' );
 ?>
 <footer id="pepselect-site-footer" class="pepselect-site-footer" data-pepselect-footer-preview>
 	<div class="pepselect-footer__inner">
@@ -29,10 +28,7 @@ $testing_url  = home_url( '/testing/' );
 
 				<div class="pepselect-footer__research-copy">
 					<p><?php esc_html_e( 'All products sold on this website are intended for research and identification purposes only. These products are not intended for human dosing, injection, or ingestion.', 'pepselect-child' ); ?></p>
-					<p>
-						<?php esc_html_e( 'Pep Select requires independent laboratory testing before a compound is released for sale.', 'pepselect-child' ); ?>
-						<a href="<?php echo esc_url( $testing_url ); ?>"><?php esc_html_e( 'Review batch-specific Certificates of Analysis in the Quality Archive.', 'pepselect-child' ); ?></a>
-					</p>
+					<p><?php esc_html_e( 'Pep Select requires independent laboratory testing before a compound is released for sale.', 'pepselect-child' ); ?></p>
 				</div>
 
 				<p class="pepselect-footer__support">

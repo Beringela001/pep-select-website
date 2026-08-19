@@ -46,9 +46,9 @@ This adds one natural use of the homepage title’s core term without changing t
 
 ### Approved copy
 
-> Pep Select requires independent laboratory testing before a compound is released for sale. Review batch-specific Certificates of Analysis in the Quality Archive.
+> Pep Select requires independent laboratory testing before a compound is released for sale.
 
-This records Paulo's confirmed release policy without claiming that an unreleased or pending compound has completed testing.
+This records Paulo's confirmed release policy without claiming that an unreleased or pending compound has completed testing. Paulo rejected the adjacent Quality Archive link during Staging review on August 19, 2026.
 
 ## Compliance and evidence review
 

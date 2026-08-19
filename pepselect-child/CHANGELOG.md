@@ -1,13 +1,20 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.27** — Claude SEO Milestone 4 content batch 1.
+**Release candidate: 0.25.0-beta.28** — Claude SEO Milestone 4 content batch 1 owner-approved footer revision.
+
+## 0.25.0-beta.28 - 2026-08-19
+
+- Remove the owner-rejected Quality Archive link from the sitewide footer while preserving the approved pre-release independent-testing policy sentence.
+- Preserve all Milestone 4 Batch 1 product, homepage, WooCommerce, and COA behavior from `0.25.0-beta.27`.
+
+**Previous release: 0.25.0-beta.27** — Claude SEO Milestone 4 content batch 1.
 
 ## 0.25.0-beta.27 - 2026-08-18
 
 - Replace GLP-2T supplier boilerplate with approved Pep Select product copy focused on dual-receptor identity and binding.
 - Normalize compound-library matching so `GLP-2T` resolves to the reviewed `glp-2 t` content entry despite punctuation or spacing differences.
 - Add one natural `research peptide` use to the homepage body while preserving `compound` as the broader catalog term.
-- State the owner-confirmed pre-release independent-testing policy in the footer and link directly to the Quality Archive.
+- State the owner-confirmed pre-release independent-testing policy in the footer.
 - Preserve all WooCommerce product, stock, price, cart, checkout, payment, order, rewards, and COA behavior.
 
 **Previous release: 0.25.0-beta.26** — Claude SEO Milestone 3 unified Live release.
