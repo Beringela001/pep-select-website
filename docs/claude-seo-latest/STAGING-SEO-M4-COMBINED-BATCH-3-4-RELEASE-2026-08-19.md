@@ -18,9 +18,9 @@ Batch 2's approved guide already covers Batch 3's candidate questions with Pep S
 - Child theme: `dist/pepselect-child-0.25.0-beta.36.zip`
 - Theme size: 2,362,123 bytes
 - Theme SHA-256: `D1FA2ED30D78617863CF391442B5E7C9E3A18CCAE377C8D01D2E455B4F035A9A`
-- COA Archive: `dist/pepselect-coa-archive-0.7.4.zip`
-- COA size: 376,238 bytes
-- COA SHA-256: `0FA2D1084F20D98221ACAF6F2782BF21AD0A9051D9E1A583328303B8EB44BF6C`
+- COA Archive: `dist/pepselect-coa-archive-0.7.5.zip`
+- COA size: 376,419 bytes
+- COA SHA-256: `703E82588C8AEFD9C83F1F8FB631FDD695D5A0A81F81C1D743B99C4A093BED4D`
 - Both ZIPs contain one portable package root.
 
 ## Runtime and visual verification
@@ -37,10 +37,12 @@ Batch 2's approved guide already covers Batch 3's candidate questions with Pep S
 
 Theme beta.35 exposed the new summary inside the existing promotion-note output buffer, which distorted the purchase area. It was rejected during Staging visual verification and never reached Live. Beta.36 moves the complete summary and dilution components after that buffer closes while preserving their intended order. Desktop and mobile screenshots confirm the corrected layout.
 
+COA Archive 0.7.5 incorporates Paulo's visual review: the purchase-area card is shorter and no longer prints `QC Passed` or `Fully Vetted`. It retains `Current Batch`, purity, batch, tested date, laboratory, and the exact report link. Detailed status wording remains available in the complete history section below.
+
 ## Evidence
 
-- Desktop screenshot: `dist/seo-m4-batch34-staging-nad-desktop.png`
-- Mobile screenshot: `dist/seo-m4-batch34-staging-nad-mobile.png`
+- Desktop screenshot: `dist/seo-m4-batch34-staging-nad-compact-desktop.png`
+- Mobile screenshot: `dist/seo-m4-batch34-staging-nad-compact-mobile.png`
 - Review URL: `https://stg-pepselect-staging.kinsta.cloud/product/nad/`
 - Corrected-strength example: `https://stg-pepselect-staging.kinsta.cloud/product/glp3-r10/`
 - Failed-only example: `https://stg-pepselect-staging.kinsta.cloud/product/glp3-r20/`
