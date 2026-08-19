@@ -66,7 +66,7 @@ No `[VERIFY CLAIM]` text may reach Staging or Live.
 
 ## Batch 2 — Documentation and vendor-evaluation guide
 
-**Release status:** Implemented and verified on Staging on August 19, 2026 as child theme `0.25.0-beta.29`. The visual page is awaiting Paulo's final review before any Live deployment. Live remains unchanged. Evidence: [`SEO-M4-BATCH-2-EVIDENCE-REGISTER-2026-08-19.md`](SEO-M4-BATCH-2-EVIDENCE-REGISTER-2026-08-19.md). Approved page contract: [`SEO-M4-BATCH-2-APPROVAL-DRAFT-2026-08-19.md`](SEO-M4-BATCH-2-APPROVAL-DRAFT-2026-08-19.md). Staging release: [`claude-seo-latest/STAGING-SEO-M4-BATCH-2-RELEASE-2026-08-19.md`](claude-seo-latest/STAGING-SEO-M4-BATCH-2-RELEASE-2026-08-19.md).
+**Release status:** Implemented and verified on Staging on August 19, 2026 as child theme `0.25.0-beta.29`. Paulo approved the guide page and selected a discovery card directly below the Quality Archive hero. That card is deployed to Staging in COA Archive `0.7.3` and awaits final visual approval before the complete Batch 2 release moves to Live. Live remains unchanged. Evidence: [`SEO-M4-BATCH-2-EVIDENCE-REGISTER-2026-08-19.md`](SEO-M4-BATCH-2-EVIDENCE-REGISTER-2026-08-19.md). Approved page contract: [`SEO-M4-BATCH-2-APPROVAL-DRAFT-2026-08-19.md`](SEO-M4-BATCH-2-APPROVAL-DRAFT-2026-08-19.md). Staging release: [`claude-seo-latest/STAGING-SEO-M4-BATCH-2-RELEASE-2026-08-19.md`](claude-seo-latest/STAGING-SEO-M4-BATCH-2-RELEASE-2026-08-19.md).
 
 **Purpose:** Create the first useful informational destination for visitors comparing research vendors and documentation practices.
 

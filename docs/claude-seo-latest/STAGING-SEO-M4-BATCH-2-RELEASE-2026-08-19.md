@@ -2,13 +2,15 @@
 
 ## Outcome
 
-Milestone 4 Batch 2 was deployed to the Pep Select Staging environment only. It adds the first long-form Guides article, a reusable guide template, responsive guide styling, and Article schema support. The result is awaiting Paulo's visual approval. Live was not changed.
+Milestone 4 Batch 2 was deployed to the Pep Select Staging environment only. It adds the first long-form Guides article, a reusable guide template, responsive guide styling, Article schema support, and a Quality Archive discovery card linking to the guide. Paulo approved the guide page; the new discovery card is awaiting final visual approval. Live was not changed.
 
 ## Recovery point
 
 - Kinsta Staging backup: `Before Claude SEO Milestone 4 content batch 2 - 2026-08-19`
 - Kinsta confirmed that the backup was created.
 - Manual backup capacity was full. After verifying timestamps and bottom-list position, the oldest backup removed was `Before homepage trust section 0.22.0-beta.3 - 2026-08-15`, created August 15, 2026 at 8:11 AM.
+- Before the Quality Archive discovery-card update, a second named Staging backup was created: `Before Milestone 4 Batch 2 COA guide card - 2026-08-19`, created August 19, 2026 at 11:50 AM.
+- Capacity was full for that backup. After verifying timestamps and bottom-list position, the oldest backup removed was `Before SEO Milestone 4 implementation - 2026-08-15`, created August 15, 2026 at 8:49 AM.
 
 ## Package
 
@@ -16,6 +18,10 @@ Milestone 4 Batch 2 was deployed to the Pep Select Staging environment only. It 
 - Size: 1,366,616 bytes
 - SHA-256: `0c4527c0dad0e93ee11f62e0bdda11347fe74594586246d3c29cb0b11e8ed605`
 - ZIP structure verified with one `pepselect-child/` root.
+- COA plugin package: `dist/pepselect-coa-archive-0.7.3.zip`
+- COA plugin size: 374,191 bytes
+- COA plugin SHA-256: `49c4221bea4b2ce414d4b66ed07a322838545032f017c1efec2b92775d918198`
+- COA ZIP structure verified with one `pepselect-coa-archive/` root.
 
 ## Published Staging page
 
@@ -26,6 +32,17 @@ Milestone 4 Batch 2 was deployed to the Pep Select Staging environment only. It 
 - Permalink structure: `/guides/%postname%/`
 - Jetpack publication setting: `Post only`; no subscriber email was sent.
 - Comments and pingbacks: disabled.
+
+## Quality Archive discovery card
+
+- Placement: directly below the Quality Archive hero and above the compound catalog.
+- Heading: `What should you look for in a COA?`
+- Action: `Read the COA Guide`
+- Destination: the approved Staging guide URL.
+- Desktop: one horizontal information card with a single clear action.
+- Mobile: two-column icon-and-copy layout with a full-width action; visible content fits the viewport.
+- The action was clicked in browser validation and opened the expected guide title and H1.
+- COA records, archive search, batch identity, product relationships, and commerce behavior were not changed.
 
 ## SEO and structured-data verification
 
