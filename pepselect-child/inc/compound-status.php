@@ -132,15 +132,36 @@ function pepselect_child_get_compound_status_map() {
 
 	$map = array();
 
-	if ( ! post_type_exists( 'ps_compound' ) || ! post_type_exists( 'ps_coa_test' ) ) {
-		return $map;
-	}
-
 	$cache_key = 'pepselect_child_compound_status_map_' . md5( (string) wp_get_theme()->get( 'Version' ) );
 	$cached    = get_transient( $cache_key );
 
 	if ( is_array( $cached ) ) {
 		$map = $cached;
+		return $map;
+	}
+
+	// Ops may publish intent before a physical batch exists. This private Woo
+	// product meta is display-only: it never changes stock, backorders, or COA.
+	$manual_products = get_posts(
+		array(
+			'post_type'      => 'product',
+			'post_status'    => 'publish',
+			'posts_per_page' => 200,
+			'fields'         => 'ids',
+			'no_found_rows'  => true,
+			'meta_key'       => '_pepselect_restocking_soon',
+			'meta_value'     => 'yes',
+		)
+	);
+	foreach ( $manual_products as $product_id ) {
+		$map[ (int) $product_id ] = array(
+			'label' => __( 'Restocking Soon', 'pepselect-child' ),
+			'tone'  => 'incoming',
+		);
+	}
+
+	if ( ! post_type_exists( 'ps_compound' ) || ! post_type_exists( 'ps_coa_test' ) ) {
+		set_transient( $cache_key, $map, 5 * MINUTE_IN_SECONDS );
 		return $map;
 	}
 
@@ -194,13 +215,24 @@ function pepselect_child_get_compound_status_map() {
 			);
 		}
 
-		$map = pepselect_child_coa_map_from( $compound_products, $batches );
+		$map = array_replace( $map, pepselect_child_coa_map_from( $compound_products, $batches ) );
 	}
 
 	set_transient( $cache_key, $map, 5 * MINUTE_IN_SECONDS );
 
 	return $map;
 }
+
+/** Invalidate the combined status map immediately when Ops changes its meta. */
+function pepselect_child_clear_restocking_status_cache( $meta_id, $object_id, $meta_key ) {
+	if ( '_pepselect_restocking_soon' !== $meta_key ) {
+		return;
+	}
+	delete_transient( 'pepselect_child_compound_status_map_' . md5( (string) wp_get_theme()->get( 'Version' ) ) );
+}
+add_action( 'added_post_meta', 'pepselect_child_clear_restocking_status_cache', 10, 3 );
+add_action( 'updated_post_meta', 'pepselect_child_clear_restocking_status_cache', 10, 3 );
+add_action( 'deleted_post_meta', 'pepselect_child_clear_restocking_status_cache', 10, 3 );
 
 /**
  * Return the status band for one product, or null.
