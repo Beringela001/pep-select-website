@@ -1,6 +1,15 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.28** — Claude SEO Milestone 4 content batch 1 owner-approved footer revision.
+**Release candidate: 0.25.0-beta.29** — Claude SEO Milestone 4 content batch 2 Staging review.
+
+## 0.25.0-beta.29 - 2026-08-19
+
+- Add a dedicated, responsive presentation for WordPress posts in the `Guides` category while keeping guide copy editable in WordPress.
+- Add a visual document-check hero, scannable evidence cards, comparison table treatment, section navigation, and archive-first action path for the approved documentation guide.
+- Keep Yoast as the Article graph owner while connecting guide author and publisher references to the existing Pep Select Organization entity without inventing personal credentials.
+- Preserve all Milestone 4 Batch 1 storefront, commerce, account, checkout, email, and Quality Archive behavior.
+
+**Previous release: 0.25.0-beta.28** — Claude SEO Milestone 4 content batch 1 owner-approved footer revision.
 
 ## 0.25.0-beta.28 - 2026-08-19
 
