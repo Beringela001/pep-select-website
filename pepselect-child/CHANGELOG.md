@@ -1,6 +1,15 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.32** — Claude SEO Milestone 4 content batch 2 visual review refinement.
+**Release candidate: 0.25.0-beta.34** — Claude SEO Milestone 4 content batch 2 public metadata refinement.
+
+## 0.25.0-beta.34 - 2026-08-19
+
+- Keep the first Yoast description tag and remove later duplicate description tags on public guide responses, where WordPress omits the administrative Yoast class marker.
+
+## 0.25.0-beta.33 - 2026-08-19
+
+- Keep Yoast as the single meta-description owner on guide posts.
+- Preserve the visible guide excerpt while removing only the duplicate non-Yoast description tag from final guide HTML.
 
 ## 0.25.0-beta.32 - 2026-08-19
 

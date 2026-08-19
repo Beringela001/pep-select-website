@@ -86,3 +86,54 @@ function pepselect_child_filter_guide_schema( $graph ) {
 }
 add_filter( 'wpseo_schema_graph', 'pepselect_child_filter_guide_schema', 30 );
 
+/**
+ * Remove duplicate non-Yoast description tags from final guide HTML.
+ *
+ * The existing plugin stack emits the stored post excerpt as a second meta
+ * description after Yoast has already printed the approved description. This
+ * response-only cleanup keeps the visible guide excerpt intact and leaves
+ * Yoast as the single metadata owner for guide posts.
+ *
+ * @param string $html Final response HTML.
+ * @return string
+ */
+function pepselect_child_filter_guide_response_metadata( $html ) {
+	$meta_pattern = '~<meta\b[^>]*>~i';
+	$name_pattern = '~\bname\s*=\s*(["\'])description\1~i';
+	$has_yoast    = false !== strpos( $html, 'This site is optimized with the Yoast SEO plugin' );
+
+	if ( ! $has_yoast ) {
+		return $html;
+	}
+
+	$description_count = 0;
+	$filtered = preg_replace_callback(
+		$meta_pattern,
+		static function ( $matches ) use ( $name_pattern, &$description_count ) {
+			$tag = $matches[0];
+
+			if ( ! preg_match( $name_pattern, $tag ) ) {
+				return $tag;
+			}
+
+			++$description_count;
+
+			return 1 === $description_count ? $tag : '';
+		},
+		$html
+	);
+
+	return is_string( $filtered ) ? $filtered : $html;
+}
+
+/**
+ * Start the narrowly scoped guide response metadata cleanup.
+ *
+ * @return void
+ */
+function pepselect_child_start_guide_response_metadata_cleanup() {
+	if ( ! is_admin() && pepselect_child_is_guide_request() ) {
+		ob_start( 'pepselect_child_filter_guide_response_metadata' );
+	}
+}
+add_action( 'template_redirect', 'pepselect_child_start_guide_response_metadata_cleanup', 99 );
