@@ -1,10 +1,10 @@
 # Pep Select child theme
 
-- Version: 0.25.0-beta.30
+- Version: 0.25.0-beta.32
 - Parent: Hello Elementor (`hello-elementor`)
 - Text domain: `pepselect-child`
 
-Pep Select is the lightweight presentation child theme for the controlled customer-facing rebuild. Version 0.25.0-beta.30 preserves the complete Live baseline while adding the Milestone 4 Batch 2 guide, visual batch-record examples, and responsive evidence annotations. WooCommerce remains the source of truth for product images, item data, totals, addresses, accounts, shipping methods, and order status.
+Pep Select is the lightweight presentation child theme for the controlled customer-facing rebuild. Version 0.25.0-beta.32 preserves the complete Live baseline while showing the full Freedom Diagnostics report without an internal scrolling frame or WordPress-generated spacing and tightening the guide's `Reported` status explanation. WooCommerce remains the source of truth for product images, item data, totals, addresses, accounts, shipping methods, and order status.
 
 ## Requirements and safe failure
 

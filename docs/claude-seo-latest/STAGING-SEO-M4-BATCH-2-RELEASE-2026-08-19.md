@@ -16,9 +16,9 @@ Milestone 4 Batch 2 was deployed to the Pep Select Staging environment only. It 
 
 ## Package
 
-- File: `dist/pepselect-child-0.25.0-beta.30.zip`
-- Size: 2,361,151 bytes
-- SHA-256: `3533ED3D092FE828BEF30B2F35CFDDD9AA6455AF46D8F45A3AC404DA4734B4FC`
+- File: `dist/pepselect-child-0.25.0-beta.32.zip`
+- Size: 2,361,276 bytes
+- SHA-256: `D146269F01157E054F3D2B139F9A3B2B0C4B197F9E54D69F4294236448734931`
 - ZIP structure verified with one `pepselect-child/` root.
 - COA plugin package: `dist/pepselect-coa-archive-0.7.3.zip`
 - COA plugin size: 374,191 bytes
@@ -60,6 +60,8 @@ Milestone 4 Batch 2 was deployed to the Pep Select Staging environment only. It 
 
 - Desktop and 390-pixel mobile layouts render without horizontal page overflow.
 - Six evidence images and eighteen numbered visual callouts render.
+- The complete Freedom Diagnostics report renders at its natural aspect ratio without an internal scrollbar or WordPress-generated blank spacing on desktop and mobile.
+- The `Reported` definition ends at `the record presents a laboratory value`; the superseded pass-claim qualification is absent.
 - The examples cover the current NAD+ record, the supplier-label correction for Retatrutide batch `RT2026205JP`, the associated Freedom Diagnostics report and submitted-vial photograph, rejected NAD+ batch `PSNAD562926JP`, and rejected Retatrutide batch `PSRT2062926JP`.
 - The Quality Archive and all four referenced batch-record links resolve to their intended Staging URLs.
 - Homepage, Shop, Quality Archive, Cart, Checkout, and My Account loaded with their expected main content after deployment.

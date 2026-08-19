@@ -1,6 +1,15 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.30** — Claude SEO Milestone 4 content batch 2 visual evidence revision.
+**Release candidate: 0.25.0-beta.32** — Claude SEO Milestone 4 content batch 2 visual review refinement.
+
+## 0.25.0-beta.32 - 2026-08-19
+
+- Remove WordPress-generated line-break spacing around guide evidence images so the full report sits flush in its frame.
+
+## 0.25.0-beta.31 - 2026-08-19
+
+- Show the complete Freedom Diagnostics report image in the guide without an internal scrolling frame.
+- Shorten the `Reported` status explanation to its literal meaning: the record presents a laboratory value.
 
 ## 0.25.0-beta.30 - 2026-08-19
 

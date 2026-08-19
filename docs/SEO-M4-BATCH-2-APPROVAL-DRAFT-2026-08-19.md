@@ -106,7 +106,7 @@ You do not need to memorize every analytical method to review the document. You 
 
 Small labels can change the meaning of an entire record. `Pass`, `Fail`, `Pending`, `Reported`, `Not Tested`, and `Not Applicable` describe different states.
 
-`Pass` records a passing decision for that test line. `Fail` records a failing decision. `Pending` tells you that the workflow has not reached a completed result. `Reported` tells you that the record presents a laboratory value without turning that word into a separate pass claim. `Not Tested` and `Not Applicable` should remain visible as limits, not disappear into a general promise.
+`Pass` records a passing decision for that test line. `Fail` records a failing decision. `Pending` tells you that the workflow has not reached a completed result. `Reported` tells you that the record presents a laboratory value. `Not Tested` and `Not Applicable` should remain visible as limits, not disappear into a general promise.
 
 Blank space needs the same discipline. Do not read an empty field as a pass. Check the record notes or ask the seller what the blank means.
 
