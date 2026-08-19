@@ -59,6 +59,17 @@
 - Staging regression: Home, Shop, representative product, Testing archive, representative COA report, Cart, and Checkout return 200; invalid Shop pagination returns 404. No Live deployment or Google indexing request was made.
 - Full package, hash, acceptance, limitation, and rollback evidence: [STAGING-SEO-M3-RELEASE-2026-08-18.md](STAGING-SEO-M3-RELEASE-2026-08-18.md).
 
+### Milestone 4 Batch 1 Live checkpoint — 2026-08-19
+
+- Kinsta recovery point: `Before Claude SEO Milestone 4 batch 1 live deployment - 2026-08-19`, created August 19 at 10:50 AM America/New_York.
+- Active Live child theme: `0.25.0-beta.28`.
+- `ECOM-03` and `CONT-07`: Live implementation deployed — GLP-2T uses the approved Pep Select-specific dual-receptor description and three verified research contexts; supplier boilerplate is absent; the matching Product JSON-LD description and three verified DOI citations render.
+- `CONT-11`: Live implementation deployed — the footer states the owner-confirmed pre-release independent-testing policy. The owner-rejected adjacent Quality Archive link is absent.
+- `CONT-03`, `CONT-04`, and `ECOM-07`: limited Live contribution deployed — the homepage includes one natural `research peptide` use, while the larger catalog-wide content work remains open.
+- Live regression: Homepage, Shop, GLP-2T, Quality Archive, Cart, Checkout, and My Account load without fatal output. Homepage and GLP-2T pass mobile no-overflow checks.
+- No ranking, indexation, PageSpeed, or conversion improvement is claimed from this content release.
+- Full package, hash, acceptance, limitation, and rollback evidence: [LIVE-SEO-M4-BATCH-1-RELEASE-2026-08-19.md](LIVE-SEO-M4-BATCH-1-RELEASE-2026-08-19.md).
+
 ### Milestone 3 Live checkpoint — 2026-08-18
 
 - Kinsta recovery point: `Before Claude SEO Milestone 3 live deployment - 2026-08-18`.

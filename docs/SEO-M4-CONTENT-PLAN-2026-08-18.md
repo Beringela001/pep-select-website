@@ -31,7 +31,7 @@ No `[VERIFY CLAIM]` text may reach Staging or Live.
 
 ## Batch 1 — Correct contradictions and copied product text
 
-**Staging status:** Owner-approved on August 19, 2026 after removal of the Quality Archive footer link. The final Staging candidate is child theme `0.25.0-beta.28`. Release evidence: [`claude-seo-latest/STAGING-SEO-M4-BATCH-1-RELEASE-2026-08-18.md`](claude-seo-latest/STAGING-SEO-M4-BATCH-1-RELEASE-2026-08-18.md). Live remains unchanged.
+**Release status:** Owner-approved and deployed to Live on August 19, 2026 as child theme `0.25.0-beta.28`, after removal of the Quality Archive footer link. Staging evidence: [`claude-seo-latest/STAGING-SEO-M4-BATCH-1-RELEASE-2026-08-18.md`](claude-seo-latest/STAGING-SEO-M4-BATCH-1-RELEASE-2026-08-18.md). Live evidence: [`claude-seo-latest/LIVE-SEO-M4-BATCH-1-RELEASE-2026-08-19.md`](claude-seo-latest/LIVE-SEO-M4-BATCH-1-RELEASE-2026-08-19.md).
 
 **Purpose:** Repair current content before adding new pages.
 
