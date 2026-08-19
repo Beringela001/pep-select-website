@@ -1,7 +1,7 @@
 # Product Marketing Context
 
-**Document version:** v1
-**Last updated:** 2026-07-16
+**Document version:** v2
+**Last updated:** 2026-08-18
 
 ## Product Overview
 
@@ -44,6 +44,16 @@ Pep Select does not sell confidence through hype. Pep Select provides documentat
 - Order through a clear, professional purchasing experience.
 
 **Anti-persona language:** Do not describe the audience as patients, users, injectors, dieters, bodybuilders, biohackers, or people seeking health outcomes.
+
+### Internal Customer-Avatar Review
+
+Jordan Reyes is an internal decision lens, not a public persona or a source of public-facing copy. The avatar represents an analytical purchaser who is not necessarily a laboratory specialist, expects to spend approximately $150–$400 per order, and needs enough plain-language evidence to make an informed next step.
+
+- Make product paths easy to scan and define technical status language in plain English.
+- Address vague sourcing, inflated pricing, unsupported claims, and blind-trust marketing with specific records and visible facts.
+- Keep catalog exploration primary for purchase-ready visitors and COA review as the strongest secondary path for evidence-first visitors.
+- Show current WooCommerce prices where products appear. Treat pricing accessibility as supporting territory, not an unsupported comparative claim.
+- Keep dense technical detail in the Quality Archive rather than making public shopping copy read like a laboratory report.
 
 ## Problems and Boundaries
 
@@ -112,7 +122,7 @@ Only make factual claims supported by confirmed Pep Select records.
 
 Testing claims must be batch-specific where appropriate, match the actual COA status, remain limited to the documented test and result, and change when the underlying record changes.
 
-Do not say every product is tested, verified, passed, sterile, pure, or available unless current records support that exact statement.
+Pep Select requires independent laboratory testing before a compound is released for sale. Do not imply that an unreleased or pending compound has completed testing. Do not say every product is verified, passed, sterile, pure, or available unless current records support that exact statement.
 
 Do not invent:
 
@@ -226,4 +236,5 @@ This document is a conservative marketing guardrail. It is not a substitute for 
 
 ## Changelog
 
+- v2 (2026-08-18) — Restored the Jordan Reyes internal decision lens from the original WEB-2C journey and recorded the owner-confirmed pre-release independent-testing policy. The original business goal and brand voice remain unchanged.
 - v1 (2026-07-16) — Initial Pep Select product-marketing, evidence, voice, and copy-compliance context.

@@ -31,6 +31,8 @@ No `[VERIFY CLAIM]` text may reach Staging or Live.
 
 ## Batch 1 — Correct contradictions and copied product text
 
+**Staging status:** Deployed and browser-verified on August 18, 2026 as child theme `0.25.0-beta.27`. Release evidence: [`claude-seo-latest/STAGING-SEO-M4-BATCH-1-RELEASE-2026-08-18.md`](claude-seo-latest/STAGING-SEO-M4-BATCH-1-RELEASE-2026-08-18.md). Live remains unchanged.
+
 **Purpose:** Repair current content before adding new pages.
 
 **Findings:** `ECOM-03`, `CONT-07`, `CONT-11`, with a limited contribution to `CONT-03`, `CONT-04`, and `ECOM-07`.
@@ -46,7 +48,7 @@ No `[VERIFY CLAIM]` text may reach Staging or Live.
 - Replace the supplier/manufacturer GLP-2T paragraph with Pep Select-specific, mechanism-only copy.
 - Correct the product-name matching defect that currently prevents the approved GLP-2T library entry from rendering.
 - Add one natural use of `research peptide` to the homepage body.
-- Replace the sitewide universal-testing sentence with a precise `when available` statement.
+- Refine the sitewide testing sentence around Paulo's confirmed policy: independent laboratory testing is required before a compound is released for sale.
 
 **Non-goals:**
 
@@ -59,7 +61,7 @@ No `[VERIFY CLAIM]` text may reach Staging or Live.
 - GLP-2T visible copy and Product JSON-LD contain the approved unique description.
 - Supplier boilerplate and `Manufactured under strict quality standards` are absent from the GLP-2T response.
 - The homepage body contains one natural `research peptide` use.
-- The footer no longer says or implies that every Pep Select compound has independent testing.
+- The footer states the pre-release testing policy without claiming that pending or unreleased compounds have completed testing.
 - Desktop and mobile product, homepage, Shop, Cart, Checkout, Testing, and My Account checks pass.
 
 ## Batch 2 — Documentation and vendor-evaluation guide

@@ -24,7 +24,7 @@ $optimized_hero  = 0 === strpos( strtolower( $hero_filename ), 'ps-laying_fam' )
 				<span><?php esc_html_e( 'The label is the easy part.', 'pepselect-child' ); ?></span>
 				<em><?php echo wp_kses_post( __( 'What&rsquo;s behind it matters.', 'pepselect-child' ) ); ?></em>
 			</h1>
-			<p class="pepselect-home__lead"><?php echo wp_kses_post( __( 'You shouldn&rsquo;t need five tabs and a leap of faith to look into a research compound. Pep Select keeps current product details and available batch documentation in one place, so the information is there when you need it.', 'pepselect-child' ) ); ?></p>
+			<p class="pepselect-home__lead"><?php echo wp_kses_post( __( 'You shouldn&rsquo;t need five tabs and a leap of faith to look into a research peptide. Pep Select keeps current product details and available batch documentation in one place, so the information is there when you need it.', 'pepselect-child' ) ); ?></p>
 			<div class="pepselect-home__actions">
 				<a class="pepselect-home__button pepselect-home__button--primary" href="<?php echo esc_url( $shop_url ); ?>"><?php esc_html_e( 'Explore Our Selection', 'pepselect-child' ); ?></a>
 				<a class="pepselect-home__button pepselect-home__button--outline-navy" href="<?php echo esc_url( $testing_url ); ?>" aria-label="<?php esc_attr_e( 'View Pep Select Quality Archive and batch documentation', 'pepselect-child' ); ?>"><?php esc_html_e( 'See the Receipts', 'pepselect-child' ); ?></a>

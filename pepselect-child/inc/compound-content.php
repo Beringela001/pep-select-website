@@ -150,17 +150,17 @@ function pepselect_child_compound_library() {
 			),
 		),
 		'glp-2 t' => array(
-			'description' => __( 'Tirzepatide is a peptide studied as a dual receptor agonist engaging both the GIP and GLP-1 receptors. It is researched for the structural basis of its balanced activity across the two incretin receptors.', 'pepselect-child' ),
+			'description' => __( 'Tirzepatide is a dual-agonist research peptide designed to engage both GIP and GLP-1 receptors. Research focuses on how one peptide interacts with two receptor systems and how its structure shapes signaling at each receptor.', 'pepselect-child' ),
 			'specs'       => array( 'CAS' => '2023788-19-2', 'Formula' => 'C225H348N48O68', 'Form' => 'Lyophilized powder' ),
 			'context'     => array(
-				array( 'text' => __( 'Studied for dual-incretin metabolic regulation', 'pepselect-child' ), 'ref' => 1 ),
-				array( 'text' => __( 'Researched for blood-sugar and insulin-response biology', 'pepselect-child' ), 'ref' => 2 ),
-				array( 'text' => __( 'Investigated for body-weight regulation through dual signaling', 'pepselect-child' ), 'ref' => 3 ),
+				array( 'text' => __( 'GIP and GLP-1 receptor engagement', 'pepselect-child' ), 'ref' => 1 ),
+				array( 'text' => __( 'How one peptide binds across two receptor systems', 'pepselect-child' ), 'ref' => 2 ),
+				array( 'text' => __( 'Structural features that shape receptor signaling', 'pepselect-child' ), 'ref' => 3 ),
 			),
 			'sources'     => array(
-				'Nauck MA, et al. Cardiovasc Diabetol. 2022. DOI:10.1186/s12933-022-01604-7',
-				'Rosenstock J, et al. Lancet. 2021. PMID:34186022',
-				'Kassab HK, et al. Int J Obes. 2023. DOI:10.1038/s41366-023-01337-x',
+				'Willard FS, et al. JCI Insight. 2020. DOI:10.1172/jci.insight.140532. PMCID:PMC7526454',
+				'Sun B, et al. Proc Natl Acad Sci USA. 2022. DOI:10.1073/pnas.2116506119',
+				'Zou X, et al. Int J Biol Macromol. 2025. DOI:10.1016/j.ijbiomac.2025.146141',
 			),
 		),
 		'mots-c' => array(
@@ -210,6 +210,7 @@ function pepselect_child_get_compound_content( $product ) {
 	}
 
 	$key     = strtolower( trim( preg_replace( '/\s+/', ' ', $product->get_name() ) ) );
+	$key_cmp = preg_replace( '/[^a-z0-9]+/', '', $key );
 	$library = pepselect_child_compound_library();
 
 	if ( isset( $library[ $key ] ) ) {
@@ -217,7 +218,9 @@ function pepselect_child_get_compound_content( $product ) {
 	}
 
 	foreach ( $library as $lib_key => $content ) {
-		if ( 0 === strpos( $key, $lib_key ) ) {
+		$lib_key_cmp = preg_replace( '/[^a-z0-9]+/', '', strtolower( $lib_key ) );
+
+		if ( '' !== $lib_key_cmp && 0 === strpos( $key_cmp, $lib_key_cmp ) ) {
 			return $content;
 		}
 	}
