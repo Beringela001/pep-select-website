@@ -1,6 +1,15 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.39** - Claude SEO measured render-path cleanup, built on the Control Ops beta.38 restocking changes.
+**Release candidate: 0.25.0-beta.40** - Dynamic availability and research-mechanism catalog ordering.
+
+## 0.25.0-beta.40 - 2026-08-20
+
+- Sort Shop, product taxonomy, and product-search cards dynamically into three live availability groups: in stock, restocking soon, then out of stock.
+- Within every availability group, apply the researched merchandising sequence: GLPs (GLP-3, GLP-2, GLP-1); healing/repair (BPC-157, TB-500, GHK-Cu); metabolism/mitochondrial (MOTS-C, SS-31, NAD+); growth-hormone axis (Tesamorelin, Sermorelin, CJC-1295, Ipamorelin); supporting/other (KPV, Glutathione, PT-141).
+- Keep per-product Display order as the tie-breaker for multiple strengths and the fallback for future unclassified compounds. Bacteriostatic water remains outside compound classification.
+- Preserve WooCommerce as stock source of truth and the COA Archive bridge as the restocking source of truth; no product, inventory, COA, pricing, cart, checkout, or order records change.
+
+**Previous release candidate: 0.25.0-beta.39** - Claude SEO measured render-path cleanup, built on the Control Ops beta.38 restocking changes.
 
 ## 0.25.0-beta.39 - 2026-08-19
 
