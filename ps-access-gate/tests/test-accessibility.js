@@ -4,7 +4,10 @@ const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
 const plugin = fs.readFileSync(path.join(__dirname, '..', 'ps-access-gate.php'), 'utf8');
+const readme = fs.readFileSync(path.join(__dirname, '..', 'readme.txt'), 'utf8');
 
+assert.match(plugin, /\* Version:\s+2\.1\.3/);
+assert.match(readme, /^Version: 2\.1\.3$/m);
 assert.match(plugin, /aria-modal="true" aria-labelledby="psag-title" aria-describedby="psag-intro"/);
 assert.match(plugin, /id="psag-intro"/);
 assert.match(plugin, /aria-controls="psagAttestBody"/);

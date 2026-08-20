@@ -1,8 +1,16 @@
 === PS Access Gate ===
-Version: 2.1.2
+Version: 2.1.3
 License: GPL-2.0+
 
 Compliance-grade access verification gate for research-use-only sites.
+
+== What's new in 2.1.3 ==
+* Reissue the verified accessibility build under a new version so production
+  cannot retain an older package that also identified itself as 2.1.2.
+* Preserve the existing fully blocking research-access behavior and settings.
+* Include modal description wiring, native Exit-link semantics, initial focus,
+  focus containment, background isolation, focus restoration, and responsive
+  WordPress logo markup.
 
 == What's new in 2.1.2 ==
 * Correct the Terms and Conditions link to `/terms-conditions/`.

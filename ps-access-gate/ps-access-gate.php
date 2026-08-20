@@ -3,7 +3,7 @@
  * Plugin Name: PS Access Gate
  * Plugin URI:  https://pepselect.com
  * Description: Compliance-grade access verification gate for research-use-only sites: researcher type, checkbox confirmations, numbered attestation, versioned consent, FDA/503A/503B legal block, and timestamped consent recording with CSV export. Cache-safe, fully configurable.
- * Version:     2.1.2
+ * Version:     2.1.3
  * Author:      PepSelect
  * License:     GPL-2.0+
  * Text Domain: ps-access-gate
