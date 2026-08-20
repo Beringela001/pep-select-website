@@ -1,0 +1,70 @@
+{
+  "url": "https://pepselect.com/testing/nad-500-mg/",
+  "status_code": 200,
+  "content": "<!doctype html>\n<html lang=\"en-US\">\n<head>\n\t<meta charset=\"UTF-8\">\n\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n\t<link rel=\"profile\" href=\"https://gmpg.org/xfn/11\">\n\t<link rel='stylesheet' id='pepselect-coa-frontend-css' href='https://pepselect.com/wp-content/plugins/pepselect-coa-archive/assets/css/pepselect-coa-frontend.css?ver=0.7.5' media='all' />\n<style id=\"pepselect-coa-frontend-inline-css\">\n.ps-coa-app{--ps-coa-page-bg:#ffffff;--ps-coa-surface:#ffffff;--ps-coa-sur...",
+  "raw_content": "<!doctype html>\n<html lang=\"en-US\">\n<head>\n\t<meta charset=\"UTF-8\">\n\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n\t<link rel=\"profile\" href=\"https://gmpg.org/xfn/11\">\n\t<link rel...",
+  "is_spa": false,
+  "extracted_text": null,
+  "publication_date": null,
+  "accessibility_tree": null,
+  "headers": {
+    "Date": "Thu, 20 Aug 2026 16:02:42 GMT",
+    "Content-Type": "text/html; charset=UTF-8",
+    "Transfer-Encoding": "chunked",
+    "Connection": "keep-alive",
+    "Nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.01,\"max_age\":604800}",
+    "CF-Ray": "a2e29fb919d18c7d-EWR",
+    "CF-Cache-Status": "HIT",
+    "Age": "26",
+    "Cache-Control": "public, max-age=0, s-maxage=86400",
+    "Last-Modified": "Thu, 20 Aug 2026 16:02:16 GMT",
+    "Link": "<https://pepselect.com/wp-json/>; rel=\"https://api.w.org/\"",
+    "Server": "cloudflare",
+    "Vary": "Accept-Encoding, accept, content-type",
+    "Ki-CF-Cache-Status": "HIT",
+    "X-Content-Type-Options": "nosniff",
+    "X-Edge-Location-Klb": "1",
+    "ki-Cache-Tag": "7eb3c339-49ca-429f-81e7-b41425313f21,edeb49ab6944fb014f38790cd6c120b6ea301c86217a3d28170c9dc4eaed858e",
+    "ki-cache-type": "Edge",
+    "ki-edge": "v=28.4.7;mv=99.9.9",
+    "ki-origin": "o1i",
+    "x-kinsta-cache": "HIT",
+    "set-cookie": "__cf_bm=rJ6Lrj9mhnKs42AVPr0eDNs4XfAZtlYwbUYDKrbq9p0-1787241762.7373867-1.0.1.1-nQr4ka8rJIxY.My_UOgnCpKqFouRpOP16quq8.iTwwPqE_cG6p_DloX9fZUxAPXEFuGk8S3P9zB00bkk3ZLrv.DNxAZH.fSgiPun0T9LG0AcRbVcxczXHU5GKH_6aIoO; HttpOnly; SameSite=None; Secure; Path=/; Domain=pepselect.com; Expires=Thu, 20 Aug 2026 16:32:42 GMT",
+    "Report-To": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=blBNe8QLTAMhTHH5urn3JiVx8Ef7DcuJ02wVVQJDTn03J3dKDG0SvfFLiXymayHBYkY8QrnenU0FTZaarDYai2%2Bm0cSMIgeXuTz3v%2BHRZiaU8LHIjjr1wz2BMGSE0tc%3D\"}]}",
+    "Content-Encoding": "gzip",
+    "alt-svc": "h3=\":443\"; ma=86400"
+  },
+  "redirect_chain": [],
+  "console_errors": [],
+  "render_diagnostics": [],
+  "render_engine": null,
+  "render_ms": null,
+  "mode_used": "raw",
+  "error": null,
+  "structured_data": {
+    "block_count": 1,
+    "processed_count": 1,
+    "total_bytes": 2214,
+    "truncated": false,
+    "blocks": [
+      {
+        "index": 1,
+        "size_bytes": 2214,
+        "valid": true,
+        "types": [
+          "BreadcrumbList",
+          "EntryPoint",
+          "ImageObject",
+          "ListItem",
+          "MerchantReturnPolicy",
+          "OnlineStore",
+          "PropertyValueSpecification",
+          "SearchAction",
+          "WebPage",
+          "WebSite"
+        ],
+        "types_truncated": false
+      }
+    ]
+  }
+}

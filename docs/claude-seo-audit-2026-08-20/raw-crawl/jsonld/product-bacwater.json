@@ -1,0 +1,198 @@
+{
+  "block_count": 2,
+  "processed_count": 2,
+  "total_bytes": 4014,
+  "truncated": false,
+  "blocks": [
+    {
+      "index": 1,
+      "size_bytes": 3141,
+      "valid": true,
+      "types": [
+        "BreadcrumbList",
+        "EntryPoint",
+        "ImageObject",
+        "ListItem",
+        "MerchantReturnPolicy",
+        "OnlineStore",
+        "PropertyValueSpecification",
+        "ReadAction",
+        "SearchAction",
+        "WebPage",
+        "WebSite"
+      ],
+      "types_truncated": false,
+      "data": {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebPage",
+            "@id": "https://pepselect.com/product/bacteriostatic-water-30ml/",
+            "url": "https://pepselect.com/product/bacteriostatic-water-30ml/",
+            "name": "Bacteriostatic Water 30mL Research Supply | Pep Select",
+            "isPartOf": {
+              "@id": "https://pepselect.com/#website"
+            },
+            "primaryImageOfPage": {
+              "@id": "https://pepselect.com/product/bacteriostatic-water-30ml/#primaryimage"
+            },
+            "image": {
+              "@id": "https://pepselect.com/product/bacteriostatic-water-30ml/#primaryimage"
+            },
+            "thumbnailUrl": "https://pepselect.com/wp-content/uploads/2026/08/bacwater30-2.jpg",
+            "datePublished": "2026-08-04T18:23:25+00:00",
+            "dateModified": "2026-08-20T02:28:50+00:00",
+            "description": "Review Bacteriostatic Water 30mL product details and ordering information from Pep Select. For laboratory research use only.",
+            "breadcrumb": {
+              "@id": "https://pepselect.com/product/bacteriostatic-water-30ml/#breadcrumb"
+            },
+            "inLanguage": "en-US",
+            "potentialAction": [
+              {
+                "@type": "ReadAction",
+                "target": [
+                  "https://pepselect.com/product/bacteriostatic-water-30ml/"
+                ]
+              }
+            ]
+          },
+          {
+            "@type": "ImageObject",
+            "inLanguage": "en-US",
+            "@id": "https://pepselect.com/product/bacteriostatic-water-30ml/#primaryimage",
+            "url": "https://pepselect.com/wp-content/uploads/2026/08/bacwater30-2.jpg",
+            "contentUrl": "https://pepselect.com/wp-content/uploads/2026/08/bacwater30-2.jpg",
+            "width": 1611,
+            "height": 2000
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://pepselect.com/product/bacteriostatic-water-30ml/#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://pepselect.com/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Shop",
+                "item": "https://pepselect.com/shop/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "Bacteriostatic Water 30mL"
+              }
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://pepselect.com/#website",
+            "url": "https://pepselect.com/",
+            "name": "Pep Select",
+            "description": "Peptides Carefully Selected",
+            "publisher": {
+              "@id": "https://pepselect.com/#organization"
+            },
+            "potentialAction": [
+              {
+                "@type": "SearchAction",
+                "target": {
+                  "@type": "EntryPoint",
+                  "urlTemplate": "https://pepselect.com/?s={search_term_string}"
+                },
+                "query-input": {
+                  "@type": "PropertyValueSpecification",
+                  "valueRequired": true,
+                  "valueName": "search_term_string"
+                }
+              }
+            ],
+            "inLanguage": "en-US"
+          },
+          {
+            "@type": "OnlineStore",
+            "@id": "https://pepselect.com/#organization",
+            "name": "Pep Select",
+            "url": "https://pepselect.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "inLanguage": "en-US",
+              "@id": "https://pepselect.com/#/schema/logo/image/",
+              "url": "https://pepselect.com/wp-content/uploads/2026/06/cropped-WhatsApp-Image-2026-06-30-at-1.50.57-PM.jpeg",
+              "contentUrl": "https://pepselect.com/wp-content/uploads/2026/06/cropped-WhatsApp-Image-2026-06-30-at-1.50.57-PM.jpeg",
+              "width": 512,
+              "height": 512,
+              "caption": "Pep Select"
+            },
+            "image": {
+              "@id": "https://pepselect.com/#/schema/logo/image/"
+            },
+            "hasMerchantReturnPolicy": {
+              "@type": "MerchantReturnPolicy",
+              "@id": "https://pepselect.com/#merchant-return-policy",
+              "applicableCountry": "US",
+              "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted",
+              "merchantReturnLink": "https://pepselect.com/refund-shipping-policy/"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "index": 2,
+      "size_bytes": 873,
+      "valid": true,
+      "types": [
+        "Brand",
+        "Offer",
+        "OnlineStore",
+        "Product",
+        "UnitPriceSpecification"
+      ],
+      "types_truncated": false,
+      "data": {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "@id": "https://pepselect.com/product/bacteriostatic-water-30ml/#product",
+        "name": "Bacteriostatic Water 30mL",
+        "url": "https://pepselect.com/product/bacteriostatic-water-30ml/",
+        "image": "https://pepselect.com/wp-content/uploads/2026/08/bacwater30-2.jpg",
+        "sku": "BACW30",
+        "offers": [
+          {
+            "@type": "Offer",
+            "priceSpecification": [
+              {
+                "@type": "UnitPriceSpecification",
+                "price": "19.99",
+                "priceCurrency": "USD",
+                "valueAddedTaxIncluded": false
+              }
+            ],
+            "availability": "https://schema.org/InStock",
+            "url": "https://pepselect.com/product/bacteriostatic-water-30ml/",
+            "seller": {
+              "@type": "OnlineStore",
+              "@id": "https://pepselect.com/#organization",
+              "name": "Pep Select",
+              "url": "https://pepselect.com/"
+            },
+            "price": "19.99",
+            "priceCurrency": "USD",
+            "hasMerchantReturnPolicy": {
+              "@id": "https://pepselect.com/#merchant-return-policy"
+            }
+          }
+        ],
+        "brand": {
+          "@type": "Brand",
+          "name": "Pep Select"
+        }
+      }
+    }
+  ]
+}

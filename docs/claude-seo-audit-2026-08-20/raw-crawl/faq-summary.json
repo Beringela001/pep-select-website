@@ -1,0 +1,71 @@
+{
+  "url": "https://pepselect.com/faq/",
+  "status_code": 200,
+  "content": "<!doctype html>\n<html lang=\"en-US\">\n<head>\n\t<meta charset=\"UTF-8\">\n\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n\t<link rel=\"profile\" href=\"https://gmpg.org/xfn/11\">\n\t<meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' />\n<script>window._wca = window._wca || [];</script>\r\n\n\t<!-- This site is optimized with the Yoast SEO plugin v28.1 - https://yoast.com/product/yoast-seo-wordpress/ -->\n\t<title>FAQ - Pep Select</title>\n...",
+  "raw_content": "<!doctype html>\n<html lang=\"en-US\">\n<head>\n\t<meta charset=\"UTF-8\">\n\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n\t<link rel=\"profile\" href=\"https://gmpg.org/xfn/11\">\n\t<meta nam...",
+  "is_spa": false,
+  "extracted_text": null,
+  "publication_date": null,
+  "accessibility_tree": null,
+  "headers": {
+    "Date": "Thu, 20 Aug 2026 16:02:44 GMT",
+    "Content-Type": "text/html; charset=UTF-8",
+    "Transfer-Encoding": "chunked",
+    "Connection": "keep-alive",
+    "Nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.01,\"max_age\":604800}",
+    "CF-Ray": "a2e29fc42acd7c87-EWR",
+    "CF-Cache-Status": "HIT",
+    "Age": "26",
+    "Cache-Control": "public, max-age=0, s-maxage=86400",
+    "Last-Modified": "Thu, 20 Aug 2026 16:02:18 GMT",
+    "Link": "<https://pepselect.com/wp-json/>; rel=\"https://api.w.org/\", <https://pepselect.com/wp-json/wp/v2/pages/447>; rel=\"alternate\"; title=\"JSON\"; type=\"application/json\", <https://pepselect.com/?p=447>; rel=shortlink",
+    "Server": "cloudflare",
+    "Vary": "Accept-Encoding, accept, content-type",
+    "Ki-CF-Cache-Status": "HIT",
+    "X-Content-Type-Options": "nosniff",
+    "X-Edge-Location-Klb": "1",
+    "ki-Cache-Tag": "7eb3c339-49ca-429f-81e7-b41425313f21,4d070674e0fc87f59930bedefa57f67f3e3671143a2a172b4e40ff4da41ad3d0",
+    "ki-cache-type": "Edge",
+    "ki-edge": "v=28.4.7;mv=99.9.9",
+    "ki-origin": "o1i",
+    "x-kinsta-cache": "HIT",
+    "set-cookie": "__cf_bm=QiS4JZSMuYe7SseoEtD3wl6gq9UBwSfjBIJw.AvIRQI-1787241764.5097482-1.0.1.1-20Hs1gICHZcnWx2R_t2_3O1iA41hm3z3bh78LebyyO4UOdrk7xfN9YBMwDO_3XpOYHwAMe_gy6le6nVHfUNC3okYJn3A.4T3kj8Dtd1t2toqjXqlnwuaWe.xhxB2lybC; HttpOnly; SameSite=None; Secure; Path=/; Domain=pepselect.com; Expires=Thu, 20 Aug 2026 16:32:44 GMT",
+    "Report-To": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=pXW4b%2FPZf3dG%2FDE5JOWIBOaWRoyzyjFbpdemJWM5snMbOoj6djOdYtAy9%2FaEQfg0oo6bqlQUzzkHot1npwYjuHXfsI%2BrnU9NzlfIjTDCym%2FKu93QcH0k%2Bofx6XUFqIE%3D\"}]}",
+    "Content-Encoding": "gzip",
+    "alt-svc": "h3=\":443\"; ma=86400"
+  },
+  "redirect_chain": [],
+  "console_errors": [],
+  "render_diagnostics": [],
+  "render_engine": null,
+  "render_ms": null,
+  "mode_used": "raw",
+  "error": null,
+  "structured_data": {
+    "block_count": 1,
+    "processed_count": 1,
+    "total_bytes": 2230,
+    "truncated": false,
+    "blocks": [
+      {
+        "index": 1,
+        "size_bytes": 2230,
+        "valid": true,
+        "types": [
+          "BreadcrumbList",
+          "EntryPoint",
+          "ImageObject",
+          "ListItem",
+          "MerchantReturnPolicy",
+          "OnlineStore",
+          "PropertyValueSpecification",
+          "ReadAction",
+          "SearchAction",
+          "WebPage",
+          "WebSite"
+        ],
+        "types_truncated": false
+      }
+    ]
+  }
+}

@@ -1,0 +1,200 @@
+{
+  "block_count": 2,
+  "processed_count": 2,
+  "total_bytes": 4100,
+  "truncated": false,
+  "blocks": [
+    {
+      "index": 1,
+      "size_bytes": 3036,
+      "valid": true,
+      "types": [
+        "BreadcrumbList",
+        "EntryPoint",
+        "ImageObject",
+        "ListItem",
+        "MerchantReturnPolicy",
+        "OnlineStore",
+        "PropertyValueSpecification",
+        "ReadAction",
+        "SearchAction",
+        "WebPage",
+        "WebSite"
+      ],
+      "types_truncated": false,
+      "data": {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebPage",
+            "@id": "https://pepselect.com/product/glp2-t20/",
+            "url": "https://pepselect.com/product/glp2-t20/",
+            "name": "GLP-2T 20mg Research Compound | Pep Select",
+            "isPartOf": {
+              "@id": "https://pepselect.com/#website"
+            },
+            "primaryImageOfPage": {
+              "@id": "https://pepselect.com/product/glp2-t20/#primaryimage"
+            },
+            "image": {
+              "@id": "https://pepselect.com/product/glp2-t20/#primaryimage"
+            },
+            "thumbnailUrl": "https://pepselect.com/wp-content/uploads/2026/06/TZ20F-scaled.webp",
+            "datePublished": "2026-06-30T14:28:53+00:00",
+            "dateModified": "2026-08-14T16:05:33+00:00",
+            "description": "Review GLP-2T 20mg product details, research-use information, and available batch documentation from Pep Select. For laboratory research only.",
+            "breadcrumb": {
+              "@id": "https://pepselect.com/product/glp2-t20/#breadcrumb"
+            },
+            "inLanguage": "en-US",
+            "potentialAction": [
+              {
+                "@type": "ReadAction",
+                "target": [
+                  "https://pepselect.com/product/glp2-t20/"
+                ]
+              }
+            ]
+          },
+          {
+            "@type": "ImageObject",
+            "inLanguage": "en-US",
+            "@id": "https://pepselect.com/product/glp2-t20/#primaryimage",
+            "url": "https://pepselect.com/wp-content/uploads/2026/06/TZ20F-scaled.webp",
+            "contentUrl": "https://pepselect.com/wp-content/uploads/2026/06/TZ20F-scaled.webp",
+            "width": 2062,
+            "height": 2560,
+            "caption": "Pep Select GLP-2T 20 mg vial"
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://pepselect.com/product/glp2-t20/#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://pepselect.com/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Shop",
+                "item": "https://pepselect.com/shop/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "GLP-2T"
+              }
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://pepselect.com/#website",
+            "url": "https://pepselect.com/",
+            "name": "Pep Select",
+            "description": "Peptides Carefully Selected",
+            "publisher": {
+              "@id": "https://pepselect.com/#organization"
+            },
+            "potentialAction": [
+              {
+                "@type": "SearchAction",
+                "target": {
+                  "@type": "EntryPoint",
+                  "urlTemplate": "https://pepselect.com/?s={search_term_string}"
+                },
+                "query-input": {
+                  "@type": "PropertyValueSpecification",
+                  "valueRequired": true,
+                  "valueName": "search_term_string"
+                }
+              }
+            ],
+            "inLanguage": "en-US"
+          },
+          {
+            "@type": "OnlineStore",
+            "@id": "https://pepselect.com/#organization",
+            "name": "Pep Select",
+            "url": "https://pepselect.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "inLanguage": "en-US",
+              "@id": "https://pepselect.com/#/schema/logo/image/",
+              "url": "https://pepselect.com/wp-content/uploads/2026/06/cropped-WhatsApp-Image-2026-06-30-at-1.50.57-PM.jpeg",
+              "contentUrl": "https://pepselect.com/wp-content/uploads/2026/06/cropped-WhatsApp-Image-2026-06-30-at-1.50.57-PM.jpeg",
+              "width": 512,
+              "height": 512,
+              "caption": "Pep Select"
+            },
+            "image": {
+              "@id": "https://pepselect.com/#/schema/logo/image/"
+            },
+            "hasMerchantReturnPolicy": {
+              "@type": "MerchantReturnPolicy",
+              "@id": "https://pepselect.com/#merchant-return-policy",
+              "applicableCountry": "US",
+              "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted",
+              "merchantReturnLink": "https://pepselect.com/refund-shipping-policy/"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "index": 2,
+      "size_bytes": 1064,
+      "valid": true,
+      "types": [
+        "Brand",
+        "Offer",
+        "OnlineStore",
+        "Product",
+        "UnitPriceSpecification"
+      ],
+      "types_truncated": false,
+      "data": {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "@id": "https://pepselect.com/product/glp2-t20/#product",
+        "name": "GLP-2T",
+        "url": "https://pepselect.com/product/glp2-t20/",
+        "description": "GLP-2T 20MG. Tirzepatide is a dual-agonist research peptide designed to engage both GIP and GLP-1 receptors. Research focuses on how one peptide interacts with two receptor systems and how its structure shapes signaling at each receptor.",
+        "image": "https://pepselect.com/wp-content/uploads/2026/06/TZ20F-scaled.webp",
+        "sku": "GLP2T20",
+        "offers": [
+          {
+            "@type": "Offer",
+            "priceSpecification": [
+              {
+                "@type": "UnitPriceSpecification",
+                "price": "109.99",
+                "priceCurrency": "USD",
+                "valueAddedTaxIncluded": false
+              }
+            ],
+            "availability": "https://schema.org/OutOfStock",
+            "url": "https://pepselect.com/product/glp2-t20/",
+            "seller": {
+              "@type": "OnlineStore",
+              "@id": "https://pepselect.com/#organization",
+              "name": "Pep Select",
+              "url": "https://pepselect.com/"
+            },
+            "price": "109.99",
+            "priceCurrency": "USD",
+            "hasMerchantReturnPolicy": {
+              "@id": "https://pepselect.com/#merchant-return-policy"
+            }
+          }
+        ],
+        "brand": {
+          "@type": "Brand",
+          "name": "Pep Select"
+        }
+      }
+    }
+  ]
+}

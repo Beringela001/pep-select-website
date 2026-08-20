@@ -1,0 +1,77 @@
+{
+  "terms": {
+    "brand_counts": {
+      "PepSelect": 12,
+      "Pep Select": 7
+    },
+    "oneword_contexts": [
+      "s to These Terms 14. Contact Welcome to PepSelect. These Terms & Conditions (“Terms”) gov",
+      "ade through it. The Site is operated by PepSelect (“PepSelect,” “we,” “us,” or “our”). By",
+      "Research Use Only Every product sold by PepSelect is supplied strictly for in-vitro labor",
+      " Certification By placing an order with PepSelect, you certify that: You are at least 21 ",
+      "he package is delivered to the carrier. PepSelect is not responsible for delays caused by"
+    ]
+  },
+  "privacy": {
+    "brand_counts": {
+      "PepSelect": 3,
+      "Pep Select": 7
+    },
+    "oneword_contexts": [
+      "eting Changes to This Policy Contact Us PepSelect (“PepSelect,” “we,” “us,” or “our”) ope",
+      "upport@pepselect.com]. Mailing address: PepSelect, 2090 Baker Rd, Ste 304, Kennesaw, GA 3"
+    ]
+  },
+  "refund": {
+    "brand_counts": {
+      "PepSelect": 1,
+      "Pep Select": 7
+    },
+    "oneword_contexts": [
+      "e purchasing — by placing an order with PepSelect you agree to the terms below. Shipping "
+    ]
+  },
+  "ruo": {
+    "brand_counts": {
+      "Pep Select": 20
+    },
+    "oneword_contexts": []
+  },
+  "shop_learn_more": [
+    [
+      "https://pepselect.com/product/glp3-r10/",
+      "Learn more",
+      null
+    ],
+    [
+      "https://pepselect.com/product/glp3-r30/",
+      "Learn more",
+      null
+    ],
+    [
+      "https://pepselect.com/product/tb500-10/",
+      "Learn more",
+      null
+    ],
+    [
+      "https://pepselect.com/product/ghk-cu/",
+      "Learn more",
+      null
+    ],
+    [
+      "https://pepselect.com/product/nad/",
+      "Learn more",
+      null
+    ],
+    [
+      "https://pepselect.com/product/tesa-10/",
+      "Learn more",
+      null
+    ],
+    [
+      "https://pepselect.com/product/pt-141/",
+      "Learn more",
+      null
+    ]
+  ]
+}

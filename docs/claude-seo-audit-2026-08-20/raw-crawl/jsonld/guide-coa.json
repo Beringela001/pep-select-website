@@ -1,0 +1,167 @@
+{
+  "block_count": 1,
+  "processed_count": 1,
+  "total_bytes": 3861,
+  "truncated": false,
+  "blocks": [
+    {
+      "index": 1,
+      "size_bytes": 3861,
+      "valid": true,
+      "types": [
+        "Article",
+        "BreadcrumbList",
+        "EntryPoint",
+        "ImageObject",
+        "ListItem",
+        "MerchantReturnPolicy",
+        "OnlineStore",
+        "Person",
+        "PropertyValueSpecification",
+        "ReadAction",
+        "SearchAction",
+        "WebPage",
+        "WebSite"
+      ],
+      "types_truncated": false,
+      "data": {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Article",
+            "@id": "https://pepselect.com/guides/how-to-review-research-peptide-documentation/#article",
+            "isPartOf": {
+              "@id": "https://pepselect.com/guides/how-to-review-research-peptide-documentation/"
+            },
+            "author": {
+              "@id": "https://pepselect.com/#organization"
+            },
+            "headline": "How to Review Research Peptide Documentation",
+            "datePublished": "2026-08-19T16:58:44+00:00",
+            "dateModified": "2026-08-19T16:58:46+00:00",
+            "mainEntityOfPage": {
+              "@id": "https://pepselect.com/guides/how-to-review-research-peptide-documentation/"
+            },
+            "wordCount": 2351,
+            "publisher": {
+              "@id": "https://pepselect.com/#organization"
+            },
+            "articleSection": [
+              "Guides"
+            ],
+            "inLanguage": "en-US"
+          },
+          {
+            "@type": "WebPage",
+            "@id": "https://pepselect.com/guides/how-to-review-research-peptide-documentation/",
+            "url": "https://pepselect.com/guides/how-to-review-research-peptide-documentation/",
+            "name": "How to Review Research Peptide Documentation | Pep Select",
+            "isPartOf": {
+              "@id": "https://pepselect.com/#website"
+            },
+            "datePublished": "2026-08-19T16:58:44+00:00",
+            "dateModified": "2026-08-19T16:58:46+00:00",
+            "description": "Learn how Pep Select connects a research peptide COA to the photographed vial, batch number, cap, crimp, laboratory report, results, and release decision.",
+            "breadcrumb": {
+              "@id": "https://pepselect.com/guides/how-to-review-research-peptide-documentation/#breadcrumb"
+            },
+            "inLanguage": "en-US",
+            "potentialAction": [
+              {
+                "@type": "ReadAction",
+                "target": [
+                  "https://pepselect.com/guides/how-to-review-research-peptide-documentation/"
+                ]
+              }
+            ]
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://pepselect.com/guides/how-to-review-research-peptide-documentation/#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://pepselect.com/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "How to Review Research Peptide Documentation"
+              }
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://pepselect.com/#website",
+            "url": "https://pepselect.com/",
+            "name": "Pep Select",
+            "description": "Peptides Carefully Selected",
+            "publisher": {
+              "@id": "https://pepselect.com/#organization"
+            },
+            "potentialAction": [
+              {
+                "@type": "SearchAction",
+                "target": {
+                  "@type": "EntryPoint",
+                  "urlTemplate": "https://pepselect.com/?s={search_term_string}"
+                },
+                "query-input": {
+                  "@type": "PropertyValueSpecification",
+                  "valueRequired": true,
+                  "valueName": "search_term_string"
+                }
+              }
+            ],
+            "inLanguage": "en-US"
+          },
+          {
+            "@type": "OnlineStore",
+            "@id": "https://pepselect.com/#organization",
+            "name": "Pep Select",
+            "url": "https://pepselect.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "inLanguage": "en-US",
+              "@id": "https://pepselect.com/#/schema/logo/image/",
+              "url": "https://pepselect.com/wp-content/uploads/2026/06/cropped-WhatsApp-Image-2026-06-30-at-1.50.57-PM.jpeg",
+              "contentUrl": "https://pepselect.com/wp-content/uploads/2026/06/cropped-WhatsApp-Image-2026-06-30-at-1.50.57-PM.jpeg",
+              "width": 512,
+              "height": 512,
+              "caption": "Pep Select"
+            },
+            "image": {
+              "@id": "https://pepselect.com/#/schema/logo/image/"
+            },
+            "hasMerchantReturnPolicy": {
+              "@type": "MerchantReturnPolicy",
+              "@id": "https://pepselect.com/#merchant-return-policy",
+              "applicableCountry": "US",
+              "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted",
+              "merchantReturnLink": "https://pepselect.com/refund-shipping-policy/"
+            }
+          },
+          {
+            "@type": "Person",
+            "@id": "https://pepselect.com/#/schema/person/863defd23e468af21c9b2516a1a3a02a",
+            "name": "beringela001",
+            "image": {
+              "@type": "ImageObject",
+              "inLanguage": "en-US",
+              "@id": "https://pepselect.com/wp-content/uploads/nsl_avatars/55363ea03d2bfc8934df5a81ddd39a18.png",
+              "url": "https://pepselect.com/wp-content/uploads/nsl_avatars/55363ea03d2bfc8934df5a81ddd39a18.png",
+              "contentUrl": "https://pepselect.com/wp-content/uploads/nsl_avatars/55363ea03d2bfc8934df5a81ddd39a18.png",
+              "caption": "beringela001"
+            },
+            "sameAs": [
+              "https://pepselect.com"
+            ],
+            "url": "https://pepselect.com/guides/author/beringela001/"
+          }
+        ]
+      }
+    }
+  ]
+}

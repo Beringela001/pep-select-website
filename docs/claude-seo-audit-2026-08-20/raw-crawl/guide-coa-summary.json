@@ -1,0 +1,73 @@
+{
+  "url": "https://pepselect.com/guides/how-to-review-research-peptide-documentation/",
+  "status_code": 200,
+  "content": "<!doctype html>\n<html lang=\"en-US\">\n<head>\n\t<meta charset=\"UTF-8\">\n\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n\t<link rel=\"profile\" href=\"https://gmpg.org/xfn/11\">\n\t<meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' />\n<script>window._wca = window._wca || [];</script>\r\n\n\t<!-- This site is optimized with the Yoast SEO plugin v28.1 - https://yoast.com/product/yoast-seo-wordpress/ -->\n\t<title>How to Review Research Pe...",
+  "raw_content": "<!doctype html>\n<html lang=\"en-US\">\n<head>\n\t<meta charset=\"UTF-8\">\n\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n\t<link rel=\"profile\" href=\"https://gmpg.org/xfn/11\">\n\t<meta nam...",
+  "is_spa": false,
+  "extracted_text": null,
+  "publication_date": null,
+  "accessibility_tree": null,
+  "headers": {
+    "Date": "Thu, 20 Aug 2026 16:02:44 GMT",
+    "Content-Type": "text/html; charset=UTF-8",
+    "Transfer-Encoding": "chunked",
+    "Connection": "keep-alive",
+    "Nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.01,\"max_age\":604800}",
+    "CF-Ray": "a2e29fc6c84d8e3e-EWR",
+    "CF-Cache-Status": "HIT",
+    "Age": "26",
+    "Cache-Control": "public, max-age=0, s-maxage=86400",
+    "Last-Modified": "Thu, 20 Aug 2026 16:02:18 GMT",
+    "Link": "<https://pepselect.com/wp-json/>; rel=\"https://api.w.org/\", <https://pepselect.com/wp-json/wp/v2/posts/1536>; rel=\"alternate\"; title=\"JSON\"; type=\"application/json\", <https://pepselect.com/?p=1536>; rel=shortlink",
+    "Server": "cloudflare",
+    "Vary": "Accept-Encoding, accept, content-type",
+    "Ki-CF-Cache-Status": "HIT",
+    "X-Content-Type-Options": "nosniff",
+    "X-Edge-Location-Klb": "1",
+    "ki-Cache-Tag": "7eb3c339-49ca-429f-81e7-b41425313f21,5ed1ce144c601c5f0505e3e4263ac1020c1032e5c5d1ec94abbc941a9d6e5343",
+    "ki-cache-type": "Edge",
+    "ki-edge": "v=28.4.7;mv=99.9.9",
+    "ki-origin": "o1i",
+    "x-kinsta-cache": "HIT",
+    "set-cookie": "__cf_bm=tZ10wQBHQoM4ycwWB45FOZxD.qvaQw2Gqg1DyFJl2XA-1787241764.92876-1.0.1.1-GYOxETwtUxe.rZLHPGynUJYlu3CCVTp8WT3zw0qRRkLE3tuP5s.Kag4C0ZL5TXC0HTp4hyPARcdyDCETuYsyGy5jb0tz41Acsp11dESI0LnpPlyzhVt7hX7wcG7KCm5P; HttpOnly; SameSite=None; Secure; Path=/; Domain=pepselect.com; Expires=Thu, 20 Aug 2026 16:32:44 GMT",
+    "Report-To": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=T33rE4f7ZdPZlMWBThnxfnmU2GcHxdj39NKT3trnL9F2%2Ft4f8RfkI52d%2B5NUUCl%2F6OFPqN%2BBEPRBM%2BonT%2F9WyC77twR0G0vOlTjrD%2F9YaiG2cA27IVKr2vlq6ADGj50%3D\"}]}",
+    "Content-Encoding": "gzip",
+    "alt-svc": "h3=\":443\"; ma=86400"
+  },
+  "redirect_chain": [],
+  "console_errors": [],
+  "render_diagnostics": [],
+  "render_engine": null,
+  "render_ms": null,
+  "mode_used": "raw",
+  "error": null,
+  "structured_data": {
+    "block_count": 1,
+    "processed_count": 1,
+    "total_bytes": 3861,
+    "truncated": false,
+    "blocks": [
+      {
+        "index": 1,
+        "size_bytes": 3861,
+        "valid": true,
+        "types": [
+          "Article",
+          "BreadcrumbList",
+          "EntryPoint",
+          "ImageObject",
+          "ListItem",
+          "MerchantReturnPolicy",
+          "OnlineStore",
+          "Person",
+          "PropertyValueSpecification",
+          "ReadAction",
+          "SearchAction",
+          "WebPage",
+          "WebSite"
+        ],
+        "types_truncated": false
+      }
+    ]
+  }
+}

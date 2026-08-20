@@ -1,0 +1,517 @@
+{
+  "mobile_390x844": {
+    "vw": 390,
+    "vh": 844,
+    "candidates": [
+      {
+        "tag": "DIV",
+        "id": "psag-gate",
+        "cls": "",
+        "rect": {
+          "w": 390,
+          "h": 844,
+          "top": 0,
+          "left": 0
+        },
+        "display": "flex",
+        "visibility": "visible",
+        "zIndex": "9999999",
+        "position": "fixed"
+      }
+    ],
+    "bodyOverflow": "hidden",
+    "docHTML_length": 189406
+  },
+  "desktop_1440x900": {
+    "vw": 1440,
+    "vh": 900,
+    "candidates": [
+      {
+        "tag": "DIV",
+        "id": "psag-gate",
+        "cls": "",
+        "rect": {
+          "w": 1440,
+          "h": 900,
+          "top": 0,
+          "left": 0
+        },
+        "display": "flex",
+        "visibility": "visible",
+        "zIndex": "9999999",
+        "position": "fixed"
+      }
+    ],
+    "bodyOverflow": "hidden",
+    "docHTML_length": 189408
+  },
+  "deep_inspection": {
+    "dialog_outerHTML_trunc": "<div id=\"psag-gate\" role=\"dialog\" aria-modal=\"true\" aria-labelledby=\"psag-title\">\n\t\t\t\t\t\t<div class=\"psag-card\">\n\t\t\t\t\t\t\t\t<div class=\"psag-logo\"><img src=\"https://pepselect.com/wp-content/uploads/2026/06/Logo_Pepselect_Whitebackground-1.png\" alt=\"Pep Select\" loading=\"eager\"></div>\n\t\t\t\t\n\t\t\t\t\t\t\t\t<p class=\"psag-kicker\">Research Gate</p>\n\t\t\t\t\n\t\t\t\t<h2 class=\"psag-title\" id=\"psag-title\">Research Access Verification</h2>\n\t\t\t\t<p class=\"psag-intro\">Pep Select provides research-grade compounds exclusively for qualified laboratory and in vitro research. Please confirm the following before entering.</p>\n\t\t\t\t<hr class=\"psag-divider\">\n\n\t\t\t\t\t\t\t\t<div class=\"psag-type\">\n\t\t\t\t\t<label class=\"psag-type-label\" for=\"psagType\">Researcher type</label>\n\t\t\t\t\t<select id=\"psagType\">\n\t\t\t\t\t\t<option value=\"\" selected=\"\" disabled=\"\">Select\u2026</option>\n\t\t\t\t\t\t\t\t\t\t\t\t<option value=\"University / academic institution\">University / academic institution</option>\n\t\t\t\t\t\t\t\t\t\t\t\t<option value=\"Private research laboratory\">Private research laboratory</option>\n\t\t\t\t\t\t\t\t\t\t\t\t<option value=\"Biotech / pharmaceutical company\">Biotech / pharmaceutical company</option>\n\t\t\t\t\t\t\t\t\t\t\t\t<option value=\"Contract research organization (CRO)\">Contract research organization (CRO)</option>\n\t\t\t\t\t\t\t\t\t\t\t\t<option value=\"Independent researcher\">Independent researcher</option>\n\t\t\t\t\t\t\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t\t\t\t\t<label class=\"psag-check\">\n\t\t\t\t\t<input type=\"checkbox\" class=\"psag-cb\" style=\"\">\n\t\t\t\t\t<span>I am at least <b>21 years of age</b>.</span>\n\t\t\t\t</label>\n\t\t\t\t\t\t\t\t<label class=\"psag-check\">\n\t\t\t\t\t<input type=\"checkbox\" class=\"psag-cb\" style=\"\">\n\t\t\t\t\t<span>I confirm I am a <b>qualified researcher</b> purchasing for <b>in vitro / laboratory research only</b> - not for human or veterinary use.</span>\n\t\t\t\t</label>\n\t\t\t\t\n\t\t\t\t\t\t\t\t<div class=\"psag-attest\" id=\"psagAttest\">\n\t\t\t\t\t<button type=\"button\" class=\"psag-attest-toggle\" id=\"psagAttestToggle\" aria-expanded=\"false\">\n\t\t\t\t\t\tRead the researcher attestation <span class=\"psag-chev\">\u2303</span>\n\t\t\t\t\t</button>\n\t\t\t\t\t<div class=\"psag-attest-body\">\n\t\t\t\t\t\t<ol>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t<li>I am acquiring these materials as a qualified researcher, or on behalf of a research institution or laboratory.</li>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t<li>All materials will be used <b>solely for in vitro laboratory research</b>.</li>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t<li>I will not administer these materials to humans or animals, or resell or redistribute them for such use.</li>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t<li>I understand these materials are <b>not drugs, dietary supplements, or medical devices</b>, and have not been evaluated by the U.S. Food and Drug Administration.</li>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t<li>I am solely responsible for lawful handling, storage, use, and disposal, and for compliance with all applicable law.</li>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t<li>The information I have provided is accurate, and false information is grounds for cancellation and refusal of service.</li>\n\t\t\t\t\t\t\t\t\t\t\t\t\t</ol>\n\t\t\t\t\t\t\t\t\t\t\t\t<p class=\"psag-version\">Form version PS-RUO-2026.08</p>\n\t\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t<button type=\"button\" class=\"psag-btn\" id=\"psagEnter\" disabled=\"\">Enter Site \u2192</button>\n\n\t\t\t\t\t\t\t\t<label class=\"psag-remember\"><input type=\"checkbox\" id=\"psagRemember\" style=\"\"> Remember me for 30 days</label>\n\t\t\t\t\n\t\t\t\t\t\t\t\t<p class=\"psag-note\">Research use only. Recorded for compliance.</p>\n\t\t\t\t\n\t\t\t\t<p class=\"psag-exit\">Not a researcher? <a id=\"psagExit\">Exit</a></p>\n\n\t\t\t\t\t\t\t\t<div class=\"psag-legal\">\n\t\t\t\t\t\t\t\t\t\t<p>By proceeding, you confirm that you are 21 years of age or older and a qualified research professional. You acknowledge that all products sold on this site are intended strictly for laboratory research use and are not for human consumption, diagnosis, treatment, or prevention of any disease. By creating an account and/or placing an order, you agree to our <a href=\"/terms-of-service/\">Terms and Conditions</a>, including all use restrictions, and agree to indemnify and hold harmless the seller from any misuse of products. You further confirm that you are legally pe",
+    "dialog_attrs": {
+      "role": "dialog",
+      "ariaLabelledby": "psag-title",
+      "ariaDescribedby": null,
+      "ariaModal": "true",
+      "id": "psag-gate"
+    },
+    "labelledby_text": "Research Access Verification",
+    "body_children_inert": [
+      {
+        "tag": "HEADER",
+        "id": "pepselect-site-header",
+        "cls": "pepselect-site-header",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "DIV",
+        "id": "",
+        "cls": "xoo-wsc-markup-notices",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "DIV",
+        "id": "",
+        "cls": "xoo-wsc-markup xoo-wsc-align-right",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "A",
+        "id": "",
+        "cls": "skip-link screen-reader-text",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "HEADER",
+        "id": "site-header",
+        "cls": "site-header dynamic-header menu-dropdown-tablet",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "MAIN",
+        "id": "pepselect-home-main",
+        "cls": "pepselect-home",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "FOOTER",
+        "id": "site-footer",
+        "cls": "site-footer dynamic-footer footer-has-copyright",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "FOOTER",
+        "id": "pepselect-site-footer",
+        "cls": "pepselect-site-footer",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "LINK",
+        "id": "wc-blocks-style-css",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "woocommerce-js-extra",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "woocommerce-js",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "hello-theme-frontend-js",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "woocommerce-analytics-client-js",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "sourcebuster-js-js",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "wc-order-attribution-js-extra",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "wc-order-attribution-js",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "xoo-confetti-js",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "xoo-wsc-main-js-js-extra",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "xoo-wsc-main-js-js",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "ywdpd_owl-js",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "ywdpd_frontend-js-extra",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "ywdpd_frontend-js",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "ywdpd_modals-js-extra",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "ywdpd_modals-js",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "elementor-webpack-runtime-js",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "elementor-frontend-modules-js",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "jquery-ui-core-js-before",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "jquery-ui-core-js",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "elementor-frontend-js",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "imagesloaded-js",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "jquery-numerator-js",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "pepselect-child-header-search-js",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "pepselect-child-header-preview-js",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "googlesitekit-events-provider-woocommerce-js-before",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "googlesitekit-events-provider-woocommerce-js",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "pepselect-child-cards-js-js",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "pepselect-child-home-preview-js",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "pepselect-child-checkout-upsell-js-extra",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "pepselect-child-checkout-upsell-js",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "jetpack-stats-js-before",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "jetpack-stats-js",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "cwginstock_js-js-extra",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "cwginstock_js-js",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "sweetalert2-js",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "cwginstock_popup-js",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "wp-emoji-settings",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "STYLE",
+        "id": "",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "DIV",
+        "id": "psag-gate",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "SCRIPT",
+        "id": "",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "IMG",
+        "id": "wpstats",
+        "cls": "",
+        "inert": false,
+        "ariaHidden": null
+      },
+      {
+        "tag": "DIV",
+        "id": "",
+        "cls": "widget_shopping_cart_live_region screen-reader-text",
+        "inert": false,
+        "ariaHidden": null
+      }
+    ],
+    "exit_candidates": [
+      {
+        "text": "Exit",
+        "href": null,
+        "target": null,
+        "rel": null
+      }
+    ],
+    "gate_all_links": [
+      {
+        "text": "Exit",
+        "href": null,
+        "target": null
+      },
+      {
+        "text": "Terms and Conditions",
+        "href": "/terms-of-service/",
+        "target": null
+      }
+    ],
+    "gate_logo_elements": [
+      {
+        "tag": "IMG",
+        "src": "https://pepselect.com/wp-content/uploads/2026/06/Logo_Pepselect_Whitebackground-1.png",
+        "srcset": null,
+        "cls": "",
+        "alt": "Pep Select"
+      }
+    ],
+    "gate_text_font_sizes": [
+      {
+        "text": "Pep Select provides research-grade compounds exclusively for qualified laboratory and in vitro research. Please confirm ",
+        "fontSize": "14px",
+        "tag": "P",
+        "cls": "psag-intro"
+      },
+      {
+        "text": "Form version PS-RUO-2026.08",
+        "fontSize": "10.5px",
+        "tag": "P",
+        "cls": "psag-version"
+      },
+      {
+        "text": "Research use only. Recorded for compliance.",
+        "fontSize": "11.5px",
+        "tag": "P",
+        "cls": "psag-note"
+      },
+      {
+        "text": "\u00a9 2026 \u2014 For Research Use Only. All Rights Reserved.",
+        "fontSize": "12px",
+        "tag": "P",
+        "cls": "psag-copy"
+      }
+    ],
+    "active_element_tag": "BODY",
+    "active_element_id": ""
+  }
+}

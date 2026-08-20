@@ -1,0 +1,71 @@
+{
+  "url": "https://pepselect.com/",
+  "status_code": 200,
+  "content": "<!doctype html>\n<html lang=\"en-US\">\n<head>\n\t<meta charset=\"UTF-8\">\n\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n\t<link rel=\"profile\" href=\"https://gmpg.org/xfn/11\">\n\t<meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' />\n<script>window._wca = window._wca || [];</script>\r\n\n\t<!-- This site is optimized with the Yoast SEO plugin v28.1 - https://yoast.com/product/yoast-seo-wordpress/ -->\n\t<title>Research Peptides with Ba...",
+  "raw_content": "<!doctype html>\n<html lang=\"en-US\">\n<head>\n\t<meta charset=\"UTF-8\">\n\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n\t<link rel=\"profile\" href=\"https://gmpg.org/xfn/11\">\n\t<meta nam...",
+  "is_spa": false,
+  "extracted_text": "Research Without the Runaround\nThe label is the easy part. What\u2019s behind it matters.\nYou shouldn\u2019t need five tabs and a leap of faith to look into a research peptide. Pep Select keeps current product details and available batch documentation in one place, so the information is there when you need it.\nThe Current Selection\nA short list, on purpose.\nEvery compound here was selected before it was stocked, with strength and available batch records in plain view.\nWhy Pep Select is different\nMatch the...",
+  "publication_date": "2026-08-14",
+  "accessibility_tree": null,
+  "headers": {
+    "Date": "Thu, 20 Aug 2026 16:03:12 GMT",
+    "Content-Type": "text/html; charset=UTF-8",
+    "Transfer-Encoding": "chunked",
+    "Connection": "keep-alive",
+    "Nel": "{\"report_to\":\"cf-nel\",\"success_fraction\":0.01,\"max_age\":604800}",
+    "CF-Ray": "a2e2a070fa936180-EWR",
+    "CF-Cache-Status": "HIT",
+    "Age": "253",
+    "Cache-Control": "public, max-age=0, s-maxage=86400",
+    "Last-Modified": "Thu, 20 Aug 2026 15:58:58 GMT",
+    "Link": "<https://pepselect.com/wp-json/>; rel=\"https://api.w.org/\", <https://pepselect.com/wp-json/wp/v2/pages/79>; rel=\"alternate\"; title=\"JSON\"; type=\"application/json\", <https://pepselect.com/>; rel=shortlink",
+    "Server": "cloudflare",
+    "Vary": "Accept-Encoding, accept, content-type",
+    "Ki-CF-Cache-Status": "HIT",
+    "X-Content-Type-Options": "nosniff",
+    "X-Edge-Location-Klb": "1",
+    "ki-Cache-Tag": "7eb3c339-49ca-429f-81e7-b41425313f21,f7501ed9fc36482e8293fcd70cd02729f322b5496cbd859a79029e32e647d899",
+    "ki-cache-type": "Edge",
+    "ki-edge": "v=28.4.7;mv=99.9.9",
+    "ki-origin": "o1i",
+    "x-kinsta-cache": "HIT",
+    "set-cookie": "__cf_bm=Dgx1rTOI8Ppb9.k0Eaj16fWy._3md08x5dYF0gkymFE-1787241792.157241-1.0.1.1-bSrfAtefDmgAMobbCCxnIK1RdkU_MjfDxTvN.PJVxRUfFvclbMTL72HJS3ppfxb0Rurhkg.SKgTt0EcHhdXtirOGfBlPX3LjeUoyZ22B2N0BXZ.mO_O1qHjX_CuZOu9z; HttpOnly; SameSite=None; Secure; Path=/; Domain=pepselect.com; Expires=Thu, 20 Aug 2026 16:33:12 GMT",
+    "Report-To": "{\"group\":\"cf-nel\",\"max_age\":604800,\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v4?s=r9gus4%2B68SLXEfTjaBAKm%2BhZd4MmGnsvKphymDvlFD7GnHt4nFAibHGmxkzUgtifPnPtenhA%2FL1HKZAT5ITrhm4F6fSZX%2BkI2r4Wb2jjKou2tc4pOW1ZcBX%2Fa7GPVkg%3D\"}]}",
+    "Content-Encoding": "gzip",
+    "alt-svc": "h3=\":443\"; ma=86400"
+  },
+  "redirect_chain": [],
+  "console_errors": [],
+  "render_diagnostics": [],
+  "render_engine": null,
+  "render_ms": null,
+  "mode_used": "raw",
+  "error": null,
+  "structured_data": {
+    "block_count": 1,
+    "processed_count": 1,
+    "total_bytes": 2730,
+    "truncated": false,
+    "blocks": [
+      {
+        "index": 1,
+        "size_bytes": 2730,
+        "valid": true,
+        "types": [
+          "BreadcrumbList",
+          "EntryPoint",
+          "ImageObject",
+          "ListItem",
+          "MerchantReturnPolicy",
+          "OnlineStore",
+          "PropertyValueSpecification",
+          "ReadAction",
+          "SearchAction",
+          "WebPage",
+          "WebSite"
+        ],
+        "types_truncated": false
+      }
+    ]
+  }
+}

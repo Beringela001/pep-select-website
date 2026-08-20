@@ -1,0 +1,114 @@
+{
+  "block_count": 1,
+  "processed_count": 1,
+  "total_bytes": 2162,
+  "truncated": false,
+  "blocks": [
+    {
+      "index": 1,
+      "size_bytes": 2162,
+      "valid": true,
+      "types": [
+        "BreadcrumbList",
+        "CollectionPage",
+        "EntryPoint",
+        "ImageObject",
+        "ListItem",
+        "MerchantReturnPolicy",
+        "OnlineStore",
+        "PropertyValueSpecification",
+        "SearchAction",
+        "WebSite"
+      ],
+      "types_truncated": false,
+      "data": {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://pepselect.com/#website",
+            "url": "https://pepselect.com/",
+            "name": "Pep Select",
+            "description": "Peptides Carefully Selected",
+            "publisher": {
+              "@id": "https://pepselect.com/#organization"
+            },
+            "potentialAction": [
+              {
+                "@type": "SearchAction",
+                "target": {
+                  "@type": "EntryPoint",
+                  "urlTemplate": "https://pepselect.com/?s={search_term_string}"
+                },
+                "query-input": {
+                  "@type": "PropertyValueSpecification",
+                  "valueRequired": true,
+                  "valueName": "search_term_string"
+                }
+              }
+            ],
+            "inLanguage": "en-US"
+          },
+          {
+            "@type": "OnlineStore",
+            "@id": "https://pepselect.com/#organization",
+            "name": "Pep Select",
+            "url": "https://pepselect.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "inLanguage": "en-US",
+              "@id": "https://pepselect.com/#/schema/logo/image/",
+              "url": "https://pepselect.com/wp-content/uploads/2026/06/cropped-WhatsApp-Image-2026-06-30-at-1.50.57-PM.jpeg",
+              "contentUrl": "https://pepselect.com/wp-content/uploads/2026/06/cropped-WhatsApp-Image-2026-06-30-at-1.50.57-PM.jpeg",
+              "width": 512,
+              "height": 512,
+              "caption": "Pep Select"
+            },
+            "image": {
+              "@id": "https://pepselect.com/#/schema/logo/image/"
+            },
+            "hasMerchantReturnPolicy": {
+              "@type": "MerchantReturnPolicy",
+              "@id": "https://pepselect.com/#merchant-return-policy",
+              "applicableCountry": "US",
+              "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted",
+              "merchantReturnLink": "https://pepselect.com/refund-shipping-policy/"
+            }
+          },
+          {
+            "@type": "CollectionPage",
+            "@id": "https://pepselect.com/testing/#webpage",
+            "url": "https://pepselect.com/testing/",
+            "name": "Peptide COA Archive: Search by Compound & Batch | Pep Select",
+            "description": "Browse Pep Select Certificates of Analysis and batch documentation by compound and batch.",
+            "isPartOf": {
+              "@id": "https://pepselect.com/#website"
+            },
+            "breadcrumb": {
+              "@id": "https://pepselect.com/testing/#breadcrumb"
+            },
+            "inLanguage": "en-US"
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://pepselect.com/testing/#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://pepselect.com/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Certificate of Analysis Archive",
+                "item": "https://pepselect.com/testing/"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

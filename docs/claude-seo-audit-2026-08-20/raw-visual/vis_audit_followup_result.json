@@ -1,0 +1,32 @@
+{
+  "legal_paragraphs": [
+    {
+      "text": "By proceeding, you confirm that you are 21 years of age or older and a qualified",
+      "fontSize": "12px"
+    },
+    {
+      "text": "FDA Disclaimer: The statements made within this website have not been evaluated ",
+      "fontSize": "12px"
+    }
+  ],
+  "gate_base_font": "16px",
+  "card_base_font": "16px",
+  "logo_attrs": {
+    "src": "https://pepselect.com/wp-content/uploads/2026/06/Logo_Pepselect_Whitebackground-1.png",
+    "srcset": null,
+    "sizes": null,
+    "width": 220,
+    "height": 53,
+    "naturalWidth": 1372
+  },
+  "dialog_full_attrs": [
+    "id=psag-gate",
+    "role=dialog",
+    "aria-modal=true",
+    "aria-labelledby=psag-title"
+  ],
+  "mobile_logo_rect": {
+    "width": 160,
+    "height": 38.46875
+  }
+}

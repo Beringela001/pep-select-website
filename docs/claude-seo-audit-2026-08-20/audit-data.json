@@ -1,0 +1,273 @@
+{
+  "summary": {
+    "site": "https://pepselect.com",
+    "audit_date": "2026-08-20",
+    "audit_type": "post-remediation verification audit",
+    "baseline": "docs/claude-seo-latest/CODEX-SEO-FINDINGS-LEDGER-2026-08-18.md (97 findings, 2026-08-18)",
+    "health_score": null,
+    "health_score_note": "Weighted overall score intentionally omitted. The dominant unresolved issue (the above-the-fold research gate) is a UX/business decision requiring owner sign-off, not something a single composite number should imply is 'mostly fine.' See per-category scores below.",
+    "category_scores": {
+      "technical_seo": 74,
+      "schema_structured_data": 68,
+      "content_quality": 42,
+      "performance_cwv_lab": 58,
+      "ecommerce": 55,
+      "above_fold_sxo": 30,
+      "geo_ai_readiness": 38
+    },
+    "business_type": "E-commerce (WooCommerce), research-peptide seller, gated behind a mandatory full-viewport research/compliance interstitial",
+    "prior_findings_total": 97,
+    "prior_findings_disposition": {
+      "verified_fixed": 13,
+      "partially_fixed": 15,
+      "still_open": 47,
+      "regressed": 0,
+      "blocked_by_real_evidence": 15,
+      "superseded": 7
+    },
+    "top_findings": [
+      "Full-viewport research gate blocks 100% of first paint on every device for every JS-rendering visitor (VIS-01, Critical, still open)",
+      "Baseline security-header stack (HSTS/CSP/X-Frame-Options/Referrer-Policy/Permissions-Policy) entirely absent sitewide (TECH-01..04/GOOG-08, still open)",
+      "Gate accessibility claims (VIS-02) do not hold under direct inspection: no aria-describedby, no real exit link href, zero inert/aria-hidden anywhere, no focus trap",
+      "Catalog-wide thin/templated product content persists on 5 of 6 sampled SKUs including the 'fixed' GLP-2T; Bacteriostatic Water has zero description",
+      "Indexation improved (Shop/Testing/guide/Retatrutide-10mg now 'Submitted and indexed' per GSC) but organic visibility has not: 0 clicks, 7 impressions across 90 days"
+    ],
+    "quick_wins": [
+      "Add HSTS + X-Frame-Options at the Cloudflare/Kinsta edge (no WordPress code required)",
+      "Extend the already-proven Dataset JSON-LD pattern from batch reports to compound-hub pages (GEO-07)",
+      "Add one real crawlable <a href> link to the orphaned Bacteriostatic Water product page (MAP-01)",
+      "Give the gate's Exit element a real href instead of JS-only click handling (VIS-02/VIS-03)",
+      "Standardize 'Pep Select' vs 'PepSelect' across legal pages (CONT-13)",
+      "Suppress the leaked WordPress username 'beringela001' from author meta tags on the guide (GEO-08 hygiene)"
+    ]
+  },
+  "performance": {
+    "paulo_reported_scores": { "desktop": 98, "mobile": 68 },
+    "measured_desktop_avg": 96.8,
+    "measured_mobile_avg": 71.6,
+    "measured_mobile_median": 75,
+    "measured_mobile_range": [56, 81],
+    "conclusion": "Paulo's reported ~98/~68 gap is real and reproducible; 68 sits inside the observed mobile range, not below it.",
+    "urls_tested": [
+      {
+        "url": "https://pepselect.com/",
+        "label": "Home",
+        "desktop_score": 97,
+        "desktop_lcp_s": 1.0,
+        "mobile_scores": [81, 81, 81],
+        "mobile_note": "all 3 runs PSI-cached, 1 unique data point",
+        "mobile_lcp_range_s": [3.8, 3.8]
+      },
+      {
+        "url": "https://pepselect.com/shop/",
+        "label": "Shop",
+        "desktop_score": 96,
+        "desktop_lcp_s": 1.2,
+        "mobile_scores": [81, 81, 67],
+        "mobile_note": "2 of 3 cached, 1 independent outlier",
+        "mobile_lcp_range_s": [4.2, 6.8]
+      },
+      {
+        "url": "https://pepselect.com/product/nad/",
+        "label": "NAD+ product",
+        "desktop_score": 96,
+        "desktop_lcp_s": 0.8,
+        "mobile_scores": [75, 63, 75],
+        "mobile_note": "2 of 3 cached, 1 independent outlier",
+        "mobile_lcp_range_s": [4.2, 7.1]
+      },
+      {
+        "url": "https://pepselect.com/testing/",
+        "label": "Testing hub",
+        "desktop_score": 97,
+        "desktop_lcp_s": 0.8,
+        "mobile_scores": [76, 66, 56],
+        "mobile_note": "all 3 runs independent, largest variance of all 5 URLs (20-point swing)",
+        "mobile_lcp_range_s": [4.2, 7.5]
+      },
+      {
+        "url": "https://pepselect.com/testing/nad-500-mg/nd50026205jp/",
+        "label": "COA batch report",
+        "desktop_score": 98,
+        "desktop_lcp_s": 0.9,
+        "mobile_scores": [79, 79, 79],
+        "mobile_note": "all 3 runs PSI-cached, 1 unique data point",
+        "mobile_lcp_range_s": [4.4, 4.4]
+      }
+    ],
+    "top_5_causes_of_gap": [
+      { "cause": "Lighthouse mobile CPU/network throttling methodology itself", "quantified": "render-blocking estimate 370-610ms desktop vs 1,650-2,830ms mobile (4-6x)", "actionable": false },
+      { "cause": "Render-blocking CSS/JS", "quantified": "1,650-2,830ms mobile across all templates", "actionable": true, "finding_ids": ["PERF-02", "GOOG-07", "TECH-06"] },
+      { "cause": "Google Tag Manager third-party cost", "quantified": "~182 KiB, 95-285ms main-thread mobile", "actionable": true, "finding_ids": ["PERF-06"] },
+      { "cause": "Unused JavaScript", "quantified": "105-106 KiB savings on every URL/strategy", "actionable": true, "finding_ids": ["PERF-10"] },
+      { "cause": "Non-hero image delivery", "quantified": "49-161 KiB remaining savings, worst on Shop", "actionable": true, "finding_ids": ["PERF-03"] }
+    ],
+    "field_data": {
+      "crux_available": false,
+      "crux_error": "No CrUX data for this origin. Insufficient Chrome traffic volume for eligibility.",
+      "checked_levels": ["origin", "homepage URL"],
+      "unchanged_since": "2026-08-19"
+    },
+    "ttfb_range_ms": [3, 104],
+    "cls_range": [0, 0.084],
+    "not_a_current_problem": ["TTFB", "CLS"]
+  },
+  "google_search_console": {
+    "url_inspection": [
+      { "url": "https://pepselect.com/shop/", "status_before_8_19": "Discovered - currently not indexed", "status_8_20": "Submitted and indexed" },
+      { "url": "https://pepselect.com/testing/", "status_before_8_19": "Discovered - currently not indexed", "status_8_20": "Submitted and indexed" },
+      { "url": "https://pepselect.com/guides/how-to-review-research-peptide-documentation/", "status_before_8_19": "URL unknown to Google", "status_8_20": "Submitted and indexed" },
+      { "url": "https://pepselect.com/product/nad/", "status_before_8_19": "Indexed", "status_8_20": "Submitted and indexed (unchanged, non-critical Product/Merchant warnings persist)" },
+      { "url": "https://pepselect.com/product/glp3-r10/", "status_before_8_19": "URL unknown to Google", "status_8_20": "Submitted and indexed" }
+    ],
+    "search_analytics": {
+      "window_28d": { "date_range": "2026-07-23 to 2026-08-17", "clicks": 0, "impressions": 7, "avg_ctr": 0, "avg_position": 45.7 },
+      "window_90d": { "date_range": "2026-05-22 to 2026-08-17", "clicks": 0, "impressions": 7, "avg_ctr": 0, "avg_position": 45.7 }
+    },
+    "ga4_configured": false,
+    "gtag_container_detected": "GT-NNQ4N6DP"
+  },
+  "sitemap": {
+    "total_indexable_urls": 44,
+    "child_sitemaps": {
+      "post-sitemap.xml": 1,
+      "page-sitemap.xml": 9,
+      "ps_compound-sitemap.xml": 9,
+      "ps_coa_test-sitemap.xml": 9,
+      "product-sitemap.xml": 16
+    },
+    "all_200_zero_redirects": true,
+    "structural_defects_found": 0
+  },
+  "categories": [
+    {
+      "name": "Technical SEO",
+      "score": 74,
+      "what_works": [
+        "All 44 sitemap URLs return 200 with 0 redirects",
+        "Shop pagination trap correctly returns 404 for impossible pages (MAP-03 verified fixed)",
+        "www and legacy terms-of-service redirects are single-hop and intact",
+        "robots.txt correctly allows all crawl-critical paths"
+      ],
+      "findings": [
+        { "title": "No HSTS header on any response", "severity": "High", "description": "Strict-Transport-Security absent from every response header sampled including homepage and Shop.", "recommendation": "Add at Cloudflare/Kinsta edge; start without preload, add preload after one verified release cycle." },
+        { "title": "No Content-Security-Policy header", "severity": "Medium", "description": "CSP absent from every response sampled.", "recommendation": "Deploy report-only first given the large third-party script surface (GTM, Elementor, Google Fonts, YITH)." },
+        { "title": "No X-Frame-Options / frame-ancestors", "severity": "Medium", "description": "No clickjacking protection on any page including checkout.", "recommendation": "Add X-Frame-Options: SAMEORIGIN at the edge." },
+        { "title": "No Referrer-Policy or Permissions-Policy", "severity": "Low", "description": "Neither header present anywhere.", "recommendation": "Add strict-origin-when-cross-origin and a conservative Permissions-Policy." },
+        { "title": "Bacteriostatic Water product is a genuine orphan page", "severity": "Medium", "description": "The claimed 'cart upsell' mitigation is an AJAX toggle with no <a href>, not a crawlable link. Sitemap-only discovery, zero internal PageRank flow.", "recommendation": "Add one real hyperlink from a relevant product page or FAQ." },
+        { "title": "Case-variant Page URLs serve 200 without redirecting", "severity": "Low", "description": "WordPress Page routes (/Shop/, /Contact/, /FAQ/, /Cart/) are case-insensitive and don't redirect, though each renders a correct lowercase canonical. Custom-post-type routes (Product, Testing) are correctly case-sensitive and 404.", "recommendation": "Add a 301 case-normalization rule for Page routes at the edge." }
+      ]
+    },
+    {
+      "name": "Above-the-fold / SXO",
+      "score": 30,
+      "what_works": [
+        "Real page content (product data, COA batch evidence, hero copy) is confirmed present in the raw HTTP response body, not withheld server-side",
+        "A new 'Why Pep Select is different' homepage differentiation section has been added since 8/19"
+      ],
+      "findings": [
+        { "title": "Full-viewport gate blocks 100% of first paint on every device", "severity": "Critical", "description": "Screenshot and DOM measurement confirm #psag-gate exactly covers the full viewport on both 390x844 and 1440x900 before any interaction.", "recommendation": "This is a business/compliance decision, not a pure engineering fix. Present two paths to the owner: (a) keep fully blocking but make it genuinely accessible, or (b) reduce blocking severity." },
+        { "title": "Gate accessibility sub-claims not supported by markup", "severity": "High", "description": "aria-describedby is absent; the Exit link has no href (JS-only, out of tab order); zero inert/aria-hidden anywhere on the page; no focus-trap code exists. This contradicts the prior 'Live code verified' status for 4 of 8 specific sub-claims.", "recommendation": "Add aria-describedby, a real href on Exit, and either a focus trap or inert on background content." },
+        { "title": "Exit link sends visitors off-site to Google with no on-site alternative", "severity": "Low", "description": "Confirmed via gate script: window.location.href = 'https://google.com', and the link has no href attribute at all.", "recommendation": "Add a real href; consider an on-site informational alternative." },
+        { "title": "Gate legal text below 16px on mobile", "severity": "Low", "description": "Computed font-size 10.5-14px across 4 measured text nodes.", "recommendation": "Increase to >=16px." }
+      ]
+    },
+    {
+      "name": "Content Quality",
+      "score": 42,
+      "what_works": [
+        "New 2,244-2,351 word evidence-led documentation guide with real batch citations, including a failed/rejected batch shown transparently",
+        "GLP-2T description rewritten with unique, DOI-cited, mechanism-specific copy",
+        "Homepage now contains one natural 'research peptide' use"
+      ],
+      "findings": [
+        { "title": "Catalog-wide thin/templated product descriptions persist", "severity": "High", "description": "5 of 6 sampled SKUs (including the rewritten GLP-2T) still carry an identical ~109-word compliance block plus only 85-108 words of unique copy. Bacteriostatic Water has zero product-specific description.", "recommendation": "Extend the guide's evidence-led approach to the remaining ~13+ product pages." },
+        { "title": "Two inconsistently-worded FDA disclaimer paragraphs co-occur on every page", "severity": "Medium", "description": "The gate's disclaimer and the per-product 'Intended use' disclaimer differ in wording and both appear verbatim on every product page.", "recommendation": "Reconcile into one consistent version, coordinated with whoever owns the legal language." },
+        { "title": "DOI/PMID citations remain unlinked plain text", "severity": "Medium", "description": "All three DOI strings on GLP-2T are plain text, no hyperlinks to doi.org/PubMed found.", "recommendation": "Hyperlink citation strings." },
+        { "title": "Brand name inconsistent between 'Pep Select' and 'PepSelect'", "severity": "Low", "description": "Both forms co-occur within the same legal documents, including the mailing address.", "recommendation": "Standardize on one form sitewide." }
+      ]
+    },
+    {
+      "name": "Schema / Structured Data",
+      "score": 68,
+      "what_works": [
+        "Exact https://schema.org context confirmed on every JSON-LD block across 11 sampled pages",
+        "Offer.seller and Dataset.creator both resolve to the shared Organization @id across in-stock, out-of-stock, and no-description product states",
+        "No fabricated GTIN/MPN/reviews/ratings/priceValidUntil/license anywhere - correctly absent rather than invented"
+      ],
+      "findings": [
+        { "title": "Yoast and WooCommerce JSON-LD remain two independent, unlinked emitters", "severity": "High", "description": "Both blocks share context and an Organization @id but the Product block does not reference the page's WebPage/BreadcrumbList graph.", "recommendation": "Consider merging into a single @graph if a future theme refactor touches this code; not urgent given the shared-@id linkage already works." },
+        { "title": "COA compound-hub pages carry zero structured data for their visible batch-history table", "severity": "Medium", "description": "Real batch numbers, dates, and links are displayed as plain HTML text with no Dataset/ItemList representation, despite the identical pattern being proven correct on individual batch-report pages.", "recommendation": "Extend the existing Dataset pattern to compound-hub pages - no new business decision required." },
+        { "title": "/shop/ has no ItemList/OfferCatalog schema", "severity": "Medium", "description": "Confirmed absent in JSON-LD.", "recommendation": "Add as the catalog scales." }
+      ]
+    },
+    {
+      "name": "Performance",
+      "score": 58,
+      "what_works": [
+        "TTFB 3-104ms across every run, desktop and mobile - well under the 200ms threshold",
+        "CLS 0-0.084 across every run - Good",
+        "Desktop performance averages 96.8/100 across all 5 URLs tested",
+        "Homepage hero image optimization (PERF-03) verified: 93.7%/92.5% size reduction holding"
+      ],
+      "findings": [
+        { "title": "Mobile LCP remains Poor-to-Needs-Improvement with high run-to-run variance", "severity": "High", "description": "Mobile scores ranged 56-81 across independent runs on the same unchanged code; LCP ranged 3.8s-7.5s.", "recommendation": "Treat any single mobile PageSpeed number as a sample from a wide range, not a fixed score; use >=3 independent runs for before/after comparisons." },
+        { "title": "Render-blocking CSS/JS still the dominant mobile bottleneck", "severity": "High", "description": "1,650-2,830ms mobile render-blocking estimate on every template.", "recommendation": "Continue the beta.39 render-path cleanup approach on the remaining templates." },
+        { "title": "Google Tag Manager remains the dominant unaddressed third party", "severity": "Medium", "description": "~182 KiB, 95-285ms main-thread cost on mobile, unchanged since 8/18.", "recommendation": "Evaluate GTM tag audit / lazy-load non-critical tags." },
+        { "title": "No CrUX real-user field data available", "severity": "Medium", "description": "Origin remains ineligible - insufficient Chrome traffic volume.", "recommendation": "Monitor only; no code fix exists." }
+      ]
+    },
+    {
+      "name": "E-commerce",
+      "score": 55,
+      "what_works": [
+        "Zero fabricated reviews/ratings/GTIN/MPN anywhere - correctly absent",
+        "COA archive back-links (ECOM-04) verified: all 8 compound-history pages correctly link to their matching product",
+        "GLP-2T supplier-boilerplate replacement (ECOM-03) verified with unique copy and 3 real DOI citations"
+      ],
+      "findings": [
+        { "title": "7 of 15 products have zero COA archive coverage", "severity": "Critical", "description": "glp1-s10, glutathione, glp2-t20, bpc157-10, motsc-10, ss-31, bacteriostatic-water-30ml have no /testing/<compound>/ page at all, including two headline compounds.", "recommendation": "Blocked pending real completed lab testing records - do not fabricate." },
+        { "title": "7 of 15 products remain Out of Stock with no substitute surfacing", "severity": "High", "description": "Confirmed unchanged from 8/18.", "recommendation": "Blocked pending Paulo-approved substitute mapping." },
+        { "title": "No GTIN/MPN/priceValidUntil/OfferShippingDetails on any product Offer", "severity": "Medium", "description": "Correctly absent rather than fabricated.", "recommendation": "Add only if real identifiers/shipping data become available." }
+      ]
+    },
+    {
+      "name": "AI Search Readiness (GEO)",
+      "score": 38,
+      "what_works": [
+        "New guide substantively answers 'how to read a COA' with real, grounded batch evidence including a shown failure case",
+        "AI search-retrieval crawlers are not currently blocked by robots.txt"
+      ],
+      "findings": [
+        { "title": "Product description passages are roughly one-third of optimal AI-citation length", "severity": "High", "description": "Sampled passages measured ~55-58 words against a ~134-167 word benchmark.", "recommendation": "Rewrite key passages as self-contained ~150-word subject+claim sentences." },
+        { "title": "No off-site brand/entity signals (sameAs)", "severity": "Critical", "description": "Organization JSON-LD has no sameAs array.", "recommendation": "Blocked pending Paulo-approved real social/entity profile URLs." },
+        { "title": "robots.txt does not distinguish AI training-only crawlers from retrieval crawlers", "severity": "Low", "description": "All AI bots currently fall under the same wildcard allow-all group.", "recommendation": "Policy decision for the owner; low priority." },
+        { "title": "New guide's Article schema has no real named author/reviewer", "severity": "Low", "description": "Author is the Organization entity; a leaked WordPress username 'beringela001' appears in unrelated metadata tags.", "recommendation": "Blocked pending a real, approved author; separately, suppress the leaked username (code-ready)." }
+      ]
+    }
+  ],
+  "action_plan": {
+    "phases": [
+      { "name": "Phase 1: Code-ready, no dependency", "timeframe": "This week", "items": ["HSTS + X-Frame-Options headers", "CSP report-only", "Referrer-Policy + Permissions-Policy", "GEO-07 Dataset extension to compound-hub pages", "MAP-01 orphan link fix", "VIS-02/VIS-03 real Exit href + aria-describedby", "VIS-04 gate text font-size fix", "CONT-13 brand-name standardization", "GEO-08 username-leak hygiene fix", "GEO-09 robots.txt AI-crawler policy edit", "TECH-05 case-URL 301"] },
+      { "name": "Phase 2: Needs Paulo approval", "timeframe": "Decision needed, then 1-2 weeks to implement", "items": ["Research-gate blocking-behavior redesign (VIS-01/SXO-01/SXO-08)", "Low-friction third path for undecided gate visitors", "Bacteriostatic Water Shop-catalog merchandising decision", "Dedicated comparison/why-choose-us page or /shop/ trust-density upgrade"] },
+      { "name": "Phase 3: Content investment", "timeframe": "Month 2", "items": ["Extend evidence-led copy to ~13+ remaining product pages", "Lengthen citable passages toward AI-citation benchmark", "Question-phrased headings for future content", "Broader PAA/comparison content cluster", "Reconcile FDA disclaimer wording", "Hyperlink DOI/PMID citations", "aria-label differentiation on Learn-more links", "ItemList/OfferCatalog schema on /shop/"] },
+      { "name": "Phase 4: Blocked on real business input", "timeframe": "Ongoing, as records/decisions become available", "items": ["Real reviews/ratings", "7 missing COA archive pages", "Substitute-product surfacing", "NAP/contact info", "sameAs social profiles", "Real named author/reviewer", "Merchant Center eligibility + GTIN/MPN", "GA4 property confirmation", "Dataset license URL"] },
+      { "name": "Phase 5: Monitor only", "timeframe": "Ongoing", "items": ["CrUX field-data eligibility", "Organic click/impression growth", "Backlink profile / keyword difficulty / AI Overview citation (requires paid tooling out of scope)"] }
+    ]
+  },
+  "artifacts": {
+    "findings_dir": "findings/",
+    "screenshots_dir": "screenshots/",
+    "prior_findings_ledger": "PRIOR-FINDINGS-VERIFICATION-LEDGER.md",
+    "raw_pagespeed_dir": "raw-pagespeed/",
+    "raw_crawl_dir": "raw-crawl/"
+  },
+  "limitations": [
+    "DFS-02, DFS-04, DFS-06 (backlink profile, keyword difficulty, AI Overview citation) not independently re-measured - require paid DataForSEO/Ahrefs/Moz tooling explicitly excluded from this audit's scope",
+    "SXO-03/04/05/06 carry partial evidence only - raw pre-gate content confirmed present but full content-level reads against each specific original claim were not completed within this session",
+    "CONT-12 (freshness-timestamp clustering) out of scope - requires WordPress admin/revision data",
+    "PERF-04 could not be independently confirmed or refuted - PSI summary tooling does not isolate individual assets",
+    "No Google Rich Results Test / Search Console Enhancement report pulled - schema classification based on direct JSON-LD parsing only",
+    "No indexing/recrawl requests submitted this cycle (unlike the 8/19 checkpoint) - GSC checks were read-only URL Inspection and Search Analytics only"
+  ]
+}

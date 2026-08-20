@@ -1,0 +1,199 @@
+{
+  "block_count": 2,
+  "processed_count": 2,
+  "total_bytes": 3970,
+  "truncated": false,
+  "blocks": [
+    {
+      "index": 1,
+      "size_bytes": 2936,
+      "valid": true,
+      "types": [
+        "BreadcrumbList",
+        "EntryPoint",
+        "ImageObject",
+        "ListItem",
+        "MerchantReturnPolicy",
+        "OnlineStore",
+        "PropertyValueSpecification",
+        "ReadAction",
+        "SearchAction",
+        "WebPage",
+        "WebSite"
+      ],
+      "types_truncated": false,
+      "data": {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebPage",
+            "@id": "https://pepselect.com/product/nad/",
+            "url": "https://pepselect.com/product/nad/",
+            "name": "NAD+ 500mg Research Compound | Pep Select",
+            "isPartOf": {
+              "@id": "https://pepselect.com/#website"
+            },
+            "primaryImageOfPage": {
+              "@id": "https://pepselect.com/product/nad/#primaryimage"
+            },
+            "image": {
+              "@id": "https://pepselect.com/product/nad/#primaryimage"
+            },
+            "thumbnailUrl": "https://pepselect.com/wp-content/uploads/2026/06/NAD500F.webp",
+            "datePublished": "2026-06-30T14:40:46+00:00",
+            "dateModified": "2026-08-14T10:49:41+00:00",
+            "description": "Review NAD+ 500mg product details, research-use information, and available batch documentation from Pep Select. For laboratory research only.",
+            "breadcrumb": {
+              "@id": "https://pepselect.com/product/nad/#breadcrumb"
+            },
+            "inLanguage": "en-US",
+            "potentialAction": [
+              {
+                "@type": "ReadAction",
+                "target": [
+                  "https://pepselect.com/product/nad/"
+                ]
+              }
+            ]
+          },
+          {
+            "@type": "ImageObject",
+            "inLanguage": "en-US",
+            "@id": "https://pepselect.com/product/nad/#primaryimage",
+            "url": "https://pepselect.com/wp-content/uploads/2026/06/NAD500F.webp",
+            "contentUrl": "https://pepselect.com/wp-content/uploads/2026/06/NAD500F.webp",
+            "width": 1632,
+            "height": 2048
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://pepselect.com/product/nad/#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://pepselect.com/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Shop",
+                "item": "https://pepselect.com/shop/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "NAD+"
+              }
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://pepselect.com/#website",
+            "url": "https://pepselect.com/",
+            "name": "Pep Select",
+            "description": "Peptides Carefully Selected",
+            "publisher": {
+              "@id": "https://pepselect.com/#organization"
+            },
+            "potentialAction": [
+              {
+                "@type": "SearchAction",
+                "target": {
+                  "@type": "EntryPoint",
+                  "urlTemplate": "https://pepselect.com/?s={search_term_string}"
+                },
+                "query-input": {
+                  "@type": "PropertyValueSpecification",
+                  "valueRequired": true,
+                  "valueName": "search_term_string"
+                }
+              }
+            ],
+            "inLanguage": "en-US"
+          },
+          {
+            "@type": "OnlineStore",
+            "@id": "https://pepselect.com/#organization",
+            "name": "Pep Select",
+            "url": "https://pepselect.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "inLanguage": "en-US",
+              "@id": "https://pepselect.com/#/schema/logo/image/",
+              "url": "https://pepselect.com/wp-content/uploads/2026/06/cropped-WhatsApp-Image-2026-06-30-at-1.50.57-PM.jpeg",
+              "contentUrl": "https://pepselect.com/wp-content/uploads/2026/06/cropped-WhatsApp-Image-2026-06-30-at-1.50.57-PM.jpeg",
+              "width": 512,
+              "height": 512,
+              "caption": "Pep Select"
+            },
+            "image": {
+              "@id": "https://pepselect.com/#/schema/logo/image/"
+            },
+            "hasMerchantReturnPolicy": {
+              "@type": "MerchantReturnPolicy",
+              "@id": "https://pepselect.com/#merchant-return-policy",
+              "applicableCountry": "US",
+              "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted",
+              "merchantReturnLink": "https://pepselect.com/refund-shipping-policy/"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "index": 2,
+      "size_bytes": 1034,
+      "valid": true,
+      "types": [
+        "Brand",
+        "Offer",
+        "OnlineStore",
+        "Product",
+        "UnitPriceSpecification"
+      ],
+      "types_truncated": false,
+      "data": {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "@id": "https://pepselect.com/product/nad/#product",
+        "name": "NAD+",
+        "url": "https://pepselect.com/product/nad/",
+        "description": "NAD+ 500MG. NAD+ (nicotinamide adenine dinucleotide) is a coenzyme studied for its central role in cellular energy metabolism. It is researched as a substrate in redox reactions and as a driver of sirtuin-dependent regulatory pathways.",
+        "image": "https://pepselect.com/wp-content/uploads/2026/06/NAD500F.webp",
+        "sku": "NAD500",
+        "offers": [
+          {
+            "@type": "Offer",
+            "priceSpecification": [
+              {
+                "@type": "UnitPriceSpecification",
+                "price": "51.99",
+                "priceCurrency": "USD",
+                "valueAddedTaxIncluded": false
+              }
+            ],
+            "availability": "https://schema.org/InStock",
+            "url": "https://pepselect.com/product/nad/",
+            "seller": {
+              "@type": "OnlineStore",
+              "@id": "https://pepselect.com/#organization",
+              "name": "Pep Select",
+              "url": "https://pepselect.com/"
+            },
+            "price": "51.99",
+            "priceCurrency": "USD",
+            "hasMerchantReturnPolicy": {
+              "@id": "https://pepselect.com/#merchant-return-policy"
+            }
+          }
+        ],
+        "brand": {
+          "@type": "Brand",
+          "name": "Pep Select"
+        }
+      }
+    }
+  ]
+}
