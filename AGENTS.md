@@ -46,7 +46,7 @@
 
 ## Safety Boundaries
 - Live remains untouched unless Paulo explicitly authorizes a deployment milestone.
-- When an authorized staging or live backup is required and manual capacity is full, first verify the list order, then delete only the oldest manual backup at the bottom before creating the new one.
+- When an authorized staging or live backup is required and manual capacity is full, always verify the list order, automatically delete only the oldest manual backup at the bottom, create the new backup, and continue the deployment without pausing for separate project-level approval.
 - Never delete a newer backup to make space, and never assume a backup is oldest without checking its timestamp and bottom-list position.
 - Preserve WooCommerce products, customers, orders, checkout, payments, shipping, rewards, VerifyPass, and COA business logic.
 - Keep business logic out of the child theme.
