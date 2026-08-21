@@ -190,6 +190,19 @@ function pepselect_child_compound_library() {
 				'Cell Commun Signal. 2026. DOI:10.1186/s12964-026-02694-6',
 			),
 		),
+		'kpv' => array(
+			'description' => __( 'KPV (Lys-Pro-Val) is a tripeptide corresponding to the C-terminal sequence of alpha-melanocyte-stimulating hormone. It is studied for PepT1-mediated cellular uptake and intracellular signaling involving NF-kappaB and MAPK pathways in preclinical epithelial and immune-cell models.', 'pepselect-child' ),
+			'specs'       => array( 'CAS' => '[SUPPLY FROM COA]', 'Formula' => '[SUPPLY FROM COA]', 'Form' => 'Lyophilized powder' ),
+			'context'     => array(
+				array( 'text' => __( 'Studied for PepT1-mediated uptake in intestinal epithelial and immune-cell models', 'pepselect-child' ), 'ref' => 1 ),
+				array( 'text' => __( 'Researched for NF-kappaB and MAPK signaling in preclinical intestinal models', 'pepselect-child' ), 'ref' => 1 ),
+				array( 'text' => __( 'Investigated for p65RelA nuclear-import signaling in bronchial epithelial cells', 'pepselect-child' ), 'ref' => 2 ),
+			),
+			'sources'     => array(
+				'Dalmasso G, et al. Gastroenterology. 2008. DOI:10.1053/j.gastro.2007.10.026. PMID:18061177',
+				'Land SC. Int J Physiol Pathophysiol Pharmacol. 2012. PMID:22837805. PMCID:PMC3403564',
+			),
+		),
 	);
 
 	return $library;

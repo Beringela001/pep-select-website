@@ -1,6 +1,14 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.40** - Dynamic availability and research-mechanism catalog ordering.
+**Release candidate: 0.25.0-beta.41** - KPV structured product-page research content.
+
+## 0.25.0-beta.41 - 2026-08-21
+
+- Add KPV to the approved compound-content library with a mechanism-focused description, three preclinical research-context bullets, and two verified primary literature references.
+- Render KPV through the same coded Description, Research context, source disclosure, and intended-use components used by Tesamorelin and the other library-backed compounds.
+- Preserve WooCommerce product data and the COA Archive as the sources of truth for price, stock, batch documentation, and testing history. No CSS, inventory, checkout, payment, shipping, or COA records change.
+
+**Previous release candidate: 0.25.0-beta.40** - Dynamic availability and research-mechanism catalog ordering.
 
 ## 0.25.0-beta.40 - 2026-08-20
 
