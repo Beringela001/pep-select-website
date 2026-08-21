@@ -204,6 +204,20 @@ function pepselect_child_compound_library() {
 				'Land SC. Int J Physiol Pathophysiol Pharmacol. 2012. PMID:22837805. PMCID:PMC3403564',
 			),
 		),
+		'cagrilintide' => array(
+			'description' => __( 'Cagrilintide is a long-acting analogue of amylin, a naturally occurring peptide involved in signals linked to fullness and energy balance. Researchers have studied cagrilintide on its own, alongside semaglutide, and in laboratory models that examine how amylin receptors respond.', 'pepselect-child' ),
+			'specs'       => array( 'CAS' => '[SUPPLY FROM COA]', 'Formula' => '[SUPPLY FROM COA]', 'Form' => 'Lyophilized powder' ),
+			'context'     => array(
+				array( 'text' => __( 'Studied for appetite and body-weight regulation through amylin signaling', 'pepselect-child' ), 'ref' => 1 ),
+				array( 'text' => __( 'Researched alongside semaglutide in combined appetite-pathway studies', 'pepselect-child' ), 'ref' => 2 ),
+				array( 'text' => __( 'Investigated for how amylin receptors influence fullness and food-intake signals', 'pepselect-child' ), 'ref' => 3 ),
+			),
+			'sources'     => array(
+				'Lau DCW, et al. Lancet. 2021. DOI:10.1016/S0140-6736(21)01751-7. PMID:34798060',
+				'Enebo LB, et al. Lancet. 2021. DOI:10.1016/S0140-6736(21)00845-X. PMID:33894838',
+				'Carvas AO, et al. eBioMedicine. 2025. DOI:10.1016/j.ebiom.2025.105836. PMID:40609154. PMCID:PMC12270663',
+			),
+		),
 	);
 
 	return $library;

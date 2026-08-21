@@ -1,6 +1,13 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.43** - Study-tethered plain-English KPV content.
+**Release candidate: 0.25.0-beta.44** - Study-tethered plain-English Cagrilintide content.
+
+## 0.25.0-beta.44 - 2026-08-21
+
+- Add a plain-English Cagrilintide description and three research-context bullets covering amylin signaling, semaglutide combination research, and fullness or food-intake signaling.
+- Tie each bullet to a separate verified publication while leaving CAS and formula values for batch-specific COA confirmation.
+
+**Previous release candidate: 0.25.0-beta.43** - Study-tethered plain-English KPV content.
 
 ## 0.25.0-beta.43 - 2026-08-21
 
