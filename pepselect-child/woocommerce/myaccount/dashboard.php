@@ -3,10 +3,11 @@
  * My Account Dashboard (Pep Select custom) - single scrolling page.
  *
  * Replaces WooCommerce's dashboard intro and the four link rows with one
- * scrolling page of four cards: welcome + sign out, saved information, cash-back
- * summary in dollars, and the customer's orders inline (status, total, cash back
- * earned, shipment tracking when a shipped order has an Easyship note, and every
- * line item with quantity and price - no click-through needed).
+ * scrolling page of five cards: welcome + sign out, saved information, cash-back
+ * summary in dollars, the referral link, and the customer's orders inline
+ * (status, total, cash back earned, shipment tracking when a shipped order has
+ * an Easyship note, and every line item with quantity and price - no click-through
+ * needed).
  *
  * The left account navigation is hidden by CSS (see account.css); this is a
  * presentation change only. All seven account endpoints still resolve directly
@@ -38,6 +39,9 @@ if ( '' === $pepselect_full_name ) {
 // Cash back (dollars), via theme helpers over YITH.
 $pepselect_cashback = function_exists( 'pepselect_child_get_cashback_display' ) ? pepselect_child_get_cashback_display() : null;
 $pepselect_totals   = function_exists( 'pepselect_child_get_cashback_totals' ) ? pepselect_child_get_cashback_totals() : null;
+$pepselect_vanity_url = function_exists( 'pepselect_child_referral_vanity_url' )
+	? pepselect_child_referral_vanity_url( $pepselect_uid )
+	: '';
 
 // Saved information.
 $pepselect_customer     = new WC_Customer( $pepselect_uid );
@@ -155,7 +159,53 @@ $pepselect_earned_by_order = function_exists( 'pepselect_child_get_cashback_earn
 
 	</div>
 
-	<?php // Card 4: your orders, inline. ?>
+	<?php if ( '' !== $pepselect_vanity_url ) : ?>
+		<?php // Card 4: referral link. ?>
+		<section class="pepselect-card pepselect-card--referral pepselect-cashback__referral pepselect-cashback__engine" aria-labelledby="pepselect-dash-referral">
+			<h2 id="pepselect-dash-referral" class="pepselect-cashback__section-title"><?php esc_html_e( 'Refer a friend', 'pepselect-child' ); ?></h2>
+			<p class="pepselect-cashback__section-lead"><?php esc_html_e( 'Share your link. They save 10% on their first order, and you earn $15 in cash back once it completes.', 'pepselect-child' ); ?></p>
+
+			<ol class="pepselect-cashback__refer-steps">
+				<li class="pepselect-refer-step">
+					<span class="pepselect-refer-step__num" aria-hidden="true">1</span>
+					<p class="pepselect-refer-step__text"><?php esc_html_e( 'Share your link with a friend.', 'pepselect-child' ); ?></p>
+				</li>
+				<li class="pepselect-refer-step">
+					<span class="pepselect-refer-step__num" aria-hidden="true">2</span>
+					<p class="pepselect-refer-step__text">
+						<?php
+						printf(
+							/* translators: %s: the welcome coupon code. */
+							esc_html__( 'Tell them to use code %s at checkout for 10%% off their first order.', 'pepselect-child' ),
+							'<span class="pepselect-refer-step__code">WELCOME10</span>'
+						);
+						?>
+					</p>
+				</li>
+				<li class="pepselect-refer-step">
+					<span class="pepselect-refer-step__num" aria-hidden="true">3</span>
+					<p class="pepselect-refer-step__text"><?php esc_html_e( 'When their order completes, you get $15 in cash back.', 'pepselect-child' ); ?></p>
+				</li>
+			</ol>
+
+			<div class="pepselect-cashback__referral-fields">
+				<div class="pepselect-copyfield">
+					<span class="pepselect-copyfield__label"><?php esc_html_e( 'Your share link', 'pepselect-child' ); ?></span>
+					<input class="pepselect-copyfield__input" id="pepselect-referral-link" type="text" readonly value="<?php echo esc_url( $pepselect_vanity_url ); ?>" aria-label="<?php esc_attr_e( 'Your share link', 'pepselect-child' ); ?>" />
+					<button class="pepselect-copyfield__copy" type="button"><?php esc_html_e( 'Copy', 'pepselect-child' ); ?></button>
+				</div>
+			</div>
+
+			<div class="pepselect-cashback__mini-stats">
+				<div class="pepselect-stat pepselect-stat--mini">
+					<span class="pepselect-stat__label"><?php esc_html_e( 'Referral bonus', 'pepselect-child' ); ?></span>
+					<span class="pepselect-stat__value"><?php echo esc_html( pepselect_child_format_dollars( 15 ) ); ?></span>
+				</div>
+			</div>
+		</section>
+	<?php endif; ?>
+
+	<?php // Card 5: your orders, inline. ?>
 	<section class="pepselect-card pepselect-card--orders" aria-labelledby="pepselect-dash-orders">
 		<div class="pepselect-card__head">
 			<h2 id="pepselect-dash-orders" class="pepselect-card__title"><?php esc_html_e( 'Your orders', 'pepselect-child' ); ?></h2>

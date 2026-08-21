@@ -3,9 +3,8 @@
  * Cash back account page (Pep Select).
  *
  * Branded layout over YITH's own points engine. YITH's rendered my-points output
- * is captured and split into slots (history, manage/convert), and the referral
- * code/link is rendered from YITH's [ywpar_referral_link] shortcode, which is
- * separate from the my-points endpoint. Each block is placed and restyled here.
+ * is captured and split into slots (history, manage/convert). The referral
+ * card now lives on the main account dashboard, ahead of the order history.
  * YITH keeps all logic and security (nonces, conversion, code generation,
  * referral links); nothing is reimplemented, and every value comes from YITH.
  *
@@ -44,15 +43,6 @@ $pepselect_slots = function_exists( 'pepselect_child_split_yith_points_output' )
 		'manage'   => '',
 		'rest'     => $pepselect_yith_output,
 	);
-
-// Share link is rendered server-side from the stored PSRC code (?ref=PSRC7).
-// It no longer depends on YITH's shortcode output or any client-side harvest,
-// which is what previously left the link stuck on the raw numeric ?ref. On a
-// visit the PSRC prefix is stripped back to the numeric user ID for YITH, so
-// crediting is unchanged.
-$pepselect_vanity_url = function_exists( 'pepselect_child_referral_vanity_url' )
-	? pepselect_child_referral_vanity_url( get_current_user_id() )
-	: '';
 
 $pepselect_steps = array(
 	array(
@@ -111,51 +101,6 @@ $pepselect_steps = array(
 			<?php endforeach; ?>
 		</ol>
 	</section>
-
-	<?php if ( '' !== $pepselect_vanity_url ) : ?>
-		<section class="pepselect-cashback__referral pepselect-cashback__engine" aria-labelledby="pepselect-cashback-referral-title">
-			<h2 id="pepselect-cashback-referral-title" class="pepselect-cashback__section-title"><?php esc_html_e( 'Refer a friend', 'pepselect-child' ); ?></h2>
-			<p class="pepselect-cashback__section-lead"><?php esc_html_e( 'Share your link. They save 10% on their first order, and you earn $15 in cash back once it completes.', 'pepselect-child' ); ?></p>
-
-			<ol class="pepselect-cashback__refer-steps">
-				<li class="pepselect-refer-step">
-					<span class="pepselect-refer-step__num" aria-hidden="true">1</span>
-					<p class="pepselect-refer-step__text"><?php esc_html_e( 'Share your link with a friend.', 'pepselect-child' ); ?></p>
-				</li>
-				<li class="pepselect-refer-step">
-					<span class="pepselect-refer-step__num" aria-hidden="true">2</span>
-					<p class="pepselect-refer-step__text">
-						<?php
-						printf(
-							/* translators: %s: the welcome coupon code. */
-							esc_html__( 'Tell them to use code %s at checkout for 10%% off their first order.', 'pepselect-child' ),
-							'<span class="pepselect-refer-step__code">WELCOME10</span>'
-						);
-						?>
-					</p>
-				</li>
-				<li class="pepselect-refer-step">
-					<span class="pepselect-refer-step__num" aria-hidden="true">3</span>
-					<p class="pepselect-refer-step__text"><?php esc_html_e( 'When their order completes, you get $15 in cash back.', 'pepselect-child' ); ?></p>
-				</li>
-			</ol>
-
-			<div class="pepselect-cashback__referral-fields">
-				<div class="pepselect-copyfield">
-					<span class="pepselect-copyfield__label"><?php esc_html_e( 'Your share link', 'pepselect-child' ); ?></span>
-					<input class="pepselect-copyfield__input" id="pepselect-referral-link" type="text" readonly value="<?php echo esc_url( $pepselect_vanity_url ); ?>" aria-label="<?php esc_attr_e( 'Your share link', 'pepselect-child' ); ?>" />
-					<button class="pepselect-copyfield__copy" type="button"><?php esc_html_e( 'Copy', 'pepselect-child' ); ?></button>
-				</div>
-			</div>
-
-			<div class="pepselect-cashback__mini-stats">
-				<div class="pepselect-stat pepselect-stat--mini">
-					<span class="pepselect-stat__label"><?php esc_html_e( 'Referral bonus', 'pepselect-child' ); ?></span>
-					<span class="pepselect-stat__value"><?php echo esc_html( pepselect_child_format_dollars( 15 ) ); ?></span>
-				</div>
-			</div>
-		</section>
-	<?php endif; ?>
 
 	<?php if ( '' !== trim( (string) $pepselect_slots['manage'] ) ) : ?>
 		<section class="pepselect-cashback__manage pepselect-cashback__engine" aria-labelledby="pepselect-cashback-manage-title">

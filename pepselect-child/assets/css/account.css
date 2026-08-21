@@ -1911,7 +1911,19 @@ body.woocommerce-account:not(.logged-in) h1.entry-title {
 	line-height: 1.6;
 }
 
-/* Card 4: orders, inline. */
+/* Card 4: referral link, moved forward from the cash-back detail page. */
+.pepselect-card--referral .pepselect-cashback__mini-stats {
+	grid-template-columns: minmax(0, 1fr);
+	max-width: 280px;
+}
+
+.pepselect-card--referral .pepselect-stat__value,
+.pepselect-card--referral .pepselect-copyfield__input {
+	font-family: var(--pep-font-technical);
+	font-weight: var(--pep-font-weight-medium);
+}
+
+/* Card 5: orders, inline. */
 .pepselect-orders {
 	margin: 0;
 	padding: 0;

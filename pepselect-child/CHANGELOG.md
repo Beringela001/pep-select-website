@@ -1,6 +1,13 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.44** - Study-tethered plain-English Cagrilintide content.
+**Release candidate: 0.25.0-beta.45** - Move the referral card onto the main account dashboard.
+
+## 0.25.0-beta.45 - 2026-08-21
+
+- Move the existing dynamic Refer a friend card from the Cash back detail endpoint to the main My Account dashboard, below the My information and Cash back cards and above Your orders.
+- Preserve the server-generated `PSRC` share link, `WELCOME10` instructions, $15 referral figure, copy control, YITH referral behavior, cash-back detail tools, and native WooCommerce account endpoints.
+
+**Previous release candidate: 0.25.0-beta.44** - Study-tethered plain-English Cagrilintide content.
 
 ## 0.25.0-beta.44 - 2026-08-21
 
