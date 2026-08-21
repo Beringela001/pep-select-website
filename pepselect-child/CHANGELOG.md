@@ -1,6 +1,13 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.45** - Move the referral card onto the main account dashboard.
+**Release candidate: 0.25.0-beta.46** - Normalize My Account card spacing.
+
+## 0.25.0-beta.46 - 2026-08-21
+
+- Remove the Cash back detail-page engine class from the dashboard referral card; that class added a 40px section margin on top of the dashboard's 20px grid gap.
+- Restore a consistent 20px gap vertically and horizontally between Welcome, My information, Cash back, Refer a friend, and Your orders.
+
+**Previous release candidate: 0.25.0-beta.45** - Move the referral card onto the main account dashboard.
 
 ## 0.25.0-beta.45 - 2026-08-21
 

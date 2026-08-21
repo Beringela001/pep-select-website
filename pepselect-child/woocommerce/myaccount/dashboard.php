@@ -161,7 +161,7 @@ $pepselect_earned_by_order = function_exists( 'pepselect_child_get_cashback_earn
 
 	<?php if ( '' !== $pepselect_vanity_url ) : ?>
 		<?php // Card 4: referral link. ?>
-		<section class="pepselect-card pepselect-card--referral pepselect-cashback__referral pepselect-cashback__engine" aria-labelledby="pepselect-dash-referral">
+		<section class="pepselect-card pepselect-card--referral pepselect-cashback__referral" aria-labelledby="pepselect-dash-referral">
 			<h2 id="pepselect-dash-referral" class="pepselect-cashback__section-title"><?php esc_html_e( 'Refer a friend', 'pepselect-child' ); ?></h2>
 			<p class="pepselect-cashback__section-lead"><?php esc_html_e( 'Share your link. They save 10% on their first order, and you earn $15 in cash back once it completes.', 'pepselect-child' ); ?></p>
 

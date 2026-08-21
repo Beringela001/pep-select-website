@@ -35,6 +35,9 @@ assert.ok(dashboard.includes("pepselect_child_format_dollars( 15 )"), 'Dashboard
 assert.ok(!cashback.includes('id="pepselect-referral-link"'), 'Referral link must not remain duplicated on the Cash back detail page');
 assert.ok(!cashback.includes('pepselect_child_referral_vanity_url'), 'Cash back detail page must not regenerate the moved referral link');
 assert.ok(accountCss.includes('.pepselect-card--referral'), 'Dashboard referral card styling missing');
+assert.ok(/\.pepselect-dash\s*\{[^}]*gap:\s*20px;/s.test(accountCss), 'Dashboard vertical gap must remain 20px');
+assert.ok(/\.pepselect-dash__grid\s*\{[^}]*grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\);[^}]*gap:\s*20px;/s.test(accountCss), 'Information-card horizontal gap must remain 20px');
+assert.ok(!dashboard.includes('pepselect-card--referral pepselect-cashback__referral pepselect-cashback__engine'), 'Dashboard referral card must not inherit the Cash back detail-page margin');
 assert.ok(accountJs.includes('.pepselect-copyfield__copy'), 'Referral copy control wiring missing');
 
 console.log('account referral placement safeguards verified');
