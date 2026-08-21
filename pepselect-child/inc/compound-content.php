@@ -191,15 +191,16 @@ function pepselect_child_compound_library() {
 			),
 		),
 		'kpv' => array(
-			'description' => __( 'KPV is a tripeptide made from lysine, proline, and valine. It is studied for its role in inflammatory signaling, with preclinical research focused on the intestinal lining, immune cells, and airway tissue.', 'pepselect-child' ),
+			'description' => __( 'KPV is a tripeptide made from lysine, proline, and valine. Preclinical research has examined it in intestinal inflammation, targeted-delivery, and airway epithelial models.', 'pepselect-child' ),
 			'specs'       => array( 'CAS' => '[SUPPLY FROM COA]', 'Formula' => '[SUPPLY FROM COA]', 'Form' => 'Lyophilized powder' ),
 			'context'     => array(
 				array( 'text' => __( 'Studied for intestinal inflammation and barrier-related research', 'pepselect-child' ), 'ref' => 1 ),
-				array( 'text' => __( 'Researched for immune signaling in the intestinal lining', 'pepselect-child' ), 'ref' => 1 ),
-				array( 'text' => __( 'Investigated for airway and epithelial inflammation', 'pepselect-child' ), 'ref' => 2 ),
+				array( 'text' => __( 'Researched for targeted delivery to the intestinal lining', 'pepselect-child' ), 'ref' => 2 ),
+				array( 'text' => __( 'Investigated for airway and epithelial inflammation', 'pepselect-child' ), 'ref' => 3 ),
 			),
 			'sources'     => array(
 				'Dalmasso G, et al. Gastroenterology. 2008. DOI:10.1053/j.gastro.2007.10.026. PMID:18061177',
+				'Xiao B, et al. Mol Ther. 2017. DOI:10.1016/j.ymthe.2016.11.020. PMID:28143741. PMCID:PMC5498804',
 				'Land SC. Int J Physiol Pathophysiol Pharmacol. 2012. PMID:22837805. PMCID:PMC3403564',
 			),
 		),

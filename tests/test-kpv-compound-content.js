@@ -8,12 +8,14 @@ const contentFile = fs.readFileSync(
 );
 
 assert.ok(contentFile.includes("'kpv' => array("), 'KPV library entry missing');
-assert.ok(contentFile.includes('preclinical research focused on the intestinal lining, immune cells, and airway tissue'), 'KPV research description missing');
+assert.ok(contentFile.includes('intestinal inflammation, targeted-delivery, and airway epithelial models'), 'KPV research description missing');
 assert.ok(contentFile.includes('Studied for intestinal inflammation and barrier-related research'), 'KPV intestinal research context missing');
-assert.ok(contentFile.includes('Researched for immune signaling in the intestinal lining'), 'KPV immune research context missing');
+assert.ok(contentFile.includes('Researched for targeted delivery to the intestinal lining'), 'KPV targeted-delivery context missing');
 assert.ok(contentFile.includes('Investigated for airway and epithelial inflammation'), 'KPV airway research context missing');
 assert.ok(contentFile.includes('DOI:10.1053/j.gastro.2007.10.026'), 'Dalmasso DOI missing');
 assert.ok(contentFile.includes('PMID:18061177'), 'Dalmasso PMID missing');
+assert.ok(contentFile.includes('DOI:10.1016/j.ymthe.2016.11.020'), 'Xiao DOI missing');
+assert.ok(contentFile.includes('PMID:28143741'), 'Xiao PMID missing');
 assert.ok(contentFile.includes('PMID:22837805'), 'Land PMID missing');
 assert.ok(contentFile.includes('PMCID:PMC3403564'), 'Land PMCID missing');
 

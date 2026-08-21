@@ -1,6 +1,13 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.42** - Plain-English KPV research content.
+**Release candidate: 0.25.0-beta.43** - Study-tethered plain-English KPV content.
+
+## 0.25.0-beta.43 - 2026-08-21
+
+- Tie each KPV research-context bullet to a separate verified preclinical study: intestinal inflammation and barrier research, targeted delivery to the intestinal lining, and airway or epithelial inflammation.
+- Add the verified 2017 Molecular Therapy nanoparticle-delivery study between the existing intestinal and airway sources so superscripts 1, 2, and 3 map directly to the displayed citations.
+
+**Previous release candidate: 0.25.0-beta.42** - Plain-English KPV research content.
 
 ## 0.25.0-beta.42 - 2026-08-21
 
