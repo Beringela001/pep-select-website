@@ -1,6 +1,13 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.41** - KPV structured product-page research content.
+**Release candidate: 0.25.0-beta.42** - Plain-English KPV research content.
+
+## 0.25.0-beta.42 - 2026-08-21
+
+- Replace pathway-heavy KPV wording with plain-English research context covering intestinal inflammation and barrier research, immune signaling in the intestinal lining, and airway or epithelial inflammation.
+- Keep every KPV context line tethered to the same two verified preclinical sources without adding human-use, treatment, safety, or effectiveness claims.
+
+**Previous release candidate: 0.25.0-beta.41** - KPV structured product-page research content.
 
 ## 0.25.0-beta.41 - 2026-08-21
 

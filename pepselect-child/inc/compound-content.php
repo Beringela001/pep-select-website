@@ -191,12 +191,12 @@ function pepselect_child_compound_library() {
 			),
 		),
 		'kpv' => array(
-			'description' => __( 'KPV (Lys-Pro-Val) is a three-amino-acid fragment found at the end of alpha-melanocyte-stimulating hormone. Preclinical studies have examined how it enters intestinal epithelial and immune cells through the PepT1 transporter, as well as how it interacts with NF-kappaB and MAPK signaling.', 'pepselect-child' ),
+			'description' => __( 'KPV is a tripeptide made from lysine, proline, and valine. It is studied for its role in inflammatory signaling, with preclinical research focused on the intestinal lining, immune cells, and airway tissue.', 'pepselect-child' ),
 			'specs'       => array( 'CAS' => '[SUPPLY FROM COA]', 'Formula' => '[SUPPLY FROM COA]', 'Form' => 'Lyophilized powder' ),
 			'context'     => array(
-				array( 'text' => __( 'Studied for PepT1-mediated uptake in intestinal epithelial and immune-cell models', 'pepselect-child' ), 'ref' => 1 ),
-				array( 'text' => __( 'Researched for NF-kappaB and MAPK signaling in preclinical intestinal models', 'pepselect-child' ), 'ref' => 1 ),
-				array( 'text' => __( 'Investigated for p65RelA nuclear-import signaling in bronchial epithelial cells', 'pepselect-child' ), 'ref' => 2 ),
+				array( 'text' => __( 'Studied for intestinal inflammation and barrier-related research', 'pepselect-child' ), 'ref' => 1 ),
+				array( 'text' => __( 'Researched for immune signaling in the intestinal lining', 'pepselect-child' ), 'ref' => 1 ),
+				array( 'text' => __( 'Investigated for airway and epithelial inflammation', 'pepselect-child' ), 'ref' => 2 ),
 			),
 			'sources'     => array(
 				'Dalmasso G, et al. Gastroenterology. 2008. DOI:10.1053/j.gastro.2007.10.026. PMID:18061177',
