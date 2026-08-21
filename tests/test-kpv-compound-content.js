@@ -8,7 +8,7 @@ const contentFile = fs.readFileSync(
 );
 
 assert.ok(contentFile.includes("'kpv' => array("), 'KPV library entry missing');
-assert.ok(contentFile.includes('PepT1-mediated cellular uptake'), 'KPV mechanism description missing');
+assert.ok(contentFile.includes('enters intestinal epithelial and immune cells through the PepT1 transporter'), 'KPV mechanism description missing');
 assert.ok(contentFile.includes('DOI:10.1053/j.gastro.2007.10.026'), 'Dalmasso DOI missing');
 assert.ok(contentFile.includes('PMID:18061177'), 'Dalmasso PMID missing');
 assert.ok(contentFile.includes('PMID:22837805'), 'Land PMID missing');

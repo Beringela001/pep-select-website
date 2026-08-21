@@ -191,7 +191,7 @@ function pepselect_child_compound_library() {
 			),
 		),
 		'kpv' => array(
-			'description' => __( 'KPV (Lys-Pro-Val) is a tripeptide corresponding to the C-terminal sequence of alpha-melanocyte-stimulating hormone. It is studied for PepT1-mediated cellular uptake and intracellular signaling involving NF-kappaB and MAPK pathways in preclinical epithelial and immune-cell models.', 'pepselect-child' ),
+			'description' => __( 'KPV (Lys-Pro-Val) is a three-amino-acid fragment found at the end of alpha-melanocyte-stimulating hormone. Preclinical studies have examined how it enters intestinal epithelial and immune cells through the PepT1 transporter, as well as how it interacts with NF-kappaB and MAPK signaling.', 'pepselect-child' ),
 			'specs'       => array( 'CAS' => '[SUPPLY FROM COA]', 'Formula' => '[SUPPLY FROM COA]', 'Form' => 'Lyophilized powder' ),
 			'context'     => array(
 				array( 'text' => __( 'Studied for PepT1-mediated uptake in intestinal epithelial and immune-cell models', 'pepselect-child' ), 'ref' => 1 ),
