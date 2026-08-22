@@ -1,5 +1,13 @@
 # Changelog
 
+**Release candidate: 0.25.0-beta.51** - Apply the approved new labels to the homepage hero lineup.
+
+## 0.25.0-beta.51 - 2026-08-22
+
+- Replace only the printed label artwork on the five homepage hero vials with the approved GLP-3 RT, GHK-CU, BPC-157, Tesamorelin, and NAD+ labels.
+- Preserve the original hero crop, vial positions, caps, glass, lighting, reflections, shadows, background, colors, and responsive presentation.
+- Regenerate the existing seven optimized WebP hero sizes without changing homepage structure or copy.
+
 **Release candidate: 0.25.0-beta.50** - Apply the approved Tesamorelin label to the homepage batch-matching visual.
 
 ## 0.25.0-beta.50 - 2026-08-21
