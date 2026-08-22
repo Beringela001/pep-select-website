@@ -3,8 +3,8 @@
  * My Account Dashboard (Pep Select custom) - single scrolling page.
  *
  * Replaces WooCommerce's dashboard intro and the four link rows with one
- * scrolling page of five cards: welcome + sign out, saved information, cash-back
- * summary in dollars, the referral link, and the customer's orders inline
+ * scrolling page of six cards: welcome + sign out, saved information, cash-back
+ * summary in dollars, text-message preferences, the referral link, and the customer's orders inline
  * (status, total, cash back earned, shipment tracking when a shipped order has
  * an Easyship note, and every line item with quantity and price - no click-through
  * needed).
@@ -159,8 +159,59 @@ $pepselect_earned_by_order = function_exists( 'pepselect_child_get_cashback_earn
 
 	</div>
 
+	<?php // Card 4: text-message preferences. ?>
+	<section id="pepselect-sms-preferences" class="pepselect-card pepselect-card--sms" aria-labelledby="pepselect-dash-sms">
+		<div class="pepselect-card__head">
+			<h2 id="pepselect-dash-sms" class="pepselect-card__title"><?php esc_html_e( 'Text message preferences', 'pepselect-child' ); ?></h2>
+		</div>
+
+		<p class="pepselect-sms__lead"><?php esc_html_e( 'Choose which text messages you want to receive.', 'pepselect-child' ); ?></p>
+
+		<form class="pepselect-sms__form" method="post" action="<?php echo esc_url( wc_get_page_permalink( 'myaccount' ) . '#pepselect-sms-preferences' ); ?>">
+			<div class="pepselect-sms__field">
+				<label class="pepselect-sms__label" for="pepselect-sms-mobile"><?php esc_html_e( 'Mobile number', 'pepselect-child' ); ?></label>
+				<input
+					class="pepselect-sms__input"
+					id="pepselect-sms-mobile"
+					name="pepselect_sms_mobile"
+					type="tel"
+					inputmode="tel"
+					autocomplete="tel"
+					value="<?php echo esc_attr( $pepselect_phone ); ?>"
+					aria-describedby="pepselect-sms-disclosure"
+				/>
+			</div>
+
+			<fieldset class="pepselect-sms__choices" aria-describedby="pepselect-sms-disclosure">
+				<legend class="pepselect-sms__legend"><?php esc_html_e( 'Texting consent', 'pepselect-child' ); ?></legend>
+				<label class="pepselect-sms__choice">
+					<input class="pepselect-sms__checkbox" type="checkbox" name="pepselect_sms_preferences[]" value="customer_care" />
+					<span><?php esc_html_e( 'Yes, I consent to receive customer care messages from Pep Select', 'pepselect-child' ); ?></span>
+				</label>
+				<label class="pepselect-sms__choice">
+					<input class="pepselect-sms__checkbox" type="checkbox" name="pepselect_sms_preferences[]" value="marketing" />
+					<span><?php esc_html_e( 'Yes, I consent to receive marketing text messages from Pep Select', 'pepselect-child' ); ?></span>
+				</label>
+				<label class="pepselect-sms__choice">
+					<input class="pepselect-sms__checkbox" type="checkbox" name="pepselect_sms_preferences[]" value="none" />
+					<span><?php esc_html_e( 'No, I do not want to receive any text messages from Pep Select', 'pepselect-child' ); ?></span>
+				</label>
+			</fieldset>
+
+			<?php wp_nonce_field( 'pepselect_save_sms_preferences', 'pepselect_sms_preferences_nonce' ); ?>
+			<input type="hidden" name="pepselect_sms_preferences_action" value="save" />
+			<button class="pepselect-btn pepselect-btn--solid" type="submit"><?php esc_html_e( 'Save text preferences', 'pepselect-child' ); ?></button>
+		</form>
+
+		<div id="pepselect-sms-disclosure" class="pepselect-sms__disclosure">
+			<p>PS Research Solutions LLC (doing business as Pep Select) would like your consent to send customer care and/or marketing text message communications from (833) 737-7528 to your mobile number listed above. Customer care messages may include responses to messages you send us, as well as information relevant to your relationship with us. Marketing messages may include discount codes, special deals or texts promoting our products/services.</p>
+			<p>Consent is not a condition of purchase. Message frequency varies. Message and data rates may apply. Reply 'STOP' to unsubscribe at any time. Reply 'HELP' for assistance or more information.</p>
+			<p>We do not share your mobile opt-in information with anyone. Our combined Privacy Policy and Messaging Terms and Conditions are available at <a href="<?php echo esc_url( home_url( '/privacy-policy/' ) ); ?>">https://pepselect.com/privacy-policy/</a>.</p>
+		</div>
+	</section>
+
 	<?php if ( '' !== $pepselect_vanity_url ) : ?>
-		<?php // Card 4: referral link. ?>
+		<?php // Card 5: referral link. ?>
 		<section class="pepselect-card pepselect-card--referral pepselect-cashback__referral" aria-labelledby="pepselect-dash-referral">
 			<h2 id="pepselect-dash-referral" class="pepselect-cashback__section-title"><?php esc_html_e( 'Refer a friend', 'pepselect-child' ); ?></h2>
 			<p class="pepselect-cashback__section-lead"><?php esc_html_e( 'Share your link. They save 10% on their first order, and you earn $15 in cash back once it completes.', 'pepselect-child' ); ?></p>
@@ -205,7 +256,7 @@ $pepselect_earned_by_order = function_exists( 'pepselect_child_get_cashback_earn
 		</section>
 	<?php endif; ?>
 
-	<?php // Card 5: your orders, inline. ?>
+	<?php // Card 6: your orders, inline. ?>
 	<section class="pepselect-card pepselect-card--orders" aria-labelledby="pepselect-dash-orders">
 		<div class="pepselect-card__head">
 			<h2 id="pepselect-dash-orders" class="pepselect-card__title"><?php esc_html_e( 'Your orders', 'pepselect-child' ); ?></h2>

@@ -414,6 +414,86 @@ function pepselect_child_account_menu_labels( $items ) {
 add_filter( 'woocommerce_account_menu_items', 'pepselect_child_account_menu_labels', 20 );
 
 /**
+ * Save the signed-in customer's text-message preferences from the account
+ * dashboard. Billing phone remains the canonical WooCommerce phone field;
+ * consent choices and their update time are stored as customer user meta.
+ *
+ * @return void
+ */
+function pepselect_child_handle_sms_preferences() {
+	if (
+		! is_user_logged_in()
+		|| ! function_exists( 'is_account_page' )
+		|| ! is_account_page()
+		|| empty( $_POST['pepselect_sms_preferences_action'] )
+	) {
+		return;
+	}
+
+	$nonce = isset( $_POST['pepselect_sms_preferences_nonce'] )
+		? sanitize_text_field( wp_unslash( $_POST['pepselect_sms_preferences_nonce'] ) )
+		: '';
+
+	if ( ! wp_verify_nonce( $nonce, 'pepselect_save_sms_preferences' ) ) {
+		wc_add_notice( __( 'We could not verify that request. Please try again.', 'pepselect-child' ), 'error' );
+		return;
+	}
+
+	$raw_choices = isset( $_POST['pepselect_sms_preferences'] )
+		? (array) wp_unslash( $_POST['pepselect_sms_preferences'] )
+		: array();
+	$choices     = array_map( 'sanitize_key', $raw_choices );
+	$choices     = array_values( array_intersect( $choices, array( 'customer_care', 'marketing', 'none' ) ) );
+	$care        = in_array( 'customer_care', $choices, true );
+	$marketing   = in_array( 'marketing', $choices, true );
+	$none        = in_array( 'none', $choices, true );
+
+	if ( empty( $choices ) ) {
+		wc_add_notice( __( 'Choose at least one text-message preference.', 'pepselect-child' ), 'error' );
+		return;
+	}
+
+	if ( $none && ( $care || $marketing ) ) {
+		wc_add_notice( __( 'Choose either the messages you want or the option to receive no text messages.', 'pepselect-child' ), 'error' );
+		return;
+	}
+
+	$phone = isset( $_POST['pepselect_sms_mobile'] )
+		? wc_clean( wp_unslash( $_POST['pepselect_sms_mobile'] ) )
+		: '';
+
+	if ( ( $care || $marketing ) && '' === $phone ) {
+		wc_add_notice( __( 'Enter the mobile number where you want to receive text messages.', 'pepselect-child' ), 'error' );
+		return;
+	}
+
+	if ( ( $care || $marketing ) && class_exists( 'WC_Validation' ) && ! WC_Validation::is_phone( $phone ) ) {
+		wc_add_notice( __( 'Enter a valid mobile number.', 'pepselect-child' ), 'error' );
+		return;
+	}
+
+	$user_id = get_current_user_id();
+
+	if ( ( $care || $marketing ) && '' !== $phone ) {
+		$customer = new WC_Customer( $user_id );
+		$customer->set_billing_phone( $phone );
+		$customer->save();
+	}
+
+	update_user_meta( $user_id, 'pepselect_sms_customer_care_consent', $care ? 'yes' : 'no' );
+	update_user_meta( $user_id, 'pepselect_sms_marketing_consent', $marketing ? 'yes' : 'no' );
+	update_user_meta( $user_id, 'pepselect_sms_opt_out', $none ? 'yes' : 'no' );
+	update_user_meta( $user_id, 'pepselect_sms_consent_updated_gmt', current_time( 'mysql', true ) );
+	update_user_meta( $user_id, 'pepselect_sms_consent_source', 'my-account' );
+	update_user_meta( $user_id, 'pepselect_sms_disclosure_version', '2026-08-21' );
+
+	wc_add_notice( __( 'Your text-message preferences have been saved.', 'pepselect-child' ), 'success' );
+	wp_safe_redirect( wc_get_page_permalink( 'myaccount' ) . '#pepselect-sms-preferences' );
+	exit;
+}
+add_action( 'template_redirect', 'pepselect_child_handle_sms_preferences', 20 );
+
+/**
  * Enqueue account presentation on WooCommerce account pages only.
  *
  * @return void

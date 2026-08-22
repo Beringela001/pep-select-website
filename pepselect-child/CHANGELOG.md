@@ -1,5 +1,12 @@
 # Changelog
 
+**Release candidate: 0.25.0-beta.48** - Add account text-message consent preferences.
+
+## 0.25.0-beta.48 - 2026-08-21
+
+- Add a simple text-message preference card to the signed-in My Account dashboard with a mobile-number field, separate customer-care and marketing consent choices, an explicit no-text option, and the approved disclosure.
+- Keep all consent choices unselected on initial load, allow both affirmative choices together, make the no-text choice exclusive, and save the customer's choice with a timestamp after nonce and phone validation.
+
 **Release candidate: 0.25.0-beta.47** - Add SMS program terms and customer-service phone details.
 
 ## 0.25.0-beta.47 - 2026-08-21

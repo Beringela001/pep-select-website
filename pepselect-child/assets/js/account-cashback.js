@@ -53,4 +53,33 @@
 			flash( button );
 		}
 	} );
+
+	// The two affirmative choices can be combined. The opt-out choice is
+	// exclusive, while every checkbox remains unselected on initial load.
+	document.addEventListener( 'change', function ( event ) {
+		var changed = event.target.closest ? event.target.closest( '.pepselect-sms__checkbox' ) : null;
+
+		if ( ! changed || ! changed.checked ) {
+			return;
+		}
+
+		var form = changed.closest( '.pepselect-sms__form' );
+
+		if ( ! form ) {
+			return;
+		}
+
+		if ( 'none' === changed.value ) {
+			form.querySelectorAll( '.pepselect-sms__checkbox:not([value="none"])' ).forEach( function ( checkbox ) {
+				checkbox.checked = false;
+			} );
+			return;
+		}
+
+		var optOut = form.querySelector( '.pepselect-sms__checkbox[value="none"]' );
+
+		if ( optOut ) {
+			optOut.checked = false;
+		}
+	} );
 }() );

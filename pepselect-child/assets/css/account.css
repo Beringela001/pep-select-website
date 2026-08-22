@@ -1911,7 +1911,112 @@ body.woocommerce-account:not(.logged-in) h1.entry-title {
 	line-height: 1.6;
 }
 
-/* Card 4: referral link, moved forward from the cash-back detail page. */
+/* Card 4: text-message preferences. */
+.pepselect-sms__lead {
+	margin: -6px 0 20px;
+	color: var(--pep-color-slate);
+	font-size: 15px;
+	line-height: 1.6;
+}
+
+.pepselect-sms__form {
+	display: grid;
+	gap: 20px;
+}
+
+.pepselect-sms__field {
+	display: grid;
+	gap: 8px;
+	max-width: 420px;
+}
+
+.pepselect-sms__label,
+.pepselect-sms__legend {
+	color: var(--pep-color-navy);
+	font-size: 14px;
+	font-weight: var(--pep-font-weight-semibold);
+}
+
+.pepselect-sms__input {
+	width: 100%;
+	min-height: 46px;
+	padding: 10px 12px;
+	border: 1px solid var(--pep-color-border);
+	border-radius: var(--pep-radius-small);
+	background: var(--pep-color-white);
+	color: var(--pep-color-navy);
+	font-family: var(--pep-font-technical);
+	font-size: 16px;
+}
+
+.pepselect-sms__input:focus {
+	border-color: var(--pep-color-cyan);
+	outline: 2px solid color-mix(in srgb, var(--pep-color-cyan) 25%, transparent);
+	outline-offset: 2px;
+}
+
+.pepselect-sms__choices {
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+.pepselect-sms__legend {
+	margin-bottom: 8px;
+}
+
+.pepselect-sms__choice {
+	display: flex;
+	align-items: flex-start;
+	gap: 10px;
+	padding: 10px 0;
+	color: var(--pep-color-navy);
+	font-size: 15px;
+	line-height: 1.5;
+	cursor: pointer;
+}
+
+.pepselect-sms__checkbox {
+	width: 20px;
+	height: 20px;
+	margin: 1px 0 0;
+	flex: 0 0 20px;
+	accent-color: var(--pep-color-cyan);
+}
+
+.pepselect-sms__checkbox:focus-visible {
+	outline: 2px solid var(--pep-color-cyan);
+	outline-offset: 3px;
+}
+
+.pepselect-sms__form .pepselect-btn {
+	justify-self: start;
+}
+
+.pepselect-sms__disclosure {
+	margin-top: 22px;
+	padding-top: 20px;
+	border-top: 1px solid var(--pep-color-border);
+	color: var(--pep-color-slate);
+	font-size: 13px;
+	line-height: 1.65;
+}
+
+.pepselect-sms__disclosure p {
+	margin: 0 0 12px;
+}
+
+.pepselect-sms__disclosure p:last-child {
+	margin-bottom: 0;
+}
+
+.pepselect-sms__disclosure a {
+	color: var(--pep-color-cyan);
+	font-weight: var(--pep-font-weight-semibold);
+	word-break: break-word;
+}
+
+/* Card 5: referral link, moved forward from the cash-back detail page. */
 .pepselect-card--referral .pepselect-cashback__mini-stats {
 	grid-template-columns: minmax(0, 1fr);
 	max-width: 280px;
@@ -1923,7 +2028,7 @@ body.woocommerce-account:not(.logged-in) h1.entry-title {
 	font-weight: var(--pep-font-weight-medium);
 }
 
-/* Card 5: orders, inline. */
+/* Card 6: orders, inline. */
 .pepselect-orders {
 	margin: 0;
 	padding: 0;
