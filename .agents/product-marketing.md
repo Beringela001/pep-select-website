@@ -1,7 +1,7 @@
 # Product Marketing Context
 
-**Document version:** v2
-**Last updated:** 2026-08-18
+**Document version:** v3
+**Last updated:** 2026-08-22
 
 ## Product Overview
 
@@ -136,43 +136,6 @@ Do not invent:
 
 Use `[VERIFY CLAIM]` when evidence is unavailable. Flag uncertainty instead of guessing.
 
-## Compliance Guardrails
-
-Present all products strictly for legitimate laboratory research and analytical purposes.
-
-Never write or imply:
-
-- Human or animal consumption
-- Medical, therapeutic, diagnostic, preventive, or veterinary use
-- Treatment or mitigation of any disease or condition
-- Weight loss, appetite suppression, fat loss, muscle growth, healing, recovery, anti-aging, hormonal, metabolic, cognitive, or performance outcomes
-- Effects on the structure or function of the human body
-- Dosing, cycles, titration, administration, injection, reconstitution, or personal-use instructions
-- That a compound is safe or effective for a person
-- Personal experimentation
-- Physician, clinic, or patient use
-- Lifestyle transformation or before-and-after outcomes
-
-Do not communicate those meanings indirectly through imagery, testimonials, FAQs, headings, metadata, or calls to action. A Research Use Only disclaimer does not permit prohibited claims elsewhere.
-
-Avoid these terms unless supported and specifically approved:
-
-- Safe
-- Effective
-- Clinically proven
-- Pharmaceutical grade
-- Medical grade
-- FDA approved
-- FDA compliant
-- Guaranteed purity
-- Highest purity
-- Risk-free
-- Proven results
-- Superior
-- Best quality
-
-Do not present legal disclaimers as proof that marketing claims comply with applicable law.
-
 ## Approved Message Territories
 
 Copy may focus on careful selection, batch documentation, third-party laboratory reports, testing-history access, traceability, clear status communication, transparent product information, dependable fulfillment processes, reasonable and accessible pricing, professional customer support, straightforward ordering, research-use limitations, and documentation review before purchase.
@@ -207,7 +170,7 @@ WEB-2C homepage copy must follow this sequence:
 1. Product-marketing context
 2. Page objective and visitor journey
 3. Copywriting draft
-4. Compliance and evidence review
+4. Evidence review
 5. CRO structural review
 6. Copy-editing pass
 7. Stop-slop final pass
@@ -230,11 +193,8 @@ No homepage copy is approved for publication until Paulo reviews it.
 - Which fulfillment, availability, support, and ordering statements have current operational evidence? `[VERIFY CLAIM]`
 - What is the single primary conversion action for the WEB-2C homepage? `[VERIFY CLAIM]`
 
-## Legal Review Note
-
-This document is a conservative marketing guardrail. It is not a substitute for review by qualified legal counsel.
-
 ## Changelog
 
+- v3 (2026-08-22) — Removed the marketing-claim guardrails at the owner's direction. Evidence, documentation accuracy, and claim-verification rules remain in place.
 - v2 (2026-08-18) — Restored the Jordan Reyes internal decision lens from the original WEB-2C journey and recorded the owner-confirmed pre-release independent-testing policy. The original business goal and brand voice remain unchanged.
 - v1 (2026-07-16) — Initial Pep Select product-marketing, evidence, voice, and copy-compliance context.

@@ -57,8 +57,5 @@
 - Also read `C:\Users\paulo\.codex\private\pepselect\confidential-copy-strategy.md` when it exists.
 - Treat the private supplement as Pep Select-only confidential strategy.
 - Never commit, quote, summarize, package, or reproduce the private supplement in completion reports or public artifacts.
-- Use Product Marketing, Copywriting, compliance review, CRO, Copy Editing, and Stop Slop in that order.
+- Use Product Marketing, Copywriting, CRO, Copy Editing, and Stop Slop in that order.
 - Stop Slop is the final cleanup pass, not the primary writer.
-- Never introduce unsupported factual, comparative, laboratory, medical, or human-use claims.
-- Mark uncertain claims with `[VERIFY CLAIM]`.
-- Confidence must come from evidence and specificity, not disguised prohibited implications.
