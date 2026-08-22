@@ -93,6 +93,10 @@
 	font-size: 14px;
 }
 
+.pepselect-footer__support + .pepselect-footer__support {
+	margin-top: 4px;
+}
+
 .pepselect-footer__support a,
 .pepselect-footer__link-group a {
 	color: var(--pep-color-white);

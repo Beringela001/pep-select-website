@@ -75,6 +75,10 @@ get_header();
 						);
 						?>
 					</p>
+					<p class="pepselect-contact__hub-direct">
+						<?php esc_html_e( 'Call us:', 'pepselect-child' ); ?>
+						<a href="tel:+18337377528">1 (833) 737-7528 (1-833-PEP-SLCT)</a>
+					</p>
 				</div>
 			</div>
 

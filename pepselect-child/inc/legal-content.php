@@ -36,7 +36,7 @@ function pepselect_child_get_legal_documents() {
 		'terms-conditions' => array(
 			'slug'         => 'terms-conditions',
 			'title'        => 'Terms & Conditions',
-			'last_updated' => 'August 1, 2026',
+			'last_updated' => 'August 21, 2026',
 			'body'         => array(
 				array(
 					'type' => 'paragraph',
@@ -176,7 +176,24 @@ function pepselect_child_get_legal_documents() {
 				array(
 					'type'  => 'heading',
 					'level' => 2,
-					'text'  => '12. Governing Law',
+					'text'  => '12. Messaging Program Terms and Conditions',
+				),
+				array(
+					'type'    => 'list',
+					'ordered' => true,
+					'items'   => array(
+						'The messaging program may consist of general customer care messaging to answer questions and provide support to customers, and/or marketing messaging that include discount codes, special deals or texts promoting our products/services, depending on which program(s) you opt in to. We will only send content you have explicitly signed up to receive via our opt-in process. Messages will be sent from <a href="tel:+18337377528">(833) 737-7528</a>.',
+						'You can cancel the SMS service at any time. Just text &#039;STOP&#039; to the phone number from which you received messages. After you send the SMS message &#039;STOP&#039; to us, we will send you an SMS message to confirm that you have been unsubscribed. After this, you will no longer receive SMS messages from us. If you want to join again, just sign up as you did the first time and we will start sending SMS messages to you again.',
+						'If you are experiencing issues with the messaging program you can reply with the keyword HELP for more assistance, or you can get help directly at <a href="mailto:support@pepselect.com">support@pepselect.com</a>.',
+						'Carriers are not liable for delayed or undelivered messages.',
+						'As always, message and data rates may apply for any messages sent to you from us and to us from you. Message frequency will vary based on communication needs. If you have any questions about your text plan or data plan, it is best to contact your wireless provider.',
+						'If you have any questions regarding privacy, please read our <a href="' . esc_url( home_url( '/privacy-policy/' ) ) . '">Privacy Policy</a> or contact us at <a href="mailto:contact@pepselect.com">contact@pepselect.com</a>.',
+					),
+				),
+				array(
+					'type'  => 'heading',
+					'level' => 2,
+					'text'  => '13. Governing Law',
 				),
 				array(
 					'type' => 'paragraph',
@@ -185,7 +202,7 @@ function pepselect_child_get_legal_documents() {
 				array(
 					'type'  => 'heading',
 					'level' => 2,
-					'text'  => '13. Changes to These Terms',
+					'text'  => '14. Changes to These Terms',
 				),
 				array(
 					'type' => 'paragraph',
@@ -194,7 +211,7 @@ function pepselect_child_get_legal_documents() {
 				array(
 					'type'  => 'heading',
 					'level' => 2,
-					'text'  => '14. Contact',
+					'text'  => '15. Contact',
 				),
 				array(
 					'type' => 'paragraph',
@@ -205,7 +222,7 @@ function pepselect_child_get_legal_documents() {
 		'privacy-policy' => array(
 			'slug'         => 'privacy-policy',
 			'title'        => 'Privacy Policy',
-			'last_updated' => 'July 23, 2026',
+			'last_updated' => 'August 21, 2026',
 			'body'         => array(
 				array(
 					'type' => 'paragraph',
@@ -280,6 +297,19 @@ function pepselect_child_get_legal_documents() {
 				array(
 					'type'  => 'heading',
 					'level' => 2,
+					'text'  => 'Data Sharing',
+				),
+				array(
+					'type'    => 'list',
+					'ordered' => false,
+					'items'   => array(
+						'Customer data is not shared with 3rd parties for promotional or marketing purposes.',
+						'Mobile opt-in and consent are never shared with anyone for any purpose. Any information sharing that may be mentioned elsewhere in this policy excludes mobile opt-in data.',
+					),
+				),
+				array(
+					'type'  => 'heading',
+					'level' => 2,
 					'text'  => 'Data Security',
 				),
 				array(
@@ -336,6 +366,23 @@ function pepselect_child_get_legal_documents() {
 				array(
 					'type' => 'paragraph',
 					'html' => 'You may unsubscribe from marketing emails at any time using the link in any message or by contacting us directly. We comply with CAN-SPAM requirements.',
+				),
+				array(
+					'type'  => 'heading',
+					'level' => 2,
+					'text'  => 'Messaging Program Terms and Conditions',
+				),
+				array(
+					'type'    => 'list',
+					'ordered' => true,
+					'items'   => array(
+						'The messaging program may consist of general customer care messaging to answer questions and provide support to customers, and/or marketing messaging that include discount codes, special deals or texts promoting our products/services, depending on which program(s) you opt in to. We will only send content you have explicitly signed up to receive via our opt-in process. Messages will be sent from <a href="tel:+18337377528">(833) 737-7528</a>.',
+						'You can cancel the SMS service at any time. Just text &#039;STOP&#039; to the phone number from which you received messages. After you send the SMS message &#039;STOP&#039; to us, we will send you an SMS message to confirm that you have been unsubscribed. After this, you will no longer receive SMS messages from us. If you want to join again, just sign up as you did the first time and we will start sending SMS messages to you again.',
+						'If you are experiencing issues with the messaging program you can reply with the keyword HELP for more assistance, or you can get help directly at <a href="mailto:support@pepselect.com">support@pepselect.com</a>.',
+						'Carriers are not liable for delayed or undelivered messages.',
+						'As always, message and data rates may apply for any messages sent to you from us and to us from you. Message frequency will vary based on communication needs. If you have any questions about your text plan or data plan, it is best to contact your wireless provider.',
+						'If you have any questions regarding privacy, please read our privacy policy details contained in the rest of this page or contact us at <a href="mailto:contact@pepselect.com">contact@pepselect.com</a>.',
+					),
 				),
 				array(
 					'type'  => 'heading',

@@ -95,6 +95,10 @@
 	line-height: 1.55;
 }
 
+.pepselect-contact__hub-direct + .pepselect-contact__hub-direct {
+	margin-top: 8px;
+}
+
 /* Right column: form card. */
 .pepselect-contact__form-col {
 	background: var(--pep-color-surface);

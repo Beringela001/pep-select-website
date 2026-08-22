@@ -1,5 +1,12 @@
 # Changelog
 
+**Release candidate: 0.25.0-beta.47** - Add SMS program terms and customer-service phone details.
+
+## 0.25.0-beta.47 - 2026-08-21
+
+- Add the approved Data Sharing and Messaging Program Terms and Conditions sections to the Privacy Policy, add the messaging terms to Terms & Conditions, and update both revision dates.
+- Add the tap-to-call customer-service number to the Contact page and global footer.
+
 **Release candidate: 0.25.0-beta.46** - Normalize My Account card spacing.
 
 ## 0.25.0-beta.46 - 2026-08-21
