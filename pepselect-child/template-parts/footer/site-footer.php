@@ -37,7 +37,7 @@ $support_mail = 'support@pepselect.com';
 				</p>
 				<p class="pepselect-footer__support">
 					<?php esc_html_e( 'Phone:', 'pepselect-child' ); ?>
-					<a href="tel:+18337377528">1 (833) 737-7528 (1-833-PEP-SLCT)</a>
+					<a href="tel:+18337377528">1 (833) 737-7528</a>
 				</p>
 			</section>
 

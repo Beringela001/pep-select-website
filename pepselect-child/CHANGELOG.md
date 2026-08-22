@@ -1,5 +1,13 @@
 # Changelog
 
+**Release candidate: 0.25.0-beta.49** - Replace the global logos and simplify phone-number display.
+
+## 0.25.0-beta.49 - 2026-08-21
+
+- Replace the coded header and footer logos with the approved new Pep Select artwork.
+- Use the corrected reversed footer lockup with open P, A, and D counters and a subtle separation between the P, E, and P letterforms.
+- Remove the vanity-number suffix from the global footer and Contact page while retaining the tap-to-call `1 (833) 737-7528` number.
+
 **Release candidate: 0.25.0-beta.48** - Add account text-message consent preferences.
 
 ## 0.25.0-beta.48 - 2026-08-21

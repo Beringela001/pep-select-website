@@ -92,32 +92,17 @@ function pepselect_child_render_footer_preview() {
 }
 
 /**
- * Return the configured footer logo as WordPress attachment markup.
- *
- * The Custom Logo setting takes precedence. Footer #391's confirmed Media
- * Library attachment remains the environment-neutral fallback.
+ * Return the bundled reversed Pep Select footer logo.
  *
  * @return string
  */
 function pepselect_child_get_footer_logo_html() {
-	$custom_logo_id           = absint( get_theme_mod( 'custom_logo' ) );
-	$elementor_footer_logo_id = 687;
-	$logo_id                  = wp_attachment_is_image( $custom_logo_id ) ? $custom_logo_id : $elementor_footer_logo_id;
+	$logo_url = trailingslashit( get_stylesheet_directory_uri() ) . 'assets/images/brand/pep-select-logo-footer.png';
 
-	if ( ! wp_attachment_is_image( $logo_id ) ) {
-		return '';
-	}
-
-	return (string) wp_get_attachment_image(
-		$logo_id,
-		'full',
-		false,
-		array(
-			'alt'      => get_bloginfo( 'name' ),
-			'class'    => 'pepselect-footer__logo-image',
-			'decoding' => 'async',
-			'loading'  => 'lazy',
-		)
+	return sprintf(
+		'<img width="1407" height="299" src="%1$s" class="pepselect-footer__logo-image" alt="%2$s" decoding="async" loading="lazy">',
+		esc_url( $logo_url ),
+		esc_attr( get_bloginfo( 'name' ) )
 	);
 }
 

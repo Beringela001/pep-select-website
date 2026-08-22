@@ -242,34 +242,17 @@ function pepselect_child_render_header_preview() {
 }
 
 /**
- * Return the configured Pep Select logo as WordPress attachment markup.
- *
- * The Custom Logo setting takes precedence. Header #1323's confirmed Media
- * Library attachment remains the environment-neutral fallback while the
- * Custom Logo setting is empty.
+ * Return the bundled Pep Select header logo.
  *
  * @return string
  */
 function pepselect_child_get_header_logo_html() {
-	$custom_logo_id           = absint( get_theme_mod( 'custom_logo' ) );
-	$elementor_header_logo_id = 595;
-	$logo_id                  = wp_attachment_is_image( $custom_logo_id ) ? $custom_logo_id : $elementor_header_logo_id;
+	$logo_url = trailingslashit( get_stylesheet_directory_uri() ) . 'assets/images/brand/pep-select-logo-header.png';
 
-	if ( ! wp_attachment_is_image( $logo_id ) ) {
-		return '';
-	}
-
-	return (string) wp_get_attachment_image(
-		$logo_id,
-		'full',
-		false,
-		array(
-			'alt'           => get_bloginfo( 'name' ),
-			'class'         => 'pepselect-header__logo-image',
-			'decoding'      => 'async',
-			'fetchpriority' => 'high',
-			'loading'       => 'eager',
-		)
+	return sprintf(
+		'<img width="1400" height="299" src="%1$s" class="pepselect-header__logo-image" alt="%2$s" decoding="async" fetchpriority="high" loading="eager">',
+		esc_url( $logo_url ),
+		esc_attr( get_bloginfo( 'name' ) )
 	);
 }
 

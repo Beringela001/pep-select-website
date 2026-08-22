@@ -42,7 +42,8 @@ assert.ok(legalContent.includes("'text'  => '15. Contact'"), 'Terms sections aft
 
 for (const [surface, source] of [['Contact page', contactPage], ['footer', footer]]) {
 	assert.ok(source.includes('href="tel:+18337377528"'), `${surface} tap-to-call link missing`);
-	assert.ok(source.includes('1 (833) 737-7528 (1-833-PEP-SLCT)'), `${surface} customer-service number missing`);
+	assert.ok(source.includes('1 (833) 737-7528'), `${surface} customer-service number missing`);
+	assert.ok(!source.includes('1-833-PEP-SLCT'), `${surface} obsolete vanity number remains`);
 }
 
 console.log('SMS policy and phone-number safeguards verified');
