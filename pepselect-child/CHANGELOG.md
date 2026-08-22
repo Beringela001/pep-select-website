@@ -1,5 +1,13 @@
 # Changelog
 
+**Release candidate: 0.25.0-beta.50** - Apply the approved Tesamorelin label to the homepage batch-matching visual.
+
+## 0.25.0-beta.50 - 2026-08-21
+
+- Preserve the original two-vial photograph, reverse label, batch number, QR code, COA image, pointer positions, and responsive layout.
+- Overlay only the approved new Tesamorelin 10 mg front label on the left vial.
+- Keep the additional label payload below 19 KB so the logo update does not replace the optimized 48 KB base photograph with a much larger composite.
+
 **Release candidate: 0.25.0-beta.49** - Replace the global logos and simplify phone-number display.
 
 ## 0.25.0-beta.49 - 2026-08-21

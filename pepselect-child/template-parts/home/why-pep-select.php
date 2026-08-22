@@ -51,6 +51,16 @@ $matches     = array(
 					decoding="async"
 					alt="<?php esc_attr_e( 'Front and reverse views of a Pep Select Tesamorelin 10 mg clear vial with blue cap, silver crimp, and batch PSTES1071926GX.', 'pepselect-child' ); ?>"
 				>
+				<img
+					class="pepselect-home__match-left-label"
+					src="<?php echo esc_url( $asset_url . 'tesamorelin-10mg-left-label-new.webp' ); ?>"
+					width="280"
+					height="343"
+					loading="lazy"
+					decoding="async"
+					alt=""
+					aria-hidden="true"
+				>
 
 				<svg class="pepselect-home__match-lines" viewBox="0 0 100 75" preserveAspectRatio="none" aria-hidden="true" focusable="false">
 					<path d="M 16 11 L 24 11 L 34 19" />

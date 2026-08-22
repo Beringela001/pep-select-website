@@ -534,6 +534,18 @@
 	height: auto;
 }
 
+.pepselect-home__match-left-label {
+	position: absolute;
+	z-index: 1;
+	top: 42.8889%;
+	left: 21.5%;
+	display: block;
+	width: 23.3333%;
+	height: 38.1111%;
+	object-fit: fill;
+	pointer-events: none;
+}
+
 .pepselect-home__match-lines {
 	position: absolute;
 	inset: 0;
