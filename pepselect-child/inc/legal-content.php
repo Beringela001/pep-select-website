@@ -373,6 +373,10 @@ function pepselect_child_get_legal_documents() {
 					'text'  => 'Messaging Program Terms and Conditions',
 				),
 				array(
+					'type' => 'paragraph',
+					'html' => 'By checking the policy agreement box at checkout, you acknowledge that you have read and agree to these Messaging Program Terms and Conditions.',
+				),
+				array(
 					'type'    => 'list',
 					'ordered' => true,
 					'items'   => array(

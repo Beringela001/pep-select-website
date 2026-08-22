@@ -5,6 +5,7 @@
 ## 0.25.0-beta.47 - 2026-08-21
 
 - Add the approved Data Sharing and Messaging Program Terms and Conditions sections to the Privacy Policy, add the messaging terms to Terms & Conditions, and update both revision dates.
+- State that checking the policy agreement box at checkout acknowledges acceptance of the Messaging Program Terms and Conditions.
 - Add the tap-to-call customer-service number to the Contact page and global footer.
 
 **Release candidate: 0.25.0-beta.46** - Normalize My Account card spacing.

@@ -16,11 +16,8 @@ const footer = fs.readFileSync(
 );
 
 assert.ok(legalContent.includes("'text'  => 'Data Sharing'"), 'Privacy Policy Data Sharing section missing');
-assert.strictEqual(
-	(legalContent.match(/Messaging Program Terms and Conditions/g) || []).length,
-	2,
-	'Messaging terms must appear in both Terms & Conditions and the Privacy Policy'
-);
+assert.ok(legalContent.includes("'text'  => '12. Messaging Program Terms and Conditions'"), 'Terms & Conditions messaging section missing');
+assert.ok(legalContent.includes("'text'  => 'Messaging Program Terms and Conditions'"), 'Privacy Policy messaging section missing');
 assert.strictEqual(
 	(legalContent.match(/Mobile opt-in and consent are never shared with anyone for any purpose\./g) || []).length,
 	1,
@@ -35,6 +32,10 @@ assert.strictEqual(
 	(legalContent.match(/Carriers are not liable for delayed or undelivered messages\./g) || []).length,
 	2,
 	'Carrier disclaimer must appear in both messaging-terms sections'
+);
+assert.ok(
+	legalContent.includes('By checking the policy agreement box at checkout, you acknowledge that you have read and agree to these Messaging Program Terms and Conditions.'),
+	'Privacy Policy checkout acknowledgment is missing'
 );
 assert.ok(legalContent.includes("'text'  => '12. Messaging Program Terms and Conditions'"), 'Terms messaging section numbering is incorrect');
 assert.ok(legalContent.includes("'text'  => '15. Contact'"), 'Terms sections after messaging clause were not renumbered');
