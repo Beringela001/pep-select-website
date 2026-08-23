@@ -1,6 +1,13 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.51** - Apply the approved new labels to the homepage hero lineup.
+**Release candidate: 0.25.0-beta.52** - Replace the homepage hero with the approved finished vial artwork.
+
+## 0.25.0-beta.52 - 2026-08-23
+
+- Replace the prior composited homepage hero with the approved finished 4096 px artwork featuring the new Pep Select logo and updated vial labels.
+- Regenerate the existing seven responsive WebP hero sizes while preserving the homepage layout, copy, image treatment, and responsive source selection.
+
+**Previous release candidate: 0.25.0-beta.51** - Apply the approved new labels to the homepage hero lineup.
 
 ## 0.25.0-beta.51 - 2026-08-22
 
