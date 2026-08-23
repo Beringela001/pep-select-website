@@ -1,0 +1,1025 @@
+{
+  "psi": {
+    "mobile": {
+      "url": "https://pepselect.com/testing/",
+      "strategy": "mobile",
+      "lighthouse_scores": {
+        "performance": 60,
+        "accessibility": 97,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "lab_metrics": {
+        "first-contentful-paint": {
+          "value": 5808.807163011043,
+          "display": "5.8\u00a0s",
+          "score": 0.04
+        },
+        "largest-contentful-paint": {
+          "value": 9011.779800552655,
+          "display": "9.0\u00a0s",
+          "score": 0.01
+        },
+        "total-blocking-time": {
+          "value": 59.5,
+          "display": "60\u00a0ms",
+          "score": 1
+        },
+        "cumulative-layout-shift": {
+          "value": 0,
+          "display": "0",
+          "score": 1
+        },
+        "speed-index": {
+          "value": 6260.960410499184,
+          "display": "6.3\u00a0s",
+          "score": 0.42
+        },
+        "interactive": {
+          "value": 9025.706281017141,
+          "display": "9.0\u00a0s",
+          "score": 0.33
+        }
+      },
+      "field_metrics": {},
+      "opportunities": [
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "savings_ms": 1650,
+          "description": "Reduce unused JavaScript and defer loading scripts until they are required to decrease bytes consumed by network activity. [Learn how to reduce unused JavaScript](https://developer.chrome.com/docs/lighthouse/performance/unused-javascript/)."
+        }
+      ],
+      "diagnostics": [
+        {
+          "id": "total-byte-weight",
+          "title": "Avoids enormous network payloads",
+          "display": "Total size was 1,293\u00a0KiB",
+          "score": 1,
+          "description": "Large network payloads cost users real money and are highly correlated with long load times. [Learn how to reduce payload sizes](https://developer.chrome.com/docs/lighthouse/performance/total-byte-weight/)."
+        },
+        {
+          "id": "mainthread-work-breakdown",
+          "title": "Minimizes main-thread work",
+          "display": "1.4\u00a0s",
+          "score": 1,
+          "description": "Consider reducing the time spent parsing, compiling and executing JS. You may find delivering smaller JS payloads helps with this. [Learn how to minimize main-thread work](https://developer.chrome.com/docs/lighthouse/performance/mainthread-work-breakdown/)"
+        },
+        {
+          "id": "bootup-time",
+          "title": "JavaScript execution time",
+          "display": "0.5\u00a0s",
+          "score": 1,
+          "description": "Consider reducing the time spent parsing, compiling, and executing JS. You may find delivering smaller JS payloads helps with this. [Learn how to reduce Javascript execution time](https://developer.chrome.com/docs/lighthouse/performance/bootup-time/)."
+        },
+        {
+          "id": "layout-shifts",
+          "title": "Avoid large layout shifts",
+          "display": "",
+          "score": null,
+          "description": "These are the largest layout shifts observed on the page. Each table item represents a single layout shift, and shows the element that shifted the most. Below each item are possible root causes that led to the layout shift. Some of these layout shifts may not be included in the CLS metric value due to [windowing](https://web.dev/articles/cls#what_is_cls). [Learn how to improve CLS](https://web.dev/articles/optimize-cls)"
+        },
+        {
+          "id": "long-tasks",
+          "title": "Avoid long main-thread tasks",
+          "display": "5 long tasks found",
+          "score": 1,
+          "description": "Lists the longest tasks on the main thread, useful for identifying worst contributors to input delay. [Learn how to avoid long main-thread tasks](https://web.dev/articles/optimize-long-tasks)"
+        },
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "display": "Est savings of 256\u00a0KiB",
+          "score": 0,
+          "description": "Reduce unused JavaScript and defer loading scripts until they are required to decrease bytes consumed by network activity. [Learn how to reduce unused JavaScript](https://developer.chrome.com/docs/lighthouse/performance/unused-javascript/)."
+        },
+        {
+          "id": "unused-css-rules",
+          "title": "Reduce unused CSS",
+          "display": "",
+          "score": 1,
+          "description": "Reduce unused rules from stylesheets and defer CSS not used for above-the-fold content to decrease bytes consumed by network activity. [Learn how to reduce unused CSS](https://developer.chrome.com/docs/lighthouse/performance/unused-css-rules/)."
+        }
+      ],
+      "failed_audits": [
+        {
+          "id": "color-contrast",
+          "title": "Background and foreground colors do not have a sufficient contrast ratio.",
+          "score": 0,
+          "display": "",
+          "description": "Low-contrast text is difficult or impossible for many users to read. [Learn how to provide sufficient color contrast](https://dequeuniversity.com/rules/axe/4.12/color-contrast)."
+        },
+        {
+          "id": "cache-insight",
+          "title": "Use efficient cache lifetimes",
+          "score": 0,
+          "display": "Est savings of 16\u00a0KiB",
+          "description": "A long cache lifetime can speed up repeat visits to your page. [Learn more about caching](https://developer.chrome.com/docs/performance/insights/cache)."
+        },
+        {
+          "id": "forced-reflow-insight",
+          "title": "Forced reflow",
+          "score": 0,
+          "display": "",
+          "description": "A forced reflow occurs when JavaScript queries geometric properties (such as `offsetWidth`) after styles have been invalidated by a change to the DOM state. This can result in poor performance. Learn more about [forced reflows](https://developer.chrome.com/docs/performance/insights/forced-reflow) and possible mitigations."
+        },
+        {
+          "id": "network-dependency-tree-insight",
+          "title": "Network dependency tree",
+          "score": 0,
+          "display": "",
+          "description": "[Avoid chaining critical requests](https://developer.chrome.com/docs/performance/insights/network-dependency-tree) by reducing the length of chains, reducing the download size of resources, or deferring the download of unnecessary resources to improve page load."
+        },
+        {
+          "id": "font-display-insight",
+          "title": "Font display",
+          "score": 0,
+          "display": "Est savings of 80\u00a0ms",
+          "description": "Consider setting [`font-display`](https://developer.chrome.com/docs/performance/insights/font-display) to `swap` or `optional` to ensure text is consistently visible. `swap` can be further optimized to mitigate layout shifts with [font metric overrides](https://developer.chrome.com/blog/font-fallbacks)."
+        },
+        {
+          "id": "render-blocking-insight",
+          "title": "Render-blocking requests",
+          "score": 0,
+          "display": "Est savings of 1,780\u00a0ms",
+          "description": "Requests are blocking the page's initial render, which may delay LCP. [Deferring or inlining](https://developer.chrome.com/docs/performance/insights/render-blocking) can move these network requests out of the critical path."
+        },
+        {
+          "id": "image-delivery-insight",
+          "title": "Improve image delivery",
+          "score": 0,
+          "display": "Est savings of 112\u00a0KiB",
+          "description": "Reducing the download time of images can improve the perceived load time of the page and LCP. [Learn more about optimizing image size](https://developer.chrome.com/docs/performance/insights/image-delivery)"
+        },
+        {
+          "id": "largest-contentful-paint",
+          "title": "Largest Contentful Paint",
+          "score": 0.01,
+          "display": "9.0\u00a0s",
+          "description": "Largest Contentful Paint marks the time at which the largest text or image is painted. [Learn more about the Largest Contentful Paint metric](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint/)"
+        },
+        {
+          "id": "first-contentful-paint",
+          "title": "First Contentful Paint",
+          "score": 0.04,
+          "display": "5.8\u00a0s",
+          "description": "First Contentful Paint marks the time at which the first text or image is painted. [Learn more about the First Contentful Paint metric](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint/)."
+        },
+        {
+          "id": "interactive",
+          "title": "Time to Interactive",
+          "score": 0.33,
+          "display": "9.0\u00a0s",
+          "description": "Time to Interactive is the amount of time it takes for the page to become fully interactive. [Learn more about the Time to Interactive metric](https://developer.chrome.com/docs/lighthouse/performance/interactive/)."
+        },
+        {
+          "id": "speed-index",
+          "title": "Speed Index",
+          "score": 0.42,
+          "display": "6.3\u00a0s",
+          "description": "Speed Index shows how quickly the contents of a page are visibly populated. [Learn more about the Speed Index metric](https://developer.chrome.com/docs/lighthouse/performance/speed-index/)."
+        },
+        {
+          "id": "unminified-javascript",
+          "title": "Minify JavaScript",
+          "score": 0.5,
+          "display": "Est savings of 2\u00a0KiB",
+          "description": "Minifying JavaScript files can reduce payload sizes and script parse time. [Learn how to minify JavaScript](https://developer.chrome.com/docs/lighthouse/performance/unminified-javascript/)."
+        },
+        {
+          "id": "unsized-images",
+          "title": "Image elements do not have explicit `width` and `height`",
+          "score": 0.5,
+          "display": "",
+          "description": "Set an explicit width and height on image elements to reduce layout shifts and improve CLS. [Learn how to set image dimensions](https://web.dev/articles/optimize-cls#images_without_dimensions)"
+        }
+      ],
+      "passed_audits_count": 83,
+      "seo_audits": [
+        {
+          "id": "is-crawlable",
+          "title": "Page isn\u2019t blocked from indexing",
+          "score": 1,
+          "pass": true
+        },
+        {
+          "id": "document-title",
+          "title": "Document has a `<title>` element",
+          "score": 1,
+          "pass": true
+        },
+        {
+          "id": "meta-description",
+          "title": "Document has a meta description",
+          "score": 1,
+          "pass": true
+        },
+        {
+          "id": "http-status-code",
+          "title": "Page has successful HTTP status code",
+          "score": 1,
+          "pass": true
+        },
+        {
+          "id": "link-text",
+          "title": "Links have descriptive text",
+          "score": 1,
+          "pass": true
+        },
+        {
+          "id": "crawlable-anchors",
+          "title": "Links are crawlable",
+          "score": 1,
+          "pass": true
+        },
+        {
+          "id": "robots-txt",
+          "title": "robots.txt is valid",
+          "score": 1,
+          "pass": true
+        },
+        {
+          "id": "image-alt",
+          "title": "Image elements have `[alt]` attributes",
+          "score": 1,
+          "pass": true
+        },
+        {
+          "id": "hreflang",
+          "title": "Document has a valid `hreflang`",
+          "score": 1,
+          "pass": true
+        },
+        {
+          "id": "canonical",
+          "title": "Document has a valid `rel=canonical`",
+          "score": 1,
+          "pass": true
+        }
+      ],
+      "accessibility_audits": [
+        {
+          "id": "color-contrast",
+          "title": "Background and foreground colors do not have a sufficient contrast ratio.",
+          "score": 0,
+          "display": ""
+        }
+      ],
+      "audit_details": {
+        "viewport-insight": {
+          "title": "Optimize viewport for mobile",
+          "headings": [
+            "node"
+          ],
+          "items": [
+            {
+              "node": "{'type': 'node', 'lhId': 'page-6-META', 'path': '1,HTML,0,HEAD,1,META', 'selector': 'head > meta', 'boundingRect': {'top': 0, 'bottom': 0, 'left': 0, 'right': 0, 'width': 0, 'height': 0}, 'snippet': '"
+            }
+          ],
+          "total_items": 1
+        },
+        "unminified-javascript": {
+          "title": "Minify JavaScript",
+          "headings": [
+            "url",
+            "totalBytes",
+            "wastedBytes"
+          ],
+          "items": [
+            {
+              "url": "https://pepselect.com/wp-content/plugins/woocommerce-side-cart-premium/assets/js/xoo-wsc-main.js?ver=4.9.1",
+              "totalBytes": 9967,
+              "wastedBytes": 2311
+            }
+          ],
+          "total_items": 1
+        },
+        "total-byte-weight": {
+          "title": "Avoids enormous network payloads",
+          "headings": [
+            "url",
+            "totalBytes"
+          ],
+          "items": [
+            {
+              "url": "https://www.googletagmanager.com/gtag/js?id=GT-NNQ4N6DP",
+              "totalBytes": 186583
+            },
+            {
+              "url": "https://pagead2.googlesyndication.com/pagead/managed/js/adsense/m202608190101/show_ads_impl_fy2021.js?bust=122880587",
+              "totalBytes": 166760
+            },
+            {
+              "url": "https://pepselect.com/wp-content/themes/pepselect-child/assets/images/brand/pep-select-logo-header.png",
+              "totalBytes": 107894
+            },
+            {
+              "url": "https://pepselect.com/wp-content/uploads/2026/08/NAD500_Chat-600x750.jpg",
+              "totalBytes": 67594
+            },
+            {
+              "url": "https://pepselect.com/wp-content/uploads/2026/08/GLP3-RT10_Chat-600x750.jpg",
+              "totalBytes": 61378
+            }
+          ],
+          "total_items": 10
+        },
+        "unused-javascript": {
+          "title": "Reduce unused JavaScript",
+          "headings": [
+            "url",
+            "totalBytes",
+            "wastedBytes"
+          ],
+          "items": [
+            {
+              "url": "https://pagead2.googlesyndication.com/pagead/managed/js/adsense/m202608190101/show_ads_impl_fy2021.js?bust=122880587",
+              "totalBytes": 166005,
+              "wastedBytes": 122304
+            },
+            {
+              "url": "https://www.googletagmanager.com/gtag/js?id=GT-NNQ4N6DP",
+              "totalBytes": 185894,
+              "wastedBytes": 76476
+            },
+            {
+              "url": "https://pepselect.com/wp-content/plugins/woocommerce-side-cart-premium/assets/library/confetti/confetti.js?ver=1.0",
+              "totalBytes": 34037,
+              "wastedBytes": 31820
+            },
+            {
+              "url": "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5423609534372999&host=ca-host-pub-2644536267352236",
+              "totalBytes": 57078,
+              "wastedBytes": 31060
+            }
+          ],
+          "total_items": 4
+        },
+        "long-tasks": {
+          "title": "Avoid long main-thread tasks",
+          "headings": [
+            "url",
+            "startTime",
+            "duration"
+          ],
+          "items": [
+            {
+              "url": "https://www.googletagmanager.com/gtag/js?id=GT-NNQ4N6DP",
+              "startTime": 5577.003024081187,
+              "duration": 106
+            },
+            {
+              "url": "https://www.googletagmanager.com/gtag/js?id=GT-NNQ4N6DP",
+              "startTime": 5683.003024081187,
+              "duration": 75
+            },
+            {
+              "url": "https://pagead2.googlesyndication.com/pagead/managed/js/adsense/m202608190101/show_ads_impl_fy2021.js?bust=122880587",
+              "startTime": 6380.021478573419,
+              "duration": 75
+            },
+            {
+              "url": "https://www.googletagmanager.com/gtag/js?id=GT-NNQ4N6DP",
+              "startTime": 5758.003024081187,
+              "duration": 63
+            },
+            {
+              "url": "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5423609534372999&host=ca-host-pub-2644536267352236",
+              "startTime": 3023.0095374313873,
+              "duration": 57
+            }
+          ],
+          "total_items": 5
+        },
+        "color-contrast": {
+          "title": "Background and foreground colors do not have a sufficient contrast ratio.",
+          "headings": [
+            "node"
+          ],
+          "items": [
+            {
+              "node": "{'explanation': 'Fix any of the following:\\n  Element has insufficient color contrast of 3.67 (foreground color: #7a8793, background color: #ffffff, font size: 8.3pt (11px), font weight: bold). Expect"
+            },
+            {
+              "node": "{'explanation': 'Fix any of the following:\\n  Element has insufficient color contrast of 3.67 (foreground color: #7a8793, background color: #ffffff, font size: 8.3pt (11px), font weight: bold). Expect"
+            },
+            {
+              "node": "{'nodeLabel': 'READ THE RESEARCHER ATTESTATION\\n\u2303', 'explanation': 'Fix any of the following:\\n  Element has insufficient color contrast of 2.98 (foreground color: #17a1cf, background color: #ffffff, "
+            },
+            {
+              "node": "{'boundingRect': {'height': 17, 'top': 726, 'bottom': 743, 'left': 38, 'right': 374, 'width': 336}, 'snippet': '<p class=\"psag-note\">', 'nodeLabel': 'Research use only. Recorded for compliance.', 'exp"
+            }
+          ],
+          "total_items": 4
+        },
+        "trusted-types-xss": {
+          "title": "Mitigate DOM-based XSS with Trusted Types",
+          "headings": [
+            "description",
+            "severity"
+          ],
+          "items": [
+            {
+              "description": "No `Content-Security-Policy` header with Trusted Types directive found",
+              "severity": "High"
+            }
+          ],
+          "total_items": 1
+        },
+        "network-requests": {
+          "title": "Network Requests",
+          "headings": [
+            "url",
+            "protocol",
+            "networkRequestTime",
+            "networkEndTime",
+            "transferSize",
+            "resourceSize",
+            "statusCode",
+            "mimeType",
+            "resourceType"
+          ],
+          "items": [
+            {
+              "url": "https://pepselect.com/testing/",
+              "protocol": "h2",
+              "networkRequestTime": 3.3369998931884766,
+              "networkEndTime": 142.60300016403198,
+              "transferSize": 34858,
+              "resourceSize": 160282,
+              "statusCode": 200,
+              "mimeType": "text/html",
+              "resourceType": "Document"
+            },
+            {
+              "url": "https://pepselect.com/wp-content/plugins/pepselect-coa-archive/assets/css/pepselect-coa-frontend.css?ver=0.7.5",
+              "protocol": "h2",
+              "networkRequestTime": 158.97499990463257,
+              "networkEndTime": 358.0679998397827,
+              "transferSize": 13432,
+              "resourceSize": 80478,
+              "statusCode": 200,
+              "mimeType": "text/css",
+              "resourceType": "Stylesheet"
+            },
+            {
+              "url": "https://pepselect.com/wp-content/plugins/woocommerce-side-cart-premium/assets/css/xoo-wsc-fonts.css?ver=4.9.1",
+              "protocol": "h2",
+              "networkRequestTime": 159.06399965286255,
+              "networkEndTime": 265.36499977111816,
+              "transferSize": 1963,
+              "resourceSize": 4019,
+              "statusCode": 200,
+              "mimeType": "text/css",
+              "resourceType": "Stylesheet"
+            },
+            {
+              "url": "https://pepselect.com/wp-content/plugins/woocommerce-side-cart-premium/assets/css/xoo-wsc-style.css?ver=4.9.1",
+              "protocol": "h2",
+              "networkRequestTime": 159.14299964904785,
+              "networkEndTime": 307.5640001296997,
+              "transferSize": 7425,
+              "resourceSize": 33912,
+              "statusCode": 200,
+              "mimeType": "text/css",
+              "resourceType": "Stylesheet"
+            },
+            {
+              "url": "https://pepselect.com/wp-content/themes/hello-elementor/assets/css/reset.css?ver=3.4.9",
+              "protocol": "h2",
+              "networkRequestTime": 159.25,
+              "networkEndTime": 272.521999835968,
+              "transferSize": 2802,
+              "resourceSize": 5496,
+              "statusCode": 200,
+              "mimeType": "text/css",
+              "resourceType": "Stylesheet"
+            }
+          ],
+          "total_items": 78
+        },
+        "resource-summary": {
+          "title": "Resources Summary",
+          "headings": [
+            "label",
+            "requestCount",
+            "transferSize"
+          ],
+          "items": [
+            {
+              "label": "Total",
+              "requestCount": 76,
+              "transferSize": 1324536
+            },
+            {
+              "label": "Script",
+              "requestCount": 37,
+              "transferSize": 670153
+            },
+            {
+              "label": "Image",
+              "requestCount": 14,
+              "transferSize": 399333
+            },
+            {
+              "label": "Font",
+              "requestCount": 6,
+              "transferSize": 141740
+            },
+            {
+              "label": "Stylesheet",
+              "requestCount": 10,
+              "transferSize": 48119
+            }
+          ],
+          "total_items": 9
+        },
+        "network-rtt": {
+          "title": "Network Round Trip Times",
+          "headings": [
+            "origin",
+            "rtt"
+          ],
+          "items": [
+            {
+              "origin": "https://stats.wp.com",
+              "rtt": 1.387395
+            },
+            {
+              "origin": "https://pixel.wp.com",
+              "rtt": 1.16037
+            },
+            {
+              "origin": "https://fonts.googleapis.com",
+              "rtt": 1.0466099999999998
+            },
+            {
+              "origin": "https://analytics.google.com",
+              "rtt": 0.8999999999999999
+            },
+            {
+              "origin": "https://googleads.g.doubleclick.net",
+              "rtt": 0.8999999999999999
+            }
+          ],
+          "total_items": 12
+        },
+        "has-hsts": {
+          "title": "Use a strong HSTS policy",
+          "headings": [
+            "description",
+            "directive",
+            "severity"
+          ],
+          "items": [
+            {
+              "description": "No HSTS header found",
+              "severity": "High"
+            }
+          ],
+          "total_items": 1
+        },
+        "cache-insight": {
+          "title": "Use efficient cache lifetimes",
+          "headings": [
+            "url",
+            "cacheLifetimeMs",
+            "totalBytes"
+          ],
+          "items": [
+            {
+              "url": "https://pagead2.googlesyndication.com/pagead/managed/js/adsense/m202608190101/show_ads_impl_fy2021.js?bust=122880587",
+              "cacheLifetimeMs": 1209600000,
+              "totalBytes": 166760
+            }
+          ],
+          "total_items": 1
+        },
+        "clickjacking-mitigation": {
+          "title": "Mitigate clickjacking with XFO or CSP",
+          "headings": [
+            "description",
+            "severity"
+          ],
+          "items": [
+            {
+              "description": "No frame control policy found",
+              "severity": "High"
+            }
+          ],
+          "total_items": 1
+        },
+        "baseline": {
+          "title": "Baseline Features",
+          "headings": [
+            "featureId",
+            "displayStatus",
+            "source"
+          ],
+          "items": [
+            {
+              "featureId": "https://webstatus.dev/features/background-clip-text",
+              "displayStatus": "{'type': 'baseline-status', 'status': 'limited', 'displayString': 'Limited Availability'}",
+              "source": "https://pepselect.com/wp-includes/js/jquery/jquery.min.js?ver=3.7.1"
+            },
+            {
+              "featureId": "https://webstatus.dev/features/sizes-auto",
+              "displayStatus": "{'type': 'baseline-status', 'status': 'limited', 'displayString': 'Limited Availability'}",
+              "source": "https://pepselect.com/testing/"
+            },
+            {
+              "featureId": "https://webstatus.dev/features/speculation-rules",
+              "displayStatus": "{'type': 'baseline-status', 'status': 'limited', 'displayString': 'Limited Availability'}",
+              "source": "https://pepselect.com/testing/"
+            },
+            {
+              "featureId": "https://webstatus.dev/features/ua-client-hints",
+              "displayStatus": "{'status': 'limited', 'displayString': 'Limited Availability', 'type': 'baseline-status'}",
+              "source": "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5423609534372999&host=ca-host-pub-2644536267352236"
+            },
+            {
+              "featureId": "https://webstatus.dev/features/accent-color",
+              "displayStatus": "{'type': 'baseline-status', 'status': 'limited', 'displayString': 'Limited Availability'}",
+              "source": "https://pepselect.com/testing/"
+            }
+          ],
+          "total_items": 36
+        },
+        "server-response-time": {
+          "title": "Initial server response time was short",
+          "headings": [
+            "url",
+            "responseTime"
+          ],
+          "items": [
+            {
+              "url": "https://pepselect.com/testing/",
+              "responseTime": 20
+            }
+          ],
+          "total_items": 1
+        },
+        "bootup-time": {
+          "title": "JavaScript execution time",
+          "headings": [
+            "url",
+            "total",
+            "scripting",
+            "scriptParseCompile"
+          ],
+          "items": [
+            {
+              "url": "https://www.googletagmanager.com/gtag/js?id=GT-NNQ4N6DP",
+              "total": 311.84159999999986,
+              "scripting": 122.36159999999988,
+              "scriptParseCompile": 63.510000000000005
+            },
+            {
+              "url": "https://pepselect.com/testing/",
+              "total": 208.25879999999998,
+              "scripting": 8.213999999999995,
+              "scriptParseCompile": 6.122399999999997
+            },
+            {
+              "url": "Unattributable",
+              "total": 166.3668000000004,
+              "scripting": 2.9531999999999994,
+              "scriptParseCompile": 0
+            },
+            {
+              "url": "https://pagead2.googlesyndication.com/pagead/managed/js/adsense/m202608190101/show_ads_impl_fy2021.js?bust=122880587",
+              "total": 158.13840000000008,
+              "scripting": 87.79920000000006,
+              "scriptParseCompile": 63.6312
+            },
+            {
+              "url": "https://pepselect.com/wp-includes/js/jquery/jquery.min.js?ver=3.7.1",
+              "total": 67.13760000000005,
+              "scripting": 52.842000000000056,
+              "scriptParseCompile": 8.4324
+            }
+          ],
+          "total_items": 6
+        },
+        "network-server-latency": {
+          "title": "Server Backend Latencies",
+          "headings": [
+            "origin",
+            "serverResponseTime"
+          ],
+          "items": [
+            {
+              "origin": "https://fonts.googleapis.com",
+              "serverResponseTime": 6
+            },
+            {
+              "origin": "https://www.googletagmanager.com",
+              "serverResponseTime": 5
+            },
+            {
+              "origin": "https://stats.wp.com",
+              "serverResponseTime": 2
+            },
+            {
+              "origin": "https://googleads.g.doubleclick.net",
+              "serverResponseTime": 1.5
+            },
+            {
+              "origin": "https://ep1.adtrafficquality.google",
+              "serverResponseTime": 1.5
+            }
+          ],
+          "total_items": 12
+        },
+        "dom-size-insight": {
+          "title": "Optimize DOM size",
+          "headings": [
+            "statistic",
+            "node",
+            "value"
+          ],
+          "items": [
+            {
+              "statistic": "Total elements",
+              "value": "{'value': 626, 'type': 'numeric', 'granularity': 1}"
+            },
+            {
+              "statistic": "DOM depth",
+              "node": "{'type': 'node', 'lhId': 'page-8-SPAN', 'path': '1,HTML,1,BODY,2,DIV,0,DIV,0,DIV,5,DIV,1,DIV,0,DIV,0,DIV,1,DIV,2,DIV,1,SPAN,0,SPAN,0,SPAN', 'selector': 'div.pepselect-bacwater__row > span.pepselect-ba",
+              "value": "{'type': 'numeric', 'granularity': 1, 'value': 13}"
+            },
+            {
+              "statistic": "Most children",
+              "node": "{'type': 'node', 'lhId': 'page-7-BODY', 'path': '1,HTML,1,BODY', 'selector': 'body.blog', 'boundingRect': {'top': 0, 'bottom': 7890, 'left': 0, 'right': 412, 'width': 412, 'height': 7890}, 'snippet': ",
+              "value": "{'type': 'numeric', 'granularity': 1, 'value': 53}"
+            }
+          ],
+          "total_items": 3
+        },
+        "non-composited-animations": {
+          "title": "Avoid non-composited animations",
+          "headings": [
+            "node"
+          ],
+          "items": [
+            {
+              "node": "{'snippet': '<select id=\"psagType\">', 'nodeLabel': 'Select\u2026\\nUniversity / academic institution\\nPrivate research laboratory\\nBiotech /\u2026', 'type': 'node', 'lhId': 'page-3-SELECT', 'path': '1,HTML,1,BOD"
+            }
+          ],
+          "total_items": 1
+        },
+        "csp-xss": {
+          "title": "Ensure CSP is effective against XSS attacks",
+          "headings": [
+            "description",
+            "directive",
+            "severity"
+          ],
+          "items": [
+            {
+              "description": "No CSP found in enforcement mode",
+              "severity": "High"
+            }
+          ],
+          "total_items": 1
+        },
+        "unsized-images": {
+          "title": "Image elements do not have explicit `width` and `height`",
+          "headings": [
+            "node",
+            "url"
+          ],
+          "items": [
+            {
+              "node": "{'snippet': '<img src=\"https://pepselect.com/wp-content/plugins/side-cart-woocommerce/assets/imag\u2026\" class=\"xoo-wsc-emp-img\" alt=\"Empty Cart\">', 'nodeLabel': 'Empty Cart', 'type': 'node', 'lhId': '1-82",
+              "url": "https://pepselect.com/wp-content/plugins/side-cart-woocommerce/assets/images/empty-cart.png"
+            }
+          ],
+          "total_items": 1
+        },
+        "origin-isolation": {
+          "title": "Ensure proper origin isolation with COOP",
+          "headings": [
+            "description",
+            "directive",
+            "severity"
+          ],
+          "items": [
+            {
+              "description": "No COOP header found",
+              "severity": "High"
+            }
+          ],
+          "total_items": 1
+        },
+        "third-parties-insight": {
+          "title": "3rd parties",
+          "headings": [
+            "entity",
+            "transferSize",
+            "mainThreadTime"
+          ],
+          "items": [
+            {
+              "entity": "Google Tag Manager",
+              "transferSize": 186583,
+              "mainThreadTime": 154.16200065612793
+            },
+            {
+              "entity": "Google/Doubleclick Ads",
+              "transferSize": 254512,
+              "mainThreadTime": 128.60999870300293
+            },
+            {
+              "entity": "adtrafficquality.google",
+              "transferSize": 28875,
+              "mainThreadTime": 15.78000020980835
+            },
+            {
+              "entity": "WordPress Site Stats",
+              "transferSize": 6553,
+              "mainThreadTime": 6.228000164031982
+            },
+            {
+              "entity": "Other Google APIs/SDKs",
+              "transferSize": 1587,
+              "mainThreadTime": 1.795999526977539
+            }
+          ],
+          "total_items": 7
+        },
+        "mainthread-work-breakdown": {
+          "title": "Minimizes main-thread work",
+          "headings": [
+            "groupLabel",
+            "duration"
+          ],
+          "items": [
+            {
+              "groupLabel": "Script Evaluation",
+              "duration": 635.6339999999954
+            },
+            {
+              "groupLabel": "Style & Layout",
+              "duration": 259.70519999999993
+            },
+            {
+              "groupLabel": "Script Parsing & Compilation",
+              "duration": 232.0068
+            },
+            {
+              "groupLabel": "Other",
+              "duration": 171.37559999999883
+            },
+            {
+              "groupLabel": "Parse HTML & CSS",
+              "duration": 44.05680000000004
+            }
+          ],
+          "total_items": 7
+        },
+        "font-display-insight": {
+          "title": "Font display",
+          "headings": [
+            "url",
+            "wastedMs"
+          ],
+          "items": [
+            {
+              "url": "https://pepselect.com/wp-content/plugins/woocommerce-side-cart-premium/assets/css/fonts/Woo-Side-Cart.ttf?qq7fgp",
+              "wastedMs": 75
+            }
+          ],
+          "total_items": 1
+        },
+        "js-libraries": {
+          "title": "Detected JavaScript libraries",
+          "headings": [
+            "name",
+            "version"
+          ],
+          "items": [
+            {
+              "name": "jQuery",
+              "version": "3.7.1"
+            },
+            {
+              "name": "Underscore",
+              "version": "1.13.8"
+            },
+            {
+              "name": "WordPress",
+              "version": "7.1"
+            }
+          ],
+          "total_items": 3
+        },
+        "valid-source-maps": {
+          "title": "Page has valid source maps",
+          "headings": [
+            "scriptUrl",
+            "sourceMapUrl"
+          ],
+          "items": [
+            {
+              "scriptUrl": "https://pagead2.googlesyndication.com/bg/d-sel7hHxnlBH1yB_4LL3EONYIekx-xNwWnGEBmAkr0.js"
+            }
+          ],
+          "total_items": 1
+        },
+        "render-blocking-insight": {
+          "title": "Render-blocking requests",
+          "headings": [
+            "url",
+            "totalBytes",
+            "wastedMs"
+          ],
+          "items": [
+            {
+              "url": "https://pepselect.com/wp-content/plugins/pepselect-coa-archive/assets/css/pepselect-coa-frontend.css?ver=0.7.5",
+              "totalBytes": 13432,
+              "wastedMs": 751
+            },
+            {
+              "url": "https://pepselect.com/wp-includes/js/jquery/jquery.min.js?ver=3.7.1",
+              "totalBytes": 30828,
+              "wastedMs": 1651
+            },
+            {
+              "url": "https://pepselect.com/wp-includes/js/underscore.min.js?ver=1.13.8",
+              "totalBytes": 8439,
+              "wastedMs": 451
+            },
+            {
+              "url": "https://pepselect.com/wp-content/plugins/woocommerce-side-cart-premium/assets/css/xoo-wsc-style.css?ver=4.9.1",
+              "totalBytes": 7425,
+              "wastedMs": 751
+            },
+            {
+              "url": "https://pepselect.com/wp-content/themes/hello-elementor/assets/css/theme.css?ver=3.4.9",
+              "totalBytes": 2341,
+              "wastedMs": 451
+            }
+          ],
+          "total_items": 15
+        },
+        "main-thread-tasks": {
+          "title": "Tasks",
+          "headings": [
+            "startTime",
+            "duration"
+          ],
+          "items": [
+            {
+              "startTime": 146.356,
+              "duration": 17.913
+            },
+            {
+              "startTime": 362.544,
+              "duration": 40.359
+            },
+            {
+              "startTime": 404.034,
+              "duration": 12.694
+            },
+            {
+              "startTime": 427.535,
+              "duration": 47.407
+            },
+            {
+              "startTime": 482.789,
+              "duration": 88.242
+            }
+          ],
+          "total_items": 43
+        },
+        "image-delivery-insight": {
+          "title": "Improve image delivery",
+          "headings": [
+            "node",
+            "url",
+            "totalBytes",
+            "wastedBytes"
+          ],
+          "items": [
+            {
+              "node": "{'nodeLabel': 'Pep Select', 'type': 'node', 'lhId': 'page-0-IMG', 'path': '1,HTML,1,BODY,0,HEADER,1,DIV,0,DIV,0,DIV,0,A,0,IMG', 'selector': 'div.pepselect-header__inner > div.pepselect-header__brand >",
+              "url": "https://pepselect.com/wp-content/themes/pepselect-child/assets/images/brand/pep-select-logo-header.png",
+              "totalBytes": 107017,
+              "wastedBytes": 106279
+            },
+            {
+              "node": "{'type': 'node', 'lhId': 'page-1-IMG', 'path': '1,HTML,1,BODY,46,DIV,0,DIV,0,DIV,0,IMG', 'selector': 'div#psag-gate > div.psag-card > div.psag-logo > img.attachment-medium', 'boundingRect': {'left': 9",
+              "url": "https://pepselect.com/wp-content/uploads/2026/06/Logo_Pepselect_Whitebackground-1-300x72.png",
+              "totalBytes": 12139,
+              "wastedBytes": 8539
+            }
+          ],
+          "total_items": 2
+        }
+      },
+      "analysis_timestamp": "2026-08-23T12:12:38.849Z",
+      "error": null
+    }
+  }
+}

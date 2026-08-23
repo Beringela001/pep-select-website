@@ -1,0 +1,818 @@
+{
+ "audit_date": "2026-08-23",
+ "site": "https://pepselect.com",
+ "plugin": "claude-seo 2.2.4",
+ "auth_tier": "Tier 2 (API key + OAuth + GA4 property configured; GA4 access grant pending)",
+ "baseline": "docs/claude-seo-audit-2026-08-20",
+ "footprint_urls": 46,
+ "products": 17,
+ "compound_hubs": 8,
+ "coa_batch_reports": 9,
+ "reverified_count": 97,
+ "counts": {
+  "VERIFIED FIXED": 14,
+  "PARTIALLY FIXED": 17,
+  "STILL OPEN": 46,
+  "BLOCKED BY REAL EVIDENCE": 13,
+  "SUPERSEDED": 7,
+  "REGRESSED": 0
+ },
+ "new_findings": [
+  {
+   "id": "TECH-08",
+   "priority": "Low",
+   "class": "NEW (info)",
+   "evidence": "product-sitemap batch-resave on catalog reorder \u2014 cosmetic, mirrors MAP-02; not a defect."
+  },
+  {
+   "id": "SCHEMA-11",
+   "priority": "Medium",
+   "class": "NEW",
+   "evidence": "Real phone now on-page but absent from Organization/ContactPage JSON-LD; add telephone/contactPoint from the verbatim number. Code-ready."
+  },
+  {
+   "id": "SCHEMA-12",
+   "priority": "Low",
+   "class": "NEW (info)",
+   "evidence": "Minor schema hygiene note (see schema.md)."
+  },
+  {
+   "id": "CONT-15",
+   "priority": "Medium",
+   "class": "NEW",
+   "evidence": "The three Retatrutide dosage variants (glp3-r10/r20/r30) share byte-identical descriptions/citations \u2014 duplicate-content risk across indexed product pages."
+  },
+  {
+   "id": "CONT-16",
+   "priority": "Low",
+   "class": "NEW",
+   "evidence": "No street/mailing address on-page despite the newly-added phone (NAP completeness)."
+  },
+  {
+   "id": "ECOM-10",
+   "priority": "High",
+   "class": "NEW",
+   "evidence": "Retatrutide 20MG (glp3-r20) COA widget + hub link vanish entirely once the product goes Out of Stock, though the hub exists and links back \u2014 breaks the product<->COA path for OOS SKUs."
+  },
+  {
+   "id": "ECOM-11",
+   "priority": "Low",
+   "class": "NEW",
+   "evidence": "Three Retatrutide SKUs share word-for-word identical descriptions (same root as CONT-15, ecommerce lens)."
+  },
+  {
+   "id": "ECOM-12",
+   "priority": "Low",
+   "class": "NEW (info)",
+   "evidence": "Bacteriostatic Water has no Product description field at all."
+  },
+  {
+   "id": "GEO-10",
+   "priority": "Low",
+   "class": "NEW",
+   "evidence": "No RSL 1.0 / AI-content-licensing signal anywhere (consistent with no llms.txt)."
+  },
+  {
+   "id": "GEO-11",
+   "priority": "Low",
+   "class": "NEW (info)",
+   "evidence": "Crawl-tool word_count overstates citability (counts nav/footer/legal boilerplate); true passages measured directly."
+  },
+  {
+   "id": "VIS-06",
+   "priority": "Low",
+   "class": "NEW (positive)",
+   "evidence": "Gate accessibility remediation (inerting/focus-trap/aria-describedby/real exit href) now genuinely implemented \u2014 the change that resolves VIS-02."
+  },
+  {
+   "id": "VIS-07",
+   "priority": "Low",
+   "class": "NEW (info)",
+   "evidence": "Gate renders up to 14 animated .psag-bubble layers via requestAnimationFrame running continuously until dismissed \u2014 minor main-thread cost, not benchmarked. [VERIFY CLAIM]"
+  },
+  {
+   "id": "SXO-09",
+   "priority": "Info",
+   "class": "NEW (info)",
+   "evidence": "Gate fires fetch() POST to admin-ajax.php (action=psag_record, keepalive) on Enter \u2014 compliance logging, not an SEO issue; noted for completeness."
+  },
+  {
+   "id": "PERF-12",
+   "priority": "Medium",
+   "class": "NEW (watch)",
+   "evidence": "One unique home-mobile PSI run shows CLS 0.303 (Poor) vs prior <=0.084; other two home runs failed. Unconfirmed single sample \u2014 re-measure / [VERIFY CLAIM] before/after homepage changes."
+  }
+ ],
+ "field_data": {
+  "gsc_28d": {
+   "clicks": 2,
+   "impressions": 24,
+   "avg_position": 26.2,
+   "ctr": 8.33,
+   "window_end": "2026-08-20",
+   "prior_8_20": {
+    "clicks": 0,
+    "impressions": 7,
+    "avg_position": 45.7
+   }
+  },
+  "url_inspection": {
+   "shop": "PASS",
+   "testing": "PASS",
+   "product/kpv10": "PASS",
+   "guide": "PASS"
+  },
+  "crux": "origin ineligible (insufficient Chrome traffic)",
+  "ga4": "property 549907385 configured; API returns permission-denied (grant pending)"
+ },
+ "pagespeed": {
+  "desktop": "96-97",
+  "mobile_median": 71,
+  "mobile_range": "59-81",
+  "mobile_lcp": "3.8-9.7s",
+  "unique_mobile_samples": 8,
+  "note": "Lighthouse lab only; statistically identical to 8/20"
+ },
+ "findings": [
+  {
+   "id": "GOOG-01",
+   "priority": "Critical",
+   "prior_8_20": "VERIFIED FIXED",
+   "class_8_23": "VERIFIED FIXED",
+   "evidence": "URL Inspection /shop/ PASS 2026-08-23; Shop-adjacent impressions in GSC."
+  },
+  {
+   "id": "GOOG-02",
+   "priority": "High",
+   "prior_8_20": "VERIFIED FIXED",
+   "class_8_23": "VERIFIED FIXED",
+   "evidence": "URL Inspection /testing/ PASS; hub+batch URLs receiving impressions."
+  },
+  {
+   "id": "GOOG-03",
+   "priority": "Critical",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "STILL OPEN",
+   "evidence": "IMPROVED: 2 clicks/24 impr/pos 26.2 vs 0/7/45.7. Absolute organic visibility still near-zero; core claim holds."
+  },
+  {
+   "id": "GOOG-04",
+   "priority": "High",
+   "prior_8_20": "PARTIALLY FIXED",
+   "class_8_23": "PARTIALLY FIXED",
+   "evidence": "Home mobile LCP 4.4s. Unchanged."
+  },
+  {
+   "id": "GOOG-05",
+   "priority": "High",
+   "prior_8_20": "PARTIALLY FIXED",
+   "class_8_23": "PARTIALLY FIXED",
+   "evidence": "Shop mobile LCP 5.3-6.0s. Unchanged."
+  },
+  {
+   "id": "GOOG-06",
+   "priority": "Medium",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "STILL OPEN",
+   "evidence": "NAD+ mobile LCP 4.5s. Unchanged."
+  },
+  {
+   "id": "GOOG-07",
+   "priority": "Medium",
+   "prior_8_20": "PARTIALLY FIXED",
+   "class_8_23": "PARTIALLY FIXED",
+   "evidence": "Site-wide render-blocking persists."
+  },
+  {
+   "id": "GOOG-08",
+   "priority": "Low",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "STILL OPEN",
+   "evidence": "Security-header stack absent (umbrella for TECH-01..04)."
+  },
+  {
+   "id": "GOOG-09",
+   "priority": "Medium",
+   "prior_8_20": "BLOCKED BY REAL EVIDENCE",
+   "class_8_23": "BLOCKED BY REAL EVIDENCE",
+   "evidence": "CrUX origin+page 'insufficient Chrome traffic'; field_metrics {} on every PSI run."
+  },
+  {
+   "id": "GOOG-10",
+   "priority": "Low",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "STILL OPEN",
+   "evidence": "/shop/ still uses non-differentiated repeated CTA links."
+  },
+  {
+   "id": "GOOG-11",
+   "priority": "Medium",
+   "prior_8_20": "BLOCKED BY REAL EVIDENCE",
+   "class_8_23": "BLOCKED BY REAL EVIDENCE",
+   "evidence": "ADVANCED: GA4 property 549907385 now identified+configured (Tier 2); live read denies access ('add as Viewer'). One grant from measured."
+  },
+  {
+   "id": "DFS-01",
+   "priority": "Critical",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "STILL OPEN",
+   "evidence": "Literal '0 clicks' now false (2 clicks). Non-brand commercial visibility still absent; core concern unchanged."
+  },
+  {
+   "id": "DFS-02",
+   "priority": "Critical",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "STILL OPEN",
+   "evidence": "Backlink profile NOT re-measured (paid tooling excluded). No contrary evidence."
+  },
+  {
+   "id": "DFS-03",
+   "priority": "High",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "STILL OPEN",
+   "evidence": "WebSearch spot-check: pepselect.com absent from research-peptide commercial SERPs."
+  },
+  {
+   "id": "DFS-04",
+   "priority": "High",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "STILL OPEN",
+   "evidence": "Keyword-difficulty NOT re-measured (paid tooling excluded)."
+  },
+  {
+   "id": "DFS-05",
+   "priority": "High",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "STILL OPEN",
+   "evidence": "Commercial-cluster SERPs still dominated by incumbent vendors; pepselect absent."
+  },
+  {
+   "id": "DFS-06",
+   "priority": "High",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "STILL OPEN",
+   "evidence": "AI-Overview citation NOT re-measured (paid tooling excluded)."
+  },
+  {
+   "id": "DFS-07",
+   "priority": "Medium",
+   "prior_8_20": "BLOCKED BY REAL EVIDENCE",
+   "class_8_23": "BLOCKED BY REAL EVIDENCE",
+   "evidence": "No google_product_category/GTIN/MPN/Merchant feed reference on any product."
+  },
+  {
+   "id": "DFS-08",
+   "priority": "Medium",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "STILL OPEN",
+   "evidence": "Guide/FAQ content does not target the SERP PAA question map."
+  },
+  {
+   "id": "DFS-09",
+   "priority": "Medium",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "STILL OPEN",
+   "evidence": "No content targeting the commercial-intent product clusters."
+  },
+  {
+   "id": "DFS-10",
+   "priority": "Low",
+   "prior_8_20": "SUPERSEDED",
+   "class_8_23": "SUPERSEDED",
+   "evidence": "Domain age is time-dependent only; no fix applicable."
+  },
+  {
+   "id": "CONT-01",
+   "priority": "Critical",
+   "prior_8_20": "VERIFIED FIXED",
+   "class_8_23": "VERIFIED FIXED",
+   "evidence": "Carried: /terms-of-service/ redirect prior-verified; not re-tested this cycle, no contrary evidence (orchestrator preserves prior verified per bridge rule)."
+  },
+  {
+   "id": "CONT-02",
+   "priority": "Critical",
+   "prior_8_20": "VERIFIED FIXED",
+   "class_8_23": "VERIFIED FIXED",
+   "evidence": "GLP-2T DOI citations correct; no [VERIFY DOI] placeholder."
+  },
+  {
+   "id": "CONT-03",
+   "priority": "High",
+   "prior_8_20": "PARTIALLY FIXED",
+   "class_8_23": "PARTIALLY FIXED",
+   "evidence": "~109-word compliance block byte-identical on 17/17 products; sitewide boilerplate ratio not reduced."
+  },
+  {
+   "id": "CONT-04",
+   "priority": "High",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "STILL OPEN",
+   "evidence": "Templated thin descriptions persist; unique content 71-99 words/product; Bacteriostatic Water still ZERO product description. (Specialist leaned PARTIALLY; orchestrator holds STILL OPEN \u2014 core claim fully persists, one data point worse.)"
+  },
+  {
+   "id": "CONT-05",
+   "priority": "High",
+   "prior_8_20": "PARTIALLY FIXED",
+   "class_8_23": "PARTIALLY FIXED",
+   "evidence": "Guide grew to ~3,250 words but is still the only guide, not a program."
+  },
+  {
+   "id": "CONT-06",
+   "priority": "Medium",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "STILL OPEN",
+   "evidence": "GLP-2T DOI strings remain plain unhyperlinked text."
+  },
+  {
+   "id": "CONT-07",
+   "priority": "Medium",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "STILL OPEN",
+   "evidence": "Two differently-worded FDA disclaimer paragraphs co-occur on every product page."
+  },
+  {
+   "id": "CONT-08",
+   "priority": "Medium",
+   "prior_8_20": "BLOCKED BY REAL EVIDENCE",
+   "class_8_23": "BLOCKED BY REAL EVIDENCE",
+   "evidence": "Guide authored by Organization; Person node still a bare WP username, no bio."
+  },
+  {
+   "id": "CONT-09",
+   "priority": "Medium",
+   "prior_8_20": "BLOCKED BY REAL EVIDENCE",
+   "class_8_23": "PARTIALLY FIXED",
+   "evidence": "DRIFT: real phone +1 (833) 737-7528 with tel: now live on /contact/ + homepage header/footer. Street/mailing address still absent."
+  },
+  {
+   "id": "CONT-10",
+   "priority": "Low",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "STILL OPEN",
+   "evidence": "Out-of-stock modal wording not deeply re-verified; no fix claimed."
+  },
+  {
+   "id": "CONT-11",
+   "priority": "Low",
+   "prior_8_20": "VERIFIED FIXED",
+   "class_8_23": "VERIFIED FIXED",
+   "evidence": "Homepage hero natural 'research peptide' use present."
+  },
+  {
+   "id": "CONT-12",
+   "priority": "Low",
+   "prior_8_20": "SUPERSEDED",
+   "class_8_23": "SUPERSEDED",
+   "evidence": "Freshness-timestamp clustering (WP admin data) out of read-only scope."
+  },
+  {
+   "id": "CONT-13",
+   "priority": "Low",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "STILL OPEN",
+   "evidence": "'PepSelect' vs 'Pep Select' split unchanged in legal docs (Terms 12/7, Privacy 3/7, Refund 1/7, RUO 0/20)."
+  },
+  {
+   "id": "CONT-14",
+   "priority": "Low",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "STILL OPEN",
+   "evidence": "Readability register split persists; no bridging content."
+  },
+  {
+   "id": "PERF-01",
+   "priority": "Critical",
+   "prior_8_20": "PARTIALLY FIXED",
+   "class_8_23": "PARTIALLY FIXED",
+   "evidence": "Home mobile LCP 4.4s; Shop/NAD+/Testing/COA 4.5-9.7s mostly Poor. Unchanged."
+  },
+  {
+   "id": "PERF-02",
+   "priority": "Critical",
+   "prior_8_20": "PARTIALLY FIXED",
+   "class_8_23": "PARTIALLY FIXED",
+   "evidence": "Render-blocking still dominant mobile LCP driver."
+  },
+  {
+   "id": "PERF-03",
+   "priority": "High",
+   "prior_8_20": "PARTIALLY FIXED",
+   "class_8_23": "PARTIALLY FIXED",
+   "evidence": "Hero WebP holds; non-hero image savings still fire (Shop worst)."
+  },
+  {
+   "id": "PERF-04",
+   "priority": "Medium",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "STILL OPEN",
+   "evidence": "Logo asset not isolable from PSI summary; not confirmable."
+  },
+  {
+   "id": "PERF-05",
+   "priority": "High",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "STILL OPEN",
+   "evidence": "No INP field data (CrUX unavailable); TBT 0-500ms variable."
+  },
+  {
+   "id": "PERF-06",
+   "priority": "Medium",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "STILL OPEN",
+   "evidence": "GTM cost unchanged; dominant third party."
+  },
+  {
+   "id": "PERF-07",
+   "priority": "Medium",
+   "prior_8_20": "PARTIALLY FIXED",
+   "class_8_23": "PARTIALLY FIXED",
+   "evidence": "Font consolidation holds; font-display swap gap unresolved."
+  },
+  {
+   "id": "PERF-08",
+   "priority": "Medium",
+   "prior_8_20": "VERIFIED FIXED",
+   "class_8_23": "VERIFIED FIXED",
+   "evidence": "Testing-hub SI/FCP outlier stays gone; within band."
+  },
+  {
+   "id": "PERF-09",
+   "priority": "Low",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "STILL OPEN",
+   "evidence": "unsized-images latent; most CLS Good (but see PERF-12)."
+  },
+  {
+   "id": "PERF-10",
+   "priority": "Low",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "STILL OPEN",
+   "evidence": "Unused-JS savings unchanged."
+  },
+  {
+   "id": "PERF-11",
+   "priority": "Low",
+   "prior_8_20": "VERIFIED FIXED",
+   "class_8_23": "VERIFIED FIXED",
+   "evidence": "TTFB low across all runs; no regression."
+  },
+  {
+   "id": "VIS-01",
+   "priority": "Critical",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "STILL OPEN",
+   "evidence": "#psag-gate == full viewport, position:fixed, z-index:9999999, body overflow hidden; zero storefront pre-interaction. 8/8 captures."
+  },
+  {
+   "id": "VIS-02",
+   "priority": "High",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "VERIFIED FIXED",
+   "evidence": "Gate accessibility remediation now present: inerting (inert+aria-hidden on body nodes), keydown Tab focus-trap, aria-describedby, real exit href. 7/8 sub-claims now pass; only sub-16px font remains (tracked as VIS-04)."
+  },
+  {
+   "id": "VIS-03",
+   "priority": "Low",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "PARTIALLY FIXED",
+   "evidence": "Exit anchor now has real href (keyboard-reachable); destination still off-site google.com with no on-site low-friction alternative."
+  },
+  {
+   "id": "VIS-04",
+   "priority": "Low",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "STILL OPEN",
+   "evidence": "Gate text 10.5-15px, below 16px. Unchanged."
+  },
+  {
+   "id": "VIS-05",
+   "priority": "Medium",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "STILL OPEN",
+   "evidence": "Gate performance impact not independently re-measured this cycle. [VERIFY CLAIM]"
+  },
+  {
+   "id": "SXO-01",
+   "priority": "Critical",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "STILL OPEN",
+   "evidence": "Real content present in raw HTML before gate markup; 100% first-paint blocking for JS-rendering visitors persists. Reframed, unchanged."
+  },
+  {
+   "id": "SXO-02",
+   "priority": "High",
+   "prior_8_20": "PARTIALLY FIXED",
+   "class_8_23": "PARTIALLY FIXED",
+   "evidence": "Carried forward; not visually re-verified (gate occludes viewport). [VERIFY CLAIM]"
+  },
+  {
+   "id": "SXO-03",
+   "priority": "High",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "STILL OPEN",
+   "evidence": "/faq/ delivers real content pre-gate; PAA-slot coverage not enumerated this cycle."
+  },
+  {
+   "id": "SXO-04",
+   "priority": "High",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "STILL OPEN",
+   "evidence": "/shop/ delivers real catalog content pre-gate; card trust-density not measured this cycle."
+  },
+  {
+   "id": "SXO-05",
+   "priority": "Medium",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "STILL OPEN",
+   "evidence": "Carried forward; not visually re-verified (gate occludes viewport). [VERIFY CLAIM]"
+  },
+  {
+   "id": "SXO-06",
+   "priority": "Medium",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "STILL OPEN",
+   "evidence": "/testing/ delivers real content pre-gate; title/H1 not extracted this cycle. Sitemap visibility remains fixed."
+  },
+  {
+   "id": "SXO-07",
+   "priority": "Medium",
+   "prior_8_20": "BLOCKED BY REAL EVIDENCE",
+   "class_8_23": "BLOCKED BY REAL EVIDENCE",
+   "evidence": "No bulk/wholesale pricing offering on any page. Business decision."
+  },
+  {
+   "id": "SXO-08",
+   "priority": "Low",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "STILL OPEN",
+   "evidence": "Gate exposes only Enter / Exit-to-Google; no third lower-friction path."
+  },
+  {
+   "id": "GEO-01",
+   "priority": "Low",
+   "prior_8_20": "SUPERSEDED",
+   "class_8_23": "SUPERSEDED",
+   "evidence": "llms.txt 404; Google ignores it. Unchanged (specialist raw table read STILL OPEN; reclassified SUPERSEDED to preserve status-rule meaning)."
+  },
+  {
+   "id": "GEO-02",
+   "priority": "Medium",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "STILL OPEN",
+   "evidence": "/faq/ carries no QAPage/Question markup. Owner-discretionary post FAQ-retirement."
+  },
+  {
+   "id": "GEO-03",
+   "priority": "High",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "STILL OPEN",
+   "evidence": "Product citable passages 52-61 words vs ~134-167 benchmark; ~1/3 of target."
+  },
+  {
+   "id": "GEO-04",
+   "priority": "Medium",
+   "prior_8_20": "BLOCKED BY REAL EVIDENCE",
+   "class_8_23": "BLOCKED BY REAL EVIDENCE",
+   "evidence": "Organization JSON-LD has no sameAs."
+  },
+  {
+   "id": "GEO-05",
+   "priority": "Critical",
+   "prior_8_20": "BLOCKED BY REAL EVIDENCE",
+   "class_8_23": "BLOCKED BY REAL EVIDENCE",
+   "evidence": "Zero off-site identity-graph links across all 46 pages; strongest citation signals absent."
+  },
+  {
+   "id": "GEO-06",
+   "priority": "High",
+   "prior_8_20": "PARTIALLY FIXED",
+   "class_8_23": "PARTIALLY FIXED",
+   "evidence": "Guide unchanged; still zero question-phrased headings; no wider PAA cluster coverage."
+  },
+  {
+   "id": "GEO-07",
+   "priority": "Medium",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "STILL OPEN",
+   "evidence": "Dataset present ONLY on 9 batch-report pages; the 8 compound-hub pages carry batch data as plain text, zero Dataset/ItemList."
+  },
+  {
+   "id": "GEO-08",
+   "priority": "Low",
+   "prior_8_20": "BLOCKED BY REAL EVIDENCE",
+   "class_8_23": "BLOCKED BY REAL EVIDENCE",
+   "evidence": "beringela001 WP-username still leaks into meta[name=author] + Person node on the guide."
+  },
+  {
+   "id": "GEO-09",
+   "priority": "Low",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "STILL OPEN",
+   "evidence": "robots.txt has no named AI-crawler tokens; all under wildcard allow-all. Policy decision."
+  },
+  {
+   "id": "SCHEMA-01",
+   "priority": "High",
+   "prior_8_20": "PARTIALLY FIXED",
+   "class_8_23": "PARTIALLY FIXED",
+   "evidence": "Products emit 2 independent JSON-LD blocks, cross-linked only via Organization @id."
+  },
+  {
+   "id": "SCHEMA-02",
+   "priority": "Medium",
+   "prior_8_20": "VERIFIED FIXED",
+   "class_8_23": "VERIFIED FIXED",
+   "evidence": "Offer.seller @id = #organization consistent across products."
+  },
+  {
+   "id": "SCHEMA-03",
+   "priority": "Medium",
+   "prior_8_20": "VERIFIED FIXED",
+   "class_8_23": "VERIFIED FIXED",
+   "evidence": "Dataset.creator on batch reports resolves to shared Organization @id."
+  },
+  {
+   "id": "SCHEMA-04",
+   "priority": "Medium",
+   "prior_8_20": "BLOCKED BY REAL EVIDENCE",
+   "class_8_23": "BLOCKED BY REAL EVIDENCE",
+   "evidence": "sameAs absent from Organization/OnlineStore."
+  },
+  {
+   "id": "SCHEMA-05",
+   "priority": "Medium",
+   "prior_8_20": "BLOCKED BY REAL EVIDENCE",
+   "class_8_23": "STILL OPEN",
+   "evidence": "Blocker lifted: real phone now live in visible HTML but NOT in JSON-LD (no telephone/contactPoint/address in any of 46 parsed blocks). Ready to implement (see SCHEMA-11)."
+  },
+  {
+   "id": "SCHEMA-06",
+   "priority": "Medium",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "STILL OPEN",
+   "evidence": "GTIN/MPN/priceValidUntil/OfferShippingDetails/review/rating truthfully absent."
+  },
+  {
+   "id": "SCHEMA-07",
+   "priority": "Low",
+   "prior_8_20": "SUPERSEDED",
+   "class_8_23": "SUPERSEDED",
+   "evidence": "Homepage BreadcrumbList single ListItem; no action."
+  },
+  {
+   "id": "SCHEMA-08",
+   "priority": "Low",
+   "prior_8_20": "SUPERSEDED",
+   "class_8_23": "SUPERSEDED",
+   "evidence": "No FAQPage/Question/Answer anywhere; correct post FAQ retirement."
+  },
+  {
+   "id": "SCHEMA-09",
+   "priority": "Medium",
+   "prior_8_20": "PARTIALLY FIXED",
+   "class_8_23": "PARTIALLY FIXED",
+   "evidence": "Batch report datePublished real ISO-8601; license absent (no fabrication)."
+  },
+  {
+   "id": "SCHEMA-10",
+   "priority": "Low",
+   "prior_8_20": "VERIFIED FIXED",
+   "class_8_23": "VERIFIED FIXED",
+   "evidence": "Exact '@context':'https://schema.org' in every block."
+  },
+  {
+   "id": "ECOM-01",
+   "priority": "Critical",
+   "prior_8_20": "BLOCKED BY REAL EVIDENCE",
+   "class_8_23": "BLOCKED BY REAL EVIDENCE",
+   "evidence": "Zero aggregateRating/reviewCount across all products; correctly not fabricated."
+  },
+  {
+   "id": "ECOM-02",
+   "priority": "Critical",
+   "prior_8_20": "BLOCKED BY REAL EVIDENCE",
+   "class_8_23": "BLOCKED BY REAL EVIDENCE",
+   "evidence": "9 of 17 products have no /testing/ COA hub (incl new KPV/Cagrilintide). Scope grew with catalog."
+  },
+  {
+   "id": "ECOM-03",
+   "priority": "High",
+   "prior_8_20": "VERIFIED FIXED",
+   "class_8_23": "VERIFIED FIXED",
+   "evidence": "GLP-2T unique dual-receptor description + 3 DOI on-page."
+  },
+  {
+   "id": "ECOM-04",
+   "priority": "High",
+   "prior_8_20": "VERIFIED FIXED",
+   "class_8_23": "VERIFIED FIXED",
+   "evidence": "/testing/ links product back-links; hubs link to correct product 200. (Caveat: ECOM-10.)"
+  },
+  {
+   "id": "ECOM-05",
+   "priority": "High",
+   "prior_8_20": "BLOCKED BY REAL EVIDENCE",
+   "class_8_23": "BLOCKED BY REAL EVIDENCE",
+   "evidence": "7 of 17 products Out of Stock (same 7 absolute), no substitute surfacing."
+  },
+  {
+   "id": "ECOM-06",
+   "priority": "Medium",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "STILL OPEN",
+   "evidence": "Offer lacks GTIN/MPN/priceValidUntil/OfferShippingDetails."
+  },
+  {
+   "id": "ECOM-07",
+   "priority": "Medium",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "STILL OPEN",
+   "evidence": "Rigid templated product descriptions across all products."
+  },
+  {
+   "id": "ECOM-08",
+   "priority": "Medium",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "STILL OPEN",
+   "evidence": "/shop/ JSON-LD has no ItemList/OfferCatalog (confirmed none anywhere)."
+  },
+  {
+   "id": "ECOM-09",
+   "priority": "Low",
+   "prior_8_20": "BLOCKED BY REAL EVIDENCE",
+   "class_8_23": "BLOCKED BY REAL EVIDENCE",
+   "evidence": "No Merchant Center policy signal on-page."
+  },
+  {
+   "id": "TECH-01",
+   "priority": "High",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "STILL OPEN",
+   "evidence": "Strict-Transport-Security absent on all 7 templates incl checkout."
+  },
+  {
+   "id": "TECH-02",
+   "priority": "Medium",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "STILL OPEN",
+   "evidence": "Content-Security-Policy absent."
+  },
+  {
+   "id": "TECH-03",
+   "priority": "Medium",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "STILL OPEN",
+   "evidence": "X-Frame-Options / CSP frame-ancestors absent."
+  },
+  {
+   "id": "TECH-04",
+   "priority": "Low",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "STILL OPEN",
+   "evidence": "Referrer-Policy / Permissions-Policy absent."
+  },
+  {
+   "id": "TECH-05",
+   "priority": "Low",
+   "prior_8_20": "PARTIALLY FIXED",
+   "class_8_23": "PARTIALLY FIXED",
+   "evidence": "Case-variant Page URLs still 200 with correct lowercase canonical."
+  },
+  {
+   "id": "TECH-06",
+   "priority": "High",
+   "prior_8_20": "PARTIALLY FIXED",
+   "class_8_23": "PARTIALLY FIXED",
+   "evidence": "Mobile LCP still Poor on majority of runs."
+  },
+  {
+   "id": "TECH-07",
+   "priority": "Low",
+   "prior_8_20": "SUPERSEDED",
+   "class_8_23": "SUPERSEDED",
+   "evidence": "IndexNow not implemented; optional."
+  },
+  {
+   "id": "MAP-01",
+   "priority": "Medium",
+   "prior_8_20": "STILL OPEN",
+   "class_8_23": "STILL OPEN",
+   "evidence": "Bacteriostatic Water 30ml orphan: no crawlable <a href> to its product URL (cart upsell is JS AJAX toggle)."
+  },
+  {
+   "id": "MAP-02",
+   "priority": "Low",
+   "prior_8_20": "SUPERSEDED",
+   "class_8_23": "SUPERSEDED",
+   "evidence": "Static/legal page-sitemap timestamp clustering; no manufactured-freshness rewrite."
+  },
+  {
+   "id": "MAP-03",
+   "priority": "Medium",
+   "prior_8_20": "VERIFIED FIXED",
+   "class_8_23": "VERIFIED FIXED",
+   "evidence": "/shop/page/2/ 404; /shop/page/1/ 301 to /shop/. Re-confirmed."
+  }
+ ],
+ "constraints": "read-only; no URL submission; no Search Console changes; no paid/metered APIs (DataForSEO excluded); no deploys; no fabrication"
+}

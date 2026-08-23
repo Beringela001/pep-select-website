@@ -1,0 +1,21 @@
+HTTP/1.1 200 OK
+Date: Sun, 23 Aug 2026 12:11:14 GMT
+Content-Type: text/html; charset=UTF-8
+Transfer-Encoding: chunked
+Connection: keep-alive
+Nel: {"report_to":"cf-nel","success_fraction":0.01,"max_age":604800}
+CF-Ray: a2fa04c448e94253-EWR
+CF-Cache-Status: DYNAMIC
+Report-To: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=UH3eJtsDX%2BhDq%2F4%2Bn7akpANI84jUcGWWS2JIIm4bsld1o%2BZ9vkTFQ49evoZ%2FEuxKP9b5oiQyuzunAkho7pF%2FeHeUBeNrn9zCEeoI1DD6MGF5z4uqlScUO40V6ASOKSY%3D"}]}
+Link: <https://pepselect.com/wp-json/>; rel="https://api.w.org/", <https://pepselect.com/wp-json/wp/v2/product/1549>; rel="alternate"; title="JSON"; type="application/json", <https://pepselect.com/?p=1549>; rel=shortlink
+Server: cloudflare
+Vary: Accept-Encoding, accept, content-type
+X-Content-Type-Options: nosniff
+X-Edge-Location-Klb: 1
+ki-cache-type: None
+ki-edge: v=28.4.7;mv=99.9.9
+ki-origin: o1i
+x-kinsta-cache: MISS
+set-cookie: __cf_bm=eii9ChooH3aCy0OizCsaRM21x2WMDpCyhYwsgbSyZE4-1787487073.9681778-1.0.1.1-9UfqoKNnB5DUfeReyAwaGk4w7B1Yiqqjh_Hidp3zY_tD6..iPz2N.XUced_mKJjhLZ6yjplDsAjSgvsDAMRCmm1txXVGxFu73DxqNRJw2aFeJ6l1nFv_cBvslULYBduh; HttpOnly; SameSite=None; Secure; Path=/; Domain=pepselect.com; Expires=Sun, 23 Aug 2026 12:41:14 GMT
+alt-svc: h3=":443"; ma=86400
+

@@ -1,0 +1,49 @@
+HTTP/1.1 302 Found
+Date: Sun, 23 Aug 2026 12:11:15 GMT
+Content-Type: text/html; charset=UTF-8
+Transfer-Encoding: chunked
+Connection: keep-alive
+Nel: {"report_to":"cf-nel","success_fraction":0.01,"max_age":604800}
+Location: https://pepselect.com/cart/
+CF-Ray: a2fa04cdd96ff797-EWR
+CF-Cache-Status: DYNAMIC
+Cache-Control: no-cache, must-revalidate, max-age=0, private
+Expires: Wed, 11 Jan 1984 05:00:00 GMT
+Server: cloudflare
+Vary: accept, content-type
+Ki-CF-Cache-Status: BYPASS
+X-Content-Type-Options: nosniff
+X-Edge-Location-Klb: 1
+ki-cache-type: None
+ki-edge: v=28.4.7;mv=99.9.9
+ki-origin: o1i
+x-kinsta-cache: BYPASS
+x-redirect-by: WordPress
+set-cookie: __cf_bm=kmVgs5VjivwdBLWGsoF7DIt8WZ4H6VaCk529DegXo6I-1787487075.494888-1.0.1.1-S4L6VIhK6NqIquyuzCfw4o0Xec3KRrJqoBWVbkSv.Gjp9spg4mboJ5ZkXlQEV9MyUB4KD8kChW0BQtWdaqZUFJ.I9EN8itrJOnEwgZfrt51MqQ8e4xvof4KWNKD3DiSy; HttpOnly; SameSite=None; Secure; Path=/; Domain=pepselect.com; Expires=Sun, 23 Aug 2026 12:41:15 GMT
+Report-To: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=bBIPljSfTmv0fBUxaD0SdsX9G7bB7%2F4QH4GCBVZSbqalLpdMFdlvd%2Fk0P9m9ONqydmv1R8hpLufGMOfWK8KFdkwRTL0tcFNtkdN3kxEqyqA7rgFTtejEMfE0RD2QWHQ%3D"}]}
+alt-svc: h3=":443"; ma=86400
+
+HTTP/1.1 200 OK
+Date: Sun, 23 Aug 2026 12:11:16 GMT
+Content-Type: text/html; charset=UTF-8
+Transfer-Encoding: chunked
+Connection: keep-alive
+Nel: {"report_to":"cf-nel","success_fraction":0.01,"max_age":604800}
+CF-Ray: a2fa04d078dcf797-EWR
+CF-Cache-Status: DYNAMIC
+Cache-Control: no-cache, must-revalidate, max-age=0, private
+Report-To: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=%2FXvykeyzlm1kYd2thHnAm%2BiuuN%2FN2%2Fo8h3CgTi71Vp0805zSXFCIbZuJPAbBI996Sf6lyd9Sb6G5HSfopMxVoqs%2FY%2FuGGS8AiLhw0VfT9bjIhxHtOl97101Fge08ffw%3D"}]}
+Expires: Wed, 11 Jan 1984 05:00:00 GMT
+Link: <https://pepselect.com/wp-json/>; rel="https://api.w.org/", <https://pepselect.com/wp-json/wp/v2/pages/44>; rel="alternate"; title="JSON"; type="application/json", <https://pepselect.com/?p=44>; rel=shortlink
+Server: cloudflare
+Vary: Accept-Encoding, accept, content-type
+Ki-CF-Cache-Status: BYPASS
+X-Content-Type-Options: nosniff
+X-Edge-Location-Klb: 1
+ki-cache-type: None
+ki-edge: v=28.4.7;mv=99.9.9
+ki-origin: o1i
+x-kinsta-cache: BYPASS
+set-cookie: __cf_bm=IRhZugsogMAnFxoCspvzQdRw5CHFAapNlqKF7V7EHF4-1787487075.915309-1.0.1.1-y5Xv53VYUF2q7n2122fnprFQTCWQqJeIOn0VQvcP4mbAnKmGCO.PhtTuUlwE8q5ZgFgOZuWqw3HgPqMuhfb7K.zfpKiJCcRb8cKpnLD8H3sVIfw34qAnAstESdPJt0f9; HttpOnly; SameSite=None; Secure; Path=/; Domain=pepselect.com; Expires=Sun, 23 Aug 2026 12:41:16 GMT
+alt-svc: h3=":443"; ma=86400
+

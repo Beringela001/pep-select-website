@@ -1,0 +1,1642 @@
+{
+  "home": {
+    "mobile": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "gatePresent": true,
+      "gateRect": {
+        "top": 0,
+        "left": 0,
+        "width": 390,
+        "height": 844,
+        "bottom": 844,
+        "right": 390
+      },
+      "gateStyle": {
+        "position": "fixed",
+        "zIndex": "9999999",
+        "display": "flex",
+        "visibility": "visible",
+        "width": "390px",
+        "height": "844px"
+      },
+      "bodyOverflow": "hidden",
+      "htmlOverflow": "hidden",
+      "gateAttrs": {
+        "role": "dialog",
+        "ariaModal": "true",
+        "ariaLabelledby": "psag-title",
+        "ariaDescribedby": "psag-intro"
+      },
+      "exitInfo": [
+        {
+          "tag": "P",
+          "id": "",
+          "className": "psag-exit",
+          "href": null,
+          "text": "Not a researcher? Exit"
+        },
+        {
+          "tag": "A",
+          "id": "psagExit",
+          "className": "",
+          "href": "https://google.com",
+          "text": "Exit"
+        }
+      ],
+      "inertCount": 8,
+      "ariaHiddenCount": 24,
+      "ariaHiddenSample": [
+        {
+          "tag": "HEADER",
+          "id": "pepselect-site-header",
+          "className": "pepselect-site-header"
+        },
+        {
+          "tag": "svg",
+          "id": "",
+          "className": ""
+        },
+        {
+          "tag": "svg",
+          "id": "",
+          "className": ""
+        },
+        {
+          "tag": "svg",
+          "id": "",
+          "className": ""
+        },
+        {
+          "tag": "svg",
+          "id": "",
+          "className": ""
+        }
+      ],
+      "gateFontSizes": [
+        {
+          "tag": "P",
+          "id": "",
+          "fontSize": "11px",
+          "text": "Research Gate"
+        },
+        {
+          "tag": "H2",
+          "id": "psag-title",
+          "fontSize": "22px",
+          "text": "Research Access Verification"
+        },
+        {
+          "tag": "P",
+          "id": "psag-intro",
+          "fontSize": "14px",
+          "text": "Pep Select provides research-grade compo"
+        },
+        {
+          "tag": "LABEL",
+          "id": "",
+          "fontSize": "11px",
+          "text": "Researcher type"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "Select\u2026"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "University / academic institution"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "Private research laboratory"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "Biotech / pharmaceutical company"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "Contract research organization (CRO)"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "Independent researcher"
+        },
+        {
+          "tag": "B",
+          "id": "",
+          "fontSize": "14px",
+          "text": "21 years of age"
+        },
+        {
+          "tag": "B",
+          "id": "",
+          "fontSize": "14px",
+          "text": "qualified researcher"
+        },
+        {
+          "tag": "B",
+          "id": "",
+          "fontSize": "14px",
+          "text": "in vitro / laboratory research only"
+        },
+        {
+          "tag": "SPAN",
+          "id": "",
+          "fontSize": "11.5px",
+          "text": "\u2303"
+        },
+        {
+          "tag": "LI",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "I am acquiring these materials as a qual"
+        },
+        {
+          "tag": "B",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "solely for in vitro laboratory research"
+        },
+        {
+          "tag": "LI",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "I will not administer these materials to"
+        },
+        {
+          "tag": "B",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "not drugs, dietary supplements, or medic"
+        },
+        {
+          "tag": "LI",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "I am solely responsible for lawful handl"
+        },
+        {
+          "tag": "LI",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "The information I have provided is accur"
+        }
+      ],
+      "versionMatchesInScripts": [],
+      "allVersionTokensInHtml": [],
+      "focusableInGate": 8,
+      "title": "Research Peptides with Batch-Matched Lab Reports | Pep Select",
+      "url": "https://pepselect.com/",
+      "screenshot": "C:\\Users\\paulo\\Documents\\Pep Select Website\\docs\\claude-seo-audit-2026-08-23\\screenshots\\home-mobile.png"
+    },
+    "desktop": {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "gatePresent": true,
+      "gateRect": {
+        "top": 0,
+        "left": 0,
+        "width": 1440,
+        "height": 900,
+        "bottom": 900,
+        "right": 1440
+      },
+      "gateStyle": {
+        "position": "fixed",
+        "zIndex": "9999999",
+        "display": "flex",
+        "visibility": "visible",
+        "width": "1440px",
+        "height": "900px"
+      },
+      "bodyOverflow": "hidden",
+      "htmlOverflow": "hidden",
+      "gateAttrs": {
+        "role": "dialog",
+        "ariaModal": "true",
+        "ariaLabelledby": "psag-title",
+        "ariaDescribedby": "psag-intro"
+      },
+      "exitInfo": [
+        {
+          "tag": "P",
+          "id": "",
+          "className": "psag-exit",
+          "href": null,
+          "text": "Not a researcher? Exit"
+        },
+        {
+          "tag": "A",
+          "id": "psagExit",
+          "className": "",
+          "href": "https://google.com",
+          "text": "Exit"
+        }
+      ],
+      "inertCount": 8,
+      "ariaHiddenCount": 24,
+      "ariaHiddenSample": [
+        {
+          "tag": "HEADER",
+          "id": "pepselect-site-header",
+          "className": "pepselect-site-header"
+        },
+        {
+          "tag": "svg",
+          "id": "",
+          "className": ""
+        },
+        {
+          "tag": "svg",
+          "id": "",
+          "className": ""
+        },
+        {
+          "tag": "svg",
+          "id": "",
+          "className": ""
+        },
+        {
+          "tag": "svg",
+          "id": "",
+          "className": ""
+        }
+      ],
+      "gateFontSizes": [
+        {
+          "tag": "P",
+          "id": "",
+          "fontSize": "11px",
+          "text": "Research Gate"
+        },
+        {
+          "tag": "H2",
+          "id": "psag-title",
+          "fontSize": "26px",
+          "text": "Research Access Verification"
+        },
+        {
+          "tag": "P",
+          "id": "psag-intro",
+          "fontSize": "14px",
+          "text": "Pep Select provides research-grade compo"
+        },
+        {
+          "tag": "LABEL",
+          "id": "",
+          "fontSize": "11px",
+          "text": "Researcher type"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "Select\u2026"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "University / academic institution"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "Private research laboratory"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "Biotech / pharmaceutical company"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "Contract research organization (CRO)"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "Independent researcher"
+        },
+        {
+          "tag": "B",
+          "id": "",
+          "fontSize": "14px",
+          "text": "21 years of age"
+        },
+        {
+          "tag": "B",
+          "id": "",
+          "fontSize": "14px",
+          "text": "qualified researcher"
+        },
+        {
+          "tag": "B",
+          "id": "",
+          "fontSize": "14px",
+          "text": "in vitro / laboratory research only"
+        },
+        {
+          "tag": "SPAN",
+          "id": "",
+          "fontSize": "11.5px",
+          "text": "\u2303"
+        },
+        {
+          "tag": "LI",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "I am acquiring these materials as a qual"
+        },
+        {
+          "tag": "B",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "solely for in vitro laboratory research"
+        },
+        {
+          "tag": "LI",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "I will not administer these materials to"
+        },
+        {
+          "tag": "B",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "not drugs, dietary supplements, or medic"
+        },
+        {
+          "tag": "LI",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "I am solely responsible for lawful handl"
+        },
+        {
+          "tag": "LI",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "The information I have provided is accur"
+        }
+      ],
+      "versionMatchesInScripts": [],
+      "allVersionTokensInHtml": [],
+      "focusableInGate": 8,
+      "title": "Research Peptides with Batch-Matched Lab Reports | Pep Select",
+      "url": "https://pepselect.com/",
+      "screenshot": "C:\\Users\\paulo\\Documents\\Pep Select Website\\docs\\claude-seo-audit-2026-08-23\\screenshots\\home-desktop.png"
+    }
+  },
+  "shop": {
+    "mobile": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "gatePresent": true,
+      "gateRect": {
+        "top": 0,
+        "left": 0,
+        "width": 390,
+        "height": 844,
+        "bottom": 844,
+        "right": 390
+      },
+      "gateStyle": {
+        "position": "fixed",
+        "zIndex": "9999999",
+        "display": "flex",
+        "visibility": "visible",
+        "width": "390px",
+        "height": "844px"
+      },
+      "bodyOverflow": "hidden",
+      "htmlOverflow": "hidden",
+      "gateAttrs": {
+        "role": "dialog",
+        "ariaModal": "true",
+        "ariaLabelledby": "psag-title",
+        "ariaDescribedby": "psag-intro"
+      },
+      "exitInfo": [
+        {
+          "tag": "P",
+          "id": "",
+          "className": "psag-exit",
+          "href": null,
+          "text": "Not a researcher? Exit"
+        },
+        {
+          "tag": "A",
+          "id": "psagExit",
+          "className": "",
+          "href": "https://google.com",
+          "text": "Exit"
+        }
+      ],
+      "inertCount": 8,
+      "ariaHiddenCount": 21,
+      "ariaHiddenSample": [
+        {
+          "tag": "HEADER",
+          "id": "pepselect-site-header",
+          "className": "pepselect-site-header"
+        },
+        {
+          "tag": "svg",
+          "id": "",
+          "className": ""
+        },
+        {
+          "tag": "svg",
+          "id": "",
+          "className": ""
+        },
+        {
+          "tag": "svg",
+          "id": "",
+          "className": ""
+        },
+        {
+          "tag": "svg",
+          "id": "",
+          "className": ""
+        }
+      ],
+      "gateFontSizes": [
+        {
+          "tag": "P",
+          "id": "",
+          "fontSize": "11px",
+          "text": "Research Gate"
+        },
+        {
+          "tag": "H2",
+          "id": "psag-title",
+          "fontSize": "22px",
+          "text": "Research Access Verification"
+        },
+        {
+          "tag": "P",
+          "id": "psag-intro",
+          "fontSize": "14px",
+          "text": "Pep Select provides research-grade compo"
+        },
+        {
+          "tag": "LABEL",
+          "id": "",
+          "fontSize": "11px",
+          "text": "Researcher type"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "Select\u2026"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "University / academic institution"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "Private research laboratory"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "Biotech / pharmaceutical company"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "Contract research organization (CRO)"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "Independent researcher"
+        },
+        {
+          "tag": "B",
+          "id": "",
+          "fontSize": "14px",
+          "text": "21 years of age"
+        },
+        {
+          "tag": "B",
+          "id": "",
+          "fontSize": "14px",
+          "text": "qualified researcher"
+        },
+        {
+          "tag": "B",
+          "id": "",
+          "fontSize": "14px",
+          "text": "in vitro / laboratory research only"
+        },
+        {
+          "tag": "SPAN",
+          "id": "",
+          "fontSize": "11.5px",
+          "text": "\u2303"
+        },
+        {
+          "tag": "LI",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "I am acquiring these materials as a qual"
+        },
+        {
+          "tag": "B",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "solely for in vitro laboratory research"
+        },
+        {
+          "tag": "LI",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "I will not administer these materials to"
+        },
+        {
+          "tag": "B",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "not drugs, dietary supplements, or medic"
+        },
+        {
+          "tag": "LI",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "I am solely responsible for lawful handl"
+        },
+        {
+          "tag": "LI",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "The information I have provided is accur"
+        }
+      ],
+      "versionMatchesInScripts": [],
+      "allVersionTokensInHtml": [],
+      "focusableInGate": 8,
+      "title": "Shop Research Peptides & Compounds | Pep Select",
+      "url": "https://pepselect.com/shop/",
+      "screenshot": "C:\\Users\\paulo\\Documents\\Pep Select Website\\docs\\claude-seo-audit-2026-08-23\\screenshots\\shop-mobile.png"
+    },
+    "desktop": {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "gatePresent": true,
+      "gateRect": {
+        "top": 0,
+        "left": 0,
+        "width": 1440,
+        "height": 900,
+        "bottom": 900,
+        "right": 1440
+      },
+      "gateStyle": {
+        "position": "fixed",
+        "zIndex": "9999999",
+        "display": "flex",
+        "visibility": "visible",
+        "width": "1440px",
+        "height": "900px"
+      },
+      "bodyOverflow": "hidden",
+      "htmlOverflow": "hidden",
+      "gateAttrs": {
+        "role": "dialog",
+        "ariaModal": "true",
+        "ariaLabelledby": "psag-title",
+        "ariaDescribedby": "psag-intro"
+      },
+      "exitInfo": [
+        {
+          "tag": "P",
+          "id": "",
+          "className": "psag-exit",
+          "href": null,
+          "text": "Not a researcher? Exit"
+        },
+        {
+          "tag": "A",
+          "id": "psagExit",
+          "className": "",
+          "href": "https://google.com",
+          "text": "Exit"
+        }
+      ],
+      "inertCount": 8,
+      "ariaHiddenCount": 21,
+      "ariaHiddenSample": [
+        {
+          "tag": "HEADER",
+          "id": "pepselect-site-header",
+          "className": "pepselect-site-header"
+        },
+        {
+          "tag": "svg",
+          "id": "",
+          "className": ""
+        },
+        {
+          "tag": "svg",
+          "id": "",
+          "className": ""
+        },
+        {
+          "tag": "svg",
+          "id": "",
+          "className": ""
+        },
+        {
+          "tag": "svg",
+          "id": "",
+          "className": ""
+        }
+      ],
+      "gateFontSizes": [
+        {
+          "tag": "P",
+          "id": "",
+          "fontSize": "11px",
+          "text": "Research Gate"
+        },
+        {
+          "tag": "H2",
+          "id": "psag-title",
+          "fontSize": "26px",
+          "text": "Research Access Verification"
+        },
+        {
+          "tag": "P",
+          "id": "psag-intro",
+          "fontSize": "14px",
+          "text": "Pep Select provides research-grade compo"
+        },
+        {
+          "tag": "LABEL",
+          "id": "",
+          "fontSize": "11px",
+          "text": "Researcher type"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "Select\u2026"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "University / academic institution"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "Private research laboratory"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "Biotech / pharmaceutical company"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "Contract research organization (CRO)"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "Independent researcher"
+        },
+        {
+          "tag": "B",
+          "id": "",
+          "fontSize": "14px",
+          "text": "21 years of age"
+        },
+        {
+          "tag": "B",
+          "id": "",
+          "fontSize": "14px",
+          "text": "qualified researcher"
+        },
+        {
+          "tag": "B",
+          "id": "",
+          "fontSize": "14px",
+          "text": "in vitro / laboratory research only"
+        },
+        {
+          "tag": "SPAN",
+          "id": "",
+          "fontSize": "11.5px",
+          "text": "\u2303"
+        },
+        {
+          "tag": "LI",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "I am acquiring these materials as a qual"
+        },
+        {
+          "tag": "B",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "solely for in vitro laboratory research"
+        },
+        {
+          "tag": "LI",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "I will not administer these materials to"
+        },
+        {
+          "tag": "B",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "not drugs, dietary supplements, or medic"
+        },
+        {
+          "tag": "LI",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "I am solely responsible for lawful handl"
+        },
+        {
+          "tag": "LI",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "The information I have provided is accur"
+        }
+      ],
+      "versionMatchesInScripts": [],
+      "allVersionTokensInHtml": [],
+      "focusableInGate": 8,
+      "title": "Shop Research Peptides & Compounds | Pep Select",
+      "url": "https://pepselect.com/shop/",
+      "screenshot": "C:\\Users\\paulo\\Documents\\Pep Select Website\\docs\\claude-seo-audit-2026-08-23\\screenshots\\shop-desktop.png"
+    }
+  },
+  "product-nad": {
+    "mobile": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "gatePresent": true,
+      "gateRect": {
+        "top": 0,
+        "left": 0,
+        "width": 390,
+        "height": 844,
+        "bottom": 844,
+        "right": 390
+      },
+      "gateStyle": {
+        "position": "fixed",
+        "zIndex": "9999999",
+        "display": "flex",
+        "visibility": "visible",
+        "width": "390px",
+        "height": "844px"
+      },
+      "bodyOverflow": "hidden",
+      "htmlOverflow": "hidden",
+      "gateAttrs": {
+        "role": "dialog",
+        "ariaModal": "true",
+        "ariaLabelledby": "psag-title",
+        "ariaDescribedby": "psag-intro"
+      },
+      "exitInfo": [
+        {
+          "tag": "P",
+          "id": "",
+          "className": "psag-exit",
+          "href": null,
+          "text": "Not a researcher? Exit"
+        },
+        {
+          "tag": "A",
+          "id": "psagExit",
+          "className": "",
+          "href": "https://google.com",
+          "text": "Exit"
+        }
+      ],
+      "inertCount": 10,
+      "ariaHiddenCount": 26,
+      "ariaHiddenSample": [
+        {
+          "tag": "HEADER",
+          "id": "pepselect-site-header",
+          "className": "pepselect-site-header"
+        },
+        {
+          "tag": "svg",
+          "id": "",
+          "className": ""
+        },
+        {
+          "tag": "svg",
+          "id": "",
+          "className": ""
+        },
+        {
+          "tag": "svg",
+          "id": "",
+          "className": ""
+        },
+        {
+          "tag": "svg",
+          "id": "",
+          "className": ""
+        }
+      ],
+      "gateFontSizes": [
+        {
+          "tag": "P",
+          "id": "",
+          "fontSize": "11px",
+          "text": "Research Gate"
+        },
+        {
+          "tag": "H2",
+          "id": "psag-title",
+          "fontSize": "22px",
+          "text": "Research Access Verification"
+        },
+        {
+          "tag": "P",
+          "id": "psag-intro",
+          "fontSize": "14px",
+          "text": "Pep Select provides research-grade compo"
+        },
+        {
+          "tag": "LABEL",
+          "id": "",
+          "fontSize": "11px",
+          "text": "Researcher type"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "Select\u2026"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "University / academic institution"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "Private research laboratory"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "Biotech / pharmaceutical company"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "Contract research organization (CRO)"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "Independent researcher"
+        },
+        {
+          "tag": "B",
+          "id": "",
+          "fontSize": "14px",
+          "text": "21 years of age"
+        },
+        {
+          "tag": "B",
+          "id": "",
+          "fontSize": "14px",
+          "text": "qualified researcher"
+        },
+        {
+          "tag": "B",
+          "id": "",
+          "fontSize": "14px",
+          "text": "in vitro / laboratory research only"
+        },
+        {
+          "tag": "SPAN",
+          "id": "",
+          "fontSize": "11.5px",
+          "text": "\u2303"
+        },
+        {
+          "tag": "LI",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "I am acquiring these materials as a qual"
+        },
+        {
+          "tag": "B",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "solely for in vitro laboratory research"
+        },
+        {
+          "tag": "LI",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "I will not administer these materials to"
+        },
+        {
+          "tag": "B",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "not drugs, dietary supplements, or medic"
+        },
+        {
+          "tag": "LI",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "I am solely responsible for lawful handl"
+        },
+        {
+          "tag": "LI",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "The information I have provided is accur"
+        }
+      ],
+      "versionMatchesInScripts": [],
+      "allVersionTokensInHtml": [],
+      "focusableInGate": 8,
+      "title": "NAD+ 500MG for Research | Pep Select",
+      "url": "https://pepselect.com/product/nad/",
+      "screenshot": "C:\\Users\\paulo\\Documents\\Pep Select Website\\docs\\claude-seo-audit-2026-08-23\\screenshots\\product-nad-mobile.png"
+    },
+    "desktop": {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "gatePresent": true,
+      "gateRect": {
+        "top": 0,
+        "left": 0,
+        "width": 1440,
+        "height": 900,
+        "bottom": 900,
+        "right": 1440
+      },
+      "gateStyle": {
+        "position": "fixed",
+        "zIndex": "9999999",
+        "display": "flex",
+        "visibility": "visible",
+        "width": "1440px",
+        "height": "900px"
+      },
+      "bodyOverflow": "hidden",
+      "htmlOverflow": "hidden",
+      "gateAttrs": {
+        "role": "dialog",
+        "ariaModal": "true",
+        "ariaLabelledby": "psag-title",
+        "ariaDescribedby": "psag-intro"
+      },
+      "exitInfo": [
+        {
+          "tag": "P",
+          "id": "",
+          "className": "psag-exit",
+          "href": null,
+          "text": "Not a researcher? Exit"
+        },
+        {
+          "tag": "A",
+          "id": "psagExit",
+          "className": "",
+          "href": "https://google.com",
+          "text": "Exit"
+        }
+      ],
+      "inertCount": 10,
+      "ariaHiddenCount": 26,
+      "ariaHiddenSample": [
+        {
+          "tag": "HEADER",
+          "id": "pepselect-site-header",
+          "className": "pepselect-site-header"
+        },
+        {
+          "tag": "svg",
+          "id": "",
+          "className": ""
+        },
+        {
+          "tag": "svg",
+          "id": "",
+          "className": ""
+        },
+        {
+          "tag": "svg",
+          "id": "",
+          "className": ""
+        },
+        {
+          "tag": "svg",
+          "id": "",
+          "className": ""
+        }
+      ],
+      "gateFontSizes": [
+        {
+          "tag": "P",
+          "id": "",
+          "fontSize": "11px",
+          "text": "Research Gate"
+        },
+        {
+          "tag": "H2",
+          "id": "psag-title",
+          "fontSize": "26px",
+          "text": "Research Access Verification"
+        },
+        {
+          "tag": "P",
+          "id": "psag-intro",
+          "fontSize": "14px",
+          "text": "Pep Select provides research-grade compo"
+        },
+        {
+          "tag": "LABEL",
+          "id": "",
+          "fontSize": "11px",
+          "text": "Researcher type"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "Select\u2026"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "University / academic institution"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "Private research laboratory"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "Biotech / pharmaceutical company"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "Contract research organization (CRO)"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "Independent researcher"
+        },
+        {
+          "tag": "B",
+          "id": "",
+          "fontSize": "14px",
+          "text": "21 years of age"
+        },
+        {
+          "tag": "B",
+          "id": "",
+          "fontSize": "14px",
+          "text": "qualified researcher"
+        },
+        {
+          "tag": "B",
+          "id": "",
+          "fontSize": "14px",
+          "text": "in vitro / laboratory research only"
+        },
+        {
+          "tag": "SPAN",
+          "id": "",
+          "fontSize": "11.5px",
+          "text": "\u2303"
+        },
+        {
+          "tag": "LI",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "I am acquiring these materials as a qual"
+        },
+        {
+          "tag": "B",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "solely for in vitro laboratory research"
+        },
+        {
+          "tag": "LI",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "I will not administer these materials to"
+        },
+        {
+          "tag": "B",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "not drugs, dietary supplements, or medic"
+        },
+        {
+          "tag": "LI",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "I am solely responsible for lawful handl"
+        },
+        {
+          "tag": "LI",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "The information I have provided is accur"
+        }
+      ],
+      "versionMatchesInScripts": [],
+      "allVersionTokensInHtml": [],
+      "focusableInGate": 8,
+      "title": "NAD+ 500MG for Research | Pep Select",
+      "url": "https://pepselect.com/product/nad/",
+      "screenshot": "C:\\Users\\paulo\\Documents\\Pep Select Website\\docs\\claude-seo-audit-2026-08-23\\screenshots\\product-nad-desktop.png"
+    }
+  },
+  "testing": {
+    "mobile": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "gatePresent": true,
+      "gateRect": {
+        "top": 0,
+        "left": 0,
+        "width": 390,
+        "height": 844,
+        "bottom": 844,
+        "right": 390
+      },
+      "gateStyle": {
+        "position": "fixed",
+        "zIndex": "9999999",
+        "display": "flex",
+        "visibility": "visible",
+        "width": "390px",
+        "height": "844px"
+      },
+      "bodyOverflow": "hidden",
+      "htmlOverflow": "hidden",
+      "gateAttrs": {
+        "role": "dialog",
+        "ariaModal": "true",
+        "ariaLabelledby": "psag-title",
+        "ariaDescribedby": "psag-intro"
+      },
+      "exitInfo": [
+        {
+          "tag": "P",
+          "id": "",
+          "className": "psag-exit",
+          "href": null,
+          "text": "Not a researcher? Exit"
+        },
+        {
+          "tag": "A",
+          "id": "psagExit",
+          "className": "",
+          "href": "https://google.com",
+          "text": "Exit"
+        }
+      ],
+      "inertCount": 8,
+      "ariaHiddenCount": 43,
+      "ariaHiddenSample": [
+        {
+          "tag": "HEADER",
+          "id": "pepselect-site-header",
+          "className": "pepselect-site-header"
+        },
+        {
+          "tag": "svg",
+          "id": "",
+          "className": ""
+        },
+        {
+          "tag": "svg",
+          "id": "",
+          "className": ""
+        },
+        {
+          "tag": "svg",
+          "id": "",
+          "className": ""
+        },
+        {
+          "tag": "svg",
+          "id": "",
+          "className": ""
+        }
+      ],
+      "gateFontSizes": [
+        {
+          "tag": "P",
+          "id": "",
+          "fontSize": "11px",
+          "text": "Research Gate"
+        },
+        {
+          "tag": "H2",
+          "id": "psag-title",
+          "fontSize": "22px",
+          "text": "Research Access Verification"
+        },
+        {
+          "tag": "P",
+          "id": "psag-intro",
+          "fontSize": "14px",
+          "text": "Pep Select provides research-grade compo"
+        },
+        {
+          "tag": "LABEL",
+          "id": "",
+          "fontSize": "11px",
+          "text": "Researcher type"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "Select\u2026"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "University / academic institution"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "Private research laboratory"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "Biotech / pharmaceutical company"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "Contract research organization (CRO)"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "Independent researcher"
+        },
+        {
+          "tag": "B",
+          "id": "",
+          "fontSize": "14px",
+          "text": "21 years of age"
+        },
+        {
+          "tag": "B",
+          "id": "",
+          "fontSize": "14px",
+          "text": "qualified researcher"
+        },
+        {
+          "tag": "B",
+          "id": "",
+          "fontSize": "14px",
+          "text": "in vitro / laboratory research only"
+        },
+        {
+          "tag": "SPAN",
+          "id": "",
+          "fontSize": "11.5px",
+          "text": "\u2303"
+        },
+        {
+          "tag": "LI",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "I am acquiring these materials as a qual"
+        },
+        {
+          "tag": "B",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "solely for in vitro laboratory research"
+        },
+        {
+          "tag": "LI",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "I will not administer these materials to"
+        },
+        {
+          "tag": "B",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "not drugs, dietary supplements, or medic"
+        },
+        {
+          "tag": "LI",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "I am solely responsible for lawful handl"
+        },
+        {
+          "tag": "LI",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "The information I have provided is accur"
+        }
+      ],
+      "versionMatchesInScripts": [],
+      "allVersionTokensInHtml": [],
+      "focusableInGate": 8,
+      "title": "Peptide COA Archive: Search by Compound & Batch | Pep Select",
+      "url": "https://pepselect.com/testing/",
+      "screenshot": "C:\\Users\\paulo\\Documents\\Pep Select Website\\docs\\claude-seo-audit-2026-08-23\\screenshots\\testing-mobile.png"
+    },
+    "desktop": {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "gatePresent": true,
+      "gateRect": {
+        "top": 0,
+        "left": 0,
+        "width": 1440,
+        "height": 900,
+        "bottom": 900,
+        "right": 1440
+      },
+      "gateStyle": {
+        "position": "fixed",
+        "zIndex": "9999999",
+        "display": "flex",
+        "visibility": "visible",
+        "width": "1440px",
+        "height": "900px"
+      },
+      "bodyOverflow": "hidden",
+      "htmlOverflow": "hidden",
+      "gateAttrs": {
+        "role": "dialog",
+        "ariaModal": "true",
+        "ariaLabelledby": "psag-title",
+        "ariaDescribedby": "psag-intro"
+      },
+      "exitInfo": [
+        {
+          "tag": "P",
+          "id": "",
+          "className": "psag-exit",
+          "href": null,
+          "text": "Not a researcher? Exit"
+        },
+        {
+          "tag": "A",
+          "id": "psagExit",
+          "className": "",
+          "href": "https://google.com",
+          "text": "Exit"
+        }
+      ],
+      "inertCount": 8,
+      "ariaHiddenCount": 43,
+      "ariaHiddenSample": [
+        {
+          "tag": "HEADER",
+          "id": "pepselect-site-header",
+          "className": "pepselect-site-header"
+        },
+        {
+          "tag": "svg",
+          "id": "",
+          "className": ""
+        },
+        {
+          "tag": "svg",
+          "id": "",
+          "className": ""
+        },
+        {
+          "tag": "svg",
+          "id": "",
+          "className": ""
+        },
+        {
+          "tag": "svg",
+          "id": "",
+          "className": ""
+        }
+      ],
+      "gateFontSizes": [
+        {
+          "tag": "P",
+          "id": "",
+          "fontSize": "11px",
+          "text": "Research Gate"
+        },
+        {
+          "tag": "H2",
+          "id": "psag-title",
+          "fontSize": "26px",
+          "text": "Research Access Verification"
+        },
+        {
+          "tag": "P",
+          "id": "psag-intro",
+          "fontSize": "14px",
+          "text": "Pep Select provides research-grade compo"
+        },
+        {
+          "tag": "LABEL",
+          "id": "",
+          "fontSize": "11px",
+          "text": "Researcher type"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "Select\u2026"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "University / academic institution"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "Private research laboratory"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "Biotech / pharmaceutical company"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "Contract research organization (CRO)"
+        },
+        {
+          "tag": "OPTION",
+          "id": "",
+          "fontSize": "15px",
+          "text": "Independent researcher"
+        },
+        {
+          "tag": "B",
+          "id": "",
+          "fontSize": "14px",
+          "text": "21 years of age"
+        },
+        {
+          "tag": "B",
+          "id": "",
+          "fontSize": "14px",
+          "text": "qualified researcher"
+        },
+        {
+          "tag": "B",
+          "id": "",
+          "fontSize": "14px",
+          "text": "in vitro / laboratory research only"
+        },
+        {
+          "tag": "SPAN",
+          "id": "",
+          "fontSize": "11.5px",
+          "text": "\u2303"
+        },
+        {
+          "tag": "LI",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "I am acquiring these materials as a qual"
+        },
+        {
+          "tag": "B",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "solely for in vitro laboratory research"
+        },
+        {
+          "tag": "LI",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "I will not administer these materials to"
+        },
+        {
+          "tag": "B",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "not drugs, dietary supplements, or medic"
+        },
+        {
+          "tag": "LI",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "I am solely responsible for lawful handl"
+        },
+        {
+          "tag": "LI",
+          "id": "",
+          "fontSize": "13.5px",
+          "text": "The information I have provided is accur"
+        }
+      ],
+      "versionMatchesInScripts": [],
+      "allVersionTokensInHtml": [],
+      "focusableInGate": 8,
+      "title": "Peptide COA Archive: Search by Compound & Batch | Pep Select",
+      "url": "https://pepselect.com/testing/",
+      "screenshot": "C:\\Users\\paulo\\Documents\\Pep Select Website\\docs\\claude-seo-audit-2026-08-23\\screenshots\\testing-desktop.png"
+    }
+  }
+}
