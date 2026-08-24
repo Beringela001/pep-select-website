@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Pep Select Cart Recovery Emails: Set 2</title>
+  <style>
+    :root {
+      --navy: #002a53;
+      --ink: #001d3a;
+      --slate: #5e6f80;
+      --cyan: #17a1cf;
+      --cyan-dark: #0d708e;
+      --cyan-soft: #e8f6fb;
+      --green: #1e9467;
+      --green-soft: #edf8f3;
+      --warm: #fff8ed;
+      --warm-border: #ead3aa;
+      --border: #d7e1e9;
+      --surface: #f8fafc;
+      --canvas: #e9eef4;
+      --white: #fff;
+      --sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --serif: Georgia, "Times New Roman", serif;
+      --mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { background: #dfe7ee; color: var(--ink); font-family: var(--sans); margin: 0; padding: 38px 18px 70px; }
+    .review-board { margin: 0 auto; max-width: 1180px; }
+    .board-header { align-items: end; display: flex; gap: 32px; justify-content: space-between; margin: 0 auto 24px; max-width: 1040px; }
+    .board-kicker, .sequence-label, .eyebrow, .section-kicker { color: var(--cyan-dark); font-family: var(--mono); font-size: 10px; font-weight: 700; letter-spacing: 1.45px; text-transform: uppercase; }
+    .board-kicker { margin: 0 0 8px; }
+    .board-title { font-size: 30px; letter-spacing: -.75px; line-height: 1.2; margin: 0 0 8px; }
+    .board-intro { color: var(--slate); font-size: 14px; line-height: 1.55; margin: 0; max-width: 680px; }
+    .board-status { background: rgba(255,255,255,.7); border: 1px solid rgba(0,42,83,.1); border-radius: 999px; color: var(--navy); flex: 0 0 auto; font-family: var(--mono); font-size: 10px; font-weight: 700; padding: 9px 13px; text-transform: uppercase; }
+    .sequence-nav { display: grid; gap: 10px; grid-template-columns: repeat(3, 1fr); margin: 0 auto 42px; max-width: 1040px; }
+    .sequence-nav a { background: rgba(255,255,255,.66); border: 1px solid rgba(0,42,83,.12); border-radius: 10px; color: var(--navy); padding: 14px 16px; text-decoration: none; }
+    .sequence-nav strong { display: block; font-size: 13px; margin-bottom: 3px; }
+    .sequence-nav span { color: var(--slate); font-size: 11px; }
+    .mockup { margin: 0 auto 62px; max-width: 1040px; scroll-margin-top: 22px; }
+    .mockup-head { align-items: end; display: grid; gap: 22px; grid-template-columns: minmax(0, 1fr) 420px; margin-bottom: 18px; }
+    .sequence-label { margin: 0 0 6px; }
+    .mockup-title { font-size: 22px; letter-spacing: -.4px; line-height: 1.25; margin: 0 0 5px; }
+    .mockup-note { color: var(--slate); font-size: 13px; line-height: 1.5; margin: 0; }
+    .copy-lock { background: rgba(255,255,255,.66); border: 1px solid rgba(0,42,83,.1); border-radius: 10px; padding: 12px 15px; }
+    .copy-row { display: grid; gap: 10px; grid-template-columns: 68px 1fr; }
+    .copy-row + .copy-row { border-top: 1px solid rgba(0,42,83,.08); margin-top: 8px; padding-top: 8px; }
+    .copy-row span { color: var(--slate); font-family: var(--mono); font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+    .copy-row strong { color: var(--navy); font-size: 12px; line-height: 1.4; }
+    .email-canvas { background: var(--canvas); border-radius: 22px; padding: 34px 16px; }
+    .email-card { background: var(--white); border-radius: 18px; box-shadow: 0 18px 46px rgba(0,42,83,.14); margin: 0 auto; max-width: 680px; overflow: hidden; }
+    .topline { display: grid; grid-template-columns: 3fr 1fr; height: 6px; }
+    .topline span:first-child { background: var(--navy); }
+    .topline span:last-child { background: var(--cyan); }
+    .email-header { padding: 38px 44px 28px; }
+    .header-row { align-items: center; display: flex; justify-content: space-between; }
+    .logo { display: block; height: auto; width: 132px; }
+    .email-ref { color: var(--slate); font-family: var(--mono); font-size: 10px; font-weight: 600; letter-spacing: 1.4px; text-transform: uppercase; }
+    .divider { border-bottom: 1px solid var(--border); padding-top: 28px; }
+    .email-main { padding: 0 44px 34px; }
+    .eyebrow { margin: 0 0 12px; }
+    .email-main h1 { color: var(--ink); font-size: 32px; letter-spacing: -.9px; line-height: 1.18; margin: 0 0 18px; }
+    .hello { font-size: 16px; font-weight: 650; line-height: 1.55; margin: 0 0 4px; }
+    .intro-copy { color: var(--slate); font-size: 16px; line-height: 1.62; margin: 0 0 24px; }
+    .cart-card { border: 1px solid var(--border); border-radius: 8px; margin: 0 0 22px; overflow: hidden; }
+    .cart-head { align-items: center; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; padding: 17px 20px; }
+    .cart-head h2, .message-card h2, .coupon-card h2 { color: var(--navy); font-family: var(--serif); font-size: 20px; line-height: 1.3; margin: 0; }
+    .cart-count { color: var(--slate); font-family: var(--mono); font-size: 9px; text-transform: uppercase; }
+    .product { align-items: center; display: grid; gap: 11px; grid-template-columns: 52px minmax(0,1fr) auto; padding: 15px 20px; }
+    .product + .product { border-top: 1px solid var(--border); }
+    .product-thumb { align-items: center; background: #eef3f6; border-radius: 6px; display: flex; height: 46px; justify-content: center; overflow: hidden; width: 46px; }
+    .product-thumb img { height: 44px; object-fit: contain; width: 44px; }
+    .product-name { color: var(--navy); font-size: 14px; font-weight: 700; line-height: 1.35; margin: 0 0 3px; }
+    .product-meta { color: var(--slate); font-family: var(--mono); font-size: 9px; line-height: 1.4; margin: 0; }
+    .product-price { color: var(--ink); font-family: var(--mono); font-size: 11px; font-weight: 700; line-height: 1.45; text-align: right; }
+    .message-card, .coupon-card { border-radius: 8px; margin: 0 0 22px; padding: 19px 20px; }
+    .message-card { background: var(--cyan-soft); border: 1px solid #bbdde8; }
+    .message-card.warm { background: var(--warm); border-color: var(--warm-border); }
+    .coupon-card { background: var(--green-soft); border: 1px solid #9fd5c2; }
+    .section-kicker { margin: 0 0 7px; }
+    .message-card h2, .coupon-card h2 { margin-bottom: 7px; }
+    .message-card p, .coupon-card p { color: var(--slate); font-size: 13px; line-height: 1.58; margin: 0; }
+    .coupon-code { background: var(--white); border: 1px dashed var(--green); border-radius: 6px; color: var(--navy); display: inline-block; font-family: var(--mono); font-size: 15px; font-weight: 700; letter-spacing: .6px; margin: 12px 0 9px; padding: 10px 13px; }
+    .button { background: var(--cyan); border: 1px solid var(--cyan); border-radius: 999px; color: var(--white); display: inline-block; font-size: 14px; font-weight: 700; line-height: 20px; margin: 0 0 14px; padding: 13px 28px; text-align: center; text-decoration: none; }
+    .button-note { color: var(--slate); font-size: 12px; line-height: 1.5; margin: 0 0 22px; }
+    .closing { color: var(--navy); font-family: var(--serif); font-size: 17px; line-height: 1.5; margin: 0 0 22px; }
+    .help { background: #f3f6f8; border-radius: 6px; color: var(--slate); font-size: 13px; line-height: 1.55; margin: 0; padding: 13px 15px; }
+    .help a, .email-footer a { color: var(--cyan-dark); font-weight: 700; }
+    .email-footer { padding: 0 44px 34px; text-align: center; }
+    .footer-inner { border-top: 1px solid var(--border); padding-top: 24px; }
+    .email-footer p { margin: 0; }
+    .footer-brand { color: var(--navy); font-size: 13px; font-weight: 700; line-height: 1.45; }
+    .footer-links { color: var(--cyan-dark); font-size: 12px; line-height: 1.45; margin-top: 2px !important; }
+    .footer-links a { font-weight: 400; text-decoration: none; }
+    .footer-legal { color: var(--slate); font-size: 11px; line-height: 1.5; margin-top: 9px !important; }
+    .unsubscribe { color: var(--slate) !important; text-decoration: underline !important; }
+    .coupon-flow { background: var(--white); border: 1px solid rgba(0,42,83,.12); border-radius: 12px; display: grid; gap: 12px; grid-template-columns: repeat(4, 1fr); margin: -34px auto 0; max-width: 860px; padding: 16px; position: relative; }
+    .coupon-step { padding: 5px 9px; }
+    .coupon-step span { color: var(--cyan-dark); display: block; font-family: var(--mono); font-size: 9px; font-weight: 700; letter-spacing: 1px; margin-bottom: 5px; text-transform: uppercase; }
+    .coupon-step strong { color: var(--navy); display: block; font-size: 12px; line-height: 1.4; }
+    @media (max-width: 760px) {
+      body { padding: 18px 8px 48px; }
+      .board-header { align-items: start; display: block; padding: 0 10px; }
+      .board-status { display: inline-block; margin-top: 14px; }
+      .sequence-nav { grid-template-columns: 1fr; padding: 0 10px; }
+      .mockup-head { display: block; padding: 0 10px; }
+      .copy-lock { margin-top: 14px; }
+      .email-canvas { border-radius: 14px; padding: 8px; }
+      .email-header { padding: 28px 22px 22px; }
+      .email-ref { display: none; }
+      .logo { width: 118px; }
+      .divider { padding-top: 22px; }
+      .email-main { padding: 0 22px 27px; }
+      .email-main h1 { font-size: 27px; letter-spacing: -.6px; }
+      .intro-copy { font-size: 15px; }
+      .cart-head { align-items: start; display: block; padding: 15px 16px; }
+      .cart-count { display: block; margin-top: 4px; }
+      .product { gap: 9px; grid-template-columns: 46px minmax(0,1fr); padding: 13px 16px; }
+      .product-price { grid-column: 2; text-align: left; }
+      .message-card, .coupon-card { padding: 17px; }
+      .button { display: block; padding-left: 16px; padding-right: 16px; }
+      .email-footer { padding: 0 22px 28px; }
+      .footer-legal { font-size: 10px; }
+      .coupon-flow { grid-template-columns: 1fr 1fr; margin: 16px 8px 0; }
+    }
+  </style>
+</head>
+<body>
+  <main class="review-board">
+    <header class="board-header">
+      <div>
+        <p class="board-kicker">Pep Select · cart recovery · set 2</p>
+        <h1 class="board-title">A warmer three-email sequence</h1>
+        <p class="board-intro">The same timing and recovery flow, written with more patience and care. The final 10% offer reads as a thank-you from Pep Select, not a checkout prompt.</p>
+      </div>
+      <div class="board-status">Set 2 · no live changes</div>
+    </header>
+
+    <nav class="sequence-nav" aria-label="Email sequence">
+      <a href="#email-one"><strong>01 · Saved for you</strong><span>30 minutes after abandonment · no discount</span></a>
+      <a href="#email-two"><strong>02 · Can we help?</strong><span>24 hours · reply-led</span></a>
+      <a href="#email-three"><strong>03 · A thank-you</strong><span>72 hours · unique 10% coupon</span></a>
+    </nav>
+
+    <section class="mockup" id="email-one">
+      <header class="mockup-head">
+        <div><p class="sequence-label">Email 01 · 30 minutes after abandonment</p><h2 class="mockup-title">Saved with no pressure</h2><p class="mockup-note">Gives the customer room to review and return on their own time.</p></div>
+        <div class="copy-lock"><div class="copy-row"><span>Subject</span><strong>We saved your Pep Select cart for you</strong></div><div class="copy-row"><span>Preheader</span><strong>Your selected research items are right where you left them.</strong></div></div>
+      </header>
+      <div class="email-canvas">
+        <article class="email-card">
+          <div class="topline" aria-hidden="true"><span></span><span></span></div>
+          <header class="email-header"><div class="header-row"><img class="logo" src="../../pepselect-child/assets/images/brand/pep-select-logo-header.png" alt="Pep Select"><span class="email-ref">Saved for you</span></div><div class="divider"></div></header>
+          <section class="email-main">
+            <p class="eyebrow">Your saved cart</p><h1>Still thinking it over?</h1><p class="hello">Hi Alex,</p>
+            <p class="intro-copy">You left a few items in your cart, so we saved them for you. Take your time reviewing the product details and available documentation. Your cart will be ready when you want to come back.</p>
+            <section class="cart-card"><header class="cart-head"><h2>Your saved items</h2><span class="cart-count">2 items</span></header>
+              <div class="product"><div class="product-thumb"><img src="../../pepselect-child/assets/images/why-pep-select/glp3-rt-20mg-vial-batch.webp" alt=""></div><div><p class="product-name">GLP-3 R · 10MG</p><p class="product-meta">Preview item</p></div><div class="product-price">×1<br>$79.99</div></div>
+              <div class="product"><div class="product-thumb"><img src="../../pepselect-child/assets/images/why-pep-select/nad-500mg-vial-batch-v3.webp" alt=""></div><div><p class="product-name">NAD+ · 500MG</p><p class="product-meta">Preview item</p></div><div class="product-price">×1<br>$59.99</div></div>
+            </section>
+            <section class="message-card"><p class="section-kicker">Take your time</p><h2>The details will still be there</h2><p>Each product page includes the information and available batch documentation you may want to review before checkout.</p></section>
+            <a class="button" href="#">Continue where I left off</a><p class="button-note">This link restores your saved cart.</p>
+            <p class="help">If anything at checkout was unclear, reply to this email or write to <a href="mailto:support@pepselect.com">support@pepselect.com</a>.</p>
+          </section>
+          <footer class="email-footer"><div class="footer-inner"><p class="footer-brand">Pep Select</p><p class="footer-links"><a href="https://pepselect.com/">pepselect.com</a> · <a href="mailto:support@pepselect.com">Support</a></p><p class="footer-legal">For laboratory research use only. <a class="unsubscribe" href="#">Unsubscribe from cart reminders</a></p></div></footer>
+        </article>
+      </div>
+    </section>
+
+    <section class="mockup" id="email-two">
+      <header class="mockup-head">
+        <div><p class="sequence-label">Email 02 · 24 hours</p><h2 class="mockup-title">An open invitation to reply</h2><p class="mockup-note">Feels like customer care rather than another checkout reminder.</p></div>
+        <div class="copy-lock"><div class="copy-row"><span>Subject</span><strong>Can we help with your saved cart?</strong></div><div class="copy-row"><span>Preheader</span><strong>Questions about a product, documentation, shipping, or checkout? Reply to us.</strong></div></div>
+      </header>
+      <div class="email-canvas">
+        <article class="email-card">
+          <div class="topline" aria-hidden="true"><span></span><span></span></div>
+          <header class="email-header"><div class="header-row"><img class="logo" src="../../pepselect-child/assets/images/brand/pep-select-logo-header.png" alt="Pep Select"><span class="email-ref">A note from support</span></div><div class="divider"></div></header>
+          <section class="email-main">
+            <p class="eyebrow">A note from Pep Select</p><h1>Is there anything we can help with?</h1><p class="hello">Hi Alex,</p>
+            <p class="intro-copy">Your cart is still saved. If a question made you pause, send us a reply. We can help you find product details, available documentation, shipping information, or the right place to continue at checkout.</p>
+            <section class="message-card warm"><p class="section-kicker">Reply to this email</p><h2>Tell us what you need</h2><p>A person from Pep Select will read your message and help you find the relevant information.</p></section>
+            <section class="cart-card"><header class="cart-head"><h2>Your saved items</h2><span class="cart-count">2 items</span></header>
+              <div class="product"><div class="product-thumb"><img src="../../pepselect-child/assets/images/why-pep-select/glp3-rt-20mg-vial-batch.webp" alt=""></div><div><p class="product-name">GLP-3 R · 10MG</p><p class="product-meta">Preview item</p></div><div class="product-price">×1<br>$79.99</div></div>
+              <div class="product"><div class="product-thumb"><img src="../../pepselect-child/assets/images/why-pep-select/nad-500mg-vial-batch-v3.webp" alt=""></div><div><p class="product-name">NAD+ · 500MG</p><p class="product-meta">Preview item</p></div><div class="product-price">×1<br>$59.99</div></div>
+            </section>
+            <a class="button" href="#">Take another look</a><p class="button-note">This link restores your saved items. No discount applies to this note.</p>
+            <p class="help">You can reply from this inbox or contact <a href="mailto:support@pepselect.com">support@pepselect.com</a>.</p>
+          </section>
+          <footer class="email-footer"><div class="footer-inner"><p class="footer-brand">Pep Select</p><p class="footer-links"><a href="https://pepselect.com/">pepselect.com</a> · <a href="mailto:support@pepselect.com">Support</a></p><p class="footer-legal">For laboratory research use only. <a class="unsubscribe" href="#">Unsubscribe from cart reminders</a></p></div></footer>
+        </article>
+      </div>
+    </section>
+
+    <section class="mockup" id="email-three">
+      <header class="mockup-head">
+        <div><p class="sequence-label">Email 03 · 72 hours</p><h2 class="mockup-title">A 10% thank-you</h2><p class="mockup-note">Offers a useful gesture while respecting whatever the customer decides.</p></div>
+        <div class="copy-lock"><div class="copy-row"><span>Subject</span><strong>A thank-you from Pep Select: 10% off your cart</strong></div><div class="copy-row"><span>Preheader</span><strong>If you are still considering your saved items, we would like to offer 10% off.</strong></div></div>
+      </header>
+      <div class="email-canvas">
+        <article class="email-card">
+          <div class="topline" aria-hidden="true"><span></span><span></span></div>
+          <header class="email-header"><div class="header-row"><img class="logo" src="../../pepselect-child/assets/images/brand/pep-select-logo-header.png" alt="Pep Select"><span class="email-ref">A thank-you</span></div><div class="divider"></div></header>
+          <section class="email-main">
+            <p class="eyebrow">A thank-you from Pep Select</p><h1>We would like to offer you 10% off</h1><p class="hello">Hi Alex,</p>
+            <p class="intro-copy">We know a research order can take time to review. If you are still considering the items in your cart, we would like to offer 10% off.</p>
+            <section class="coupon-card"><p class="section-kicker">For your saved cart</p><h2>A 10% thank-you from Pep Select</h2><span class="coupon-code">PEP-7K4M2Q</span><p>Use your code above, or click the button and we will apply it for you. You can use the discount for the next 48 hours.</p></section>
+            <section class="cart-card"><header class="cart-head"><h2>Your saved items</h2><span class="cart-count">2 items</span></header>
+              <div class="product"><div class="product-thumb"><img src="../../pepselect-child/assets/images/why-pep-select/glp3-rt-20mg-vial-batch.webp" alt=""></div><div><p class="product-name">GLP-3 R · 10MG</p><p class="product-meta">Preview item</p></div><div class="product-price">×1<br>$79.99</div></div>
+              <div class="product"><div class="product-thumb"><img src="../../pepselect-child/assets/images/why-pep-select/nad-500mg-vial-batch-v3.webp" alt=""></div><div><p class="product-name">NAD+ · 500MG</p><p class="product-meta">Preview item</p></div><div class="product-price">×1<br>$59.99</div></div>
+            </section>
+            <a class="button" href="#">Return to my cart with 10% off</a><p class="button-note">This link restores your cart and applies its unique coupon to eligible product subtotals. Shipping and tax are excluded.</p>
+            <p class="closing">Whatever you decide, thank you for considering Pep Select.</p>
+            <p class="help">If you have a question about the offer or checkout, reply to this email or write to <a href="mailto:support@pepselect.com">support@pepselect.com</a>.</p>
+          </section>
+          <footer class="email-footer"><div class="footer-inner"><p class="footer-brand">Pep Select</p><p class="footer-links"><a href="https://pepselect.com/">pepselect.com</a> · <a href="mailto:support@pepselect.com">Support</a></p><p class="footer-legal">For laboratory research use only. <a class="unsubscribe" href="#">Unsubscribe from cart reminders</a></p></div></footer>
+        </article>
+      </div>
+      <aside class="coupon-flow" aria-label="Coupon flow"><div class="coupon-step"><span>01 · Wait</span><strong>The cart remains abandoned for 72 hours.</strong></div><div class="coupon-step"><span>02 · Create</span><strong>The plugin creates one unique 10% code.</strong></div><div class="coupon-step"><span>03 · Return</span><strong>The email link restores the customer’s cart.</strong></div><div class="coupon-step"><span>04 · Apply</span><strong>WooCommerce applies the code at checkout.</strong></div></aside>
+    </section>
+  </main>
+</body>
+</html>
