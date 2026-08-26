@@ -1,6 +1,6 @@
 # Pep Select Order Experience implementation milestones
 
-Status: visual design approved. Production implementation has not started. Live remains untouched until the integrated staging milestone is approved.
+Status: Milestone 1 implementation complete and packaged for installation. Staging activation and end-to-end WordPress verification remain part of Milestone 4. Live remains untouched until the integrated staging milestone is approved.
 
 ## Architecture decision
 
@@ -24,6 +24,8 @@ The QR must never depend only on a plugin rewrite route that disappears when the
 The feature switch is the normal operational off-switch. Full plugin deactivation is the emergency fallback.
 
 ## Milestone 1: Secure order foundation and Website ↔ Ops data contract
+
+**Implementation status: complete (version 0.1.0).** Delivered as the default-disabled `pepselect-order-experience` WordPress plugin plus the compatible Ops schema, settled-allocation snapshot builder, encrypted access-token retention, visible publish/retry/regenerate/revoke controls, and integration logging. Automated coverage includes the approved GLP-3 R + Tesamorelin + GHK-CU example, multi-quantity split-batch fulfillment, repeated idempotent writes, credential encryption, Woo regression tests, and the full Ops suite. WordPress account/token/fallback behavior will be exercised against the real plugin runtime during integrated staging; no Live environment was changed.
 
 This milestone builds the complete data and security foundation both applications need. It is not considered complete with only a plugin shell or an API stub.
 
