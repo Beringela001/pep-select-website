@@ -1,6 +1,6 @@
 # Pep Select Order Experience implementation milestones
 
-Status: Milestone 1 implementation complete and packaged for installation. Staging activation and end-to-end WordPress verification remain part of Milestone 4. Live remains untouched until the integrated staging milestone is approved.
+Status: Milestones 1 and 2 implementation complete. Order Experience 0.2.4 is installed on Live with the customer feature disabled, the permanent fallback intact, and the administrator sample validated from 320 through 1440 px. Related-compound approval and the final WooCommerce coupon remain owner-controlled settings. Integrated token/order UAT and customer enablement remain Milestone 4.
 
 ## Architecture decision
 
@@ -57,6 +57,8 @@ This milestone builds the complete data and security foundation both application
 - No checkout, payment, stock, shipping, rewards, tracking, COA, or account regression is introduced.
 
 ## Milestone 2: Complete customer order experience
+
+Implementation status: complete in plugin 0.2.4 and deployed feature-off. The shared renderer, exact COA batch-vial lookup, missing/failed/refunded states, controlled 14-compound registry, deterministic relationship scoring, coupon validation, My Account link, and WooCommerce-native reorder checks are installed. The relationship registry is visible in WooCommerce > Order Experience for owner approval; the coupon section stays hidden on real order pages until a valid 15% coupon is configured.
 
 This milestone delivers the approved visual as one finished customer flow, including every feature that relies on the order and batch contract.
 

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Pep Select Order Experience
  * Description: Secure, batch-specific order records for Pep Select customers and Ops.
- * Version: 0.1.0
+ * Version: 0.2.4
  * Author: Pep Select
  * Text Domain: pepselect-order-experience
  * Requires at least: 6.5
@@ -12,12 +12,17 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'PEPSELECT_OE_VERSION', '0.1.0' );
+define( 'PEPSELECT_OE_VERSION', '0.2.4' );
 define( 'PEPSELECT_OE_FILE', __FILE__ );
 define( 'PEPSELECT_OE_DIR', plugin_dir_path( __FILE__ ) );
 
 require_once PEPSELECT_OE_DIR . 'includes/class-pepselect-oe-access-store.php';
 require_once PEPSELECT_OE_DIR . 'includes/class-pepselect-oe-rest-controller.php';
+require_once PEPSELECT_OE_DIR . 'includes/class-pepselect-oe-content-registry.php';
+require_once PEPSELECT_OE_DIR . 'includes/class-pepselect-oe-relationship-engine.php';
+require_once PEPSELECT_OE_DIR . 'includes/class-pepselect-oe-coa-resolver.php';
+require_once PEPSELECT_OE_DIR . 'includes/class-pepselect-oe-view-model.php';
+require_once PEPSELECT_OE_DIR . 'includes/class-pepselect-oe-renderer.php';
 require_once PEPSELECT_OE_DIR . 'includes/class-pepselect-oe-plugin.php';
 
 register_activation_hook( __FILE__, array( 'PepSelect_OE_Plugin', 'activate' ) );
