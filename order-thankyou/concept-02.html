@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pep Select Order Page · Concept 02</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --pep-navy:#002a53;
+      --pep-navy-dark:#001d3a;
+      --pep-cyan:#17a1cf;
+      --pep-cyan-soft:#e8f6fb;
+      --pep-green:#16834a;
+      --pep-green-soft:#eaf5ef;
+      --pep-ink:#13283d;
+      --pep-slate:#5e6f80;
+      --pep-neutral:#7a8793;
+      --pep-border:#d7e1e9;
+      --pep-surface:#f3f8fc;
+      --pep-white:#fff;
+      --pep-mono:"IBM Plex Mono", monospace;
+      --pep-sans:"Plus Jakarta Sans", sans-serif;
+      --radius:14px;
+      --inner:6px;
+      --shadow:0 14px 40px rgba(0,42,83,.08);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:#fff;color:var(--pep-ink);font-family:var(--pep-sans);font-size:16px;line-height:1.55}
+    img{display:block;max-width:100%}
+    a{color:inherit;text-decoration:none}
+    button,summary{font:inherit}
+    svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+    .concept-bar{background:var(--pep-navy-dark);color:#d6e8f4;padding:9px 24px;text-align:center;font:500 11px/1.4 var(--pep-mono);letter-spacing:.04em}
+    .site-header{height:76px;border-bottom:1px solid var(--pep-border);background:#fff;display:flex;align-items:center;position:relative;z-index:2}
+    .header-inner,.wrap{width:min(1200px,calc(100% - 48px));margin:auto}
+    .header-inner{display:flex;align-items:center;justify-content:space-between;gap:24px}
+    .brand{width:178px;height:auto}
+    .nav{display:flex;align-items:center;gap:28px;color:var(--pep-navy);font-size:13px;font-weight:600}
+    .nav a:last-child{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:0 18px;border-radius:999px;background:var(--pep-navy);color:#fff}
+    .mobile-menu{display:none;width:44px;height:44px;border:1px solid var(--pep-border);border-radius:999px;background:#fff;color:var(--pep-navy);align-items:center;justify-content:center}
+    .hero{background:linear-gradient(180deg,#f3f8fc 0%,#fff 100%);padding:48px 0 42px;border-bottom:1px solid var(--pep-border)}
+    .hero-grid{display:grid;grid-template-columns:minmax(0,1.42fr) minmax(340px,.78fr);gap:28px;align-items:stretch}
+    .eyebrow{margin:0 0 12px;color:var(--pep-cyan);font:600 12px/1.3 var(--pep-mono);letter-spacing:.12em;text-transform:uppercase}
+    h1,h2,h3,p{margin-top:0}
+    h1{max-width:720px;margin-bottom:16px;color:var(--pep-navy);font-size:clamp(38px,5vw,68px);line-height:1.02;letter-spacing:-.048em}
+    h1 span{color:var(--pep-cyan)}
+    .hero-copy>p:not(.eyebrow){max-width:690px;margin-bottom:24px;color:var(--pep-slate);font-size:17px}
+    .order-id{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
+    .order-id strong{font:600 14px/1 var(--pep-mono);color:var(--pep-navy)}
+    .status{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border-radius:999px;background:var(--pep-green-soft);color:var(--pep-green);font-size:12px;font-weight:700}
+    .status svg{width:16px;height:16px}
+    .order-panel{border:1px solid var(--pep-border);border-radius:var(--radius);background:#fff;box-shadow:var(--shadow);padding:22px}
+    .panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:18px}
+    .panel-head small{display:block;margin-bottom:3px;color:var(--pep-slate);font-size:11px;text-transform:uppercase;letter-spacing:.08em}
+    .panel-head strong{color:var(--pep-navy);font-size:16px}
+    .panel-head .date{font:500 12px/1.4 var(--pep-mono);color:var(--pep-slate);text-align:right}
+    .costs{display:grid;gap:10px}
+    .cost-row{display:flex;justify-content:space-between;gap:20px;color:var(--pep-slate);font-size:13px}
+    .cost-row span:last-child{font-family:var(--pep-mono);color:var(--pep-ink)}
+    .cost-row.total{margin-top:4px;padding-top:14px;border-top:1px solid var(--pep-border);color:var(--pep-navy);font-weight:700;font-size:16px}
+    .cost-row.total span:last-child{color:var(--pep-navy);font-weight:600}
+    .order-panel details{margin-top:16px;border-top:1px solid var(--pep-border);padding-top:12px}
+    .order-panel summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;min-height:44px;color:var(--pep-navy);font-weight:700;font-size:13px}
+    .order-panel summary::-webkit-details-marker{display:none}
+    .order-panel summary svg{transition:transform .2s ease}
+    .order-panel details[open] summary svg{transform:rotate(180deg)}
+    .order-meta{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:8px 0 4px;color:var(--pep-slate);font-size:12px}
+    .order-meta b{display:block;color:var(--pep-ink);font:500 12px/1.4 var(--pep-mono)}
+    main{padding:54px 0 72px}
+    section+section{margin-top:58px}
+    .section-heading{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:22px}
+    .section-heading h2{margin:0;color:var(--pep-navy);font-size:clamp(27px,3vw,40px);line-height:1.1;letter-spacing:-.035em}
+    .section-heading p{max-width:580px;margin:0;color:var(--pep-slate);font-size:14px}
+    .compound-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;padding:16px;background:var(--pep-surface);border:1px solid var(--pep-border);border-radius:var(--radius)}
+    .compound-card{min-width:0;overflow:hidden;border:1px solid var(--pep-border);border-radius:var(--inner);background:#fff;display:flex;flex-direction:column}
+    .product-media{height:246px;position:relative;overflow:hidden;background:#f4f6f8;border-bottom:1px solid var(--pep-border)}
+    .product-media img{width:100%;height:100%;object-fit:cover;object-position:center 52%}
+    .item-number{position:absolute;top:12px;left:12px;display:grid;place-items:center;width:32px;height:32px;border-radius:999px;background:rgba(0,42,83,.92);color:#fff;font:600 12px/1 var(--pep-mono)}
+    .compound-main{padding:18px 18px 14px}
+    .compound-title{display:flex;align-items:start;justify-content:space-between;gap:12px;margin-bottom:12px}
+    .compound-title h3{margin:0;color:var(--pep-navy);font-size:23px;line-height:1.1;letter-spacing:-.03em}
+    .strength{flex:0 0 auto;padding:5px 8px;border-radius:999px;background:var(--pep-cyan-soft);color:var(--pep-navy);font:600 11px/1 var(--pep-mono)}
+    .study-label{margin-bottom:7px;color:var(--pep-cyan);font:600 10px/1.3 var(--pep-mono);letter-spacing:.1em;text-transform:uppercase}
+    .study-list{margin:0;padding:0;list-style:none;display:grid;gap:6px;color:var(--pep-slate);font-size:12px;line-height:1.45}
+    .study-list li{position:relative;padding-left:14px}
+    .study-list li::before{content:"";position:absolute;left:0;top:.62em;width:5px;height:5px;border-radius:50%;background:var(--pep-cyan)}
+    .batch-summary{margin-top:auto;padding:15px 18px 18px;border-top:1px solid var(--pep-border)}
+    .batch-title{display:flex;align-items:center;gap:8px;margin-bottom:12px;color:var(--pep-navy);font:600 11px/1.3 var(--pep-mono);letter-spacing:.08em;text-transform:uppercase}
+    .batch-title svg{width:17px;height:17px;color:var(--pep-cyan)}
+    .batch-data{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px}
+    .datum{min-width:0}
+    .datum.wide{grid-column:1/-1}
+    .datum span{display:block;color:var(--pep-neutral);font-size:10px;line-height:1.3;text-transform:uppercase;letter-spacing:.04em}
+    .datum strong{display:block;margin-top:3px;overflow-wrap:anywhere;color:var(--pep-ink);font:500 11px/1.45 var(--pep-mono)}
+    .batch-pass{display:flex;align-items:flex-start;gap:8px;margin-top:12px;padding:10px;border-radius:var(--inner);background:var(--pep-green-soft);color:var(--pep-green);font-size:10.5px;line-height:1.4;font-weight:600}
+    .batch-pass svg{flex:0 0 auto;width:17px;height:17px}
+    .report-link{display:flex;align-items:center;justify-content:space-between;min-height:44px;margin-top:10px;color:var(--pep-navy);font-size:12px;font-weight:700}
+    .report-link span{border-bottom:1px solid var(--pep-cyan)}
+    .report-link svg{width:17px;height:17px;color:var(--pep-cyan)}
+    .handling-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+    .info-card{min-height:168px;border:1px solid var(--pep-border);border-radius:var(--inner);padding:18px;background:#fff}
+    .info-icon{display:grid;place-items:center;width:38px;height:38px;margin-bottom:18px;border-radius:999px;background:var(--pep-cyan-soft);color:var(--pep-navy)}
+    .info-card h3{margin-bottom:6px;color:var(--pep-navy);font-size:15px;line-height:1.25}
+    .info-card p{margin:0;color:var(--pep-slate);font-size:12px;line-height:1.55}
+    .offer{display:grid;grid-template-columns:1fr auto;align-items:center;gap:28px;padding:28px 30px;border-radius:var(--radius);background:var(--pep-navy);color:#fff;overflow:hidden;position:relative}
+    .offer:after{content:"15";position:absolute;right:180px;top:-50px;color:rgba(255,255,255,.04);font:700 190px/1 var(--pep-mono)}
+    .offer-copy{position:relative;z-index:1}
+    .offer .eyebrow{margin-bottom:8px;color:#73d2ef}
+    .offer h2{margin-bottom:7px;color:#fff;font-size:31px;line-height:1.1;letter-spacing:-.035em}
+    .offer p{margin:0;color:#c9dce8;font-size:13px}
+    .coupon{position:relative;z-index:1;display:flex;align-items:center;gap:8px;padding:8px;border:1px solid rgba(255,255,255,.26);border-radius:999px;background:rgba(255,255,255,.08)}
+    .coupon code{padding:0 12px;font:600 13px/1 var(--pep-mono);letter-spacing:.08em}
+    .coupon button{min-height:42px;border:0;border-radius:999px;padding:0 17px;background:#fff;color:var(--pep-navy);font-weight:700;cursor:pointer}
+    .related-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+    .related-card{overflow:hidden;border:1px solid var(--pep-border);border-radius:var(--inner);background:#fff;transition:border-color .18s ease,box-shadow .18s ease}
+    .related-card:hover{border-color:var(--pep-cyan);box-shadow:0 10px 26px rgba(0,42,83,.08)}
+    .related-image{height:172px;background:#f3f5f7;border-bottom:1px solid var(--pep-border);overflow:hidden}
+    .related-image img{width:100%;height:100%;object-fit:cover;object-position:center 53%}
+    .related-body{padding:15px}
+    .relation{display:inline-block;margin-bottom:8px;color:var(--pep-cyan);font:600 9px/1.3 var(--pep-mono);letter-spacing:.08em;text-transform:uppercase}
+    .related-card h3{margin-bottom:5px;color:var(--pep-navy);font-size:17px}
+    .related-card p{min-height:56px;margin-bottom:12px;color:var(--pep-slate);font-size:11px;line-height:1.5}
+    .related-card .view{display:flex;align-items:center;justify-content:space-between;min-height:38px;color:var(--pep-navy);font-size:11px;font-weight:700}
+    .related-card .view svg{width:16px;height:16px;color:var(--pep-cyan)}
+    .actions{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .action-card{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:16px;min-height:114px;padding:20px;border:1px solid var(--pep-border);border-radius:var(--inner);background:#fff}
+    .action-card.primary{background:var(--pep-surface)}
+    .action-icon{display:grid;place-items:center;width:46px;height:46px;border-radius:999px;background:var(--pep-cyan-soft);color:var(--pep-navy)}
+    .action-card h3{margin:0 0 3px;color:var(--pep-navy);font-size:17px}
+    .action-card p{margin:0;color:var(--pep-slate);font-size:12px}
+    .action-card>a{display:flex;align-items:center;gap:8px;min-height:44px;color:var(--pep-navy);font-size:12px;font-weight:700}
+    .action-card>a svg{width:17px;color:var(--pep-cyan)}
+    footer{background:var(--pep-navy-dark);color:#c9dce8;padding:34px 0}
+    .footer-inner{display:flex;align-items:center;justify-content:space-between;gap:24px}
+    .footer-inner img{width:155px;filter:brightness(0) invert(1);opacity:.92}
+    .footer-inner p{max-width:670px;margin:0;text-align:right;font-size:10.5px;line-height:1.6}
+    a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var(--pep-cyan);outline-offset:3px}
+    @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+    @media(max-width:960px){
+      .hero-grid{grid-template-columns:1fr}.order-panel{max-width:none}.compound-grid{grid-template-columns:1fr 1fr}.handling-grid,.related-grid{grid-template-columns:1fr 1fr}.compound-card:last-child{grid-column:1/-1;max-width:calc(50% - 8px)}.nav{display:none}.mobile-menu{display:flex}
+    }
+    @media(max-width:600px){
+      .concept-bar{padding:8px 12px;font-size:9px}.site-header{height:66px}.header-inner,.wrap{width:min(100% - 28px,1200px)}.brand{width:144px}
+      .hero{padding:34px 0 30px}.hero-grid{gap:20px}h1{font-size:42px}.hero-copy>p:not(.eyebrow){font-size:15px}.order-panel{padding:18px}.panel-head{margin-bottom:15px}
+      main{padding:38px 0 52px}section+section{margin-top:42px}.section-heading{display:block;margin-bottom:17px}.section-heading h2{font-size:29px}.section-heading p{margin-top:9px;font-size:13px}
+      .compound-grid{grid-template-columns:1fr;padding:10px;gap:10px}.compound-card:last-child{grid-column:auto;max-width:none}.product-media{height:268px}.compound-main{padding:17px}.batch-summary{padding:15px 17px 17px}
+      .handling-grid,.related-grid{grid-template-columns:1fr 1fr;gap:9px}.info-card{min-height:178px;padding:14px}.info-icon{margin-bottom:14px}.info-card h3{font-size:13px}.info-card p{font-size:10.5px}
+      .offer{grid-template-columns:1fr;padding:24px 20px;gap:18px}.offer h2{font-size:25px}.coupon{width:100%;justify-content:space-between}.offer:after{right:-30px;top:10px;font-size:120px}
+      .related-image{height:132px}.related-body{padding:12px}.related-card h3{font-size:15px}.related-card p{min-height:72px;font-size:10px}.relation{font-size:8px}
+      .actions{grid-template-columns:1fr 1fr;gap:9px}.action-card{display:flex;align-items:flex-start;flex-direction:column;min-height:210px;padding:15px;gap:10px}.action-card>a{margin-top:auto}.action-card p{font-size:10.5px}
+      .footer-inner{display:block}.footer-inner img{margin-bottom:18px}.footer-inner p{text-align:left}.order-meta{grid-template-columns:1fr}
+    }
+    @media(max-width:360px){.header-inner,.wrap{width:min(100% - 22px,1200px)}h1{font-size:37px}.handling-grid,.related-grid,.actions{gap:7px}.info-card,.related-body,.action-card{padding:11px}.related-image{height:116px}}
+  </style>
+</head>
+<body>
+  <svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden">
+    <symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v5h5M9 12h6M9 16h6"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M14 7l5 5-5 5"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m7 9 5 5 5-5"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+    <symbol id="i-snow" viewBox="0 0 24 24"><path d="M12 2v20M4 7l16 10M4 17 20 7M9 4l3 3 3-3M9 20l3-3 3 3"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+    <symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 2S6 9 6 14a6 6 0 0 0 12 0c0-5-6-12-6-12Z"/><path d="M9.5 15.5a3 3 0 0 0 3 2"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5a3 3 0 0 1 3-2h5v17H7a3 3 0 0 0-3 2zM20 5a3 3 0 0 0-3-2h-5v17h5a3 3 0 0 1 3 2z"/></symbol>
+    <symbol id="i-headset" viewBox="0 0 24 24"><path d="M4 14v-2a8 8 0 0 1 16 0v2M4 14h3v6H5a1 1 0 0 1-1-1zM20 14h-3v6h2a1 1 0 0 0 1-1zM17 20c0 1-1 2-3 2h-2"/></symbol>
+    <symbol id="i-cart" viewBox="0 0 24 24"><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/><path d="M3 4h2l2 11h11l2-8H6"/></symbol>
+  </svg>
+
+  <div class="concept-bar">VISUAL CONCEPT 02 · SAMPLE ORDER · FINAL VALUES WILL COME FROM WOOCOMMERCE + THE MATCHED BATCH RECORD</div>
+  <header class="site-header">
+    <div class="header-inner">
+      <img class="brand" src="../pepselect-child/assets/images/brand/pep-select-logo-header.png" alt="Pep Select">
+      <nav class="nav" aria-label="Primary navigation"><a href="#compounds">Your order</a><a href="#handling">Handling</a><a href="#related">Related compounds</a><a href="#support">Support</a><a href="#">My account</a></nav>
+      <button class="mobile-menu" aria-label="Open navigation"><svg><use href="#i-menu"/></svg></button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow">Order record</p>
+        <h1>Thank you, <span>Paulo.</span></h1>
+        <p>Your order and its batch documentation now live in one place. Match each vial to the record below, review the laboratory report, or return whenever you need the order details.</p>
+        <div class="order-id"><strong>ORDER #PS-10482</strong><span class="status"><svg><use href="#i-check"/></svg> Order complete</span></div>
+      </div>
+      <aside class="order-panel" aria-label="Order cost summary">
+        <div class="panel-head"><div><small>Order total</small><strong>Three compounds</strong></div><div class="date">AUG 24, 2026<br>10:42 AM ET</div></div>
+        <div class="costs">
+          <div class="cost-row"><span>GLP-3 R · 30 mg</span><span>$179.99</span></div>
+          <div class="cost-row"><span>Tesamorelin · 10 mg</span><span>$52.99</span></div>
+          <div class="cost-row"><span>GHK-CU · 50 mg</span><span>$33.99</span></div>
+          <div class="cost-row"><span>Shipping</span><span>$0.00</span></div>
+          <div class="cost-row total"><span>Total</span><span>$266.97</span></div>
+        </div>
+        <details>
+          <summary>Review order details <svg><use href="#i-chevron"/></svg></summary>
+          <div class="order-meta"><div>Payment status<b>Paid</b></div><div>Fulfillment<b>Delivered</b></div><div>Shipping method<b>FedEx 2-Day</b></div><div>Tracking<b>7834 1092 8831</b></div></div>
+        </details>
+      </aside>
+    </div>
+  </section>
+
+  <main class="wrap">
+    <section id="compounds">
+      <div class="section-heading"><div><p class="eyebrow">Your compounds</p><h2>Match the vial. Match the batch.</h2></div><p>Each item connects the product in your order with its current published batch record. Select a card to review the complete laboratory report.</p></div>
+      <div class="compound-grid">
+        <article class="compound-card">
+          <div class="product-media"><img src="assets/glp3-r-30mg.jpg" alt="Pep Select GLP-3 R 30 mg vial"><span class="item-number">01</span></div>
+          <div class="compound-main"><div class="compound-title"><h3>GLP-3 R</h3><span class="strength">30 MG</span></div><p class="study-label">Research context</p><ul class="study-list"><li>Studied for metabolic regulation through triple-hormone signaling</li><li>Investigated for liver-fat and cardiometabolic pathways</li></ul></div>
+          <div class="batch-summary"><div class="batch-title"><svg><use href="#i-file"/></svg> Batch summary</div><div class="batch-data"><div class="datum wide"><span>Batch number</span><strong>ND_R30_060326</strong></div><div class="datum"><span>Purity</span><strong>97.62%</strong></div><div class="datum"><span>Test date</span><strong>JUN 24, 2026</strong></div><div class="datum wide"><span>Independent laboratory</span><strong>ILS LABS</strong></div></div><div class="batch-pass"><svg><use href="#i-check"/></svg><span>Full-QC testing passed. Published batch documentation is on file.</span></div><a class="report-link" href="https://pepselect.com/testing/retatrutide-30mg/nd_r30_060326/"><span>Review full batch report</span><svg><use href="#i-arrow"/></svg></a></div>
+        </article>
+
+        <article class="compound-card">
+          <div class="product-media"><img src="assets/tesamorelin-10mg.jpg" alt="Pep Select Tesamorelin 10 mg vial"><span class="item-number">02</span></div>
+          <div class="compound-main"><div class="compound-title"><h3>Tesamorelin</h3><span class="strength">10 MG</span></div><p class="study-label">Research context</p><ul class="study-list"><li>Studied for visceral-fat and body-composition biology</li><li>Researched for growth-hormone-releasing signaling</li></ul></div>
+          <div class="batch-summary"><div class="batch-title"><svg><use href="#i-file"/></svg> Batch summary</div><div class="batch-data"><div class="datum wide"><span>Batch number</span><strong>PSTES1071926GX</strong></div><div class="datum"><span>Purity</span><strong>99.89%</strong></div><div class="datum"><span>Test date</span><strong>JUL 23, 2026</strong></div><div class="datum wide"><span>Independent laboratory</span><strong>FREEDOM DIAGNOSTICS</strong></div></div><div class="batch-pass"><svg><use href="#i-check"/></svg><span>QC passed. Published batch documentation is on file.</span></div><a class="report-link" href="https://pepselect.com/testing/tesamorelin-10-mg/pstes1071926gx/"><span>Review full batch report</span><svg><use href="#i-arrow"/></svg></a></div>
+        </article>
+
+        <article class="compound-card">
+          <div class="product-media"><img src="assets/ghk-cu-50mg.jpg" alt="Pep Select GHK-CU 50 mg vial"><span class="item-number">03</span></div>
+          <div class="compound-main"><div class="compound-title"><h3>GHK-CU</h3><span class="strength">50 MG</span></div><p class="study-label">Research context</p><ul class="study-list"><li>Studied for skin and tissue renewal</li><li>Researched for wound-healing and repair signaling</li></ul></div>
+          <div class="batch-summary"><div class="batch-title"><svg><use href="#i-file"/></svg> Batch summary</div><div class="batch-data"><div class="datum wide"><span>Batch number</span><strong>PSGKCU5071926GX</strong></div><div class="datum"><span>Purity</span><strong>99.85%</strong></div><div class="datum"><span>Test date</span><strong>JUL 23, 2026</strong></div><div class="datum wide"><span>Independent laboratory</span><strong>FREEDOM DIAGNOSTICS</strong></div></div><div class="batch-pass"><svg><use href="#i-check"/></svg><span>QC passed. Published batch documentation is on file.</span></div><a class="report-link" href="https://pepselect.com/testing/ghk-cu-50-mg/psgkcu5071926gx/"><span>Review full batch report</span><svg><use href="#i-arrow"/></svg></a></div>
+        </article>
+      </div>
+    </section>
+
+    <section id="handling">
+      <div class="section-heading"><div><p class="eyebrow">Laboratory handling</p><h2>Keep the record with the material.</h2></div><p>Short reminders route researchers back to the full FAQ and batch documentation. Product-specific directions should follow the applicable laboratory protocol.</p></div>
+      <div class="handling-grid">
+        <article class="info-card"><div class="info-icon"><svg><use href="#i-snow"/></svg></div><h3>Storage conditions</h3><p>Keep sealed materials under the storage conditions listed for the product and your laboratory SOP.</p></article>
+        <article class="info-card"><div class="info-icon"><svg><use href="#i-sun"/></svg></div><h3>Light + moisture</h3><p>Keep vials sealed and protect them from unnecessary light and moisture exposure.</p></article>
+        <article class="info-card"><div class="info-icon"><svg><use href="#i-drop"/></svg></div><h3>After reconstitution</h3><p>Stability depends on solvent, concentration, sterility, and temperature. Follow a validated laboratory protocol.</p></article>
+        <article class="info-card"><div class="info-icon"><svg><use href="#i-book"/></svg></div><h3>Need the full answer?</h3><p>Review the handling FAQ or contact support with the product and batch number.</p></article>
+      </div>
+    </section>
+
+    <section class="offer" aria-label="Thank-you offer">
+      <div class="offer-copy"><p class="eyebrow">A thank-you for your next order</p><h2>15% off, once per email.</h2><p>Use this code on a future eligible order. Final promotion terms will appear here.</p></div>
+      <div class="coupon"><code>THANKYOU15</code><button type="button">Copy code</button></div>
+    </section>
+
+    <section id="related">
+      <div class="section-heading"><div><p class="eyebrow">Related areas of study</p><h2>Compounds studied alongside similar pathways.</h2></div><p>These connections come from overlapping research themes in the catalog. Each card explains the overlap without prescribing a combination.</p></div>
+      <div class="related-grid">
+        <a class="related-card" href="https://pepselect.com/product/mots-c/"><div class="related-image"><img src="assets/mots-c-10mg.jpg" alt="Pep Select MOTS-C 10 mg vial"></div><div class="related-body"><span class="relation">Metabolic signaling</span><h3>MOTS-C · 10 mg</h3><p>Studied for cellular energy and metabolic stress signaling.</p><span class="view">View compound <svg><use href="#i-arrow"/></svg></span></div></a>
+        <a class="related-card" href="https://pepselect.com/product/ss-31/"><div class="related-image"><img src="assets/ss-31-10mg.jpg" alt="Pep Select SS-31 10 mg vial"></div><div class="related-body"><span class="relation">Mitochondrial pathways</span><h3>SS-31 · 10 mg</h3><p>Studied for mitochondrial membrane protection and energy production.</p><span class="view">View compound <svg><use href="#i-arrow"/></svg></span></div></a>
+        <a class="related-card" href="https://pepselect.com/product/nad/"><div class="related-image"><img src="assets/nad-500mg.jpg" alt="Pep Select NAD+ 500 mg vial"></div><div class="related-body"><span class="relation">Cellular metabolism</span><h3>NAD+ · 500 mg</h3><p>Studied for its role in cellular energy metabolism.</p><span class="view">View compound <svg><use href="#i-arrow"/></svg></span></div></a>
+        <a class="related-card" href="https://pepselect.com/product/bpc-157/"><div class="related-image"><img src="assets/bpc-157-10mg.jpg" alt="Pep Select BPC-157 10 mg vial"></div><div class="related-body"><span class="relation">Tissue integrity</span><h3>BPC-157 · 10 mg</h3><p>Researched for its role in tissue repair and integrity.</p><span class="view">View compound <svg><use href="#i-arrow"/></svg></span></div></a>
+      </div>
+    </section>
+
+    <section id="support">
+      <div class="section-heading"><div><p class="eyebrow">Next steps</p><h2>Your order stays within reach.</h2></div></div>
+      <div class="actions">
+        <article class="action-card"><div class="action-icon"><svg><use href="#i-headset"/></svg></div><div><h3>Questions about this order?</h3><p>Send support the order number or the batch number shown above.</p></div><a href="https://pepselect.com/contact-us/">Contact support <svg><use href="#i-arrow"/></svg></a></article>
+        <article class="action-card primary"><div class="action-icon"><svg><use href="#i-cart"/></svg></div><div><h3>Reorder these items</h3><p>Start a cart with GLP-3 R 30 mg, Tesamorelin 10 mg, and GHK-CU 50 mg.</p></div><a href="#">Review reorder <svg><use href="#i-arrow"/></svg></a></article>
+      </div>
+    </section>
+  </main>
+
+  <footer><div class="wrap footer-inner"><img src="../pepselect-child/assets/images/brand/pep-select-logo-footer.png" alt="Pep Select"><p>For research and identification purposes only. Products are not intended for human dosing, injection, ingestion, diagnosis, treatment, or prevention of disease. © 2026 Pep Select.</p></div></footer>
+  <script>
+    const copyButton=document.querySelector('.coupon button');
+    copyButton.addEventListener('click',()=>{copyButton.textContent='Copied';setTimeout(()=>copyButton.textContent='Copy code',1400)});
+  </script>
+</body>
+</html>
