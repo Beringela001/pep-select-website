@@ -131,6 +131,109 @@ function pepselect_child_completed_order_email_subject( $subject, $order, $email
 add_filter( 'woocommerce_email_subject_customer_completed_order', 'pepselect_child_completed_order_email_subject', 10, 3 );
 
 /**
+ * Read a resolved Back In Stock Notifier placeholder from its email object.
+ *
+ * The notifier populates placeholders before WooCommerce filters the subject
+ * and heading. Reading that prepared value keeps the child theme out of the
+ * plugin's subscriber and inventory workflow.
+ *
+ * @param mixed  $email    WooCommerce email object.
+ * @param string $key      Placeholder name, including braces.
+ * @param string $fallback Value used when the plugin has no live subscriber.
+ * @return string
+ */
+function pepselect_child_bis_email_placeholder( $email, $key, $fallback = '' ) {
+	if ( ! is_object( $email ) || ! isset( $email->placeholders ) || ! is_array( $email->placeholders ) ) {
+		return $fallback;
+	}
+
+	$value = isset( $email->placeholders[ $key ] ) ? $email->placeholders[ $key ] : '';
+	$value = trim( wp_strip_all_tags( (string) $value ) );
+
+	return '' !== $value ? $value : $fallback;
+}
+
+/**
+ * Keep the stock-subscription subject aligned with the approved email.
+ *
+ * @param string $subject Existing subject.
+ * @param mixed  $object  Associated email object data.
+ * @param mixed  $email   WooCommerce email object.
+ * @return string
+ */
+function pepselect_child_bis_subscription_subject( $subject, $object, $email ) {
+	unset( $object );
+
+	$product_name = pepselect_child_bis_email_placeholder( $email, '{only_product_name}' );
+
+	if ( '' === $product_name ) {
+		return $subject;
+	}
+
+	return sprintf(
+		/* translators: %s: product name. */
+		__( 'You\'re on the list for %s', 'pepselect-child' ),
+		$product_name
+	);
+}
+add_filter( 'woocommerce_email_subject_cwg_bis_subscription', 'pepselect_child_bis_subscription_subject', 20, 3 );
+
+/**
+ * Keep the availability subject clear and free of artificial urgency.
+ *
+ * @param string $subject Existing subject.
+ * @param mixed  $object  Associated email object data.
+ * @param mixed  $email   WooCommerce email object.
+ * @return string
+ */
+function pepselect_child_bis_instock_subject( $subject, $object, $email ) {
+	unset( $object );
+
+	$product_name = pepselect_child_bis_email_placeholder( $email, '{only_product_name}' );
+
+	if ( '' === $product_name ) {
+		return $subject;
+	}
+
+	return sprintf(
+		/* translators: %s: product name. */
+		__( '%s is available again at Pep Select', 'pepselect-child' ),
+		$product_name
+	);
+}
+add_filter( 'woocommerce_email_subject_cwg_bis_instock', 'pepselect_child_bis_instock_subject', 20, 3 );
+
+/**
+ * Replace the plugin heading with the approved stock-watch confirmation.
+ *
+ * @param string $heading Existing heading.
+ * @param mixed  $object  Associated email object data.
+ * @param mixed  $email   WooCommerce email object.
+ * @return string
+ */
+function pepselect_child_bis_subscription_heading( $heading, $object, $email ) {
+	unset( $heading, $object, $email );
+
+	return __( 'We\'ll keep an eye on it', 'pepselect-child' );
+}
+add_filter( 'woocommerce_email_heading_cwg_bis_subscription', 'pepselect_child_bis_subscription_heading', 20, 3 );
+
+/**
+ * Replace the plugin heading with the approved availability message.
+ *
+ * @param string $heading Existing heading.
+ * @param mixed  $object  Associated email object data.
+ * @param mixed  $email   WooCommerce email object.
+ * @return string
+ */
+function pepselect_child_bis_instock_heading( $heading, $object, $email ) {
+	unset( $heading, $object, $email );
+
+	return __( 'Good news. It\'s back.', 'pepselect-child' );
+}
+add_filter( 'woocommerce_email_heading_cwg_bis_instock', 'pepselect_child_bis_instock_heading', 20, 3 );
+
+/**
  * Route replies from every WooCommerce customer email to customer support.
  *
  * The authenticated From address remains owned by WP Mail SMTP so this does

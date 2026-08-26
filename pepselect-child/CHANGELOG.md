@@ -1,5 +1,14 @@
 # Changelog
 
+**Release candidate: 0.25.0-beta.53** - Bring back-in-stock emails into the Pep Select transactional email system.
+
+## 0.25.0-beta.53 - 2026-08-26
+
+- Add child-theme HTML and plain-text overrides for the Back In Stock Notifier subscription-confirmation and product-available emails.
+- Match the approved Pep Select order-email canvas, typography, product card, status language, support footer, and responsive behavior.
+- Replace the empty-name greeting and artificial scarcity copy with the approved human stock-watch messages.
+- Keep the notifier plugin authoritative for subscriptions, recipients, stock transitions, and delivery while routing replies to `support@pepselect.com`.
+
 **Release candidate: 0.25.0-beta.52** - Replace the homepage hero with the approved finished vial artwork.
 
 ## 0.25.0-beta.52 - 2026-08-23
