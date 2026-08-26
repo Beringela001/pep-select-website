@@ -15,11 +15,19 @@ eight paid vials become ten physical vials with two free.
 
 ## Eligibility
 
-Version 1.0.0 mirrors the products selected in rule 1209 by SKU:
+Version 1.0.5 mirrors the products selected in rule 1209 by SKU:
 GLP3R10, GLP3R20, GLP2T20, GLP1S10, MOTSC10, and GHKCU50.
 
 When rule 1209 eligibility changes, update `pepselect_bogo_skus()` in the same
 release so price behavior and physical quantity cannot drift.
+
+## Cart controls
+
+The full WooCommerce Cart block and the Xootix side cart display the paid
+quantity selected by the customer. The free vial remains in the underlying
+WooCommerce cart so YITH can price it at 100% off and stock can be reduced
+correctly. Increasing or decreasing the visible quantity recalculates the
+physical quantity without exposing the extra inventory unit in the controls.
 
 ## Order 1560
 

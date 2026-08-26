@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Pep Select Automatic Free Vials
  * Description: Makes Buy 4 get 1 free add the earned vial before YITH prices the cart.
- * Version:     1.0.0
+ * Version:     1.0.5
  * Author:      Pep Select
  * Text Domain: pepselect-bogo-quantity
  */
@@ -107,6 +107,130 @@ function pepselect_bogo_expand_cart_update( $cart_item_key, $new_quantity, $old_
 	$updating = false;
 }
 add_action( 'woocommerce_after_cart_item_quantity_update', 'pepselect_bogo_expand_cart_update', 20, 4 );
+
+/**
+ * Side Cart receives Woo's physical quantity, but its controls represent what
+ * the customer intends to pay for. Show the paid count so subtracting one from
+ * a 4 + 1 line submits 3 instead of submitting 4 and immediately earning the
+ * free vial again.
+ *
+ * @param array      $args          Side Cart template arguments.
+ * @param WC_Product $_product      Product object.
+ * @param array      $cart_item     WooCommerce cart item.
+ * @param string     $cart_item_key WooCommerce cart item key.
+ * @return array
+ */
+function pepselect_bogo_side_cart_paid_quantity( $args, $_product, $cart_item, $cart_item_key ) {
+	unset( $cart_item_key );
+
+	if ( ! is_array( $args ) || ! $_product || ! pepselect_bogo_is_eligible( $_product->get_id() ) ) {
+		return $args;
+	}
+
+	$total = max( 1, (int) ( $cart_item['quantity'] ?? 1 ) );
+	$paid  = $total - intdiv( $total, 5 );
+
+	if ( isset( $args['cart_item'] ) && is_array( $args['cart_item'] ) ) {
+		$args['cart_item']['quantity'] = $paid;
+	}
+
+	return $args;
+}
+add_filter( 'xoo_wsc_product_args', 'pepselect_bogo_side_cart_paid_quantity', 20, 4 );
+
+/**
+ * WooCommerce Cart and Checkout blocks read quantity from the Store API. Woo
+ * must retain the physical count for pricing, orders, and stock, while the
+ * controls must show the paid count or a customer decrement can immediately
+ * earn the free vial again.
+ *
+ * @param WP_HTTP_Response $response REST response.
+ * @param WP_REST_Server   $server   REST server.
+ * @param WP_REST_Request  $request  REST request.
+ * @return WP_HTTP_Response
+ */
+function pepselect_bogo_store_api_paid_quantities( $response, $server, $request ) {
+	unset( $server );
+
+	if ( ! $request instanceof WP_REST_Request || ! is_object( $response ) || ! method_exists( $response, 'get_data' ) || ! method_exists( $response, 'set_data' ) ) {
+		return $response;
+	}
+
+	if ( 0 !== strpos( $request->get_route(), '/wc/store/v1/cart' ) ) {
+		return $response;
+	}
+
+	$data = $response->get_data();
+	if ( ! is_array( $data ) || empty( $data['items'] ) || ! is_array( $data['items'] ) ) {
+		return $response;
+	}
+
+	foreach ( $data['items'] as &$item ) {
+		if ( empty( $item['id'] ) || ! isset( $item['quantity'] ) || ! pepselect_bogo_is_eligible( (int) $item['id'] ) ) {
+			continue;
+		}
+
+		$total            = max( 1, (int) $item['quantity'] );
+		$item['quantity'] = $total - intdiv( $total, 5 );
+	}
+	unset( $item );
+
+	$response->set_data( $data );
+	return $response;
+}
+add_filter( 'rest_post_dispatch', 'pepselect_bogo_store_api_paid_quantities', 20, 3 );
+
+/**
+ * Woo's Cart block can hydrate from its server-provided data store without a
+ * REST request. Align that initial client state with the paid quantity already
+ * stated in the line metadata, so the first minus click removes a paid vial.
+ */
+function pepselect_bogo_sync_cart_block_quantity() {
+	if ( ! function_exists( 'is_cart' ) || ! is_cart() ) {
+		return;
+	}
+	?>
+	<script id="pepselect-bogo-cart-quantity-sync">
+	(function () {
+		var attempts = 0;
+		function syncPaidQuantities() {
+			attempts += 1;
+			if (!window.wp || !wp.data) {
+				if (attempts < 20) window.setTimeout(syncPaidQuantities, 100);
+				return;
+			}
+
+			var select = wp.data.select('wc/store/cart');
+			var dispatch = wp.data.dispatch('wc/store/cart');
+			if (!select || !dispatch || !select.getCartData || !dispatch.receiveCartContents) return;
+			var cart = select.getCartData();
+			if (!cart || !Array.isArray(cart.items)) return;
+			var changed = false;
+			var items = cart.items.map(function (item) {
+				var paid = null;
+				(Array.isArray(item.item_data) ? item.item_data : []).some(function (detail) {
+					var match = String(detail.value || '').match(/(\d+)\s+paid\s+\+\s+\d+\s+free/i);
+					if (!match) return false;
+					paid = parseInt(match[1], 10);
+					return true;
+				});
+				if (!paid || item.quantity === paid) return item;
+				changed = true;
+				return Object.assign({}, item, { quantity: paid });
+			});
+			if (changed) dispatch.receiveCartContents(Object.assign({}, cart, { items: items }));
+		}
+
+		if (document.readyState === 'loading') {
+			document.addEventListener('DOMContentLoaded', syncPaidQuantities, { once: true });
+		} else {
+			syncPaidQuantities();
+		}
+	}());
+	</script>
+	<?php
+}
+add_action( 'wp_footer', 'pepselect_bogo_sync_cart_block_quantity', 99 );
 
 /**
  * Show the paid count in classic cart quantity inputs. Woo still stores and
