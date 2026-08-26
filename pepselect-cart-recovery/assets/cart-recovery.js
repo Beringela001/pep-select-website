@@ -114,7 +114,6 @@
 
     var button = form.querySelector('button[type="submit"]');
     var original = button.textContent;
-    var consent = form.querySelector('input[name="marketing_consent"]');
     var trap = form.querySelector('input[name="company"]');
     button.disabled = true;
     button.textContent = 'Making your code…';
@@ -124,8 +123,7 @@
       action: 'pepselect_capture_exit_offer',
       security: config.nonce,
       email: emailInput.value,
-      company: trap.value,
-      marketing_consent: consent.checked ? '1' : ''
+      company: trap.value
     }).then(function (response) {
       if (!response.success) throw new Error(response.data && response.data.message ? response.data.message : 'Please try again.');
       var email = emailInput.value;

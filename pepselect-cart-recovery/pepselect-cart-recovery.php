@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Pep Select Cart Recovery
  * Description: Lightweight exit offer, unique coupons, and Cart Abandonment Recovery integration for Pep Select.
- * Version: 0.1.0
+ * Version: 0.1.1
  * Author: Pep Select
  * Text Domain: pepselect-cart-recovery
  */
@@ -10,7 +10,7 @@
 defined( 'ABSPATH' ) || exit;
 
 final class PepSelect_Cart_Recovery {
-	const VERSION = '0.1.0';
+	const VERSION = '0.1.1';
 	const OPTION  = 'pepselect_cart_recovery_settings';
 	const NONCE   = 'pepselect_exit_offer_capture';
 
@@ -30,6 +30,7 @@ final class PepSelect_Cart_Recovery {
 		add_action( 'wp_ajax_nopriv_pepselect_capture_exit_offer', array( $this, 'capture_offer' ) );
 		add_filter( 'woo_ca_recovery_email_data', array( $this, 'attach_coupon_to_recovery_email' ), 20, 2 );
 		add_filter( 'wcar_add_token_data', array( $this, 'attach_coupon_to_recovery_link' ), 20, 2 );
+		add_filter( 'wcf_ca_should_send_email', array( $this, 'require_signup_code_for_upgrade' ), 20, 2 );
 		add_filter( 'cartflows_ca_email_headers', array( $this, 'recovery_headers' ), 20 );
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
 		add_action( 'admin_menu', array( $this, 'register_settings_page' ) );
@@ -44,6 +45,7 @@ final class PepSelect_Cart_Recovery {
 					'coupon_expiry_days' => 7,
 					'dismiss_days'       => 30,
 					'fluentcrm_list_id'  => 0,
+					'final_template_id'  => 0,
 				)
 			);
 		}
@@ -57,6 +59,7 @@ final class PepSelect_Cart_Recovery {
 				'coupon_expiry_days' => 7,
 				'dismiss_days'       => 30,
 				'fluentcrm_list_id'  => 0,
+				'final_template_id'  => 0,
 			)
 		);
 	}
@@ -115,18 +118,17 @@ final class PepSelect_Cart_Recovery {
 			<button class="pep-exit-offer__veil" type="button" data-pep-exit-close aria-label="<?php esc_attr_e( 'Close offer', 'pepselect-cart-recovery' ); ?>"></button>
 			<section class="pep-exit-offer__dialog" role="dialog" aria-modal="true" aria-labelledby="pep-exit-title" aria-describedby="pep-exit-copy">
 				<button class="pep-exit-offer__close" type="button" data-pep-exit-close aria-label="<?php esc_attr_e( 'Close offer', 'pepselect-cart-recovery' ); ?>">&times;</button>
-				<p class="pep-exit-offer__eyebrow"><?php esc_html_e( 'Before this tab joins the pile', 'pepselect-cart-recovery' ); ?></p>
-				<h2 id="pep-exit-title"><?php esc_html_e( 'A small reason to come back.', 'pepselect-cart-recovery' ); ?></h2>
-				<p id="pep-exit-copy"><?php esc_html_e( 'Leave your email and we’ll send a one-time 10% code. No spinning wheel. It seemed tired.', 'pepselect-cart-recovery' ); ?></p>
+				<p class="pep-exit-offer__eyebrow"><?php esc_html_e( 'Join the list', 'pepselect-cart-recovery' ); ?></p>
+				<h2 id="pep-exit-title"><?php esc_html_e( 'Stay in the loop and get an additional 10% off.', 'pepselect-cart-recovery' ); ?></h2>
+				<p id="pep-exit-copy"><?php esc_html_e( 'Get new product updates, restock notes, and the occasional useful email.', 'pepselect-cart-recovery' ); ?></p>
 				<form data-pep-exit-form novalidate>
 					<label class="screen-reader-text" for="pep-exit-email"><?php esc_html_e( 'Email address', 'pepselect-cart-recovery' ); ?></label>
 					<div class="pep-exit-offer__fields">
 						<input id="pep-exit-email" name="email" type="email" autocomplete="email" placeholder="<?php esc_attr_e( 'Email address', 'pepselect-cart-recovery' ); ?>" required>
-						<button type="submit"><?php esc_html_e( 'Send my code', 'pepselect-cart-recovery' ); ?></button>
+						<button type="submit"><?php esc_html_e( 'Get 10% off', 'pepselect-cart-recovery' ); ?></button>
 					</div>
 					<input class="pep-exit-offer__trap" name="company" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">
-					<label class="pep-exit-offer__consent"><input name="marketing_consent" type="checkbox" value="1"> <span><?php esc_html_e( 'Yes, send me occasional Pep Select emails too. Useful things, not inbox confetti.', 'pepselect-cart-recovery' ); ?></span></label>
-					<p class="pep-exit-offer__fineprint"><?php esc_html_e( 'You’ll get the code and, if you start a cart, up to three useful reminders. Unsubscribe anytime.', 'pepselect-cart-recovery' ); ?></p>
+					<p class="pep-exit-offer__fineprint"><?php esc_html_e( 'We respect your inbox. Unsubscribe anytime.', 'pepselect-cart-recovery' ); ?></p>
 					<p class="pep-exit-offer__message" data-pep-exit-message role="status" aria-live="polite"></p>
 				</form>
 				<div class="pep-exit-offer__success" data-pep-exit-success hidden>
@@ -183,10 +185,7 @@ final class PepSelect_Cart_Recovery {
 			WC()->cart->apply_coupon( $coupon_code );
 		}
 
-		$marketing_consent = ! empty( $_POST['marketing_consent'] );
-		if ( $marketing_consent ) {
-			$this->add_to_fluentcrm( $email );
-		}
+		$this->add_to_fluentcrm( $email );
 
 		$this->send_coupon_email( $email, $coupon_code );
 
@@ -251,6 +250,24 @@ final class PepSelect_Cart_Recovery {
 
 	private function coupon_for_email( $email ) {
 		$code = get_transient( $this->email_coupon_key( $email ) );
+		if ( ! $code ) {
+			$coupon_ids = get_posts(
+				array(
+					'post_type'      => 'shop_coupon',
+					'post_status'    => 'publish',
+					'posts_per_page' => 1,
+					'fields'         => 'ids',
+					'orderby'        => 'date',
+					'order'          => 'DESC',
+					'meta_key'       => '_pepselect_exit_email_hash',
+					'meta_value'     => hash_hmac( 'sha256', strtolower( $email ), wp_salt( 'auth' ) ),
+				)
+			);
+			if ( $coupon_ids ) {
+				$stored_coupon = new WC_Coupon( $coupon_ids[0] );
+				$code          = $stored_coupon->get_code();
+			}
+		}
 		if ( ! $code || ! wc_get_coupon_id_by_code( $code ) ) {
 			return '';
 		}
@@ -262,10 +279,32 @@ final class PepSelect_Cart_Recovery {
 		if ( ! $preview_email && is_object( $email_data ) && ! empty( $email_data->email ) ) {
 			$code = $this->coupon_for_email( sanitize_email( $email_data->email ) );
 			if ( $code ) {
+				$settings = $this->settings();
+				if ( ! empty( $settings['final_template_id'] ) && absint( $email_data->email_template_id ?? 0 ) === absint( $settings['final_template_id'] ) ) {
+					$this->upgrade_coupon( $code, 15 );
+				}
 				$email_data->coupon_code = $code;
 			}
 		}
 		return $email_data;
+	}
+
+	public function require_signup_code_for_upgrade( $should_send, $email_data ) {
+		$settings = $this->settings();
+		if ( empty( $settings['final_template_id'] ) || ! is_object( $email_data ) || absint( $email_data->email_template_id ?? 0 ) !== absint( $settings['final_template_id'] ) ) {
+			return $should_send;
+		}
+
+		return ! empty( $email_data->email ) && (bool) $this->coupon_for_email( sanitize_email( $email_data->email ) );
+	}
+
+	private function upgrade_coupon( $code, $amount ) {
+		$coupon = new WC_Coupon( $code );
+		if ( $coupon->get_id() && (float) $coupon->get_amount() < (float) $amount ) {
+			$coupon->set_amount( $amount );
+			$coupon->add_meta_data( '_pepselect_exit_offer_upgraded', gmdate( 'c' ), true );
+			$coupon->save();
+		}
 	}
 
 	public function attach_coupon_to_recovery_link( $token_data, $email_data ) {
@@ -312,15 +351,16 @@ final class PepSelect_Cart_Recovery {
 	}
 
 	private function send_coupon_email( $email, $coupon_code ) {
-		$subject = __( 'Your 10% code, minus the confetti', 'pepselect-cart-recovery' );
-		$body    = '<p>' . esc_html__( 'Here is the one-time 10% code you asked for:', 'pepselect-cart-recovery' ) . '</p>';
+		$subject = __( 'Your additional 10% from Pep Select', 'pepselect-cart-recovery' );
+		$body    = '<p>' . esc_html__( 'Thanks for joining the Pep Select list. Your additional 10% code is:', 'pepselect-cart-recovery' ) . '</p>';
 		$body   .= '<p style="font-family:monospace;font-size:20px;font-weight:700;letter-spacing:1px;">' . esc_html( $coupon_code ) . '</p>';
-		$body   .= '<p>' . esc_html__( 'It can combine with eligible offers and is tied to this email address. If you start a cart and leave it behind, we may send up to three reminders. After that, we stop hovering.', 'pepselect-cart-recovery' ) . '</p>';
+		$body   .= '<p>' . esc_html__( 'Use it with this email address. It can combine with eligible offers.', 'pepselect-cart-recovery' ) . '</p>';
 		$body   .= '<p><a href="' . esc_url( home_url( '/shop/' ) ) . '">' . esc_html__( 'Return to Pep Select', 'pepselect-cart-recovery' ) . '</a></p>';
-		$body   .= '<p>' . esc_html__( 'Questions? Reply to this email.', 'pepselect-cart-recovery' ) . '</p>';
+		$unsubscribe_url = 'mailto:support@pepselect.com?subject=' . rawurlencode( 'Unsubscribe me from Pep Select emails' );
+		$body           .= '<p>' . esc_html__( 'We respect your inbox. ', 'pepselect-cart-recovery' ) . '<a href="' . esc_url( $unsubscribe_url ) . '">' . esc_html__( 'Unsubscribe anytime.', 'pepselect-cart-recovery' ) . '</a></p>';
 
 		if ( function_exists( 'WC' ) && WC()->mailer() ) {
-			$body = WC()->mailer()->wrap_message( __( 'A small reason to come back', 'pepselect-cart-recovery' ), $body );
+			$body = WC()->mailer()->wrap_message( __( 'Welcome to the Pep Select list', 'pepselect-cart-recovery' ), $body );
 		}
 
 		$headers = array(
@@ -341,6 +381,7 @@ final class PepSelect_Cart_Recovery {
 			'coupon_expiry_days' => min( 30, max( 1, absint( $input['coupon_expiry_days'] ?? 7 ) ) ),
 			'dismiss_days'       => min( 365, max( 1, absint( $input['dismiss_days'] ?? 30 ) ) ),
 			'fluentcrm_list_id'  => absint( $input['fluentcrm_list_id'] ?? 0 ),
+			'final_template_id'  => absint( $input['final_template_id'] ?? 0 ),
 		);
 	}
 
@@ -365,7 +406,8 @@ final class PepSelect_Cart_Recovery {
 				<tr><th scope="row"><?php esc_html_e( 'Exit offer', 'pepselect-cart-recovery' ); ?></th><td><label><input name="<?php echo esc_attr( self::OPTION ); ?>[enabled]" type="checkbox" value="1" <?php checked( $settings['enabled'], 1 ); ?>> <?php esc_html_e( 'Enable the public offer', 'pepselect-cart-recovery' ); ?></label></td></tr>
 				<tr><th scope="row"><label for="pep-expiry"><?php esc_html_e( 'Coupon expiry', 'pepselect-cart-recovery' ); ?></label></th><td><input id="pep-expiry" name="<?php echo esc_attr( self::OPTION ); ?>[coupon_expiry_days]" type="number" min="1" max="30" value="<?php echo esc_attr( $settings['coupon_expiry_days'] ); ?>"> <?php esc_html_e( 'days', 'pepselect-cart-recovery' ); ?></td></tr>
 				<tr><th scope="row"><label for="pep-dismiss"><?php esc_html_e( 'Dismiss cooldown', 'pepselect-cart-recovery' ); ?></label></th><td><input id="pep-dismiss" name="<?php echo esc_attr( self::OPTION ); ?>[dismiss_days]" type="number" min="1" max="365" value="<?php echo esc_attr( $settings['dismiss_days'] ); ?>"> <?php esc_html_e( 'days', 'pepselect-cart-recovery' ); ?></td></tr>
-				<tr><th scope="row"><label for="pep-list"><?php esc_html_e( 'FluentCRM list ID', 'pepselect-cart-recovery' ); ?></label></th><td><input id="pep-list" name="<?php echo esc_attr( self::OPTION ); ?>[fluentcrm_list_id]" type="number" min="0" value="<?php echo esc_attr( $settings['fluentcrm_list_id'] ); ?>"><p class="description"><?php esc_html_e( 'Only visitors who check the optional marketing box are added. Use 0 to disable list sync.', 'pepselect-cart-recovery' ); ?></p></td></tr>
+				<tr><th scope="row"><label for="pep-list"><?php esc_html_e( 'FluentCRM list ID', 'pepselect-cart-recovery' ); ?></label></th><td><input id="pep-list" name="<?php echo esc_attr( self::OPTION ); ?>[fluentcrm_list_id]" type="number" min="0" value="<?php echo esc_attr( $settings['fluentcrm_list_id'] ); ?>"><p class="description"><?php esc_html_e( 'Subscribers join this list after submitting the Stay in the Loop form. Use 0 to disable list sync.', 'pepselect-cart-recovery' ); ?></p></td></tr>
+				<tr><th scope="row"><label for="pep-final-template"><?php esc_html_e( '48-hour email template ID', 'pepselect-cart-recovery' ); ?></label></th><td><input id="pep-final-template" name="<?php echo esc_attr( self::OPTION ); ?>[final_template_id]" type="number" min="0" value="<?php echo esc_attr( $settings['final_template_id'] ); ?>"><p class="description"><?php esc_html_e( 'The same signup code changes from 10% to 15% when this recovery template sends.', 'pepselect-cart-recovery' ); ?></p></td></tr>
 			</table><?php submit_button(); ?></form>
 		</div>
 		<?php

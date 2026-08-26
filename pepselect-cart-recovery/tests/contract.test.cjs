@@ -6,6 +6,7 @@ const root = path.resolve(__dirname, '..');
 const php = fs.readFileSync(path.join(root, 'pepselect-cart-recovery.php'), 'utf8');
 const js = fs.readFileSync(path.join(root, 'assets', 'cart-recovery.js'), 'utf8');
 const css = fs.readFileSync(path.join(root, 'assets', 'cart-recovery.css'), 'utf8');
+const mockup = fs.readFileSync(path.join(root, '..', 'mockups', 'cart-recovery', 'index.html'), 'utf8');
 
 [
   "set_discount_type( 'percent' )",
@@ -16,7 +17,11 @@ const css = fs.readFileSync(path.join(root, 'assets', 'cart-recovery.css'), 'utf
   'set_email_restrictions',
   "add_filter( 'woo_ca_recovery_email_data'",
   "add_filter( 'wcar_add_token_data'",
+  "add_filter( 'wcf_ca_should_send_email'",
   "'enabled'            => 0",
+  "'final_template_id'  => 0",
+  'upgrade_coupon( $code, 15 )',
+  'require_signup_code_for_upgrade',
   'support@pepselect.com'
 ].forEach((needle) => assert(php.includes(needle), `Missing PHP contract: ${needle}`));
 
@@ -31,6 +36,9 @@ const css = fs.readFileSync(path.join(root, 'assets', 'cart-recovery.css'), 'utf
 
 assert(!/dataLayer\.push\([^)]*email/i.test(js), 'Email must not be pushed to the dataLayer');
 assert(!/https?:\/\//.test(js + css), 'Public assets must not call third-party URLs');
+assert(!/one[- ]time/i.test(php + mockup), 'Customer copy must not call the code one-time');
+assert(!mockup.includes('—'), 'Reviewed customer copy must not contain em dashes');
+assert(!php.includes('marketing_consent'), 'Stay in the Loop must not include a second consent checkbox');
 assert(Buffer.byteLength(js) < 12000, 'JavaScript performance budget exceeded');
 assert(Buffer.byteLength(css) < 8000, 'CSS performance budget exceeded');
 

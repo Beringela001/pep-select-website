@@ -1,4 +1,4 @@
-# WEB M16 — Exit Capture, Cart Recovery, and Revenue Attribution
+# WEB M16: Exit Capture, Cart Recovery, and Revenue Attribution
 
 Status: implementation milestone. Live remains unchanged until the release checkpoint is approved.
 
@@ -52,9 +52,9 @@ No customer names or email addresses belong in project documentation, analytics,
 
 1. A visitor browses normally. No popup network request runs and no space is reserved in the page layout.
 2. On desktop, exit intent means the pointer moves toward the browser's top edge after a minimum engaged visit. On touch devices, use a conservative fallback based on meaningful engagement and back/visibility behavior; do not fire immediately on arrival.
-3. The panel offers one unique 10% code in exchange for an email address and clear consent. It can be dismissed permanently for the configured cooldown.
+3. The Stay in the Loop panel offers an additional 10% code. The heading and button make the list subscription clear, so the form does not add a separate consent checkbox.
 4. WooCommerce creates one email-restricted, single-use, percentage coupon. It may combine with eligible coupons, including the updated `WELCOME10`.
-5. The subscriber is added to a new FluentCRM list named `Pep Select Offers`. Cart reminders remain transactional follow-up to the disclosed cart-recovery consent, while broader promotional sends obey marketing consent and unsubscribe status.
+5. The subscriber is added to a new FluentCRM list named `Pep Select Offers`. The form states that the subscriber will receive product updates, restock notes, and occasional email. Every list email must include an unsubscribe link.
 6. If a non-empty WooCommerce cart exists now or later in the same session, the captured email and coupon are passed to the installed abandonment plugin. The plugin owns restoration and scheduling.
 7. A completed or processing order suppresses the remaining reminders.
 8. If no order occurs, reminders stop after the 48-hour email. No fourth message is sent.
@@ -68,7 +68,7 @@ No customer names or email addresses belong in project documentation, analytics,
 - Restrictions: one use, restricted to the submitted email, no free shipping, product subtotal only.
 - Combination: permitted with eligible coupons.
 - Expiration: configurable; initial release target is 7 days so the code remains useful without becoming a permanent leaked offer.
-- Reuse: the same captured code appears in recovery emails. Do not create a second 10% code for the same session.
+- Reuse: the same captured code appears in recovery emails. The 48-hour email upgrades that code from 10% to 15% instead of creating a second code.
 
 ### WELCOME10
 
@@ -85,9 +85,11 @@ No customer names or email addresses belong in project documentation, analytics,
 | Exit panel | During a qualifying exit | Turn anonymous interest into permission-based identity | Unique 10% |
 | Email 1 | 90 minutes | Restore context without pressure | Reuse captured code when present |
 | Email 2 | 24 hours | Offer human help and answer hesitation | Reuse captured code when present |
-| Email 3 | 48 hours | Friendly final note; explicitly stop hovering | Reuse captured code when present |
+| Email 3 | 48 hours | Make the research decision a little easier | Upgrade the captured code from 10% to 15% |
 
 If a cart was captured at checkout without an exit-offer code, the sequence must not silently invent a second promotion. Discount presentation is conditional.
+
+The 48-hour upgrade email sends only when the cart already has a code from the Stay in the Loop form. Checkout-only carts receive the first two reminders and skip the upgrade email.
 
 ## Measurement model
 
@@ -138,7 +140,7 @@ Classify a sale as **SEO-supported** only when the first recorded acquisition so
 
 ## Privacy and deliverability
 
-- The form states that the visitor receives the code, occasional Pep Select email when separately consented, and up to three reminders if they start a cart.
+- The form states that the visitor is joining the Pep Select list for product updates, restock notes, and occasional email.
 - Include a working unsubscribe link in every recovery email.
 - Honor FluentCRM unsubscribe status and the recovery plugin's own suppression list.
 - Do not send reminders when the cart is empty, the order has been placed, the email is invalid, or the customer opted out.
@@ -147,35 +149,35 @@ Classify a sale as **SEO-supported** only when the first recorded acquisition so
 
 ## Milestones
 
-### M16.1 — Baseline and attribution
+### M16.1: Baseline and attribution
 
 - Record current cart-plugin configuration and recovery totals.
 - Capture baseline storefront performance on representative home, shop, product, cart, and checkout pages.
 - Confirm GA4 commerce events and define a geographic/source revenue report.
 - Record Massachusetts orders as an attribution investigation, not a conclusion.
 
-### M16.2 — Exit capture and coupon service
+### M16.2: Exit capture and coupon service
 
 - Build the accessible desktop and mobile panel.
 - Create the server-side coupon endpoint, validation, rate limiting, session storage, and consent record.
 - Add the dedicated FluentCRM list integration with a safe no-plugin fallback.
 - Add non-PII analytics events.
 
-### M16.3 — Cart identity and recovery sequence
+### M16.3: Cart identity and recovery sequence
 
 - Connect the submitted email and existing unique code to the active WooCommerce cart and installed recovery plugin.
 - Install the approved Pep Select HTML and plain-text email set.
 - Enable the sequence at approximately 90 minutes, 24 hours, and 48 hours.
 - Configure sender, reply-to, restoration links, UTM touch labels, unsubscribe, and purchase suppression.
 
-### M16.4 — Offer compatibility and quality assurance
+### M16.4: Offer compatibility and quality assurance
 
 - Update `WELCOME10` to `$100` minimum and stackable.
 - Test unique-code restrictions and the intended combined 20% case.
 - Test guest and logged-in flows, desktop and mobile, dismiss cooldown, duplicate submit, empty cart, restored cart, completed order, unsubscribe, expired coupon, and email-client rendering.
 - Verify free-vial, rewards, sale-price, tax, shipping, and checkout behavior remain intact.
 
-### M16.5 — Performance release and learning loop
+### M16.5: Performance release and learning loop
 
 - Compare pre/post performance and block release if the storefront regresses materially.
 - Create a manual backup, deploy through the approved WordPress path, clear caches, and run live smoke tests without creating a real customer order.
@@ -187,7 +189,7 @@ Classify a sale as **SEO-supported** only when the first recorded acquisition so
 - The panel does not appear on first paint and causes no visible layout shift.
 - A submitted visitor receives exactly one unique 10% code and is not repeatedly prompted.
 - A later cart in the same session becomes identifiable to the recovery plugin.
-- The same code is reused throughout the sequence and can combine with the revised `WELCOME10`.
+- The same code is reused throughout the sequence, upgrades to 15% in the 48-hour email, and can combine with the revised `WELCOME10`.
 - No more than three reminders send, at the intended elapsed times, and all later sends stop after purchase or opt-out.
 - Email design matches the current Pep Select order and back-in-stock family in Gmail, Outlook, and mobile widths.
 - Analytics distinguish organic acquisition, popup capture, recovery-email clicks, and unassisted recovered carts without collecting PII.
