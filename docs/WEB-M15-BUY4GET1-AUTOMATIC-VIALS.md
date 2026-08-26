@@ -2,10 +2,9 @@
 
 ## Outcome
 
-The quantity selected by the customer is now the paid quantity. For eligible
-SKUs, the dedicated `pepselect-bogo-quantity` plugin adds one physical vial per
-four paid before YITH calculates its 100% discount. WooCommerce therefore
-stores and reduces stock by the physical quantity.
+For eligible SKUs, selecting four vials adds a fifth vial to the visible cart
+before YITH calculates its 100% discount. WooCommerce stores, orders, and
+reduces stock by the visible physical quantity while charging for four.
 
 ## Live rule dependency
 
@@ -15,7 +14,7 @@ eight paid vials become ten physical vials with two free.
 
 ## Eligibility
 
-Version 1.0.5 mirrors the products selected in rule 1209 by SKU:
+Version 1.1.2 mirrors the products selected in rule 1209 by SKU:
 GLP3R10, GLP3R20, GLP2T20, GLP1S10, MOTSC10, and GHKCU50.
 
 When rule 1209 eligibility changes, update `pepselect_bogo_skus()` in the same
@@ -23,11 +22,16 @@ release so price behavior and physical quantity cannot drift.
 
 ## Cart controls
 
-The full WooCommerce Cart block and the Xootix side cart display the paid
-quantity selected by the customer. The free vial remains in the underlying
-WooCommerce cart so YITH can price it at 100% off and stock can be reduced
-correctly. Increasing or decreasing the visible quantity recalculates the
-physical quantity without exposing the extra inventory unit in the controls.
+The full WooCommerce Cart block and the Xootix side cart display physical
+quantity. Four selected becomes five visible vials. The line identifies the
+free vial without exposing internal inventory wording. The product-page selector
+turns four selected vials into five. Once in the cart, the controls represent
+physical vials: decreasing five to four removes the free vial and increasing
+four to five earns it again.
+
+The expansion hook is scoped to the eligible product Add to Cart form. Side
+Cart and Cart block edits never pass that marker, preventing a saved quantity
+of four from being expanded back to five.
 
 ## Order 1560
 
