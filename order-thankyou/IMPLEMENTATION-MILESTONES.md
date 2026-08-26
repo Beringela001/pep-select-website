@@ -1,189 +1,150 @@
-# Pep Select order page and thank-you card milestones
+# Pep Select Order Experience implementation milestones
 
-Status: design concept only. No production code, WooCommerce data, Ops data, staging, or Live environment changed.
+Status: visual design approved. Production implementation has not started. Live remains untouched until the integrated staging milestone is approved.
 
 ## Architecture decision
 
-Build the customer order experience as a dedicated WordPress plugin, tentatively named **Pep Select Order Experience**.
+Build the customer-facing feature as a standalone WordPress plugin named **Pep Select Order Experience** (`pepselect-order-experience`).
 
-The plugin should own the secure order endpoint, WooCommerce permission checks, order-to-batch metadata, the related-compound rules, discount presentation, reorder behavior, templates, and feature settings. The child theme should supply narrow visual integration only. The COA plugin should remain the source of public batch records and media. WooCommerce remains the source of order, customer, totals, and line-item data.
+The plugin owns secure order access, the enhanced order page, WooCommerce account integration, shipped-batch snapshots, related-compound rules, discount presentation, reorder behavior, privacy controls, templates, assets, diagnostics, and the feature switch. WooCommerce remains the source of orders, customers, totals, prices, stock, taxes, coupons, and checkout rules. The COA system remains the source of published batch records and laboratory media. The child theme supplies the normal Pep Select header, footer, and shared design tokens but contains no order-experience business logic.
 
-Deactivation gives Pep Select a clean operational off-switch. The plugin must remove its routes and enhancements without deleting order metadata. Default WooCommerce `view-order` pages must continue to work after deactivation.
+The Ops work belongs inside the existing Pep Select Control App. Ops already owns exact batch allocation, allocation snapshots, COA permalinks, PDFs, QR generation, PrintNode, retry handling, and print logs. A second Ops application would duplicate those systems.
 
-Ops should extend its existing Woo order, batch-allocation, PDF, QR, PrintNode, and print-log system. A second Ops application or independent card generator would duplicate working infrastructure.
+## Permanent fallback design
 
-## Milestone 0: approve the experience and language
+The QR must never depend only on a plugin rewrite route that disappears when the plugin is disabled.
 
-Website scope:
+- QR codes point to a permanent WordPress page such as `/order/` with a high-entropy opaque access token. The public URL never contains the WooCommerce order ID.
+- The WordPress page remains after plugin deactivation and contains safe fallback content linking to My Account and Contact Support. A printed QR therefore reaches a useful page instead of a 404.
+- When the plugin feature switch is off, authenticated customers use WooCommerce's native `/my-account/view-order/{id}/` experience. The enhanced page is bypassed.
+- Full plugin deactivation removes the enhanced rendering and integrations but does not delete the permanent page, access records, or order metadata.
+- Ops has its own card-generation switch. Turning it off leaves the existing packing-slip and PrintNode workflows intact.
+- Reactivation restores the experience from retained records. No customer/order migration is required.
 
-- Approve the order-page hierarchy, desktop composition, mobile composition, exact labels, discount placement, related-product heading, and privacy boundary.
-- Decide whether the QR opens a login-first full order view or a low-information public shell followed by verification.
-- Lock which FAQ storage statements may appear.
-- Do not publish a reconstituted-stability duration until Pep Select has a compound-specific source and approved wording.
+The feature switch is the normal operational off-switch. Full plugin deactivation is the emergency fallback.
 
-Ops scope:
+## Milestone 1: Secure order foundation and Website ↔ Ops data contract
 
-- Provide the physical card PDF template, finished dimensions, bleed, safe area, printer model, stock orientation, and whether Ops should download a PDF or send it to PrintNode.
-- Approve the front and back card copy.
+This milestone builds the complete data and security foundation both applications need. It is not considered complete with only a plugin shell or an API stub.
 
-Exit criteria:
+### WordPress plugin
 
-- Paulo approves one page visual and one printed-card visual.
-- Privacy model and card dimensions are fixed.
+- Create the standalone plugin, versioned settings, activation/deactivation behavior, diagnostics, and a default-disabled feature switch.
+- Create or adopt the permanent `/order/` fallback page without deleting it on deactivation.
+- Create secure order-access records using high-entropy opaque tokens; store only token hashes and support revoke/regenerate events.
+- Add cache prevention, `noindex`, `nofollow`, `noarchive`, `nosnippet`, and equivalent response headers for every enhanced order response.
+- Allow authenticated customers to open only their own orders from My Account.
+- Allow QR access through the opaque token without exposing addresses, email, phone, payment details, internal Ops IDs, or numeric order IDs.
+- Preserve native WooCommerce `view-order` behavior and the existing account/cash-back presentation.
+- Define versioned WooCommerce line-allocation metadata for public batch number, quantity from that batch, COA permalink snapshot, vial-photo snapshot, and allocation status.
+- Support multiple batches fulfilling one WooCommerce line and preserve historical snapshots when current batch records later change.
 
-## Milestone 1: define the Website ↔ Ops order-batch contract
+### Ops integration
 
-Website scope:
+- Map finalized Ops allocations from `WooImportedOrderLine.selectedBatchId`, sale allocations, `batchNumberSnapshot`, `Batch.coaPermalink`, and uploaded vial media into the versioned WordPress contract.
+- Add an authenticated, idempotent WordPress write-back after allocations are finalized.
+- Add access-record creation/readiness confirmation so Ops receives the permanent order-page URL only after WordPress can resolve it.
+- Record successful, retryable, and permanent write-back failures through the existing integration/error system.
 
-- Define WooCommerce line-item metadata for each fulfilled allocation: public batch number snapshot, COA permalink snapshot, batch photo attachment or URL, and quantity from that batch.
-- Support one order line drawing from more than one batch.
-- Preserve historical snapshots if a batch name, image, or current-product batch changes later.
+### Milestone exit
 
-Ops scope:
+- A representative three-product order, a multi-quantity order, and a multi-batch line reproduce the exact shipped allocations in WordPress.
+- Repeating the write-back changes nothing and creates no duplicate records.
+- The account owner and the QR token can reach the correct order; unrelated accounts and invalid tokens receive the same generic denial.
+- Feature-off and plugin-deactivated tests preserve native WooCommerce order access and the permanent QR fallback page.
+- No checkout, payment, stock, shipping, rewards, tracking, COA, or account regression is introduced.
 
-- Use the existing `WooImportedOrderLine.selectedBatchId`, finalized sale allocations, `batchNumberSnapshot`, `Batch.coaPermalink`, and uploaded batch photos.
-- Add an idempotent authenticated write-back after Ops finalizes the shipped allocations.
-- Record success, retryable failure, and permanent failure in the existing external write-back/error system.
+## Milestone 2: Complete customer order experience
 
-Exit criteria:
+This milestone delivers the approved visual as one finished customer flow, including every feature that relies on the order and batch contract.
 
-- A test Woo order with three products receives the exact shipped allocation for every quantity.
-- Re-running the write-back does not duplicate or alter finalized data.
-- A later batch rename does not rewrite what the customer received.
+### Order page
 
-## Milestone 2: WordPress plugin foundation and safe rollback
+- Implement the approved Concept 03 desktop, tablet, and mobile composition using the active site header, footer, and design tokens.
+- Render the gratitude header, order date/status, compact product grid, order-information disclosure, storage and handling, discount, related compounds, support, and reorder cards.
+- Render the actual shipped vial image, public batch number, documented result, laboratory, test date, and direct COA link for every allocation.
+- Handle missing photo, missing COA, pending/failed result, deleted product, cancelled/refunded line, and multi-batch states without inventing data.
+- Add order-page links to the existing My Account order surfaces while leaving WooCommerce's native view-order endpoint available.
 
-Website scope:
+### Controlled content and relationship engine
 
-- Create the standalone plugin with a feature flag and versioned settings.
-- Register a secure order endpoint while keeping WooCommerce `/my-account/view-order/{id}/` intact.
-- Add “Review order details” links to the existing My Account order list.
-- Render the default WooCommerce order view when the feature flag is off or required batch data is absent.
-- Keep all prices, stock, taxes, payment, shipping, rewards, and order status behavior unchanged.
+- Create one approved content registry for product study bullets and storage/handling excerpts.
+- Create the graphical relationship matrix as structured data, not generated page copy.
+- Tag each compound with approved study areas and score eligible products by overlap.
+- Exclude products already ordered, hidden/unavailable products, duplicates, and owner-blocked relationships; display up to four explainable results.
+- Store the displayed relationship reason so a reviewer can explain why every card appeared.
+- Do not infer compatibility, protocols, stacks, combined effects, or human use.
 
-Security requirements:
+### Discount and reorder
 
-- Logged-in customers may view only orders owned by their account.
-- Guest or logged-out scans must use a high-entropy opaque token plus verification. Store only a hash of the token.
-- Do not expose addresses, payment details, email addresses, phone numbers, or internal Ops identifiers in a QR-accessible public shell.
-- Require renewed verification before showing customer name, totals, discount code, or reorder actions if the visitor is not already authenticated.
-- Rate-limit failed verification and return generic errors.
+- Display the thank-you coupon only where the approved access level permits it.
+- Enforce one use per customer email through WooCommerce coupon rules rather than page wording.
+- Reorder through WooCommerce's current products, prices, availability, quantities, taxes, and cart validation.
+- Explain unavailable or changed items before sending the customer to the cart.
 
-Rollback:
+### Milestone exit
 
-- Deactivating the plugin restores native WooCommerce account order behavior.
-- Deactivation retains metadata so reactivation restores the feature.
+- The dynamic data version matches the approved mockup at 320, 390, 768, 1024, and 1440 px.
+- Every vial, batch number, result, photo, and COA link agrees with the Ops snapshot.
+- Related cards are deterministic and human-explainable.
+- Coupon and reorder actions respect native WooCommerce validation.
+- Logged-in, token-access, invalid, revoked, missing-data, cancelled/refunded, keyboard, and screen-reader states pass.
 
-## Milestone 3: order-page core
+## Milestone 3: Ops thank-you-card production and QR readiness
 
-Website scope:
+This milestone turns the working order URL into the printable fulfillment tool. It waits for Paulo's final card PDF/template dimensions but combines the entire Ops flow rather than separating PDF, QR, download, and printing.
 
-- Build the gratitude opening and order-status summary.
-- Render one card per order line with the shipped-batch vial photo, approved study bullets, public batch number, and direct COA link.
-- Add accessible order-total disclosure using WooCommerce totals.
-- Add missing-photo, missing-COA, multi-batch, refunded-line, cancelled-order, and deleted-product states.
-- Build responsive behavior for desktop, tablet, and mobile.
+- Add order-page readiness and URL data to the existing finalized-order/packing-slip builder.
+- Build the thank-you card against the supplied physical PDF template, bleed, safe area, stock orientation, and printer dimensions.
+- Keep approved artwork static; generate the order-specific QR and any approved order reference.
+- Add preview, Download PDF, Print, re-download, reprint, retry, and visible failure states.
+- Use the existing QR library, PDFKit pipeline, PrintNode client, queued retry behavior, and print audit log.
+- Prevent card printing until allocations are finalized and WordPress confirms that the QR target resolves.
+- Make generation idempotent so retries produce the same order URL and do not create extra access records.
+- Store the template version, QR target fingerprint, print result, PrintNode job ID, operator, and timestamp in the existing audit trail.
 
-Data sources:
+### Milestone exit
 
-- Customer, order number, dates, status, totals, quantities: WooCommerce.
-- Compound study bullets: one approved relationship/content registry owned by the plugin or a shared site-core data service.
-- Batch number, COA link, vial photo: shipped-allocation snapshot written by Ops.
+- A real printed card scans correctly across current iPhone and Android cameras, multiple angles, normal packing-room lighting, and the final card stock.
+- The QR reaches the correct private order experience without exposing the numeric order ID.
+- An unavailable Website/API leaves the card visibly not ready and never prints a dead QR.
+- Disabling card generation does not affect packing slips, sales allocation, or other PrintNode jobs.
 
-Exit criteria:
+## Milestone 4: Integrated staging, controlled release, and rollback proof
 
-- The displayed vial, batch number, and COA record agree for every allocation.
-- Native order totals match the new disclosure exactly.
-- Keyboard, screen-reader, 320–1440 px, logged-in, logged-out, guest, and error states pass.
+This milestone proves the complete system together and is the only milestone authorized to prepare a Live release. Live deployment still requires Paulo's explicit approval.
 
-## Milestone 4: storage and support information
+- Deploy the plugin with its feature switch off and deploy the compatible Ops contract to staging.
+- Seed account orders, guest orders, multiple quantities, split batches, missing photos, missing COAs, pending/failed tests, cancelled/refunded orders, unavailable reorder items, coupon reuse, and expired/revoked tokens.
+- Verify the full sequence: Woo order import → Ops allocation → WordPress snapshot → access URL → order page → COA → related products → coupon/reorder → card PDF → printed QR.
+- Run privacy, authorization, token-guessing, rate-limit, caching, indexing-header, and generic-error checks.
+- Re-test checkout, payment, stock, shipping, rewards, tracking, account pages, access gate, COA archive, packing slips, and PrintNode queues.
+- Prove the normal rollback by disabling the feature switch and the emergency rollback by deactivating the plugin.
+- Confirm previously printed QR codes reach the permanent fallback page during both rollback modes.
+- Back up staging, record the exact plugin and Ops versions, complete UAT, and prepare independent Website and Ops rollback packages.
 
-Website scope:
+### Release order after approval
 
-- Pull approved storage and handling excerpts from one maintained content source.
-- Keep compound-specific stability facts separate from general FAQ facts.
-- Add precise links to the FAQ, support, shipping, and return policies.
+1. Install the Website plugin with the feature switch off.
+2. Deploy the compatible Ops contract with card printing off.
+3. Validate internal test orders and physical cards.
+4. Enable the enhanced order page for controlled test orders.
+5. Enable card generation after the Website readiness checks pass.
+6. Expand to all eligible new orders after Paulo approves the staging evidence.
 
-Content gate:
+### Milestone exit
 
-- Do not infer stability duration, sterility, compatibility, dosing, administration, or human-use guidance.
-- Each compound-specific duration requires a source, scope, date, owner approval, and review cadence.
+- End-to-end UAT passes with real printer output and no unresolved high-risk findings.
+- Normal and emergency fallback behavior is demonstrated, not assumed.
+- Local and remote Git heads match for both repositories.
+- Live remains untouched until Paulo authorizes the exact release.
 
-Exit criteria:
+## Required inputs and decisions
 
-- Every displayed handling statement has an identified source and owner.
-- Removing or revising a source updates all order pages without editing historical orders.
+- The physical thank-you-card PDF/template, dimensions, bleed, safe area, stock orientation, and printer selection are required before Milestone 3 rendering.
+- The initial related-compound matrix and reasons require Paulo's approval during Milestone 2.
+- The final coupon and eligible order statuses require confirmation before staging UAT.
 
-## Milestone 5: related-compound rules
+## First build target
 
-Website scope:
-
-- Create an owner-editable relationship registry based on approved study-area tags.
-- Score candidates by strong shared themes, exclude products already in the order, and apply stock/display rules.
-- Show up to four cards with a visible shared-study-area reason.
-- Add the boundary: shared study areas do not establish compatibility, combined-use evidence, or a recommended protocol.
-- Track card impressions and product-detail clicks without recording sensitive order contents in analytics.
-
-Recommended language:
-
-- Heading: **Explore related compounds**
-- Card label: **Shared study area**
-- Avoid: synergy, stack, works well with, pairs with, protocol, and studied together unless direct evidence supports the exact pair claim.
-
-Exit criteria:
-
-- A human reviewer can explain why each suggested card appeared.
-- Keyword changes cannot create an unreviewed relationship in production.
-
-## Milestone 6: thank-you discount and reorder
-
-Website scope:
-
-- Display the approved 15% code only after customer verification.
-- Enforce one use per customer email through WooCommerce coupon rules, not page copy alone.
-- Use WooCommerce’s native availability and pricing at reorder time.
-- “Reorder available items” adds only valid available items, then sends the customer to the cart for review.
-- Explain unavailable, changed, or deleted items before cart creation.
-
-Exit criteria:
-
-- Coupon use limits work for account and guest orders.
-- Reorder never bypasses stock, price, coupon, tax, shipping, or checkout validation.
-
-## Milestone 7: Ops thank-you card generator
-
-Ops scope:
-
-- Add one order-page QR URL to the existing finalized order/packing-slip data builder.
-- Add a thank-you-card PDF renderer that fits the supplied printer template.
-- Keep all text and artwork static except the QR code and any approved order reference.
-- Provide **Download PDF** and, if desired, **Print** using the existing PrintNode integration.
-- Add preview, re-download, reprint, failure, retry, and audit-log states.
-- Lock the QR only after the website has created the secure order-access record.
-
-Exit criteria:
-
-- QR codes scan from a real printed card at multiple phone angles and lighting levels.
-- The code resolves to the correct order without exposing the numeric order ID in the URL.
-- Card generation is idempotent and logged.
-- A website/API outage leaves the card in a visible “not ready” state and never prints a dead QR.
-
-## Milestone 8: staging integration and release
-
-- Seed test cases for account orders, guest orders, multiple quantities, multi-batch allocations, missing photos, missing COAs, cancelled/refunded orders, out-of-stock reorder items, and expired/revoked QR access.
-- Verify account, COA, checkout, payment, shipping, rewards, tracking, and access-gate regressions.
-- Test card PDF at final physical size on the real stock and printer template.
-- Back up staging, deploy the plugin and Ops contract to staging, and complete end-to-end UAT.
-- Release the Website plugin and Ops change with independent rollback paths.
-- Keep Live untouched until Paulo approves the exact deployment milestone.
-
-## Preserve, refine, replace, remove
-
-- **Preserve:** WooCommerce orders and totals, current My Account page, COA public records, Ops batch allocation snapshots, Ops PDF/QR/PrintNode pipeline, print logs.
-- **Refine:** My Account orders so each order opens, the order view, FAQ presentation, reorder entry point.
-- **Replace:** The current “list only” order interaction with a secure detailed experience while preserving the native fallback.
-- **Remove:** No current production feature in this design phase.
-
-## Current concept recommendation
-
-Use a standalone WordPress plugin. It gives Pep Select an off-switch and keeps portable order logic out of the child theme. Build the Ops portion inside the existing Control App because it already owns the exact shipped batches, batch photos, COA permalinks, PDF rendering, QR creation, PrintNode submission, and print auditing.
+Begin with Milestone 1. Its first testable delivery is an installable, default-disabled plugin plus the idempotent Ops/WordPress contract exercised against seeded orders. Do not begin the final card renderer before that contract and permanent QR fallback are proven.
