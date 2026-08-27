@@ -12,7 +12,7 @@ $plugin     = file_get_contents( $root . '/includes/class-pepselect-oe-plugin.ph
 $store      = file_get_contents( $root . '/includes/class-pepselect-oe-access-store.php' );
 $controller = file_get_contents( $root . '/includes/class-pepselect-oe-rest-controller.php' );
 
-pepselect_oe_m4_expect( str_contains( $bootstrap, "Version: 0.3.0" ), 'Milestone 4 plugin version must be 0.3.0.' );
+pepselect_oe_m4_expect( str_contains( $bootstrap, "Version: 0.3.1" ), 'Milestone 4 plugin version must be 0.3.1.' );
 pepselect_oe_m4_expect( str_contains( $plugin, "add_option( 'pepselect_oe_enabled', '0'" ), 'Customer order pages must remain default-off.' );
 pepselect_oe_m4_expect( str_contains( $plugin, 'Referrer-Policy: no-referrer' ), 'Opaque access credentials must not leave through referrer headers.' );
 pepselect_oe_m4_expect( str_contains( $plugin, "preg_match( '/^[A-Za-z0-9_-]{43}$/'" ), 'Public access must reject malformed tokens before lookup.' );

@@ -30,6 +30,7 @@ final class PepSelect_OE_Renderer {
 									<span class="pepselect-oe__count"><?php echo esc_html( str_pad( (string) ( $index + 1 ), 2, '0', STR_PAD_LEFT ) ); ?></span>
 									<?php if ( empty( $primary['image_exact'] ) ) : ?><span class="pepselect-oe__image-note">Product image</span><?php endif; ?>
 								</div>
+								<div class="pepselect-oe__ordered-content">
 								<div class="pepselect-oe__ordered-info">
 									<div class="pepselect-oe__ordered-title"><h3><?php echo esc_html( $item['name'] ); ?></h3><?php if ( $item['strength'] ) : ?><span><?php echo esc_html( strtoupper( $item['strength'] ) ); ?></span><?php endif; ?></div>
 									<p class="pepselect-oe__context-label">Studied for</p>
@@ -48,6 +49,7 @@ final class PepSelect_OE_Renderer {
 										<?php if ( $allocation['coa_url'] ) : ?><a class="pepselect-oe__button pepselect-oe__button--full" href="<?php echo esc_url( $allocation['coa_url'] ); ?>">Review full report<svg><use href="#pepselect-oe-arrow"/></svg></a><?php else : ?><p class="pepselect-oe__unavailable">The full report is not available from this record.</p><?php endif; ?>
 									</div>
 								<?php endforeach; ?>
+								</div>
 							</article>
 						<?php endforeach; ?>
 					</div>
