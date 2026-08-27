@@ -4,7 +4,7 @@ Tags: woocommerce, orders, batch, coa
 Requires at least: 6.5
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 0.2.4
+Stable tag: 0.3.0
 License: GPLv2 or later
 
 Secure, batch-specific customer order records connected to Pep Select Ops.
@@ -17,6 +17,9 @@ Secure, batch-specific customer order records connected to Pep Select Ops.
 4. Leave the feature disabled until staging verification is complete.
 
 == Changelog ==
+
+= 0.3.0 =
+* Adds Milestone 4 privacy hardening, invalid-token throttling, and repeatable release/rollback contracts.
 
 = 0.2.4 =
 * Uses explicitly synthetic customer and order labels in the administrator-only preview.

@@ -1,6 +1,6 @@
 # Pep Select Order Experience implementation milestones
 
-Status: Milestones 1 and 2 implementation complete. Order Experience 0.2.4 is installed on Live with the customer feature disabled, the permanent fallback intact, and the administrator sample validated from 320 through 1440 px. Related-compound approval and the final WooCommerce coupon remain owner-controlled settings. Integrated token/order UAT and customer enablement remain Milestone 4.
+Status: Milestones 1 through 3 implementation complete. Order Experience 0.2.4 is installed on Live with the customer feature disabled and the permanent fallback intact. Ops generates the approved individual 300 DPI front and QR-back PNG files only after WordPress confirms the secure order page. Milestone 4 implementation is in progress: plugin 0.3.0 adds release privacy controls, Ops adds an independent default-off card switch, and integrated staging/rollback UAT remains required before customer enablement. Related-compound approval and the final WooCommerce coupon remain owner-controlled settings.
 
 ## Architecture decision
 
@@ -96,6 +96,8 @@ This milestone delivers the approved visual as one finished customer flow, inclu
 
 ## Milestone 3: Ops thank-you-card production and QR readiness
 
+**Implementation status: complete.** Ops renders the approved fixed front and order-specific QR back as separate 1050 × 1500 PNG files at 300 DPI. Downloads require an authenticated Ops user and a READY, non-revoked secure order URL. Milestone 4 adds the independent default-off operational switch required for controlled release.
+
 This milestone turns the working order URL into the printable fulfillment tool. It waits for Paulo's final card PDF/template dimensions but combines the entire Ops flow rather than separating PDF, QR, download, and printing.
 
 - Add order-page readiness and URL data to the existing finalized-order/packing-slip builder.
@@ -115,6 +117,8 @@ This milestone turns the working order URL into the printable fulfillment tool. 
 - Disabling card generation does not affect packing slips, sales allocation, or other PrintNode jobs.
 
 ## Milestone 4: Integrated staging, controlled release, and rollback proof
+
+**Implementation status: in progress.** The repeatable evidence checklist is maintained in `MILESTONE-4-UAT.md`. No customer enablement is implied by code completion; staging evidence and Paulo's exact Live approval remain required.
 
 This milestone proves the complete system together and is the only milestone authorized to prepare a Live release. Live deployment still requires Paulo's explicit approval.
 

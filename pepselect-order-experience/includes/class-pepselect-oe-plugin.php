@@ -3,6 +3,9 @@
 defined( 'ABSPATH' ) || exit;
 
 final class PepSelect_OE_Plugin {
+	private const INVALID_ACCESS_LIMIT  = 20;
+	private const INVALID_ACCESS_WINDOW = 300;
+
 	private static ?self $instance = null;
 	private PepSelect_OE_Access_Store $store;
 	private PepSelect_OE_View_Model $view_model;
@@ -123,7 +126,8 @@ final class PepSelect_OE_Plugin {
 		if ( ! $this->is_order_page() ) { return; }
 		nocache_headers();
 		header( 'X-Robots-Tag: noindex, nofollow, noarchive, nosnippet, noimageindex', true );
-		header( 'Referrer-Policy: same-origin', true );
+		header( 'Referrer-Policy: no-referrer', true );
+		header( 'X-Content-Type-Options: nosniff', true );
 	}
 
 	public function robots_meta(): void {
@@ -145,13 +149,38 @@ final class PepSelect_OE_Plugin {
 
 	private function authorized_record(): ?array {
 		$token = isset( $_GET['access'] ) ? sanitize_text_field( wp_unslash( $_GET['access'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		if ( $token ) { return $this->store->find_active_by_token( $token ); }
+		if ( $token ) {
+			if ( $this->invalid_access_is_limited() || 1 !== preg_match( '/^[A-Za-z0-9_-]{43}$/', $token ) ) {
+				$this->note_invalid_access();
+				return null;
+			}
+			$record = $this->store->find_active_by_token( $token );
+			if ( ! $record ) { $this->note_invalid_access(); }
+			return $record;
+		}
 		$order_key = isset( $_GET['order_key'] ) ? sanitize_text_field( wp_unslash( $_GET['order_key'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$order_id = $order_key && function_exists( 'wc_get_order_id_by_order_key' ) ? wc_get_order_id_by_order_key( $order_key ) : 0;
 		if ( ! $order_id || ! is_user_logged_in() || ! function_exists( 'wc_get_order' ) ) { return null; }
 		$order = wc_get_order( $order_id );
 		if ( ! $order || (int) $order->get_customer_id() !== get_current_user_id() || ! hash_equals( (string) $order->get_order_key(), $order_key ) ) { return null; }
 		return $this->store->find_by_order( $order_id );
+	}
+
+	private function invalid_access_key(): string {
+		$ip = sanitize_text_field( wp_unslash( (string) ( $_SERVER['REMOTE_ADDR'] ?? 'unknown' ) ) );
+		$agent = sanitize_text_field( wp_unslash( (string) ( $_SERVER['HTTP_USER_AGENT'] ?? 'unknown' ) ) );
+		$fingerprint = hash_hmac( 'sha256', $ip . '|' . substr( $agent, 0, 180 ), wp_salt( 'nonce' ) );
+		return 'pepselect_oe_bad_' . substr( $fingerprint, 0, 40 );
+	}
+
+	private function invalid_access_is_limited(): bool {
+		return (int) get_transient( $this->invalid_access_key() ) >= self::INVALID_ACCESS_LIMIT;
+	}
+
+	private function note_invalid_access(): void {
+		$key = $this->invalid_access_key();
+		$count = min( self::INVALID_ACCESS_LIMIT, (int) get_transient( $key ) + 1 );
+		set_transient( $key, $count, self::INVALID_ACCESS_WINDOW );
 	}
 
 	private function is_preview(): bool {
