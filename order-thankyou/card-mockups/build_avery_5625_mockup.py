@@ -86,6 +86,30 @@ def draw_check(draw: ImageDraw.ImageDraw, cx: int, cy: int, radius: int, color: 
     draw.line((cx - 8, cy, cx - 1, cy + 8, cx + 12, cy - 10), fill=color, width=4, joint="curve")
 
 
+def draw_feature_icon(draw: ImageDraw.ImageDraw, cx: int, cy: int, kind: str) -> None:
+    draw.ellipse((cx - 31, cy - 31, cx + 31, cy + 31), fill="#E8F6FB")
+    if kind == "coa":
+        draw.rounded_rectangle((cx - 13, cy - 18, cx + 11, cy + 18), radius=3, outline=NAVY, width=3)
+        draw.line((cx - 7, cy - 8, cx + 5, cy - 8), fill=NAVY, width=3)
+        draw.line((cx - 7, cy - 1, cx + 3, cy - 1), fill=NAVY, width=3)
+        draw.line((cx - 6, cy + 9, cx - 1, cy + 14, cx + 10, cy + 4), fill=CYAN, width=3)
+    elif kind == "product":
+        draw.rounded_rectangle((cx - 13, cy - 12, cx + 13, cy + 18), radius=5, outline=NAVY, width=3)
+        draw.rectangle((cx - 9, cy - 20, cx + 9, cy - 12), outline=NAVY, width=3)
+        draw.line((cx - 6, cy + 3, cx + 6, cy + 3), fill=CYAN, width=3)
+        draw.line((cx, cy - 3, cx, cy + 9), fill=CYAN, width=3)
+    elif kind == "gift":
+        draw.rectangle((cx - 17, cy - 5, cx + 17, cy + 17), outline=NAVY, width=3)
+        draw.rectangle((cx - 20, cy - 12, cx + 20, cy - 4), outline=NAVY, width=3)
+        draw.line((cx, cy - 12, cx, cy + 17), fill=CYAN, width=3)
+        draw.arc((cx - 18, cy - 28, cx, cy - 8), 190, 355, fill=CYAN, width=3)
+        draw.arc((cx, cy - 28, cx + 18, cy - 8), 185, 350, fill=CYAN, width=3)
+    else:
+        draw.rounded_rectangle((cx - 18, cy - 16, cx + 18, cy + 12), radius=8, outline=NAVY, width=3)
+        draw.line((cx - 8, cy + 12, cx - 13, cy + 20, cx + 1, cy + 12), fill=NAVY, width=3)
+        draw.text((cx - 5, cy - 15), "?", font=font(FONT_BOLD, 25), fill=CYAN)
+
+
 def front_card() -> Image.Image:
     card = Image.new("RGBA", (CARD_W, CARD_H), WHITE)
     draw = ImageDraw.Draw(card)
@@ -118,7 +142,6 @@ def front_card() -> Image.Image:
     signature = signature.rotate(9, resample=Image.Resampling.BICUBIC, expand=True)
     card.alpha_composite(signature, (215, 1005))
 
-    draw.line((145, 1280, 905, 1280), fill=BORDER, width=2)
     draw.rounded_rectangle((0, 1405, CARD_W - 1, CARD_H - 1), radius=RADIUS, fill=NAVY)
     draw.rectangle((0, 1405, CARD_W, 1460), fill=NAVY)
     centered(draw, 1434, "PEPSELECT.com", font(FONT_MONO_BOLD, 23), WHITE)
@@ -127,7 +150,7 @@ def front_card() -> Image.Image:
     return card
 
 
-def back_card(order_number: str, token: str) -> Image.Image:
+def back_card(token: str, layout: str) -> Image.Image:
     card = Image.new("RGBA", (CARD_W, CARD_H), WHITE)
     draw = ImageDraw.Draw(card)
 
@@ -135,42 +158,54 @@ def back_card(order_number: str, token: str) -> Image.Image:
     card.alpha_composite(logo, ((CARD_W - logo.width) // 2, 72))
     draw.line((110, 238, 940, 238), fill=BORDER, width=2)
 
-    centered(draw, 295, "MATCH YOUR VIAL.\nMATCH YOUR BATCH.", font(FONT_BOLD, 56), NAVY, spacing=0)
-    centered(draw, 440, "Scan to open your private order page.", font(FONT_REG, 29), SLATE)
+    centered(draw, 285, "MATCH YOUR BATCH.\nMATCH YOUR VIAL.", font(FONT_BOLD, 54), NAVY, spacing=0)
+    centered(draw, 425, "Scan to open your order page.", font(FONT_REG, 29), SLATE)
 
     payload = f"https://pepselect.com/order/?access={token}"
-    qr = qr_image(payload, 485)
-    card.alpha_composite(qr.convert("RGBA"), ((CARD_W - qr.width) // 2, 520))
+    qr = qr_image(payload, 390)
+    card.alpha_composite(qr.convert("RGBA"), ((CARD_W - qr.width) // 2, 500))
 
-    order_label = f"ORDER #{order_number}"
-    centered(draw, 1045, order_label, font(FONT_MONO_BOLD, 24), NAVY)
-
-    pill = (160, 1105, 890, 1178)
-    draw.rounded_rectangle(pill, radius=18, fill=GREEN_SOFT)
-    draw_check(draw, 205, 1142, 18, GREEN)
-    draw.text((245, 1122), "Third-party testing and batch records connected", font=font(FONT_SEMI, 23), fill=GREEN)
-
-    # Compact 2 x 2 content map mirrors the order page without crowding the card.
     items = [
-        ("BATCH COA", "Review the full lab report"),
-        ("ORDER INFO", "Products, totals and dates"),
-        ("STORAGE + FAQ", "Handling information"),
-        ("SUPPORT + REORDER", "Help when you need it"),
+        ("coa", "Verified COA Analysis", "View all 3rd party test results for this order"),
+        ("product", "Additional Product Information", "Learn more about these compounds, storage, related studies"),
+        ("gift", "A little gift from us", "A token of appreciation for choosing Pep Select"),
+        ("help", "Have questions?", "We have answers! Contact our team."),
     ]
-    x_positions = (105, 555)
-    y_positions = (1230, 1330)
-    for index, (label, detail) in enumerate(items):
-        col, row = index % 2, index // 2
-        x, y = x_positions[col], y_positions[row]
-        draw.ellipse((x, y + 7, x + 14, y + 21), fill=CYAN)
-        draw.text((x + 28, y), label, font=font(FONT_MONO_BOLD, 18), fill=NAVY)
-        draw.text((x + 28, y + 34), detail, font=font(FONT_REG, 20), fill=SLATE)
+
+    if layout == "stacked":
+        y_positions = (945, 1060, 1190, 1310)
+        wrapped_details = (
+            "View all 3rd party test results for this order",
+            "Learn more about these compounds, storage, related studies",
+            "A token of appreciation for choosing Pep Select",
+            "We have answers! Contact our team.",
+        )
+        for index, ((kind, label, _), y, detail) in enumerate(zip(items, y_positions, wrapped_details)):
+            draw_feature_icon(draw, 108, y + 40, kind)
+            draw.text((165, y + 4), label, font=font(FONT_SEMI, 26), fill=NAVY)
+            draw.text((165, y + 45), detail, font=font(FONT_REG, 21), fill=SLATE)
+            if index < 3:
+                draw.line((165, y + 101, 925, y + 101), fill=BORDER, width=2)
+    else:
+        cells = ((72, 938), (537, 938), (72, 1185), (537, 1185))
+        wrapped_details = (
+            "View all 3rd party test\nresults for this order",
+            "Learn more about these\ncompounds, storage,\nrelated studies",
+            "A token of appreciation for\nchoosing Pep Select",
+            "We have answers! Contact\nour team.",
+        )
+        draw.line((525, 938, 525, 1425), fill=BORDER, width=2)
+        draw.line((72, 1172, 978, 1172), fill=BORDER, width=2)
+        for (kind, label, _), (x, y), detail in zip(items, cells, wrapped_details):
+            draw_feature_icon(draw, x + 34, y + 37, kind)
+            draw.text((x + 78, y + 4), label, font=font(FONT_SEMI, 22), fill=NAVY)
+            draw.multiline_text((x + 78, y + 43), detail, font=font(FONT_REG, 20), fill=SLATE, spacing=7)
 
     card.putalpha(rounded_mask())
     return card
 
 
-def presentation(front: Image.Image, back: Image.Image) -> Image.Image:
+def presentation(front: Image.Image, back: Image.Image, back_label: str) -> Image.Image:
     width, height = 2600, 1850
     preview = Image.new("RGB", (width, height), "#EAF1F6")
     draw = ImageDraw.Draw(preview)
@@ -182,7 +217,7 @@ def presentation(front: Image.Image, back: Image.Image) -> Image.Image:
     front_small = front.resize((scaled_w, scaled_h), Image.Resampling.LANCZOS)
     back_small = back.resize((scaled_w, scaled_h), Image.Resampling.LANCZOS)
     positions = ((370, 365), (1495, 365))
-    for image, (x, y), label in zip((front_small, back_small), positions, ("FRONT", "BACK / UNIQUE PER ORDER")):
+    for image, (x, y), label in zip((front_small, back_small), positions, ("FRONT", back_label)):
         shadow = Image.new("RGBA", (scaled_w + 80, scaled_h + 80), (0, 0, 0, 0))
         sd = ImageDraw.Draw(shadow)
         sd.rounded_rectangle((35, 35, scaled_w + 35, scaled_h + 35), radius=55, fill=(0, 29, 58, 38))
@@ -197,7 +232,7 @@ def presentation(front: Image.Image, back: Image.Image) -> Image.Image:
     return preview
 
 
-def build_pdf(front: Image.Image, backs: list[Image.Image], path: Path) -> None:
+def build_pdf(front: Image.Image, back_sheets: list[list[Image.Image]], path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     c = canvas.Canvas(str(path), pagesize=letter)
     c.setTitle("Pep Select Avery 5625 Order Thank-You Card Mockup")
@@ -212,24 +247,35 @@ def build_pdf(front: Image.Image, backs: list[Image.Image], path: Path) -> None:
         c.drawImage(front_reader, x, y, width=252, height=360, mask="auto")
     c.showPage()
 
-    for image, (x, y) in zip(backs, placements):
-        image_buffer = BytesIO()
-        image.save(image_buffer, format="PNG", dpi=(DPI, DPI))
-        c.drawImage(ImageReader(image_buffer), x, y, width=252, height=360, mask="auto")
-    c.showPage()
+    for backs in back_sheets:
+        for image, (x, y) in zip(backs, placements):
+            image_buffer = BytesIO()
+            image.save(image_buffer, format="PNG", dpi=(DPI, DPI))
+            c.drawImage(ImageReader(image_buffer), x, y, width=252, height=360, mask="auto")
+        c.showPage()
     c.save()
 
 
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     front = front_card()
-    orders = ["PS-10482", "PS-10483", "PS-10484", "PS-10485"]
-    backs = [back_card(number, f"DEMO-{number.replace('-', '')}-{index + 1:02d}") for index, number in enumerate(orders)]
+    tokens = [f"DEMO-PS1048{index + 2}-{index + 1:02d}" for index in range(4)]
+    backs_stacked = [back_card(token, "stacked") for token in tokens]
+    backs_grid = [back_card(token, "grid") for token in tokens]
 
     front.save(OUT / "pep-select-thank-you-card-front-300dpi.png", dpi=(DPI, DPI))
-    backs[0].save(OUT / "pep-select-thank-you-card-back-ps-10482-300dpi.png", dpi=(DPI, DPI))
-    presentation(front, backs[0]).save(OUT / "pep-select-thank-you-card-front-back-preview.png", dpi=(150, 150))
-    build_pdf(front, backs, PDF_OUT / "pep-select-avery-5625-card-mockup.pdf")
+    backs_stacked[0].save(OUT / "pep-select-thank-you-card-back-stacked-300dpi.png", dpi=(DPI, DPI))
+    backs_grid[0].save(OUT / "pep-select-thank-you-card-back-grid-300dpi.png", dpi=(DPI, DPI))
+    presentation(front, backs_stacked[0], "BACK OPTION A / STACKED").save(
+        OUT / "pep-select-thank-you-card-option-a-stacked-preview.png", dpi=(150, 150)
+    )
+    presentation(front, backs_grid[0], "BACK OPTION B / 2 x 2 GRID").save(
+        OUT / "pep-select-thank-you-card-option-b-grid-preview.png", dpi=(150, 150)
+    )
+    presentation(front, backs_stacked[0], "BACK OPTION A / STACKED").save(
+        OUT / "pep-select-thank-you-card-front-back-preview.png", dpi=(150, 150)
+    )
+    build_pdf(front, [backs_stacked, backs_grid], PDF_OUT / "pep-select-avery-5625-card-mockup.pdf")
 
     print(f"front={CARD_W}x{CARD_H}px")
     print(f"back={CARD_W}x{CARD_H}px")
