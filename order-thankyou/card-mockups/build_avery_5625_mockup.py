@@ -37,6 +37,24 @@ FONT_BOLD = Path(r"C:\Windows\Fonts\segoeuib.ttf")
 FONT_MONO = Path(r"C:\Windows\Fonts\consola.ttf")
 FONT_MONO_BOLD = Path(r"C:\Windows\Fonts\consolab.ttf")
 FONT_SCRIPT = ROOT / "order-thankyou" / "card-mockups" / "assets" / "Brother Signature.otf"
+FEATURE_SET = (
+    ROOT
+    / "order-thankyou"
+    / "card-mockups"
+    / "icon-variations"
+    / "cohesive-selected-set"
+    / "cohesive-four-icon-set-v2.png"
+)
+
+# Tight crops from the approved 2 x 2 concept sheet. The rendered card uses the
+# same source for every icon so perspective, material, palette, and shadow stay
+# visually consistent across the stacked feature list.
+FEATURE_ICON_CROPS = {
+    "coa": (35, 15, 610, 610),
+    "product": (625, 15, 1245, 610),
+    "gift": (30, 625, 620, 1225),
+    "help": (625, 625, 1225, 1225),
+}
 
 
 def font(path: Path, size: int) -> ImageFont.FreeTypeFont:
@@ -86,48 +104,23 @@ def draw_check(draw: ImageDraw.ImageDraw, cx: int, cy: int, radius: int, color: 
     draw.line((cx - 8, cy, cx - 1, cy + 8, cx + 12, cy - 10), fill=color, width=4, joint="curve")
 
 
-def draw_feature_icon(draw: ImageDraw.ImageDraw, cx: int, cy: int, kind: str) -> None:
-    # Small hand-drawn-style illustrations: offset blobs, varied silhouettes, and
-    # playful accent marks keep these from reading like a generic software icon set.
-    if kind == "coa":
-        draw.ellipse((cx - 34, cy - 29, cx + 27, cy + 32), fill="#E8F6FB")
-        draw.ellipse((cx + 22, cy - 31, cx + 31, cy - 22), fill=CYAN)
-        draw.polygon(
-            ((cx - 18, cy - 20), (cx + 8, cy - 24), (cx + 15, cy + 12), (cx - 11, cy + 17)),
-            fill=WHITE,
-            outline=NAVY,
-        )
-        draw.line((cx - 10, cy - 9, cx + 5, cy - 11), fill=NAVY, width=3)
-        draw.line((cx - 8, cy - 1, cx + 3, cy - 3), fill=NAVY, width=3)
-        draw.ellipse((cx + 3, cy + 3, cx + 20, cy + 20), outline=CYAN, width=4)
-        draw.line((cx + 17, cy + 17, cx + 27, cy + 27), fill=CYAN, width=4)
-    elif kind == "product":
-        draw.ellipse((cx - 30, cy - 32, cx + 33, cy + 31), fill="#EAF5EF")
-        draw.polygon(((cx - 23, cy - 14), (cx - 2, cy - 9), (cx - 2, cy + 18), (cx - 23, cy + 12)), fill=WHITE, outline=NAVY)
-        draw.polygon(((cx + 2, cy - 9), (cx + 23, cy - 14), (cx + 23, cy + 12), (cx + 2, cy + 18)), fill=WHITE, outline=NAVY)
-        draw.line((cx, cy - 9, cx, cy + 18), fill=NAVY, width=3)
-        draw.line((cx - 17, cy - 5, cx - 7, cy - 2), fill=CYAN, width=3)
-        draw.line((cx + 7, cy - 2, cx + 17, cy - 5), fill=CYAN, width=3)
-        draw.line((cx + 25, cy - 29, cx + 25, cy - 20), fill=CYAN, width=3)
-        draw.line((cx + 20, cy - 24, cx + 30, cy - 24), fill=CYAN, width=3)
-    elif kind == "gift":
-        draw.ellipse((cx - 32, cy - 28, cx + 30, cy + 34), fill="#E8F6FB")
-        draw.rectangle((cx - 18, cy - 4, cx + 18, cy + 21), fill=WHITE, outline=NAVY, width=3)
-        draw.rectangle((cx - 22, cy - 13, cx + 22, cy - 3), fill=WHITE, outline=NAVY, width=3)
-        draw.line((cx, cy - 13, cx, cy + 21), fill=CYAN, width=4)
-        draw.arc((cx - 21, cy - 31, cx, cy - 8), 185, 360, fill=CYAN, width=4)
-        draw.arc((cx, cy - 31, cx + 21, cy - 8), 180, 355, fill=CYAN, width=4)
-        draw.line((cx - 29, cy - 24, cx - 34, cy - 30), fill=CYAN, width=3)
-        draw.ellipse((cx + 27, cy - 26, cx + 34, cy - 19), fill=CYAN)
-    else:
-        draw.ellipse((cx - 31, cy - 30, cx + 31, cy + 32), fill="#EAF5EF")
-        draw.rounded_rectangle((cx - 22, cy - 15, cx + 10, cy + 10), radius=8, fill=WHITE, outline=NAVY, width=3)
-        draw.line((cx - 12, cy + 10, cx - 18, cy + 18, cx - 2, cy + 10), fill=NAVY, width=3)
-        draw.rounded_rectangle((cx - 2, cy - 5, cx + 24, cy + 15), radius=7, fill="#E8F6FB", outline=CYAN, width=3)
-        draw.ellipse((cx + 4, cy + 2, cx + 8, cy + 6), fill=NAVY)
-        draw.ellipse((cx + 12, cy + 2, cx + 16, cy + 6), fill=NAVY)
-        draw.line((cx + 23, cy - 24, cx + 23, cy - 16), fill=CYAN, width=3)
-        draw.line((cx + 19, cy - 20, cx + 27, cy - 20), fill=CYAN, width=3)
+def feature_icon(kind: str, size: int = 92) -> Image.Image:
+    if kind not in FEATURE_ICON_CROPS:
+        raise ValueError(f"Unknown feature icon: {kind}")
+
+    sheet = Image.open(FEATURE_SET).convert("RGBA")
+    icon = sheet.crop(FEATURE_ICON_CROPS[kind])
+    icon.thumbnail((size, size), Image.Resampling.LANCZOS)
+
+    # Normalize only the near-white sheet background to the card white. The
+    # paper texture and soft object shadows remain visible at print size.
+    pixels = icon.load()
+    for y in range(icon.height):
+        for x in range(icon.width):
+            red, green, blue, alpha = pixels[x, y]
+            if alpha and red >= 248 and green >= 248 and blue >= 248:
+                pixels[x, y] = (255, 255, 255, alpha)
+    return icon
 
 
 def front_card() -> Image.Image:
@@ -200,7 +193,8 @@ def back_card(token: str) -> Image.Image:
         "We have answers! Contact our team.",
     )
     for index, ((kind, label, _), y, detail) in enumerate(zip(items, y_positions, wrapped_details)):
-        draw_feature_icon(draw, 108, y + 40, kind)
+        icon = feature_icon(kind)
+        card.alpha_composite(icon, (108 - icon.width // 2, y + 45 - icon.height // 2))
         draw.text((165, y + 4), label, font=font(FONT_SEMI, 26), fill=NAVY)
         draw.text((165, y + 45), detail, font=font(FONT_REG, 21), fill=SLATE)
         if index < 3:
