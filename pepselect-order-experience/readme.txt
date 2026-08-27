@@ -4,7 +4,7 @@ Tags: woocommerce, orders, batch, coa
 Requires at least: 6.5
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 0.3.1
+Stable tag: 0.3.2
 License: GPLv2 or later
 
 Secure, batch-specific customer order records connected to Pep Select Ops.
@@ -17,6 +17,9 @@ Secure, batch-specific customer order records connected to Pep Select Ops.
 4. Leave the feature disabled until staging verification is complete.
 
 == Changelog ==
+
+= 0.3.2 =
+* Enlarges centered vial photos and keeps related-compound cards at their standard grid width.
 
 = 0.3.1 =
 * Shows complete COA vial photos in a compact side rail on desktop and a contained mobile frame.
