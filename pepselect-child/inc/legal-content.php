@@ -539,7 +539,7 @@ function pepselect_child_get_legal_documents() {
 		'refund-shipping-policy' => array(
 			'slug'         => 'refund-shipping-policy',
 			'title'        => 'Refund & Shipping Policy',
-			'last_updated' => 'August 1, 2026',
+			'last_updated' => 'August 27, 2026',
 			'body'         => array(
 				array(
 					'type' => 'paragraph',
@@ -556,7 +556,7 @@ function pepselect_child_get_legal_documents() {
 				),
 				array(
 					'type' => 'paragraph',
-					'html' => 'Once your order ships, you will receive tracking information by email. Delivery estimates begin when the carrier takes possession of the package; transit times, delays, and final delivery are the responsibility of the carrier and are outside our control. We currently ship within the United States only.',
+					'html' => 'Once your order ships, you will receive tracking information by email. Delivery estimates begin when the carrier takes possession of the package; transit times, delays, and final delivery are the responsibility of the carrier and are outside our control. Pep Select ships only to the contiguous United States (the lower 48 states) and Washington, D.C. We do not ship to Alaska, Hawaii, Puerto Rico, the U.S. Virgin Islands, other U.S. territories, or overseas military addresses.',
 				),
 				array(
 					'type'  => 'heading',

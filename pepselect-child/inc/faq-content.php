@@ -94,7 +94,7 @@ function pepselect_child_get_faq_sections() {
 				),
 				array(
 					'question' => __( 'Where do you ship?', 'pepselect-child' ),
-					'answer'   => __( 'All 50 U.S. states and Washington, D.C. Shipping is calculated at checkout.', 'pepselect-child' ),
+					'answer'   => __( 'We ship to the contiguous United States (the lower 48 states) and Washington, D.C. We do not ship to Alaska, Hawaii, Puerto Rico, the U.S. Virgin Islands, other U.S. territories, or overseas military addresses.', 'pepselect-child' ),
 				),
 				array(
 					'question' => __( 'How do I track my order?', 'pepselect-child' ),

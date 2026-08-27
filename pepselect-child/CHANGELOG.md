@@ -1,6 +1,14 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.53** - Bring back-in-stock emails into the Pep Select transactional email system.
+**Release candidate: 0.25.0-beta.54** - Limit shipping to the contiguous United States.
+
+## 0.25.0-beta.54 - 2026-08-27
+
+- Update the FAQ and Refund & Shipping Policy to state that Pep Select ships only to the lower 48 states and Washington, D.C.
+- State that Alaska, Hawaii, Puerto Rico, the U.S. Virgin Islands, other U.S. territories, and overseas military addresses are not eligible for shipping.
+- Add a regression check that prevents the former 50-state and broad U.S. shipping promises from returning.
+
+**Previous release candidate: 0.25.0-beta.53** - Bring back-in-stock emails into the Pep Select transactional email system.
 
 ## 0.25.0-beta.53 - 2026-08-26
 
