@@ -12,4 +12,7 @@ A Little Gift From Us, and Have Questions.
 
 The official vector brand mark should replace generated marks in production.
 
+`cohesive-four-icon-set-v2.png` adds the approved “3RD PARTY TEST RESULTS”
+wording around the Verified COA seal.
+
 Generated with the built-in image generation workflow on 2026-08-26.
