@@ -87,27 +87,47 @@ def draw_check(draw: ImageDraw.ImageDraw, cx: int, cy: int, radius: int, color: 
 
 
 def draw_feature_icon(draw: ImageDraw.ImageDraw, cx: int, cy: int, kind: str) -> None:
-    draw.ellipse((cx - 31, cy - 31, cx + 31, cy + 31), fill="#E8F6FB")
+    # Small hand-drawn-style illustrations: offset blobs, varied silhouettes, and
+    # playful accent marks keep these from reading like a generic software icon set.
     if kind == "coa":
-        draw.rounded_rectangle((cx - 13, cy - 18, cx + 11, cy + 18), radius=3, outline=NAVY, width=3)
-        draw.line((cx - 7, cy - 8, cx + 5, cy - 8), fill=NAVY, width=3)
-        draw.line((cx - 7, cy - 1, cx + 3, cy - 1), fill=NAVY, width=3)
-        draw.line((cx - 6, cy + 9, cx - 1, cy + 14, cx + 10, cy + 4), fill=CYAN, width=3)
+        draw.ellipse((cx - 34, cy - 29, cx + 27, cy + 32), fill="#E8F6FB")
+        draw.ellipse((cx + 22, cy - 31, cx + 31, cy - 22), fill=CYAN)
+        draw.polygon(
+            ((cx - 18, cy - 20), (cx + 8, cy - 24), (cx + 15, cy + 12), (cx - 11, cy + 17)),
+            fill=WHITE,
+            outline=NAVY,
+        )
+        draw.line((cx - 10, cy - 9, cx + 5, cy - 11), fill=NAVY, width=3)
+        draw.line((cx - 8, cy - 1, cx + 3, cy - 3), fill=NAVY, width=3)
+        draw.ellipse((cx + 3, cy + 3, cx + 20, cy + 20), outline=CYAN, width=4)
+        draw.line((cx + 17, cy + 17, cx + 27, cy + 27), fill=CYAN, width=4)
     elif kind == "product":
-        draw.rounded_rectangle((cx - 13, cy - 12, cx + 13, cy + 18), radius=5, outline=NAVY, width=3)
-        draw.rectangle((cx - 9, cy - 20, cx + 9, cy - 12), outline=NAVY, width=3)
-        draw.line((cx - 6, cy + 3, cx + 6, cy + 3), fill=CYAN, width=3)
-        draw.line((cx, cy - 3, cx, cy + 9), fill=CYAN, width=3)
+        draw.ellipse((cx - 30, cy - 32, cx + 33, cy + 31), fill="#EAF5EF")
+        draw.polygon(((cx - 23, cy - 14), (cx - 2, cy - 9), (cx - 2, cy + 18), (cx - 23, cy + 12)), fill=WHITE, outline=NAVY)
+        draw.polygon(((cx + 2, cy - 9), (cx + 23, cy - 14), (cx + 23, cy + 12), (cx + 2, cy + 18)), fill=WHITE, outline=NAVY)
+        draw.line((cx, cy - 9, cx, cy + 18), fill=NAVY, width=3)
+        draw.line((cx - 17, cy - 5, cx - 7, cy - 2), fill=CYAN, width=3)
+        draw.line((cx + 7, cy - 2, cx + 17, cy - 5), fill=CYAN, width=3)
+        draw.line((cx + 25, cy - 29, cx + 25, cy - 20), fill=CYAN, width=3)
+        draw.line((cx + 20, cy - 24, cx + 30, cy - 24), fill=CYAN, width=3)
     elif kind == "gift":
-        draw.rectangle((cx - 17, cy - 5, cx + 17, cy + 17), outline=NAVY, width=3)
-        draw.rectangle((cx - 20, cy - 12, cx + 20, cy - 4), outline=NAVY, width=3)
-        draw.line((cx, cy - 12, cx, cy + 17), fill=CYAN, width=3)
-        draw.arc((cx - 18, cy - 28, cx, cy - 8), 190, 355, fill=CYAN, width=3)
-        draw.arc((cx, cy - 28, cx + 18, cy - 8), 185, 350, fill=CYAN, width=3)
+        draw.ellipse((cx - 32, cy - 28, cx + 30, cy + 34), fill="#E8F6FB")
+        draw.rectangle((cx - 18, cy - 4, cx + 18, cy + 21), fill=WHITE, outline=NAVY, width=3)
+        draw.rectangle((cx - 22, cy - 13, cx + 22, cy - 3), fill=WHITE, outline=NAVY, width=3)
+        draw.line((cx, cy - 13, cx, cy + 21), fill=CYAN, width=4)
+        draw.arc((cx - 21, cy - 31, cx, cy - 8), 185, 360, fill=CYAN, width=4)
+        draw.arc((cx, cy - 31, cx + 21, cy - 8), 180, 355, fill=CYAN, width=4)
+        draw.line((cx - 29, cy - 24, cx - 34, cy - 30), fill=CYAN, width=3)
+        draw.ellipse((cx + 27, cy - 26, cx + 34, cy - 19), fill=CYAN)
     else:
-        draw.rounded_rectangle((cx - 18, cy - 16, cx + 18, cy + 12), radius=8, outline=NAVY, width=3)
-        draw.line((cx - 8, cy + 12, cx - 13, cy + 20, cx + 1, cy + 12), fill=NAVY, width=3)
-        draw.text((cx - 5, cy - 15), "?", font=font(FONT_BOLD, 25), fill=CYAN)
+        draw.ellipse((cx - 31, cy - 30, cx + 31, cy + 32), fill="#EAF5EF")
+        draw.rounded_rectangle((cx - 22, cy - 15, cx + 10, cy + 10), radius=8, fill=WHITE, outline=NAVY, width=3)
+        draw.line((cx - 12, cy + 10, cx - 18, cy + 18, cx - 2, cy + 10), fill=NAVY, width=3)
+        draw.rounded_rectangle((cx - 2, cy - 5, cx + 24, cy + 15), radius=7, fill="#E8F6FB", outline=CYAN, width=3)
+        draw.ellipse((cx + 4, cy + 2, cx + 8, cy + 6), fill=NAVY)
+        draw.ellipse((cx + 12, cy + 2, cx + 16, cy + 6), fill=NAVY)
+        draw.line((cx + 23, cy - 24, cx + 23, cy - 16), fill=CYAN, width=3)
+        draw.line((cx + 19, cy - 20, cx + 27, cy - 20), fill=CYAN, width=3)
 
 
 def front_card() -> Image.Image:
@@ -150,7 +170,7 @@ def front_card() -> Image.Image:
     return card
 
 
-def back_card(token: str, layout: str) -> Image.Image:
+def back_card(token: str) -> Image.Image:
     card = Image.new("RGBA", (CARD_W, CARD_H), WHITE)
     draw = ImageDraw.Draw(card)
 
@@ -172,34 +192,19 @@ def back_card(token: str, layout: str) -> Image.Image:
         ("help", "Have questions?", "We have answers! Contact our team."),
     ]
 
-    if layout == "stacked":
-        y_positions = (945, 1060, 1190, 1310)
-        wrapped_details = (
-            "View all 3rd party test results for this order",
-            "Learn more about these compounds, storage, related studies",
-            "A token of appreciation for choosing Pep Select",
-            "We have answers! Contact our team.",
-        )
-        for index, ((kind, label, _), y, detail) in enumerate(zip(items, y_positions, wrapped_details)):
-            draw_feature_icon(draw, 108, y + 40, kind)
-            draw.text((165, y + 4), label, font=font(FONT_SEMI, 26), fill=NAVY)
-            draw.text((165, y + 45), detail, font=font(FONT_REG, 21), fill=SLATE)
-            if index < 3:
-                draw.line((165, y + 101, 925, y + 101), fill=BORDER, width=2)
-    else:
-        cells = ((72, 938), (537, 938), (72, 1185), (537, 1185))
-        wrapped_details = (
-            "View all 3rd party test\nresults for this order",
-            "Learn more about these\ncompounds, storage,\nrelated studies",
-            "A token of appreciation for\nchoosing Pep Select",
-            "We have answers! Contact\nour team.",
-        )
-        draw.line((525, 938, 525, 1425), fill=BORDER, width=2)
-        draw.line((72, 1172, 978, 1172), fill=BORDER, width=2)
-        for (kind, label, _), (x, y), detail in zip(items, cells, wrapped_details):
-            draw_feature_icon(draw, x + 34, y + 37, kind)
-            draw.text((x + 78, y + 4), label, font=font(FONT_SEMI, 22), fill=NAVY)
-            draw.multiline_text((x + 78, y + 43), detail, font=font(FONT_REG, 20), fill=SLATE, spacing=7)
+    y_positions = (945, 1060, 1190, 1310)
+    wrapped_details = (
+        "View all 3rd party test results for this order",
+        "Learn more about these compounds, storage, related studies",
+        "A token of appreciation for choosing Pep Select",
+        "We have answers! Contact our team.",
+    )
+    for index, ((kind, label, _), y, detail) in enumerate(zip(items, y_positions, wrapped_details)):
+        draw_feature_icon(draw, 108, y + 40, kind)
+        draw.text((165, y + 4), label, font=font(FONT_SEMI, 26), fill=NAVY)
+        draw.text((165, y + 45), detail, font=font(FONT_REG, 21), fill=SLATE)
+        if index < 3:
+            draw.line((165, y + 101, 925, y + 101), fill=BORDER, width=2)
 
     card.putalpha(rounded_mask())
     return card
@@ -260,22 +265,14 @@ def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     front = front_card()
     tokens = [f"DEMO-PS1048{index + 2}-{index + 1:02d}" for index in range(4)]
-    backs_stacked = [back_card(token, "stacked") for token in tokens]
-    backs_grid = [back_card(token, "grid") for token in tokens]
+    backs = [back_card(token) for token in tokens]
 
     front.save(OUT / "pep-select-thank-you-card-front-300dpi.png", dpi=(DPI, DPI))
-    backs_stacked[0].save(OUT / "pep-select-thank-you-card-back-stacked-300dpi.png", dpi=(DPI, DPI))
-    backs_grid[0].save(OUT / "pep-select-thank-you-card-back-grid-300dpi.png", dpi=(DPI, DPI))
-    presentation(front, backs_stacked[0], "BACK OPTION A / STACKED").save(
-        OUT / "pep-select-thank-you-card-option-a-stacked-preview.png", dpi=(150, 150)
-    )
-    presentation(front, backs_grid[0], "BACK OPTION B / 2 x 2 GRID").save(
-        OUT / "pep-select-thank-you-card-option-b-grid-preview.png", dpi=(150, 150)
-    )
-    presentation(front, backs_stacked[0], "BACK OPTION A / STACKED").save(
+    backs[0].save(OUT / "pep-select-thank-you-card-back-stacked-300dpi.png", dpi=(DPI, DPI))
+    presentation(front, backs[0], "BACK / STACKED").save(
         OUT / "pep-select-thank-you-card-front-back-preview.png", dpi=(150, 150)
     )
-    build_pdf(front, [backs_stacked, backs_grid], PDF_OUT / "pep-select-avery-5625-card-mockup.pdf")
+    build_pdf(front, [backs], PDF_OUT / "pep-select-avery-5625-card-mockup.pdf")
 
     print(f"front={CARD_W}x{CARD_H}px")
     print(f"back={CARD_W}x{CARD_H}px")
