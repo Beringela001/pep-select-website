@@ -36,7 +36,7 @@ FONT_SEMI = Path(r"C:\Windows\Fonts\seguisb.ttf")
 FONT_BOLD = Path(r"C:\Windows\Fonts\segoeuib.ttf")
 FONT_MONO = Path(r"C:\Windows\Fonts\consola.ttf")
 FONT_MONO_BOLD = Path(r"C:\Windows\Fonts\consolab.ttf")
-FONT_SCRIPT = Path(r"C:\Windows\Fonts\segoepr.ttf")
+FONT_SCRIPT = Path(r"C:\Windows\Fonts\segoesc.ttf")
 
 
 def font(path: Path, size: int) -> ImageFont.FreeTypeFont:
@@ -96,29 +96,31 @@ def front_card() -> Image.Image:
     logo = fit_logo(LOGO_LIGHT, 565, 122)
     card.alpha_composite(logo, ((CARD_W - logo.width) // 2, 54))
 
-    centered(draw, 315, "THANK YOU", font(FONT_BOLD, 86), NAVY)
-    centered(draw, 414, "for choosing Pep Select.", font(FONT_SEMI, 36), INK)
-    draw.rounded_rectangle((452, 490, 598, 498), radius=4, fill=CYAN)
+    # A single left edge gives the note an intentional editorial rhythm.
+    draw.text((108, 318), "THANK YOU", font=font(FONT_BOLD, 86), fill=NAVY)
+    draw.text((112, 420), "for choosing Pep Select.", font=font(FONT_SEMI, 36), fill=INK)
+    draw.rounded_rectangle((112, 493, 286, 501), radius=4, fill=CYAN)
 
     # Carol's appreciation copy is intentionally preserved verbatim.
     body = (
-        "We trully appreciate your trust in us. Our mission is simple: to provide\n"
-        "high-quality research peptides with transparent testing, reliable service\n"
-        "and fair pricing."
+        "We trully appreciate your trust in us. Our mission is simple:\n"
+        "to provide high-quality research peptides with transparent\n"
+        "testing, reliable service and fair pricing."
     )
-    centered(draw, 570, body, font(FONT_REG, 29), SLATE, spacing=15)
+    draw.rounded_rectangle((112, 574, 120, 747), radius=4, fill=CYAN)
+    draw.multiline_text((154, 562), body, font=font(FONT_REG, 29), fill=SLATE, spacing=15)
 
-    centered(draw, 790, "We're here if you ever need anything.", font(FONT_SEMI, 30), INK)
-    centered(draw, 858, "- The Pep Select Team", font(FONT_REG, 28), INK)
+    draw.text((112, 805), "We're here if you ever need anything.", font=font(FONT_SEMI, 30), fill=INK)
+    draw.text((112, 873), "- The Pep Select Team", font=font(FONT_REG, 28), fill=INK)
 
     # The personal sign-off is deliberately larger and slightly angled to feel handwritten.
-    signature = Image.new("RGBA", (620, 180), (0, 0, 0, 0))
+    signature = Image.new("RGBA", (720, 220), (0, 0, 0, 0))
     signature_draw = ImageDraw.Draw(signature)
-    signature_draw.text((35, 18), "Thank you!", font=font(FONT_SCRIPT, 92), fill=CYAN)
-    signature = signature.rotate(358, resample=Image.Resampling.BICUBIC, expand=True)
-    card.alpha_composite(signature, ((CARD_W - signature.width) // 2, 955))
+    signature_draw.text((42, 22), "Thank you!", font=font(FONT_SCRIPT, 105), fill=CYAN)
+    signature = signature.rotate(351, resample=Image.Resampling.BICUBIC, expand=True)
+    card.alpha_composite(signature, (250, 945))
 
-    draw.line((145, 1270, 905, 1270), fill=BORDER, width=2)
+    draw.line((112, 1280, 938, 1280), fill=BORDER, width=2)
     draw.rounded_rectangle((0, 1405, CARD_W - 1, CARD_H - 1), radius=RADIUS, fill=NAVY)
     draw.rectangle((0, 1405, CARD_W, 1460), fill=NAVY)
     centered(draw, 1434, "PEPSELECT.com", font(FONT_MONO_BOLD, 23), WHITE)
