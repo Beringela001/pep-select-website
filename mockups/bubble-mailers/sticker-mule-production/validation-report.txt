@@ -1,0 +1,40 @@
+FILE=pep-select-design-01-centered-landscape-plain-navy-back-4.25x7.psd
+SIZE=3819x5419
+DPI=300
+MODE=DocumentMode.CMYK
+BITS=BitsPerChannelType.EIGHT
+PROFILE=U.S. Web Coated (SWOP) v2
+LAYERS=2
+  Instructions|ArtLayer|visible=false
+  Artwork|ArtLayer|visible=true
+
+FILE=pep-select-design-01-centered-landscape-plain-navy-back-7.5x10.5.psd
+SIZE=6076x7121
+DPI=300
+MODE=DocumentMode.CMYK
+BITS=BitsPerChannelType.EIGHT
+PROFILE=U.S. Web Coated (SWOP) v2
+LAYERS=2
+  Template|ArtLayer|visible=false
+  Artwork|ArtLayer|visible=true
+
+FILE=pep-select-design-02-oversized-landscape-plain-navy-back-4.25x7.psd
+SIZE=3819x5419
+DPI=300
+MODE=DocumentMode.CMYK
+BITS=BitsPerChannelType.EIGHT
+PROFILE=U.S. Web Coated (SWOP) v2
+LAYERS=2
+  Instructions|ArtLayer|visible=false
+  Artwork|ArtLayer|visible=true
+
+FILE=pep-select-design-02-oversized-landscape-plain-navy-back-7.5x10.5.psd
+SIZE=6076x7121
+DPI=300
+MODE=DocumentMode.CMYK
+BITS=BitsPerChannelType.EIGHT
+PROFILE=U.S. Web Coated (SWOP) v2
+LAYERS=2
+  Template|ArtLayer|visible=false
+  Artwork|ArtLayer|visible=true
+
