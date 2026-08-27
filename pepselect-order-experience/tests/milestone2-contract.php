@@ -25,6 +25,7 @@ pepselect_oe_expect( 'ghk-cu' === PepSelect_OE_Content_Registry::normalize_name(
 pepselect_oe_expect( ! str_contains( $plugin, "\$_GET['order']" ), 'Public order access must not accept numeric order IDs.' );
 pepselect_oe_expect( str_contains( $plugin, 'wp_verify_nonce' ), 'Reorder must verify a nonce.' );
 pepselect_oe_expect( str_contains( $plugin, 'get_qty_refunded_for_item' ), 'Reorder must account for refunded quantities.' );
+pepselect_oe_expect( str_contains( $plugin, 'out of stock may fill open positions with a Restocking label' ), 'Administrator guidance must describe the restocking-card behavior accurately.' );
 pepselect_oe_expect( str_contains( $plugin, 'noindex, nofollow, noarchive, nosnippet, noimageindex' ), 'Private pages need complete robot exclusion.' );
 pepselect_oe_expect( str_contains( $resolver, "'batch_vial_photo'" ), 'The exact COA batch-vial image must be preferred.' );
 pepselect_oe_expect( str_contains( $relationships, 'pepselect_oe_blocked_relationships' ), 'Owners need an explicit related-product block control.' );

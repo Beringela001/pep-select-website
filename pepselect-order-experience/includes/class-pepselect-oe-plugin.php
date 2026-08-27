@@ -111,7 +111,7 @@ final class PepSelect_OE_Plugin {
 			</form>
 			<p><a class="button button-secondary" href="<?php echo esc_url( add_query_arg( 'pepselect-preview', '1', self::order_page_url() ) ); ?>" target="_blank" rel="noopener">Preview sample order</a></p>
 			<h2>Diagnostics</h2><table class="widefat striped" style="max-width:900px"><tbody><?php foreach ( $checks as $label => $value ) : ?><tr><th scope="row"><?php echo esc_html( $label ); ?></th><td><?php echo esc_html( $value ); ?></td></tr><?php endforeach; ?></tbody></table>
-			<h2>Relationship registry</h2><p>Cards appear only when an available compound shares one or more approved research areas with the order. Ordered, hidden, unavailable, and duplicate products stay out.</p>
+			<h2>Relationship registry</h2><p>Cards appear only when a published compound shares one or more approved research areas with the order. In-stock matches appear first; related products that are out of stock may fill open positions with a Restocking label. Ordered, hidden, blocked, and duplicate products stay out.</p>
 			<table class="widefat striped" style="max-width:900px"><thead><tr><th>Compound</th><th>Connects through</th></tr></thead><tbody><?php $area_labels = PepSelect_OE_Content_Registry::area_labels(); foreach ( PepSelect_OE_Content_Registry::compounds() as $key => $entry ) : ?><tr><th scope="row"><?php echo esc_html( PepSelect_OE_Content_Registry::display_name( $key ) ); ?></th><td><?php echo esc_html( implode( ', ', array_map( static fn( $area ) => $area_labels[ $area ] ?? $area, $entry['areas'] ) ) ); ?></td></tr><?php endforeach; ?></tbody></table>
 		</div>
 		<?php
