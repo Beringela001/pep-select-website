@@ -37,14 +37,24 @@ FONT_BOLD = Path(r"C:\Windows\Fonts\segoeuib.ttf")
 FONT_MONO = Path(r"C:\Windows\Fonts\consola.ttf")
 FONT_MONO_BOLD = Path(r"C:\Windows\Fonts\consolab.ttf")
 FONT_SCRIPT = ROOT / "order-thankyou" / "card-mockups" / "assets" / "Brother Signature.otf"
-FEATURE_SET = (
-    ROOT
-    / "order-thankyou"
-    / "card-mockups"
-    / "icon-variations"
-    / "cohesive-selected-set"
-    / "cohesive-four-icon-set-v2.png"
-)
+FEATURE_SETS = {
+    "dimensional": (
+        ROOT
+        / "order-thankyou"
+        / "card-mockups"
+        / "icon-variations"
+        / "cohesive-selected-set"
+        / "cohesive-four-icon-set-v2.png"
+    ),
+    "flat-editorial": (
+        ROOT
+        / "order-thankyou"
+        / "card-mockups"
+        / "icon-variations"
+        / "flat-editorial-alternate"
+        / "flat-editorial-four-icon-set.png"
+    ),
+}
 
 # Tight crops from the approved 2 x 2 concept sheet. The rendered card uses the
 # same source for every icon so perspective, material, palette, and shadow stay
@@ -104,11 +114,11 @@ def draw_check(draw: ImageDraw.ImageDraw, cx: int, cy: int, radius: int, color: 
     draw.line((cx - 8, cy, cx - 1, cy + 8, cx + 12, cy - 10), fill=color, width=4, joint="curve")
 
 
-def feature_icon(kind: str, size: int = 92) -> Image.Image:
+def feature_icon(kind: str, feature_set: Path, size: int = 92) -> Image.Image:
     if kind not in FEATURE_ICON_CROPS:
         raise ValueError(f"Unknown feature icon: {kind}")
 
-    sheet = Image.open(FEATURE_SET).convert("RGBA")
+    sheet = Image.open(feature_set).convert("RGBA")
     icon = sheet.crop(FEATURE_ICON_CROPS[kind])
     icon.thumbnail((size, size), Image.Resampling.LANCZOS)
 
@@ -163,7 +173,7 @@ def front_card() -> Image.Image:
     return card
 
 
-def back_card(token: str) -> Image.Image:
+def back_card(token: str, feature_set: Path) -> Image.Image:
     card = Image.new("RGBA", (CARD_W, CARD_H), WHITE)
     draw = ImageDraw.Draw(card)
 
@@ -193,7 +203,7 @@ def back_card(token: str) -> Image.Image:
         "We have answers! Contact our team.",
     )
     for index, ((kind, label, _), y, detail) in enumerate(zip(items, y_positions, wrapped_details)):
-        icon = feature_icon(kind)
+        icon = feature_icon(kind, feature_set)
         card.alpha_composite(icon, (108 - icon.width // 2, y + 45 - icon.height // 2))
         draw.text((165, y + 4), label, font=font(FONT_SEMI, 26), fill=NAVY)
         draw.text((165, y + 45), detail, font=font(FONT_REG, 21), fill=SLATE)
@@ -259,7 +269,8 @@ def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     front = front_card()
     tokens = [f"DEMO-PS1048{index + 2}-{index + 1:02d}" for index in range(4)]
-    backs = [back_card(token) for token in tokens]
+    backs = [back_card(token, FEATURE_SETS["dimensional"]) for token in tokens]
+    flat_backs = [back_card(token, FEATURE_SETS["flat-editorial"]) for token in tokens]
 
     front.save(OUT / "pep-select-thank-you-card-front-300dpi.png", dpi=(DPI, DPI))
     backs[0].save(OUT / "pep-select-thank-you-card-back-stacked-300dpi.png", dpi=(DPI, DPI))
@@ -268,9 +279,21 @@ def main() -> None:
     )
     build_pdf(front, [backs], PDF_OUT / "pep-select-avery-5625-card-mockup.pdf")
 
+    flat_backs[0].save(
+        OUT / "pep-select-thank-you-card-back-flat-editorial-300dpi.png",
+        dpi=(DPI, DPI),
+    )
+    presentation(front, flat_backs[0], "BACK / FLAT EDITORIAL").save(
+        OUT / "pep-select-thank-you-card-front-back-flat-editorial-preview.png",
+        dpi=(150, 150),
+    )
+    flat_pdf = PDF_OUT / "pep-select-avery-5625-card-flat-editorial-mockup.pdf"
+    build_pdf(front, [flat_backs], flat_pdf)
+
     print(f"front={CARD_W}x{CARD_H}px")
     print(f"back={CARD_W}x{CARD_H}px")
     print(f"pdf={PDF_OUT / 'pep-select-avery-5625-card-mockup.pdf'}")
+    print(f"flat_pdf={flat_pdf}")
 
 
 if __name__ == "__main__":
