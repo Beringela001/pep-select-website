@@ -90,29 +90,38 @@ def front_card() -> Image.Image:
     card = Image.new("RGBA", (CARD_W, CARD_H), WHITE)
     draw = ImageDraw.Draw(card)
 
-    # Branded top panel with the Avery corner radius preserved.
-    draw.rounded_rectangle((0, 0, CARD_W - 1, 470), radius=RADIUS, fill=NAVY)
-    draw.rectangle((0, 240, CARD_W, 470), fill=NAVY)
-    logo = fit_logo(LOGO_LIGHT, 650, 150)
-    card.alpha_composite(logo, ((CARD_W - logo.width) // 2, 115))
-    draw.rounded_rectangle((420, 344, 630, 354), radius=5, fill=CYAN)
+    # A compact brand bar preserves Carol's hierarchy without taking over the card.
+    draw.rounded_rectangle((0, 0, CARD_W - 1, 235), radius=RADIUS, fill=NAVY)
+    draw.rectangle((0, 125, CARD_W, 235), fill=NAVY)
+    logo = fit_logo(LOGO_LIGHT, 565, 122)
+    card.alpha_composite(logo, ((CARD_W - logo.width) // 2, 54))
 
-    centered(draw, 545, "THANK YOU", font(FONT_BOLD, 94), NAVY)
-    centered(draw, 655, "for choosing Pep Select.", font(FONT_SEMI, 38), INK)
+    centered(draw, 315, "THANK YOU", font(FONT_BOLD, 86), NAVY)
+    centered(draw, 414, "for choosing Pep Select.", font(FONT_SEMI, 36), INK)
+    draw.rounded_rectangle((452, 490, 598, 498), radius=4, fill=CYAN)
 
+    # Carol's appreciation copy is intentionally preserved verbatim.
     body = (
-        "We truly appreciate your trust in us. Your order is\n"
-        "connected to its batch documentation, making it easy\n"
-        "to match the vial in your hands to the record behind it."
+        "We trully appreciate your trust in us. Our mission is simple: to provide\n"
+        "high-quality research peptides with transparent testing, reliable service\n"
+        "and fair pricing."
     )
-    centered(draw, 775, body, font(FONT_REG, 31), SLATE, spacing=14)
+    centered(draw, 570, body, font(FONT_REG, 29), SLATE, spacing=15)
 
-    centered(draw, 1005, "We're here if you need anything.", font(FONT_SEMI, 31), INK)
-    centered(draw, 1100, "Thank you!", font(FONT_SCRIPT, 67), CYAN)
-    centered(draw, 1212, "- THE PEP SELECT TEAM", font(FONT_MONO_BOLD, 22), NAVY)
+    centered(draw, 790, "We're here if you ever need anything.", font(FONT_SEMI, 30), INK)
+    centered(draw, 858, "- The Pep Select Team", font(FONT_REG, 28), INK)
 
-    draw.line((105, 1325, 945, 1325), fill=BORDER, width=2)
-    centered(draw, 1366, "CAREFULLY SELECTED  |  THIRD-PARTY TESTED", font(FONT_MONO, 18), SLATE)
+    # The personal sign-off is deliberately larger and slightly angled to feel handwritten.
+    signature = Image.new("RGBA", (620, 180), (0, 0, 0, 0))
+    signature_draw = ImageDraw.Draw(signature)
+    signature_draw.text((35, 18), "Thank you!", font=font(FONT_SCRIPT, 92), fill=CYAN)
+    signature = signature.rotate(358, resample=Image.Resampling.BICUBIC, expand=True)
+    card.alpha_composite(signature, ((CARD_W - signature.width) // 2, 955))
+
+    draw.line((145, 1270, 905, 1270), fill=BORDER, width=2)
+    draw.rounded_rectangle((0, 1405, CARD_W - 1, CARD_H - 1), radius=RADIUS, fill=NAVY)
+    draw.rectangle((0, 1405, CARD_W, 1460), fill=NAVY)
+    centered(draw, 1434, "PEPSELECT.com", font(FONT_MONO_BOLD, 23), WHITE)
 
     card.putalpha(rounded_mask())
     return card
