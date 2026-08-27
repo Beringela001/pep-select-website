@@ -29,7 +29,12 @@ final class PepSelect_OE_Relationship_Engine {
 		$blocked = (array) apply_filters( 'pepselect_oe_blocked_relationships', $blocked, array_keys( $ordered_map ) );
 		$products = wc_get_products( array( 'status' => 'publish', 'limit' => 100, 'orderby' => 'menu_order', 'order' => 'ASC', 'return' => 'objects' ) );
 		foreach ( $products as $product ) {
-			if ( ! $product instanceof WC_Product || ! $product->is_visible() || ! $product->is_purchasable() || ! $product->is_in_stock() ) {
+			if ( ! $product instanceof WC_Product || 'hidden' === $product->get_catalog_visibility() ) {
+				continue;
+			}
+			$available  = $product->is_visible() && $product->is_purchasable() && $product->is_in_stock();
+			$restocking = 'outofstock' === $product->get_stock_status();
+			if ( ! $available && ! $restocking ) {
 				continue;
 			}
 			$key   = PepSelect_OE_Content_Registry::normalize_name( $product->get_name() );
@@ -57,16 +62,17 @@ final class PepSelect_OE_Relationship_Engine {
 				'product_id'  => $product->get_id(),
 				'name'        => $product->get_name(),
 				'url'         => $product->get_permalink(),
-				'image'       => wp_get_attachment_image_url( $product->get_image_id(), 'woocommerce_thumbnail' ) ?: wc_placeholder_img_src( 'woocommerce_thumbnail' ),
+				'image'       => wp_get_attachment_image_url( $product->get_image_id(), 'large' ) ?: wc_placeholder_img_src( 'woocommerce_thumbnail' ),
 				'related_to'  => $best['source_name'],
 				'reason'      => sprintf( 'Also studied in %s.', $labels[ $area ] ?? str_replace( '-', ' ', $area ) ),
 				'score'       => $best['score'],
 				'menu_order'  => (int) $product->get_menu_order(),
+				'restocking'  => $restocking,
 			);
 		}
 
 		usort( $found, static function ( array $left, array $right ): int {
-			return array( -$left['score'], $left['menu_order'], $left['name'] ) <=> array( -$right['score'], $right['menu_order'], $right['name'] );
+			return array( $left['restocking'] ? 1 : 0, -$left['score'], $left['menu_order'], $left['name'] ) <=> array( $right['restocking'] ? 1 : 0, -$right['score'], $right['menu_order'], $right['name'] );
 		} );
 		return array_slice( array_values( $found ), 0, max( 0, min( 4, $limit ) ) );
 	}

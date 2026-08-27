@@ -16,12 +16,17 @@
 .pepselect-oe__related-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
 .pepselect-oe__related-card,
 .pepselect-oe__related-card *{text-decoration:none!important}
+.pepselect-oe__related-image{position:relative;display:flex;align-items:center;justify-content:center;height:210px;padding:12px;background:linear-gradient(180deg,#f8fafc,#edf3f6)}
+.pepselect-oe__related-image img{width:100%;height:100%;object-fit:contain;object-position:center;transform:none}
+.pepselect-oe__availability{position:absolute;top:10px;right:10px;padding:6px 9px;border:1px solid #b8cfdb;border-radius:999px;color:var(--oe-navy);background:rgb(255 255 255 / 94%);font-size:11px;font-weight:700;line-height:1.2}
 .pepselect-oe__temperature{white-space:nowrap}
 .pepselect-oe__button-short{display:none}
 .pepselect-oe__account-row{margin:10px 4px 0;text-align:right}
 .pepselect-oe__account-row a{color:var(--oe-navy);font-size:12.5px;font-weight:700;text-decoration:underline;text-underline-offset:3px}
 @media(max-width:1024px){
   .pepselect-oe__related-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pepselect-oe__related-image{height:148px;padding:8px}
+  .pepselect-oe__availability{top:7px;right:7px;padding:5px 7px;font-size:10.5px}
 }
 @media(max-width:767px){
   .pepselect-oe__ordered-card{flex-direction:column}

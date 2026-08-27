@@ -14,7 +14,7 @@ $controller = file_get_contents( $root . '/includes/class-pepselect-oe-rest-cont
 $renderer   = file_get_contents( $root . '/includes/class-pepselect-oe-renderer.php' );
 $overrides  = file_get_contents( $root . '/assets/order-experience-overrides.css' );
 
-pepselect_oe_m4_expect( str_contains( $bootstrap, "Version: 0.3.2" ), 'Milestone 4 plugin version must be 0.3.2.' );
+pepselect_oe_m4_expect( str_contains( $bootstrap, "Version: 0.3.3" ), 'Milestone 4 plugin version must be 0.3.3.' );
 pepselect_oe_m4_expect( str_contains( $plugin, "add_option( 'pepselect_oe_enabled', '0'" ), 'Customer order pages must remain default-off.' );
 pepselect_oe_m4_expect( str_contains( $plugin, 'Referrer-Policy: no-referrer' ), 'Opaque access credentials must not leave through referrer headers.' );
 pepselect_oe_m4_expect( str_contains( $plugin, "preg_match( '/^[A-Za-z0-9_-]{43}$/'" ), 'Public access must reject malformed tokens before lookup.' );
@@ -25,5 +25,6 @@ pepselect_oe_m4_expect( str_contains( $controller, "current_user_can( 'manage_wo
 pepselect_oe_m4_expect( str_contains( $renderer, 'pepselect-oe__ordered-content' ), 'Ordered-card copy and batch details must share the content column.' );
 pepselect_oe_m4_expect( str_contains( $overrides, 'transform:scale(1.2)' ), 'Desktop vial photos must fill the specimen rail without hiding their centered labels.' );
 pepselect_oe_m4_expect( str_contains( $overrides, 'grid-template-columns:repeat(4,minmax(0,1fr))' ), 'Related compounds must retain the standard four-card desktop grid.' );
+pepselect_oe_m4_expect( str_contains( $overrides, 'object-fit:contain' ) && str_contains( $overrides, 'height:210px' ), 'Related-product images must remain complete in a consistent desktop frame.' );
 
 echo "Milestone 4 contract: OK\n";

@@ -28,7 +28,10 @@ pepselect_oe_expect( str_contains( $plugin, 'get_qty_refunded_for_item' ), 'Reor
 pepselect_oe_expect( str_contains( $plugin, 'noindex, nofollow, noarchive, nosnippet, noimageindex' ), 'Private pages need complete robot exclusion.' );
 pepselect_oe_expect( str_contains( $resolver, "'batch_vial_photo'" ), 'The exact COA batch-vial image must be preferred.' );
 pepselect_oe_expect( str_contains( $relationships, 'pepselect_oe_blocked_relationships' ), 'Owners need an explicit related-product block control.' );
+pepselect_oe_expect( str_contains( $relationships, "'outofstock' === \$product->get_stock_status()" ), 'Relevant published products may fill open recommendation slots while restocking.' );
+pepselect_oe_expect( str_contains( $relationships, "wp_get_attachment_image_url( \$product->get_image_id(), 'large' )" ), 'Related cards must use an uncropped product image source.' );
 pepselect_oe_expect( str_contains( $renderer, 'Match the vial. Match the batch.' ), 'Approved order-page mission copy is required.' );
+pepselect_oe_expect( str_contains( $renderer, '>Restocking</span>' ), 'Unavailable related products need an explicit restocking state.' );
 pepselect_oe_expect( str_contains( $renderer, 'Review full report' ), 'Each available batch must link to its report.' );
 pepselect_oe_expect( str_contains( $css, '@media(max-width:767px)' ) && str_contains( $css, 'repeat(2,minmax(0,1fr))' ), 'Mobile must retain compact two-column grids.' );
 
