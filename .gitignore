@@ -36,3 +36,6 @@ dist/
 .tmp/
 tmp/
 graphify-out/
+
+# User-supplied licensed font; keep local while committing rendered card artwork.
+order-thankyou/card-mockups/assets/Brother Signature.otf
