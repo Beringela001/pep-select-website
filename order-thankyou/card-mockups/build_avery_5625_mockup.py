@@ -77,9 +77,16 @@ def rounded_mask() -> Image.Image:
     return mask
 
 
-def fit_logo(path: Path, max_w: int, max_h: int) -> Image.Image:
+def fit_logo(path: Path, max_w: int, max_h: int, all_white: bool = False) -> Image.Image:
     logo = Image.open(path).convert("RGBA")
     logo.thumbnail((max_w, max_h), Image.Resampling.LANCZOS)
+    if all_white:
+        pixels = logo.load()
+        for y in range(logo.height):
+            for x in range(logo.width):
+                _, _, _, alpha = pixels[x, y]
+                if alpha:
+                    pixels[x, y] = (255, 255, 255, alpha)
     return logo
 
 
@@ -140,7 +147,7 @@ def front_card() -> Image.Image:
     # A compact brand bar preserves Carol's hierarchy without taking over the card.
     draw.rounded_rectangle((0, 0, CARD_W - 1, 235), radius=RADIUS, fill=NAVY)
     draw.rectangle((0, 125, CARD_W, 235), fill=NAVY)
-    logo = fit_logo(LOGO_LIGHT, 565, 122)
+    logo = fit_logo(LOGO_LIGHT, 565, 122, all_white=True)
     card.alpha_composite(logo, ((CARD_W - logo.width) // 2, 54))
 
     centered(draw, 315, "THANK YOU", font(FONT_BOLD, 86), NAVY)
