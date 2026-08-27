@@ -96,31 +96,29 @@ def front_card() -> Image.Image:
     logo = fit_logo(LOGO_LIGHT, 565, 122)
     card.alpha_composite(logo, ((CARD_W - logo.width) // 2, 54))
 
-    # A single left edge gives the note an intentional editorial rhythm.
-    draw.text((108, 318), "THANK YOU", font=font(FONT_BOLD, 86), fill=NAVY)
-    draw.text((112, 420), "for choosing Pep Select.", font=font(FONT_SEMI, 36), fill=INK)
-    draw.rounded_rectangle((112, 493, 286, 501), radius=4, fill=CYAN)
+    centered(draw, 315, "THANK YOU", font(FONT_BOLD, 86), NAVY)
+    centered(draw, 414, "for choosing Pep Select.", font(FONT_SEMI, 36), INK)
+    draw.rounded_rectangle((452, 490, 598, 498), radius=4, fill=CYAN)
 
     # Carol's appreciation copy is intentionally preserved verbatim.
     body = (
         "We trully appreciate your trust in us. Our mission is simple:\n"
-        "to provide high-quality research peptides with transparent\n"
-        "testing, reliable service and fair pricing."
+        "to provide high-quality research peptides with transparent testing,\n"
+        "reliable service and fair pricing."
     )
-    draw.rounded_rectangle((112, 574, 120, 747), radius=4, fill=CYAN)
-    draw.multiline_text((154, 562), body, font=font(FONT_REG, 29), fill=SLATE, spacing=15)
+    centered(draw, 565, body, font(FONT_REG, 31), SLATE, spacing=16)
 
-    draw.text((112, 805), "We're here if you ever need anything.", font=font(FONT_SEMI, 30), fill=INK)
-    draw.text((112, 873), "- The Pep Select Team", font=font(FONT_REG, 28), fill=INK)
+    centered(draw, 790, "We're here if you ever need anything.", font(FONT_SEMI, 33), INK)
+    centered(draw, 862, "- The Pep Select Team", font(FONT_REG, 30), INK)
 
     # The personal sign-off is deliberately larger and slightly angled to feel handwritten.
     signature = Image.new("RGBA", (760, 285), (0, 0, 0, 0))
     signature_draw = ImageDraw.Draw(signature)
-    signature_draw.text((62, 4), "Thank you!", font=font(FONT_SCRIPT, 185), fill=CYAN)
+    signature_draw.text((62, 4), "Thank you!", font=font(FONT_SCRIPT, 175), fill=CYAN)
     signature = signature.rotate(9, resample=Image.Resampling.BICUBIC, expand=True)
-    card.alpha_composite(signature, (185, 920))
+    card.alpha_composite(signature, (215, 1005))
 
-    draw.line((112, 1280, 938, 1280), fill=BORDER, width=2)
+    draw.line((145, 1280, 905, 1280), fill=BORDER, width=2)
     draw.rounded_rectangle((0, 1405, CARD_W - 1, CARD_H - 1), radius=RADIUS, fill=NAVY)
     draw.rectangle((0, 1405, CARD_W, 1460), fill=NAVY)
     centered(draw, 1434, "PEPSELECT.com", font(FONT_MONO_BOLD, 23), WHITE)
