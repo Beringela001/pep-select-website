@@ -3,7 +3,7 @@
 **Source report:** `docs/claude-seo-audit-2026-08-28/`  
 **Claude SEO:** 2.2.4  
 **Implementation owner:** Pep Select child theme  
-**Release candidate:** `0.25.0-beta.61`
+**Released to Live:** `0.25.0-beta.61`
 
 ## Scope
 
@@ -59,5 +59,5 @@ Paulo confirmed that Pep Select does not run Google ads.
 
 ## Rollback
 
-Revert release candidate `0.25.0-beta.61`; the original PNG assets remain in
+Revert release `0.25.0-beta.61`; the original PNG assets remain in
 the theme and no database or external-service setting changes are included.
