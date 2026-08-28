@@ -11,53 +11,63 @@ function pepselect_shipping_assert( $condition, $message ) {
 	}
 }
 
-pepselect_shipping_assert( PepSelect_Shipping_Restrictions::address_is_allowed( 'US', 'CA', '90210' ), 'California address should pass.' );
-pepselect_shipping_assert( PepSelect_Shipping_Restrictions::address_is_allowed( 'US', 'DC', '20001' ), 'Washington, D.C. address should pass.' );
-pepselect_shipping_assert( ! PepSelect_Shipping_Restrictions::address_is_allowed( 'US', 'AK', '99501' ), 'Alaska should fail.' );
-pepselect_shipping_assert( ! PepSelect_Shipping_Restrictions::address_is_allowed( 'US', 'HI', '96801' ), 'Hawaii should fail.' );
-pepselect_shipping_assert( ! PepSelect_Shipping_Restrictions::address_is_allowed( 'PR', '', '00901' ), 'Puerto Rico country should fail.' );
-pepselect_shipping_assert( ! PepSelect_Shipping_Restrictions::address_is_allowed( 'US', 'FL', '00901' ), 'Puerto Rico ZIP with a false Florida state should fail.' );
-pepselect_shipping_assert( ! PepSelect_Shipping_Restrictions::address_is_allowed( 'US', 'FL', '00802-1234' ), 'U.S. Virgin Islands ZIP should fail.' );
+final class PepSelect_Test_Rate {
+	private $label;
+
+	public function __construct( $label ) {
+		$this->label = $label;
+	}
+
+	public function get_label() {
+		return $this->label;
+	}
+}
+
+pepselect_shipping_assert( PepSelect_Shipping_Restrictions::address_is_allowed( 'US', 'CA', '90210' ), 'California should pass.' );
+pepselect_shipping_assert( PepSelect_Shipping_Restrictions::address_is_allowed( 'US', 'AK', '99501' ), 'Alaska should pass.' );
+pepselect_shipping_assert( PepSelect_Shipping_Restrictions::address_is_allowed( 'US', 'HI', '96801' ), 'Hawaii should pass.' );
+pepselect_shipping_assert( PepSelect_Shipping_Restrictions::address_is_allowed( 'US', 'PR', '00901' ), 'Puerto Rico should pass.' );
+pepselect_shipping_assert( ! PepSelect_Shipping_Restrictions::address_is_allowed( 'US', 'NY', '00926' ), 'Puerto Rico ZIP with New York selected should fail.' );
+pepselect_shipping_assert( ! PepSelect_Shipping_Restrictions::address_is_allowed( 'US', 'PR', '10001' ), 'New York ZIP with Puerto Rico selected should fail.' );
+pepselect_shipping_assert( ! PepSelect_Shipping_Restrictions::address_is_allowed( 'US', 'VI', '00802' ), 'U.S. Virgin Islands should fail.' );
+pepselect_shipping_assert( ! PepSelect_Shipping_Restrictions::address_is_allowed( 'US', 'HI', '96799' ), 'American Samoa should fail.' );
 pepselect_shipping_assert( ! PepSelect_Shipping_Restrictions::address_is_allowed( 'US', 'CA', '96201' ), 'Overseas military ZIP should fail.' );
 pepselect_shipping_assert( ! PepSelect_Shipping_Restrictions::address_is_allowed( 'US', 'CA', '96910' ), 'Pacific territory ZIP should fail.' );
-pepselect_shipping_assert(
-	PepSelect_Shipping_Restrictions::checkout_data_is_excluded(
-		array(
-			'ship_to_different_address' => '1',
-			'shipping_country'           => 'US',
-			'shipping_state'             => 'FL',
-			'shipping_postcode'          => '00901',
-		)
-	),
-	'Fluid Checkout shipping fields should detect an excluded ZIP.'
-);
-pepselect_shipping_assert(
-	! PepSelect_Shipping_Restrictions::checkout_data_is_excluded(
-		array(
-			'billing_country'  => 'US',
-			'billing_state'    => 'NY',
-			'billing_postcode' => '10001',
-		)
-	),
-	'Billing-address checkout should allow a lower-48 ZIP.'
-);
+pepselect_shipping_assert( PepSelect_Shipping_Restrictions::destination_is_usps_only( 'AK', '99501' ), 'Alaska should be USPS-only.' );
+pepselect_shipping_assert( PepSelect_Shipping_Restrictions::destination_is_usps_only( 'PR', '00901' ), 'Puerto Rico should be USPS-only.' );
+pepselect_shipping_assert( ! PepSelect_Shipping_Restrictions::destination_is_usps_only( 'HI', '96801' ), 'Hawaii should use returned live carrier options.' );
 
 $restriction = PepSelect_Shipping_Restrictions::instance();
-$rates       = array( 'free_shipping:1' => 'free', 'easyship:2' => 'easyship' );
+$rates       = array(
+	'free_shipping:1' => new PepSelect_Test_Rate( 'Free shipping' ),
+	'easyship:usps'   => new PepSelect_Test_Rate( 'USPS - Priority Mail' ),
+	'easyship:fedex'  => new PepSelect_Test_Rate( 'FedEx 2Day' ),
+);
 
 pepselect_shipping_assert(
-	$rates === $restriction->filter_package_rates(
-		$rates,
-		array( 'destination' => array( 'country' => 'US', 'state' => 'DC', 'postcode' => '20001' ) )
+	array( 'easyship:usps' ) === array_keys(
+		$restriction->filter_package_rates(
+			$rates,
+			array( 'destination' => array( 'country' => 'US', 'state' => 'PR', 'postcode' => '00901' ) )
+		)
 	),
-	'Allowed package rates should remain available.'
+	'Puerto Rico should retain only USPS.'
+);
+pepselect_shipping_assert(
+	array_keys( $rates ) === array_keys(
+		$restriction->filter_package_rates(
+			$rates,
+			array( 'destination' => array( 'country' => 'US', 'state' => 'HI', 'postcode' => '96801' ) )
+		)
+	),
+	'Hawaii should retain all live rates returned by the shipping providers.'
 );
 pepselect_shipping_assert(
 	array() === $restriction->filter_package_rates(
 		$rates,
-		array( 'destination' => array( 'country' => 'US', 'state' => 'FL', 'postcode' => '00901' ) )
+		array( 'destination' => array( 'country' => 'US', 'state' => 'NY', 'postcode' => '00926' ) )
 	),
-	'Puerto Rico ZIP should remove every package rate even with a false state.'
+	'Mismatched Puerto Rico ZIP and New York state should remove all rates.'
 );
 
-echo "Pep Select shipping restrictions contract passed.\n";
+echo "Pep Select shipping rules contract passed.\n";

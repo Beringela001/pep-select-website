@@ -1,6 +1,14 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.54** - Limit shipping to the contiguous United States.
+**Release candidate: 0.25.0-beta.55** - Restore Alaska, Hawaii, and Puerto Rico shipping.
+
+## 0.25.0-beta.55 - 2026-08-27
+
+- Update the FAQ and Refund & Shipping Policy to allow all 50 states, Washington, D.C., and Puerto Rico.
+- State that Alaska and Puerto Rico orders ship by USPS only.
+- Continue excluding the U.S. Virgin Islands, other U.S. territories, and overseas military addresses.
+
+**Previous release candidate: 0.25.0-beta.54** - Limit shipping to the contiguous United States.
 
 ## 0.25.0-beta.54 - 2026-08-27
 

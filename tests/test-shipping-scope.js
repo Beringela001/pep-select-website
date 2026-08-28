@@ -13,10 +13,14 @@ const legalContent = fs.readFileSync(
 
 for (const [surface, source] of [['FAQ', faqContent], ['Refund & Shipping Policy', legalContent]]) {
 	assert.ok(
-		source.includes('contiguous United States (the lower 48 states) and Washington, D.C.'),
+		source.includes('all 50 U.S. states, Washington, D.C., and Puerto Rico'),
 		`${surface} must state the eligible shipping area`
 	);
-	for (const excludedDestination of ['Alaska', 'Hawaii', 'Puerto Rico', 'U.S. Virgin Islands', 'other U.S. territories', 'overseas military addresses']) {
+	assert.ok(
+		source.includes('Alaska and Puerto Rico orders ship by USPS only'),
+		`${surface} must state the USPS-only destinations`
+	);
+	for (const excludedDestination of ['U.S. Virgin Islands', 'other U.S. territories', 'overseas military addresses']) {
 		assert.ok(
 			source.includes(excludedDestination),
 			`${surface} must identify ${excludedDestination} as excluded`
@@ -24,8 +28,8 @@ for (const [surface, source] of [['FAQ', faqContent], ['Refund & Shipping Policy
 	}
 }
 
-assert.ok(!faqContent.includes('All 50 U.S. states'), 'FAQ still contains the obsolete 50-state promise');
-assert.ok(!legalContent.includes('We currently ship within the United States only.'), 'Policy still contains the obsolete broad U.S. promise');
+assert.ok(!faqContent.includes('contiguous United States'), 'FAQ still contains the obsolete contiguous-only restriction');
+assert.ok(!legalContent.includes('contiguous United States'), 'Policy still contains the obsolete contiguous-only restriction');
 assert.ok(legalContent.includes("'last_updated' => 'August 27, 2026'"), 'Policy last-updated date was not refreshed');
 
-console.log('Contiguous-U.S. shipping copy safeguards verified');
+console.log('Expanded U.S. shipping copy safeguards verified');

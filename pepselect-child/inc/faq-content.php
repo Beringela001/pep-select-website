@@ -90,11 +90,11 @@ function pepselect_child_get_faq_sections() {
 				),
 				array(
 					'question' => __( 'What are the shipping options?', 'pepselect-child' ),
-					'answer'   => __( 'USPS Priority and FedEx (two-day and next-day). FedEx two-day is free on orders with a subtotal of $200 or more. Rates are calculated at checkout.', 'pepselect-child' ),
+					'answer'   => __( 'USPS Priority and FedEx (two-day and next-day). Alaska and Puerto Rico orders ship by USPS only. FedEx two-day is free on eligible orders with a subtotal of $200 or more. Available services and rates are calculated at checkout.', 'pepselect-child' ),
 				),
 				array(
 					'question' => __( 'Where do you ship?', 'pepselect-child' ),
-					'answer'   => __( 'We ship to the contiguous United States (the lower 48 states) and Washington, D.C. We do not ship to Alaska, Hawaii, Puerto Rico, the U.S. Virgin Islands, other U.S. territories, or overseas military addresses.', 'pepselect-child' ),
+					'answer'   => __( 'We ship to all 50 U.S. states, Washington, D.C., and Puerto Rico. Alaska and Puerto Rico orders ship by USPS only. We do not currently ship to the U.S. Virgin Islands, other U.S. territories, or overseas military addresses.', 'pepselect-child' ),
 				),
 				array(
 					'question' => __( 'How do I track my order?', 'pepselect-child' ),
