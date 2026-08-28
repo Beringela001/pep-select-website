@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Pep Select Automatic Free Vials
  * Description: Makes Buy 4 get 1 free add the earned vial before YITH prices the cart.
- * Version:     1.2.0
+ * Version:     1.2.1
  * Author:      Pep Select
  * Text Domain: pepselect-bogo-quantity
  */
@@ -136,10 +136,31 @@ function pepselect_bogo_enqueue_cart_notice_styles() {
 		'pepselect-bogo-cart-notice',
 		plugin_dir_url( __FILE__ ) . 'assets/bogo-cart-notice.css',
 		array(),
-		'1.2.0'
+		'1.2.1'
 	);
 }
 add_action( 'wp_enqueue_scripts', 'pepselect_bogo_enqueue_cart_notice_styles' );
+
+/**
+ * Return the customer-facing promotion message for a physical cart quantity.
+ *
+ * @param int $quantity Physical quantity in the cart.
+ * @return string
+ */
+function pepselect_bogo_notice_text( $quantity ) {
+	$total = max( 1, (int) $quantity );
+	$free  = intdiv( $total, 5 );
+
+	if ( $free < 1 ) {
+		return __( 'Add 5, one is on us.', 'pepselect-bogo-quantity' );
+	}
+
+	return sprintf(
+		/* translators: %d: free vial count. */
+		_n( '%d free vial included', '%d free vials included', $free, 'pepselect-bogo-quantity' ),
+		$free
+	);
+}
 
 /** Add a compact promotion explanation beside eligible cart lines. */
 function pepselect_bogo_item_data( $data, $cart_item ) {
@@ -148,17 +169,7 @@ function pepselect_bogo_item_data( $data, $cart_item ) {
 		return $data;
 	}
 
-	$total = max( 1, (int) $cart_item['quantity'] );
-	$free  = intdiv( $total, 5 );
-	$text  = __( 'Add 5, one is on us.', 'pepselect-bogo-quantity' );
-
-	if ( $free > 0 ) {
-		$text = sprintf(
-			/* translators: %d: free vial count. */
-			_n( '%d free vial included', '%d free vials included', $free, 'pepselect-bogo-quantity' ),
-			$free
-		);
-	}
+	$text   = pepselect_bogo_notice_text( $cart_item['quantity'] );
 	$notice = '<span class="pepselect-bogo-cart-notice">' . esc_html( $text ) . '</span>';
 
 	$data[] = array(
@@ -170,3 +181,28 @@ function pepselect_bogo_item_data( $data, $cart_item ) {
 	return $data;
 }
 add_filter( 'woocommerce_get_item_data', 'pepselect_bogo_item_data', 20, 2 );
+
+/**
+ * Render directly inside Xootix's product summary. Its product-meta setting is
+ * disabled on live, so the standard WooCommerce item-data hook is not printed.
+ *
+ * @param WC_Product $product       Product displayed by Xootix.
+ * @param string     $cart_item_key WooCommerce cart item key.
+ */
+function pepselect_bogo_side_cart_notice( $product, $cart_item_key ) {
+	if ( ! $product instanceof WC_Product || ! function_exists( 'WC' ) || ! WC()->cart ) {
+		return;
+	}
+
+	$cart_item = WC()->cart->get_cart_item( $cart_item_key );
+	$product_id = ! empty( $cart_item['variation_id'] ) ? $cart_item['variation_id'] : ( $cart_item['product_id'] ?? $product->get_id() );
+	if ( empty( $cart_item ) || ! pepselect_bogo_is_eligible( (int) $product_id ) ) {
+		return;
+	}
+
+	printf(
+		'<div class="pepselect-bogo-side-cart-notice"><span class="pepselect-bogo-cart-notice">%s</span></div>',
+		esc_html( pepselect_bogo_notice_text( $cart_item['quantity'] ?? 1 ) )
+	);
+}
+add_action( 'xoo_wsc_product_summary_col_start', 'pepselect_bogo_side_cart_notice', 10, 2 );

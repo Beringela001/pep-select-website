@@ -12,7 +12,7 @@ const noticeCss = fs.readFileSync(
 );
 
 assert.match(plugin, /Plugin Name: Pep Select Automatic Free Vials/);
-assert.match(plugin, /Version:\s+1\.2\.0/);
+assert.match(plugin, /Version:\s+1\.2\.1/);
 assert.match(plugin, /pepselect_bogo_product_add/);
 assert.match(plugin, /woocommerce_before_add_to_cart_button/);
 assert.match(plugin, /woocommerce_add_to_cart_quantity/);
@@ -21,6 +21,9 @@ assert.match(plugin, /woocommerce_add_to_cart/);
 assert.match(plugin, /woocommerce_get_item_data/);
 assert.match(plugin, /pepselect_bogo_replace_added_line_quantity/);
 assert.match(plugin, /pepselect_bogo_enqueue_cart_notice_styles/);
+assert.match(plugin, /pepselect_bogo_notice_text/);
+assert.match(plugin, /xoo_wsc_product_summary_col_start/);
+assert.match(plugin, /pepselect_bogo_side_cart_notice/);
 assert.match(plugin, /Add 5, one is on us\./);
 assert.match(plugin, /pepselect-bogo-cart-notice/);
 assert.match(plugin, /'value'\s*=>\s*\$notice/);
@@ -33,6 +36,7 @@ assert.doesNotMatch(plugin, /inventory:/i);
 assert.match(noticeCss, /\.pepselect-bogo-cart-notice\s*\{\s*display:\s*none;/s);
 assert.match(noticeCss, /body\.woocommerce-cart \.pepselect-bogo-cart-notice/);
 assert.match(noticeCss, /\.xoo-wsc-modal \.pepselect-bogo-cart-notice/);
+assert.match(noticeCss, /\.pepselect-bogo-side-cart-notice/);
 assert.match(noticeCss, /body\.woocommerce-checkout #order_review/);
 assert.match(noticeCss, /body\.woocommerce-checkout \.wc-block-checkout/);
 

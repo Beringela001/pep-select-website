@@ -33,6 +33,21 @@ body.woocommerce-cart .pepselect-bogo-cart-notice,
 	white-space: normal;
 }
 
+.xoo-wsc-modal .pepselect-bogo-side-cart-notice {
+	margin-bottom: 6px;
+}
+
+.xoo-wsc-modal .pepselect-bogo-side-cart-notice .pepselect-bogo-cart-notice {
+	margin-top: 0;
+}
+
+/* If product metadata is enabled later, keep the direct Xootix notice as the
+ * single visible instance. */
+.xoo-wsc-modal dl.variation dt:has(+ dd .pepselect-bogo-cart-notice),
+.xoo-wsc-modal dl.variation dd:has(.pepselect-bogo-cart-notice) {
+	display: none;
+}
+
 body.woocommerce-cart .wc-block-components-product-details__value,
 .xoo-wsc-modal .variation dd {
 	min-width: 0;

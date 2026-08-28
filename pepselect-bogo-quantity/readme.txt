@@ -1,5 +1,5 @@
 === Pep Select Automatic Free Vials ===
-Version: 1.2.0
+Version: 1.2.1
 
 Companion behavior for the live YITH Buy 4 get 1 free rule.
 
@@ -30,3 +30,6 @@ cart and Cart block quantity saves cannot accidentally retrigger it.
 1.2.0 adds a cart-only promotion pill to eligible lines. Before the offer is
 earned it says "Add 5, one is on us." Once earned it confirms the number of
 free vials included. Pricing and quantity behavior are unchanged.
+
+1.2.1 renders the pill through Xootix's product-summary hook so it remains
+visible when Side Cart product metadata is disabled.
