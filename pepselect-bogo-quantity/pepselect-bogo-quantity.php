@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Pep Select Automatic Free Vials
  * Description: Makes Buy 4 get 1 free add the earned vial before YITH prices the cart.
- * Version:     1.2.3
+ * Version:     1.3.0
  * Author:      Pep Select
  * Text Domain: pepselect-bogo-quantity
  */
@@ -136,7 +136,7 @@ function pepselect_bogo_enqueue_cart_notice_styles() {
 		'pepselect-bogo-cart-notice',
 		plugin_dir_url( __FILE__ ) . 'assets/bogo-cart-notice.css',
 		array(),
-		'1.2.3'
+		'1.3.0'
 	);
 }
 add_action( 'wp_enqueue_scripts', 'pepselect_bogo_enqueue_cart_notice_styles' );
@@ -157,10 +157,42 @@ function pepselect_bogo_notice_text( $quantity ) {
 
 	return sprintf(
 		/* translators: %d: free vial count. */
-		_n( '%d free vial included', '%d free vials included', $free, 'pepselect-bogo-quantity' ),
+		_n( '%d free vial added', '%d free vials added', $free, 'pepselect-bogo-quantity' ),
 		$free
 	);
 }
+
+/**
+ * Keep the listed per-vial price truthful when YITH spreads a free vial's
+ * discount across every unit in its formatted cart price.
+ *
+ * @param string $price         Existing formatted unit price.
+ * @param array  $cart_item     WooCommerce cart item.
+ * @param string $cart_item_key WooCommerce cart item key.
+ * @return string
+ */
+function pepselect_bogo_regular_unit_price( $price, $cart_item, $cart_item_key = '' ) {
+	unset( $cart_item_key );
+
+	$product_id = ! empty( $cart_item['variation_id'] ) ? $cart_item['variation_id'] : ( $cart_item['product_id'] ?? 0 );
+	$product    = $cart_item['data'] ?? null;
+	if ( ! $product instanceof WC_Product || ! pepselect_bogo_is_eligible( (int) $product_id ) ) {
+		return $price;
+	}
+
+	$regular_price = (float) $product->get_regular_price();
+	if ( $regular_price <= 0 ) {
+		return $price;
+	}
+
+	return wc_price(
+		wc_get_price_to_display(
+			$product,
+			array( 'price' => $regular_price )
+		)
+	);
+}
+add_filter( 'woocommerce_cart_item_price', 'pepselect_bogo_regular_unit_price', 999, 3 );
 
 /** Add a compact promotion explanation beside eligible cart lines. */
 function pepselect_bogo_item_data( $data, $cart_item ) {

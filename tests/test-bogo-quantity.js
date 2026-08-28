@@ -12,7 +12,7 @@ const noticeCss = fs.readFileSync(
 );
 
 assert.match(plugin, /Plugin Name: Pep Select Automatic Free Vials/);
-assert.match(plugin, /Version:\s+1\.2\.3/);
+assert.match(plugin, /Version:\s+1\.3\.0/);
 assert.match(plugin, /pepselect_bogo_product_add/);
 assert.match(plugin, /woocommerce_before_add_to_cart_button/);
 assert.match(plugin, /woocommerce_add_to_cart_quantity/);
@@ -22,9 +22,12 @@ assert.match(plugin, /woocommerce_get_item_data/);
 assert.match(plugin, /pepselect_bogo_replace_added_line_quantity/);
 assert.match(plugin, /pepselect_bogo_enqueue_cart_notice_styles/);
 assert.match(plugin, /pepselect_bogo_notice_text/);
+assert.match(plugin, /pepselect_bogo_regular_unit_price/);
+assert.match(plugin, /woocommerce_cart_item_price/);
 assert.match(plugin, /xoo_wsc_product_summary_col_start/);
 assert.match(plugin, /pepselect_bogo_side_cart_notice/);
 assert.match(plugin, /Add 5, one is on us\./);
+assert.match(plugin, /%d free vial added/);
 assert.match(plugin, /pepselect-bogo-cart-notice/);
 assert.match(plugin, /'value'\s*=>\s*\$notice/);
 assert.match(plugin, /'display'\s*=>\s*\$notice/);
@@ -42,6 +45,10 @@ assert.match(noticeCss, /\.xoo-wsc-modal \.pepselect-bogo-cart-notice/);
 assert.match(noticeCss, /\.pepselect-bogo-side-cart-notice/);
 assert.match(noticeCss, /body\.woocommerce-checkout #order_review/);
 assert.match(noticeCss, /body\.woocommerce-checkout \.wc-block-checkout/);
+assert.match(noticeCss, /\.ywdpd-sale-badge/);
+assert.match(noticeCss, /\.ywdpd_subtotal_row p/);
+assert.match(noticeCss, /grid-template-areas/);
+assert.match(noticeCss, /\.xoo-wsc-sm-info,/);
 
 for (const sku of ['GLP3R10', 'GLP3R20', 'GLP2T20', 'GLP1S10', 'MOTSC10', 'GHKCU50']) {
   assert.ok(plugin.includes(`'${sku}'`), `missing eligible SKU ${sku}`);

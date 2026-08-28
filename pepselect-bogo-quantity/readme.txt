@@ -1,5 +1,5 @@
 === Pep Select Automatic Free Vials ===
-Version: 1.2.3
+Version: 1.3.0
 
 Companion behavior for the live YITH Buy 4 get 1 free rule.
 
@@ -38,3 +38,7 @@ visible when Side Cart product metadata is disabled.
 full Cart. Side Cart presentation and all pricing behavior are unchanged.
 
 1.2.3 targets the inline product-details markup used by the live Cart block.
+
+1.3.0 simplifies the earned state to "1 free vial added," keeps the regular
+per-vial price, removes duplicate promotion labels, and aligns eligible Side
+Cart details in a stable grid. Savings and line totals remain visible.

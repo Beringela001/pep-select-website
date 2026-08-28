@@ -64,9 +64,103 @@ body.woocommerce-cart dl.variation dd:has(.pepselect-bogo-cart-notice) {
 	margin-left: 0;
 }
 
+/* A free vial does not lower the listed price of every vial. Keep the regular
+ * unit price, while WooCommerce's line savings and final total stay visible. */
+body.woocommerce-cart .wc-block-cart-items__row:has(.pepselect-bogo-cart-notice) .wc-block-cart-item__prices .screen-reader-text,
+body.woocommerce-cart .wc-block-cart-items__row:has(.pepselect-bogo-cart-notice) .wc-block-cart-item__prices ins {
+	display: none;
+}
+
+body.woocommerce-cart .wc-block-cart-items__row:has(.pepselect-bogo-cart-notice) .wc-block-cart-item__prices del {
+	color: inherit;
+	text-decoration: none;
+}
+
+/* The earned-state pill is the single promotion label on both cart surfaces. */
+body.woocommerce-cart .wc-block-cart-items__row:has(.pepselect-bogo-cart-notice) .ywdpd-sale-badge,
+.xoo-wsc-product:has(.pepselect-bogo-cart-notice) .ywdpd_subtotal_row p {
+	display: none;
+}
+
+/* Give eligible Side Cart rows a stable two-column rhythm. Xootix nests the
+ * title, price, controls, savings, and total in separate flex containers;
+ * display: contents lets this one grid align those existing elements. */
+.xoo-wsc-product:has(.pepselect-bogo-cart-notice) .xoo-wsc-sum-col {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) auto;
+	grid-template-areas:
+		"title tools"
+		"price savings"
+		"notice notice"
+		"quantity total";
+	min-width: 0;
+	column-gap: 10px;
+	row-gap: 6px;
+	align-items: center;
+}
+
+.xoo-wsc-product:has(.pepselect-bogo-cart-notice) .xoo-wsc-sm-info,
+.xoo-wsc-product:has(.pepselect-bogo-cart-notice) .xoo-wsc-sm-left,
+.xoo-wsc-product:has(.pepselect-bogo-cart-notice) .xoo-wsc-sm-right {
+	display: contents;
+}
+
+.xoo-wsc-product:has(.pepselect-bogo-cart-notice) .xoo-wsc-pname {
+	grid-area: title;
+	min-width: 0;
+}
+
+.xoo-wsc-product:has(.pepselect-bogo-cart-notice) .xoo-wsc-sm-right-tools {
+	grid-area: tools;
+	justify-self: end;
+}
+
+.xoo-wsc-product:has(.pepselect-bogo-cart-notice) .xoo-wsc-priceBox {
+	grid-area: price;
+	margin: 0;
+}
+
+.xoo-wsc-product:has(.pepselect-bogo-cart-notice) .xoo-wsc-psavings {
+	grid-area: savings;
+	justify-self: end;
+	margin: 0;
+}
+
+.xoo-wsc-product:has(.pepselect-bogo-cart-notice) .pepselect-bogo-side-cart-notice {
+	grid-area: notice;
+	margin: 0;
+}
+
+.xoo-wsc-product:has(.pepselect-bogo-cart-notice) .xoo-wsc-qty-box {
+	grid-area: quantity;
+	margin: 0;
+}
+
+.xoo-wsc-product:has(.pepselect-bogo-cart-notice) .xoo-wsc-smr-ptotal {
+	grid-area: total;
+	justify-self: end;
+	text-align: right;
+}
+
+.xoo-wsc-product:has(.pepselect-bogo-cart-notice) .ywdpd_subtotal_row {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	gap: 2px;
+	line-height: 1.25;
+}
+
+.xoo-wsc-product:has(.pepselect-bogo-cart-notice) .ywdpd_subtotal_row ins {
+	text-decoration: none;
+}
+
 @media (max-width: 480px) {
 	body.woocommerce-cart .pepselect-bogo-cart-notice,
 	.xoo-wsc-modal .pepselect-bogo-cart-notice {
 		font-size: 10px;
+	}
+
+	.xoo-wsc-product:has(.pepselect-bogo-cart-notice) .xoo-wsc-sum-col {
+		column-gap: 8px;
 	}
 }
