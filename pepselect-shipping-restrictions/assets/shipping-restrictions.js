@@ -88,34 +88,49 @@
 		}
 	}
 
-	function updateAddressWarning( prefix ) {
+	function getAddressStatus( prefix ) {
 		var country = document.getElementById( prefix + '_country' );
 		var state = document.getElementById( prefix + '_state' );
 		var postcode = document.getElementById( prefix + '_postcode' );
 		var row = document.getElementById( prefix + '_postcode_field' );
-		var warningId;
-		var warning;
 		var message;
 
 		if ( ! country || ! state || ! postcode || ! row ) {
-			return;
+			return null;
 		}
 
-		warningId = 'pepselect-' + prefix + '-shipping-address-error';
-		warning = document.getElementById( warningId );
 		message = country.value && state.value && postcode.value ? addressError(
 			country.value.toUpperCase(),
 			state.value.toUpperCase(),
 			postcode.value
 		) : '';
 
-		if ( message && ! warning ) {
+		row.classList.toggle( 'pepselect-shipping-area-invalid', Boolean( message ) );
+		postcode.setAttribute( 'aria-invalid', message ? 'true' : 'false' );
+
+		return {
+			message: message,
+			postcode: postcode
+		};
+	}
+
+	function updateWarnings() {
+		var warningId = 'pepselect-shipping-address-error';
+		var billing = getAddressStatus( 'billing' );
+		var shipping = getAddressStatus( 'shipping' );
+		var active = shipping && shipping.message ? shipping : billing;
+		var message = active && active.message ? active.message : '';
+		var target = document.getElementById( 'fc-substep__fields--shipping_method' ) ||
+			document.querySelector( '.fc-shipping-method__packages' );
+		var warning = document.getElementById( warningId );
+
+		if ( message && target && ! warning ) {
 			warning = document.createElement( 'p' );
 			warning.id = warningId;
 			warning.className = 'pepselect-shipping-area-error';
 			warning.setAttribute( 'role', 'alert' );
 			warning.setAttribute( 'aria-live', 'polite' );
-			row.insertBefore( warning, row.firstChild );
+			target.insertBefore( warning, target.firstChild );
 		}
 
 		if ( warning ) {
@@ -123,14 +138,15 @@
 			warning.hidden = ! message;
 		}
 
-		row.classList.toggle( 'pepselect-shipping-area-invalid', Boolean( message ) );
-		postcode.setAttribute( 'aria-invalid', message ? 'true' : 'false' );
-		setDescription( postcode, warningId, Boolean( message ) );
-	}
+		[ billing, shipping ].forEach( function ( status ) {
+			if ( status ) {
+				setDescription( status.postcode, warningId, Boolean( status.message ) );
+			}
+		} );
 
-	function updateWarnings() {
-		updateAddressWarning( 'billing' );
-		updateAddressWarning( 'shipping' );
+		document.querySelectorAll( '.fc-shipping-method__no-shipping-methods' ).forEach( function ( noMethods ) {
+			noMethods.hidden = Boolean( message );
+		} );
 	}
 
 	function queueWarningUpdate() {

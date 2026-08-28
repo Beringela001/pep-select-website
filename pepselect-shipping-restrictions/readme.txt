@@ -2,7 +2,7 @@
 Contributors: pepselect
 Requires at least: 6.5
 Requires PHP: 8.1
-Stable tag: 0.2.2
+Stable tag: 0.2.3
 License: Proprietary
 
 Validates destination addresses and applies destination-specific carrier rules.
@@ -16,6 +16,10 @@ Adds three safeguards:
 * Blocks mismatched Alaska and Hawaii ZIP/state combinations and Puerto Rico ZIP/country combinations.
 
 == Changelog ==
+
+= 0.2.3 =
+* Show one specific destination warning in the Shipping area.
+* Hide WooCommerce's duplicate no-services message while that warning is active.
 
 = 0.2.2 =
 * Add Puerto Rico to the United States State / Territory choices for domestic USPS rating.
