@@ -12,7 +12,7 @@ const noticeCss = fs.readFileSync(
 );
 
 assert.match(plugin, /Plugin Name: Pep Select Automatic Free Vials/);
-assert.match(plugin, /Version:\s+1\.2\.2/);
+assert.match(plugin, /Version:\s+1\.2\.3/);
 assert.match(plugin, /pepselect_bogo_product_add/);
 assert.match(plugin, /woocommerce_before_add_to_cart_button/);
 assert.match(plugin, /woocommerce_add_to_cart_quantity/);
@@ -36,6 +36,7 @@ assert.doesNotMatch(plugin, /inventory:/i);
 assert.match(noticeCss, /\.pepselect-bogo-cart-notice\s*\{\s*display:\s*none;/s);
 assert.match(noticeCss, /body\.woocommerce-cart \.pepselect-bogo-cart-notice/);
 assert.match(noticeCss, /wc-block-components-product-details__name/);
+assert.match(noticeCss, /__name:has\(\+ \.wc-block-components-product-details__value/);
 assert.match(noticeCss, /body\.woocommerce-cart dl\.variation dt:has/);
 assert.match(noticeCss, /\.xoo-wsc-modal \.pepselect-bogo-cart-notice/);
 assert.match(noticeCss, /\.pepselect-bogo-side-cart-notice/);

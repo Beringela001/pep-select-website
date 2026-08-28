@@ -55,7 +55,7 @@ body.woocommerce-cart .wc-block-components-product-details__value,
 
 /* The pill already communicates the offer. Remove WooCommerce's generated
  * metadata label on the full Cart so the message is not repeated. */
-body.woocommerce-cart .wc-block-components-product-details > li:has(.pepselect-bogo-cart-notice) > .wc-block-components-product-details__name,
+body.woocommerce-cart .wc-block-components-product-details__name:has(+ .wc-block-components-product-details__value .pepselect-bogo-cart-notice),
 body.woocommerce-cart dl.variation dt:has(+ dd .pepselect-bogo-cart-notice) {
 	display: none;
 }
