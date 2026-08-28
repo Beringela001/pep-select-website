@@ -1,0 +1,46 @@
+/**
+ * Buy 4 get 1 cart notice.
+ * Hidden by default so the promotion stays limited to the full cart and the
+ * Xootix drawer even though WooCommerce shares item metadata with checkout.
+ */
+.pepselect-bogo-cart-notice {
+	display: none;
+}
+
+/* WooCommerce can reuse cart item metadata in checkout. Remove only this
+ * promotion row there; other product metadata remains available. */
+body.woocommerce-checkout #order_review dl.variation dt:has(+ dd .pepselect-bogo-cart-notice),
+body.woocommerce-checkout #order_review dl.variation dd:has(.pepselect-bogo-cart-notice),
+body.woocommerce-checkout .wc-block-checkout .wc-block-components-product-details > li:has(.pepselect-bogo-cart-notice) {
+	display: none;
+}
+
+body.woocommerce-cart .pepselect-bogo-cart-notice,
+.xoo-wsc-modal .pepselect-bogo-cart-notice {
+	display: inline-flex;
+	align-items: center;
+	max-width: 100%;
+	margin-top: 4px;
+	padding: 3px 8px;
+	border: 1px solid #B8DDEB;
+	border-radius: 999px;
+	background: #EFF9FC;
+	color: #0A4E6A;
+	font-family: "Plus Jakarta Sans", sans-serif;
+	font-size: 11px;
+	font-weight: 700;
+	line-height: 1.35;
+	white-space: normal;
+}
+
+body.woocommerce-cart .wc-block-components-product-details__value,
+.xoo-wsc-modal .variation dd {
+	min-width: 0;
+}
+
+@media (max-width: 480px) {
+	body.woocommerce-cart .pepselect-bogo-cart-notice,
+	.xoo-wsc-modal .pepselect-bogo-cart-notice {
+		font-size: 10px;
+	}
+}

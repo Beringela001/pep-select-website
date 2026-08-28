@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Pep Select Automatic Free Vials
  * Description: Makes Buy 4 get 1 free add the earned vial before YITH prices the cart.
- * Version:     1.1.2
+ * Version:     1.2.0
  * Author:      Pep Select
  * Text Domain: pepselect-bogo-quantity
  */
@@ -120,7 +120,28 @@ function pepselect_bogo_replace_added_line_quantity( $cart_item_key, $product_id
 }
 add_action( 'woocommerce_add_to_cart', 'pepselect_bogo_replace_added_line_quantity', 5, 6 );
 
-/** Add an explicit explanation beside the cart/order line. */
+/**
+ * Load the cart-only promotion-pill styles.
+ *
+ * The stylesheet hides the marker by default, then reveals it only inside the
+ * full Cart page or the Xootix side cart. Checkout and order surfaces retain
+ * their existing presentation.
+ */
+function pepselect_bogo_enqueue_cart_notice_styles() {
+	if ( is_admin() && ! wp_doing_ajax() ) {
+		return;
+	}
+
+	wp_enqueue_style(
+		'pepselect-bogo-cart-notice',
+		plugin_dir_url( __FILE__ ) . 'assets/bogo-cart-notice.css',
+		array(),
+		'1.2.0'
+	);
+}
+add_action( 'wp_enqueue_scripts', 'pepselect_bogo_enqueue_cart_notice_styles' );
+
+/** Add a compact promotion explanation beside eligible cart lines. */
 function pepselect_bogo_item_data( $data, $cart_item ) {
 	$product_id = ! empty( $cart_item['variation_id'] ) ? $cart_item['variation_id'] : $cart_item['product_id'];
 	if ( ! pepselect_bogo_is_eligible( (int) $product_id ) ) {
@@ -129,16 +150,22 @@ function pepselect_bogo_item_data( $data, $cart_item ) {
 
 	$total = max( 1, (int) $cart_item['quantity'] );
 	$free  = intdiv( $total, 5 );
+	$text  = __( 'Add 5, one is on us.', 'pepselect-bogo-quantity' );
+
 	if ( $free > 0 ) {
-		$data[] = array(
-			'key'   => __( 'Buy 4 get 1 free', 'pepselect-bogo-quantity' ),
-			'value' => sprintf(
-				/* translators: %d: free vial count. */
-				_n( '%d free vial included', '%d free vials included', $free, 'pepselect-bogo-quantity' ),
-				$free
-			),
+		$text = sprintf(
+			/* translators: %d: free vial count. */
+			_n( '%d free vial included', '%d free vials included', $free, 'pepselect-bogo-quantity' ),
+			$free
 		);
 	}
+	$notice = '<span class="pepselect-bogo-cart-notice">' . esc_html( $text ) . '</span>';
+
+	$data[] = array(
+		'key'     => __( 'Buy 4 get 1 free', 'pepselect-bogo-quantity' ),
+		'value'   => $notice,
+		'display' => $notice,
+	);
 
 	return $data;
 }
