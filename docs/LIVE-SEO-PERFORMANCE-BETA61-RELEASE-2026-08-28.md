@@ -1,5 +1,10 @@
 # Live SEO Performance Release — beta61 — 2026-08-28
 
+> **Later repeat-run correction:** the mobile 85 result below was a single fast
+> lab run, not the stable score. Two immediate repeat samples scored 65 and 66
+> with 6.6 s and 6.5 s LCP. The subsequent beta62 image release and three-run
+> evidence are recorded in `LIVE-SEO-IMAGE-BETA62-RELEASE-2026-08-28.md`.
+
 ## Outcome
 
 Pep Select `0.25.0-beta.61` was released to Live after a full Live-to-Staging
@@ -48,7 +53,7 @@ lab results; Google reports no field-data sample for the origin.
 
 | URL | Desktop | Mobile | Desktop LCP / TBT | Mobile LCP / TBT | Fresh report |
 |---|---:|---:|---:|---:|---|
-| Home | **98** | **85** | 1.0 s / 10 ms | 3.3 s / 20 ms | [Google PSI](https://pagespeed.web.dev/analysis/https-pepselect-com/rs0ub5phbv?form_factor=desktop) |
+| Home | **98** | **85 (single fast run)** | 1.0 s / 10 ms | 3.3 s / 20 ms | [Google PSI](https://pagespeed.web.dev/analysis/https-pepselect-com/rs0ub5phbv?form_factor=desktop) |
 | Shop | **92** | **76** | 1.3 s / 130 ms | 4.7 s / 90 ms | [Google PSI](https://pagespeed.web.dev/analysis/https-pepselect-com-shop/m5l91ifzf5?form_factor=desktop) |
 | GHK-Cu product | **94** | **79** | 1.0 s / 160 ms | 4.5 s / 80 ms | [Google PSI](https://pagespeed.web.dev/analysis/https-pepselect-com-product-ghk-cu/hck1v60g25?form_factor=desktop) |
 
@@ -72,4 +77,3 @@ than JavaScript execution: 20 ms TBT, 3.3 s LCP, and 0.084 CLS. Google lists
 render-blocking styles/fonts and 123 KiB of image-delivery savings. Further image
 or font changes may affect visual assets or visual rendering and were not made
 under the current approval boundary.
-
