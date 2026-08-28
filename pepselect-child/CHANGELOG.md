@@ -1,6 +1,14 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.60** - Stop unused Site Kit AdSense advertising payloads.
+**Release candidate: 0.25.0-beta.61** - Cover Elementor 4.1 generated stylesheet handles.
+
+## 0.25.0-beta.61 - 2026-08-28
+
+- Remove Elementor-generated upload styles by their verified `/uploads/elementor/css/` source path on the fully coded performance templates.
+- Cover Elementor 4.1 handles such as `base-desktop` and `local-79-frontend-*` that do not use the historical `elementor-post-*` prefix.
+- Preserve Elementor editor and preview requests and leave all non-audited templates unchanged.
+
+**Previous release candidate: 0.25.0-beta.60** - Stop unused Site Kit AdSense advertising payloads.
 
 ## 0.25.0-beta.60 - 2026-08-28
 

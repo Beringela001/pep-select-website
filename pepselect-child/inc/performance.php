@@ -84,7 +84,7 @@ function pepselect_child_is_elementor_frontend_asset( $handle, $src ) {
 
 	return false !== strpos( $src, '/plugins/elementor/' )
 		|| false !== strpos( $src, '/plugins/elementor-pro/' )
-		|| ( 0 === strpos( (string) $handle, 'elementor-post-' ) && false !== strpos( $src, '/uploads/elementor/css/' ) );
+		|| false !== strpos( $src, '/uploads/elementor/css/' );
 }
 
 /**

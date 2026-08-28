@@ -56,7 +56,8 @@ assert.ok(!performanceFile.includes("googlesitekit_analytics_tag_blocked"));
 assert.ok(!performanceFile.includes("googlesitekit_tagmanager_tag_blocked"));
 assert.ok(performanceFile.includes("'/plugins/elementor/'"));
 assert.ok(performanceFile.includes("'/plugins/elementor-pro/'"));
-assert.ok(performanceFile.includes("'elementor-post-'"));
+assert.ok(performanceFile.includes("'/uploads/elementor/css/'"));
+assert.ok(!performanceFile.includes("0 === strpos( (string) $handle, 'elementor-post-'"));
 [
 	'jquery-blockui',
 	'js-cookie',
