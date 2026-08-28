@@ -1,5 +1,5 @@
 === Pep Select BOGO Cart Experience ===
-Version: 1.4.0
+Version: 1.5.0
 
 Companion behavior for the live YITH Buy 4 get 1 free rule.
 
@@ -46,3 +46,7 @@ Cart details in a stable grid. Savings and line totals remain visible.
 1.4.0 removes automatic quantity expansion and replacement. Product, Side Cart,
 and Cart inputs now keep 5 as 5, 8 as 8, 9 as 9, and 10 as 10 while YITH alone
 calculates the earned free-vial discount.
+
+1.5.0 reduces the Side Cart summary to one "Estimated total," removes its
+duplicate green savings treatments and shipping/address output, and leaves the
+full Cart savings presentation unchanged.

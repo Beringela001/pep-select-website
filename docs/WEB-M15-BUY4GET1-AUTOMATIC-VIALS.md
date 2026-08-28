@@ -14,7 +14,7 @@ physical vials receive two free-vial discounts.
 
 ## Eligibility
 
-Version 1.4.0 mirrors the products selected in rule 1209 by SKU:
+Version 1.5.0 mirrors the products selected in rule 1209 by SKU:
 GLP3R10, GLP3R20, GLP2T20, GLP1S10, MOTSC10, and GHKCU50.
 
 When rule 1209 eligibility changes, update `pepselect_bogo_skus()` in the same

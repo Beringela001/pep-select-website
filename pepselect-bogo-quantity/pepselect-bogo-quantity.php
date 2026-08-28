@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Pep Select BOGO Cart Experience
  * Description: Keeps Buy 4 get 1 quantities literal and explains earned free vials in Cart and Side Cart.
- * Version:     1.4.0
+ * Version:     1.5.0
  * Author:      Pep Select
  * Text Domain: pepselect-bogo-quantity
  */
@@ -61,7 +61,7 @@ function pepselect_bogo_enqueue_cart_notice_styles() {
 		'pepselect-bogo-cart-notice',
 		plugin_dir_url( __FILE__ ) . 'assets/bogo-cart-notice.css',
 		array(),
-		'1.4.0'
+		'1.5.0'
 	);
 }
 add_action( 'wp_enqueue_scripts', 'pepselect_bogo_enqueue_cart_notice_styles' );
@@ -118,6 +118,36 @@ function pepselect_bogo_regular_unit_price( $price, $cart_item, $cart_item_key =
 	);
 }
 add_filter( 'woocommerce_cart_item_price', 'pepselect_bogo_regular_unit_price', 999, 3 );
+
+/**
+ * Reduce the Xootix footer to the single decision-driving number used by the
+ * full Cart: an estimated total. Shipping remains calculated at checkout.
+ *
+ * @param array $totals Xootix footer totals.
+ * @return array
+ */
+function pepselect_bogo_simplify_side_cart_totals( $totals ) {
+	if ( empty( $totals['total'] ) ) {
+		return $totals;
+	}
+
+	$total          = $totals['total'];
+	$total['label'] = __( 'Estimated total', 'pepselect-bogo-quantity' );
+
+	return array( 'total' => $total );
+}
+add_filter( 'xoo_wsc_cart_totals', 'pepselect_bogo_simplify_side_cart_totals', 999 );
+
+/** Remove Xootix's separate shipping/checkout disclaimer from the footer. */
+function pepselect_bogo_simplify_side_cart_footer( $args ) {
+	if ( array_key_exists( 'footerTxt', $args ) ) {
+		$args['footerTxt']     = '';
+		$args['showFooterTxt'] = false;
+	}
+
+	return $args;
+}
+add_filter( 'xoo_wsc_cart_header_args', 'pepselect_bogo_simplify_side_cart_footer', 999 );
 
 /** Add a compact promotion explanation beside eligible cart lines. */
 function pepselect_bogo_item_data( $data, $cart_item ) {

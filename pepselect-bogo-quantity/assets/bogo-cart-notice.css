@@ -90,7 +90,7 @@ body.woocommerce-cart .wc-block-cart-items__row:has(.pepselect-bogo-cart-notice)
 	grid-template-columns: minmax(0, 1fr) auto;
 	grid-template-areas:
 		"title tools"
-		"price savings"
+		"price price"
 		"notice notice"
 		"quantity total";
 	min-width: 0;
@@ -121,9 +121,7 @@ body.woocommerce-cart .wc-block-cart-items__row:has(.pepselect-bogo-cart-notice)
 }
 
 .xoo-wsc-product:has(.pepselect-bogo-cart-notice) .xoo-wsc-psavings {
-	grid-area: savings;
-	justify-self: end;
-	margin: 0;
+	display: none;
 }
 
 .xoo-wsc-product:has(.pepselect-bogo-cart-notice) .pepselect-bogo-side-cart-notice {
