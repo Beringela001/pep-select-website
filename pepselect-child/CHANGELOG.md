@@ -1,6 +1,16 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.58** - Align Puerto Rico checkout with domestic USPS rating.
+**Release candidate: 0.25.0-beta.59** - Remove unused template assets and right-size global logo delivery.
+
+## 0.25.0-beta.59 - 2026-08-28
+
+- Stop loading Elementor front-end CSS and JavaScript on the fully coded Home, Shop, product, and Quality Archive templates while preserving Elementor editor and preview requests.
+- Remove the orphaned Elementor bundle that logs `elementorFrontendConfig is not defined` on those templates.
+- Defer verified non-critical WooCommerce and theme helpers without removing their catalog or side-cart behavior.
+- Replace the 1,400 px header and footer logo transfers with visually identical 448 px lossless WebP assets sized for their largest 2x rendered use, reducing those two responses by about 146 KB.
+- Preserve Site Kit analytics and AdSense unchanged pending an explicit business decision about their storefront role.
+
+**Previous release candidate: 0.25.0-beta.58** - Align Puerto Rico checkout with domestic USPS rating.
 
 ## 0.25.0-beta.58 - 2026-08-27
 

@@ -6,6 +6,15 @@ const performanceFile = fs.readFileSync(
 	path.join(__dirname, '..', 'pepselect-child', 'inc', 'performance.php'),
 	'utf8'
 );
+const headerPreviewFile = fs.readFileSync(
+	path.join(__dirname, '..', 'pepselect-child', 'inc', 'header-preview.php'),
+	'utf8'
+);
+const footerPreviewFile = fs.readFileSync(
+	path.join(__dirname, '..', 'pepselect-child', 'inc', 'footer-preview.php'),
+	'utf8'
+);
+const brandAssetDirectory = path.join(__dirname, '..', 'pepselect-child', 'assets', 'images', 'brand');
 
 [
 	'ywpar-blocks-style',
@@ -39,7 +48,29 @@ assert.ok(performanceFile.includes("add_filter( 'wp_resource_hints', 'pepselect_
 assert.ok(performanceFile.includes("add_action( 'wp_print_styles', 'pepselect_child_optimize_seo_template_assets', 997 )"));
 assert.ok(performanceFile.includes("add_action( 'wp_print_styles', 'pepselect_child_consolidate_google_fonts', 998 )"));
 assert.ok(performanceFile.includes("add_action( 'wp_print_styles', 'pepselect_child_inline_shell_styles', 999 )"));
+assert.ok(performanceFile.includes("add_action( 'wp_print_styles', 'pepselect_child_remove_elementor_styles', 996 )"));
+assert.ok(performanceFile.includes("add_action( 'wp_print_footer_scripts', 'pepselect_child_remove_elementor_scripts', 1 )"));
+assert.ok(performanceFile.includes("'/plugins/elementor/'"));
+assert.ok(performanceFile.includes("'/plugins/elementor-pro/'"));
+assert.ok(performanceFile.includes("'elementor-post-'"));
+[
+	'jquery-blockui',
+	'js-cookie',
+	'underscore',
+	'wp-util',
+	'woocommerce',
+	'hello-theme-frontend',
+	'sourcebuster-js',
+	'wc-order-attribution',
+	'pepselect-cart-recovery',
+].forEach((handle) => assert.ok(performanceFile.includes(`'${handle}'`), `missing defer strategy for ${handle}`));
 assert.ok(!performanceFile.includes("wp_dequeue_script( 'jquery'"));
 assert.ok(!performanceFile.includes("wp_deregister_script( 'jquery'"));
+assert.ok(headerPreviewFile.includes('pep-select-logo-header-448.webp'));
+assert.ok(headerPreviewFile.includes('width="448" height="96"'));
+assert.ok(footerPreviewFile.includes('pep-select-logo-footer-448.webp'));
+assert.ok(footerPreviewFile.includes('width="448" height="95"'));
+assert.ok(fs.statSync(path.join(brandAssetDirectory, 'pep-select-logo-header-448.webp')).size < 30000);
+assert.ok(fs.statSync(path.join(brandAssetDirectory, 'pep-select-logo-footer-448.webp')).size < 20000);
 
 console.log('performance asset safeguards verified');

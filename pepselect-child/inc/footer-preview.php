@@ -97,10 +97,10 @@ function pepselect_child_render_footer_preview() {
  * @return string
  */
 function pepselect_child_get_footer_logo_html() {
-	$logo_url = trailingslashit( get_stylesheet_directory_uri() ) . 'assets/images/brand/pep-select-logo-footer.png';
+	$logo_url = trailingslashit( get_stylesheet_directory_uri() ) . 'assets/images/brand/pep-select-logo-footer-448.webp';
 
 	return sprintf(
-		'<img width="1407" height="299" src="%1$s" class="pepselect-footer__logo-image" alt="%2$s" decoding="async" loading="lazy">',
+		'<img width="448" height="95" src="%1$s" class="pepselect-footer__logo-image" alt="%2$s" decoding="async" loading="lazy">',
 		esc_url( $logo_url ),
 		esc_attr( get_bloginfo( 'name' ) )
 	);

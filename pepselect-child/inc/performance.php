@@ -41,6 +41,124 @@ function pepselect_child_is_seo_performance_template() {
 }
 
 /**
+ * Return whether performance cleanup may replace Elementor front-end assets.
+ *
+ * The audited Home, Shop, product, and Quality Archive templates are rendered
+ * by the child theme or the COA plugin. Elementor remains available in its
+ * editor and preview requests, where its runtime assets are required.
+ *
+ * @return bool
+ */
+function pepselect_child_can_remove_elementor_assets() {
+	if ( ! pepselect_child_is_seo_performance_template() ) {
+		return false;
+	}
+
+	return ! function_exists( 'pepselect_child_is_elementor_editor_request' )
+		|| ! pepselect_child_is_elementor_editor_request();
+}
+
+/**
+ * Return whether a registered asset belongs to Elementor's front-end runtime.
+ *
+ * @param string $handle Registered WordPress asset handle.
+ * @param string $src    Registered asset source URL or path.
+ * @return bool
+ */
+function pepselect_child_is_elementor_frontend_asset( $handle, $src ) {
+	$src = (string) $src;
+
+	return false !== strpos( $src, '/plugins/elementor/' )
+		|| false !== strpos( $src, '/plugins/elementor-pro/' )
+		|| ( 0 === strpos( (string) $handle, 'elementor-post-' ) && false !== strpos( $src, '/uploads/elementor/css/' ) );
+}
+
+/**
+ * Remove unused Elementor styles from fully coded audited templates.
+ *
+ * @return void
+ */
+function pepselect_child_remove_elementor_styles() {
+	global $wp_styles;
+
+	if ( is_admin() || ! pepselect_child_can_remove_elementor_assets() || ! $wp_styles instanceof WP_Styles ) {
+		return;
+	}
+
+	foreach ( $wp_styles->registered as $handle => $asset ) {
+		if ( ! pepselect_child_is_elementor_frontend_asset( $handle, $asset->src ) ) {
+			continue;
+		}
+
+		wp_dequeue_style( $handle );
+		wp_deregister_style( $handle );
+	}
+}
+add_action( 'wp_print_styles', 'pepselect_child_remove_elementor_styles', 996 );
+
+/**
+ * Remove unused Elementor scripts from fully coded audited templates.
+ *
+ * This also removes the orphaned frontend bundle currently logging
+ * `elementorFrontendConfig is not defined` in Lighthouse.
+ *
+ * @return void
+ */
+function pepselect_child_remove_elementor_scripts() {
+	global $wp_scripts;
+
+	if ( is_admin() || ! pepselect_child_can_remove_elementor_assets() || ! $wp_scripts instanceof WP_Scripts ) {
+		return;
+	}
+
+	foreach ( $wp_scripts->registered as $handle => $asset ) {
+		if ( ! pepselect_child_is_elementor_frontend_asset( $handle, $asset->src ) ) {
+			continue;
+		}
+
+		wp_dequeue_script( $handle );
+		wp_deregister_script( $handle );
+	}
+}
+add_action( 'wp_print_scripts', 'pepselect_child_remove_elementor_scripts', 996 );
+add_action( 'wp_print_footer_scripts', 'pepselect_child_remove_elementor_scripts', 1 );
+
+/**
+ * Defer non-critical helpers while preserving their dependency order.
+ *
+ * Checkout and account requests are outside this template boundary. These
+ * handles remain loaded on catalog templates for commerce behavior, but no
+ * longer block their first paint.
+ *
+ * @return void
+ */
+function pepselect_child_defer_seo_template_scripts() {
+	if ( is_admin() || ! pepselect_child_is_seo_performance_template() ) {
+		return;
+	}
+
+	$deferred_handles = array(
+		'jquery-blockui',
+		'js-cookie',
+		'underscore',
+		'wp-util',
+		'woocommerce',
+		'hello-theme-frontend',
+		'sourcebuster-js',
+		'wc-order-attribution',
+		'pepselect-cart-recovery',
+	);
+
+	foreach ( $deferred_handles as $script_handle ) {
+		if ( wp_script_is( $script_handle, 'registered' ) ) {
+			wp_script_add_data( $script_handle, 'strategy', 'defer' );
+		}
+	}
+}
+add_action( 'wp_enqueue_scripts', 'pepselect_child_defer_seo_template_scripts', 999 );
+add_action( 'wp_print_scripts', 'pepselect_child_defer_seo_template_scripts', 995 );
+
+/**
  * Return stylesheet handles verified unused on the Quality Archive.
  *
  * @return string[]
