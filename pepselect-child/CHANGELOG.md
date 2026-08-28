@@ -1,6 +1,14 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.61** - Cover Elementor 4.1 generated stylesheet handles.
+**Release candidate: 0.25.0-beta.62** - Reduce logo transfer cost without changing the artwork.
+
+## 0.25.0-beta.62 - 2026-08-28
+
+- Add a responsive 320 px header-logo source while retaining the 448 px source for wider and high-density displays.
+- Re-encode the 448 px WebP header logo from the original PNG at high quality, reducing its transfer size without changing its dimensions or layout.
+- Preserve the existing eager/high-priority header behavior, intrinsic aspect ratio, alt text, and visual design.
+
+**Previous release candidate: 0.25.0-beta.61** - Cover Elementor 4.1 generated stylesheet handles.
 
 ## 0.25.0-beta.61 - 2026-08-28
 

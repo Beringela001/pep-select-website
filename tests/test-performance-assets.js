@@ -15,6 +15,7 @@ const footerPreviewFile = fs.readFileSync(
 	'utf8'
 );
 const brandAssetDirectory = path.join(__dirname, '..', 'pepselect-child', 'assets', 'images', 'brand');
+const accessGateLogo = path.join(__dirname, '..', 'ps-access-gate', 'assets', 'pep-select-logo.png');
 
 [
 	'ywpar-blocks-style',
@@ -72,10 +73,15 @@ assert.ok(!performanceFile.includes("0 === strpos( (string) $handle, 'elementor-
 assert.ok(!performanceFile.includes("wp_dequeue_script( 'jquery'"));
 assert.ok(!performanceFile.includes("wp_deregister_script( 'jquery'"));
 assert.ok(headerPreviewFile.includes('pep-select-logo-header-448.webp'));
+assert.ok(headerPreviewFile.includes('pep-select-logo-header-320.webp'));
+assert.ok(headerPreviewFile.includes('srcset="%2$s 320w, %1$s 448w"'));
+assert.ok(headerPreviewFile.includes('sizes="(max-width: 767px) 252px, 224px"'));
 assert.ok(headerPreviewFile.includes('width="448" height="96"'));
 assert.ok(footerPreviewFile.includes('pep-select-logo-footer-448.webp'));
 assert.ok(footerPreviewFile.includes('width="448" height="95"'));
 assert.ok(fs.statSync(path.join(brandAssetDirectory, 'pep-select-logo-header-448.webp')).size < 30000);
+assert.ok(fs.statSync(path.join(brandAssetDirectory, 'pep-select-logo-header-320.webp')).size < 18000);
 assert.ok(fs.statSync(path.join(brandAssetDirectory, 'pep-select-logo-footer-448.webp')).size < 20000);
+assert.ok(fs.statSync(accessGateLogo).size < 25000);
 
 console.log('performance asset safeguards verified');

@@ -247,11 +247,14 @@ function pepselect_child_render_header_preview() {
  * @return string
  */
 function pepselect_child_get_header_logo_html() {
-	$logo_url = trailingslashit( get_stylesheet_directory_uri() ) . 'assets/images/brand/pep-select-logo-header-448.webp';
+	$brand_uri       = trailingslashit( get_stylesheet_directory_uri() ) . 'assets/images/brand/';
+	$logo_url        = $brand_uri . 'pep-select-logo-header-448.webp';
+	$logo_mobile_url = $brand_uri . 'pep-select-logo-header-320.webp';
 
 	return sprintf(
-		'<img width="448" height="96" src="%1$s" class="pepselect-header__logo-image" alt="%2$s" decoding="async" fetchpriority="high" loading="eager">',
+		'<img width="448" height="96" src="%1$s" srcset="%2$s 320w, %1$s 448w" sizes="(max-width: 767px) 252px, 224px" class="pepselect-header__logo-image" alt="%3$s" decoding="async" fetchpriority="high" loading="eager">',
 		esc_url( $logo_url ),
+		esc_url( $logo_mobile_url ),
 		esc_attr( get_bloginfo( 'name' ) )
 	);
 }
