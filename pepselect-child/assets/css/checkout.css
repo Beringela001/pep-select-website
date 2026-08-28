@@ -89,13 +89,6 @@ button#place_order.fc-place-order-button {
 	color: var(--pep-color-navy) !important;
 }
 
-/* US-only checkout: preserve the country controls and their submitted US value
-   for tax, shipping, and order data, but do not show a redundant one-option row. */
-.woocommerce-checkout #billing_country_field,
-.woocommerce-checkout #shipping_country_field {
-	display: none !important;
-}
-
 /* Defensive fallback for cached/plugin-generated markup. The PHP field filter
    removes this before Fluid Checkout renders it on a current page response. */
 .woocommerce-checkout .fc-expansible-form-section:has(input[name="yith_birthday"]),

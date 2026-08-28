@@ -1,6 +1,13 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.56** - Correct Puerto Rico address entry and shipping calculation.
+**Release candidate: 0.25.0-beta.57** - Show Country / Region for Puerto Rico checkout.
+
+## 0.25.0-beta.57 - 2026-08-27
+
+- Restore the checkout Country / Region field now that Puerto Rico is an eligible destination.
+- Let shoppers choose United States or Puerto Rico before checkout calculates state, tax, and carrier rates.
+
+**Previous release candidate: 0.25.0-beta.56** - Correct Puerto Rico address entry and shipping calculation.
 
 ## 0.25.0-beta.56 - 2026-08-27
 

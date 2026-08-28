@@ -10,6 +10,10 @@ const legalContent = fs.readFileSync(
 	path.join(__dirname, '..', 'pepselect-child', 'inc', 'legal-content.php'),
 	'utf8'
 );
+const checkoutCss = fs.readFileSync(
+	path.join(__dirname, '..', 'pepselect-child', 'assets', 'css', 'checkout.css'),
+	'utf8'
+);
 
 for (const [surface, source] of [['FAQ', faqContent], ['Refund & Shipping Policy', legalContent]]) {
 	assert.ok(
@@ -34,6 +38,7 @@ for (const [surface, source] of [['FAQ', faqContent], ['Refund & Shipping Policy
 
 assert.ok(!faqContent.includes('contiguous United States'), 'FAQ still contains the obsolete contiguous-only restriction');
 assert.ok(!legalContent.includes('contiguous United States'), 'Policy still contains the obsolete contiguous-only restriction');
+assert.ok(!checkoutCss.includes('#shipping_country_field'), 'Checkout still hides the Country / Region field');
 assert.ok(legalContent.includes("'last_updated' => 'August 27, 2026'"), 'Policy last-updated date was not refreshed');
 
 console.log('Expanded U.S. shipping copy safeguards verified');
