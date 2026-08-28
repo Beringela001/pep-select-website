@@ -2,7 +2,7 @@
 Contributors: pepselect
 Requires at least: 6.5
 Requires PHP: 8.1
-Stable tag: 0.1.1
+Stable tag: 0.1.2
 License: Proprietary
 
 Restricts checkout shipping to the contiguous 48 states and Washington, D.C.
@@ -16,6 +16,9 @@ Adds three safeguards:
 * Shows an accessible inline warning above the ZIP field.
 
 == Changelog ==
+
+= 0.1.2 =
+* Clear cached shipping rates before recalculating an excluded checkout address.
 
 = 0.1.1 =
 * Preserve the accessible invalid state after checkout recalculates shipping.

@@ -36,6 +36,7 @@ final class PepSelect_Shipping_Restrictions {
 
 	public function boot(): void {
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
+		add_action( 'woocommerce_checkout_update_order_review', array( $this, 'clear_excluded_address_rate_cache' ), 5 );
 		add_action( 'woocommerce_after_checkout_validation', array( $this, 'validate_checkout' ), 20, 2 );
 		add_filter( 'woocommerce_package_rates', array( $this, 'filter_package_rates' ), 100, 2 );
 	}
@@ -98,6 +99,24 @@ final class PepSelect_Shipping_Restrictions {
 	}
 
 	/**
+	 * Invalidate cached allowed rates before WooCommerce recalculates an excluded address.
+	 *
+	 * @param string $posted_data Serialized checkout fields.
+	 */
+	public function clear_excluded_address_rate_cache( string $posted_data ): void {
+		$data = array();
+		wp_parse_str( $posted_data, $data );
+
+		if ( ! self::checkout_data_is_excluded( $data ) || ! function_exists( 'WC' ) || ! WC()->session || ! WC()->cart ) {
+			return;
+		}
+
+		foreach ( array_keys( WC()->cart->get_shipping_packages() ) as $package_key ) {
+			WC()->session->__unset( 'shipping_for_package_' . $package_key );
+		}
+	}
+
+	/**
 	 * Remove every rate for an excluded destination, including cart estimates.
 	 *
 	 * @param array $rates   Available rates.
@@ -132,6 +151,19 @@ final class PepSelect_Shipping_Restrictions {
 		return 'US' === strtoupper( trim( $country ) )
 			&& self::state_is_allowed( $state )
 			&& ! self::postcode_is_excluded( $postcode );
+	}
+
+	public static function checkout_data_is_excluded( array $data ): bool {
+		$prefix   = ! empty( $data['ship_to_different_address'] ) ? 'shipping' : 'billing';
+		$country  = is_scalar( $data[ $prefix . '_country' ] ?? null ) ? (string) $data[ $prefix . '_country' ] : '';
+		$state    = is_scalar( $data[ $prefix . '_state' ] ?? null ) ? (string) $data[ $prefix . '_state' ] : '';
+		$postcode = is_scalar( $data[ $prefix . '_postcode' ] ?? null ) ? (string) $data[ $prefix . '_postcode' ] : '';
+
+		if ( '' === trim( $country ) || '' === trim( $state ) || '' === trim( $postcode ) ) {
+			return false;
+		}
+
+		return ! self::address_is_allowed( $country, $state, $postcode );
 	}
 
 	public static function state_is_allowed( string $state ): bool {

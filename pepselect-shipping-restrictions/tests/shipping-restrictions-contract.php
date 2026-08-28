@@ -20,6 +20,27 @@ pepselect_shipping_assert( ! PepSelect_Shipping_Restrictions::address_is_allowed
 pepselect_shipping_assert( ! PepSelect_Shipping_Restrictions::address_is_allowed( 'US', 'FL', '00802-1234' ), 'U.S. Virgin Islands ZIP should fail.' );
 pepselect_shipping_assert( ! PepSelect_Shipping_Restrictions::address_is_allowed( 'US', 'CA', '96201' ), 'Overseas military ZIP should fail.' );
 pepselect_shipping_assert( ! PepSelect_Shipping_Restrictions::address_is_allowed( 'US', 'CA', '96910' ), 'Pacific territory ZIP should fail.' );
+pepselect_shipping_assert(
+	PepSelect_Shipping_Restrictions::checkout_data_is_excluded(
+		array(
+			'ship_to_different_address' => '1',
+			'shipping_country'           => 'US',
+			'shipping_state'             => 'FL',
+			'shipping_postcode'          => '00901',
+		)
+	),
+	'Fluid Checkout shipping fields should detect an excluded ZIP.'
+);
+pepselect_shipping_assert(
+	! PepSelect_Shipping_Restrictions::checkout_data_is_excluded(
+		array(
+			'billing_country'  => 'US',
+			'billing_state'    => 'NY',
+			'billing_postcode' => '10001',
+		)
+	),
+	'Billing-address checkout should allow a lower-48 ZIP.'
+);
 
 $restriction = PepSelect_Shipping_Restrictions::instance();
 $rates       = array( 'free_shipping:1' => 'free', 'easyship:2' => 'easyship' );
