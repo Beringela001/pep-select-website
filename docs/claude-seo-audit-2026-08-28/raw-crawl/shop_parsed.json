@@ -1,0 +1,912 @@
+{
+  "title": "Shop Research Peptides & Compounds | Pep Select",
+  "meta_description": "Browse Pep Select research compounds, review product details, and check available batch documentation before purchase.",
+  "meta_robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
+  "canonical": "https://pepselect.com/shop/",
+  "h1": [
+    "Selection isthe standard."
+  ],
+  "h2": [
+    "Support",
+    "Legal",
+    "Stay in the loop and get an additional 10% off.",
+    "Welcome"
+  ],
+  "h3": [
+    "GLP-3 R",
+    "TB-500",
+    "GHK-CU",
+    "NAD+",
+    "Tesamorelin",
+    "PT-141",
+    "GLP-3 R",
+    "GLP-3 R",
+    "BPC-157",
+    "MOTS-C",
+    "SS-31",
+    "KPV",
+    "Glutathione",
+    "Cagrilintide",
+    "GLP-2T",
+    "GLP-1 S"
+  ],
+  "images": [
+    {
+      "src": "https://pepselect.com/wp-content/themes/pepselect-child/assets/images/brand/pep-select-logo-header.png",
+      "alt": "Pep Select",
+      "width": "1400",
+      "height": "299",
+      "loading": "eager",
+      "lazy_method": "none"
+    },
+    {
+      "src": "https://pepselect.com/wp-content/uploads/2026/08/GLP3-RT10_Chat-300x300.jpg",
+      "alt": "GLP-3 R",
+      "width": "300",
+      "height": "300",
+      "loading": "lazy",
+      "lazy_method": "native"
+    },
+    {
+      "src": "https://pepselect.com/wp-content/uploads/2026/08/TB500_Chat-300x300.jpg",
+      "alt": "TB-500",
+      "width": "300",
+      "height": "300",
+      "loading": "lazy",
+      "lazy_method": "native"
+    },
+    {
+      "src": "https://pepselect.com/wp-content/uploads/2026/08/GHKCU50_Chat-300x300.jpg",
+      "alt": "GHK-CU",
+      "width": "300",
+      "height": "300",
+      "loading": "lazy",
+      "lazy_method": "native"
+    },
+    {
+      "src": "https://pepselect.com/wp-content/uploads/2026/08/NAD500_Chat-300x300.jpg",
+      "alt": "NAD+",
+      "width": "300",
+      "height": "300",
+      "loading": "lazy",
+      "lazy_method": "native"
+    },
+    {
+      "src": "https://pepselect.com/wp-content/uploads/2026/08/TES10F-300x300.jpg",
+      "alt": "Tesamorelin",
+      "width": "300",
+      "height": "300",
+      "loading": "lazy",
+      "lazy_method": "native"
+    },
+    {
+      "src": "https://pepselect.com/wp-content/uploads/2026/08/PT10_Chat-300x300.jpg",
+      "alt": "PT-141",
+      "width": "300",
+      "height": "300",
+      "loading": "lazy",
+      "lazy_method": "native"
+    },
+    {
+      "src": "https://pepselect.com/wp-content/uploads/2026/08/GLP3-RT20_Chat-300x300.jpg",
+      "alt": "GLP-3 R",
+      "width": "300",
+      "height": "300",
+      "loading": "lazy",
+      "lazy_method": "native"
+    },
+    {
+      "src": "https://pepselect.com/wp-content/uploads/2026/08/GLP3-RT20_Chat-100x100.jpg",
+      "alt": "GLP-3 R",
+      "width": "100",
+      "height": "100",
+      "loading": "lazy",
+      "lazy_method": "native"
+    },
+    {
+      "src": "https://pepselect.com/wp-content/uploads/2026/08/GLP3-RT30_Chat-300x300.jpg",
+      "alt": "GLP-3 R",
+      "width": "300",
+      "height": "300",
+      "loading": "lazy",
+      "lazy_method": "native"
+    },
+    {
+      "src": "https://pepselect.com/wp-content/uploads/2026/08/GLP3-RT30_Chat-100x100.jpg",
+      "alt": "GLP-3 R",
+      "width": "100",
+      "height": "100",
+      "loading": "lazy",
+      "lazy_method": "native"
+    },
+    {
+      "src": "https://pepselect.com/wp-content/uploads/2026/08/BPC10_Chat-300x300.jpg",
+      "alt": "BPC-157",
+      "width": "300",
+      "height": "300",
+      "loading": "lazy",
+      "lazy_method": "native"
+    },
+    {
+      "src": "https://pepselect.com/wp-content/uploads/2026/08/BPC10_Chat-100x100.jpg",
+      "alt": "BPC-157",
+      "width": "100",
+      "height": "100",
+      "loading": "lazy",
+      "lazy_method": "native"
+    },
+    {
+      "src": "https://pepselect.com/wp-content/uploads/2026/08/MOTSC10_Chat-300x300.jpg",
+      "alt": "MOTS-C",
+      "width": "300",
+      "height": "300",
+      "loading": "lazy",
+      "lazy_method": "native"
+    },
+    {
+      "src": "https://pepselect.com/wp-content/uploads/2026/08/MOTSC10_Chat-100x100.jpg",
+      "alt": "MOTS-C",
+      "width": "100",
+      "height": "100",
+      "loading": "lazy",
+      "lazy_method": "native"
+    },
+    {
+      "src": "https://pepselect.com/wp-content/uploads/2026/08/SS10_Chat-300x300.jpg",
+      "alt": "SS-31",
+      "width": "300",
+      "height": "300",
+      "loading": "lazy",
+      "lazy_method": "native"
+    },
+    {
+      "src": "https://pepselect.com/wp-content/uploads/2026/08/SS10_Chat-100x100.jpg",
+      "alt": "SS-31",
+      "width": "100",
+      "height": "100",
+      "loading": "lazy",
+      "lazy_method": "native"
+    },
+    {
+      "src": "https://pepselect.com/wp-content/uploads/2026/08/KPV10F-2-300x300.jpg",
+      "alt": "KPV",
+      "width": "300",
+      "height": "300",
+      "loading": "lazy",
+      "lazy_method": "native"
+    },
+    {
+      "src": "https://pepselect.com/wp-content/uploads/2026/08/KPV10F-2-100x100.jpg",
+      "alt": "KPV",
+      "width": "100",
+      "height": "100",
+      "loading": "lazy",
+      "lazy_method": "native"
+    },
+    {
+      "src": "https://pepselect.com/wp-content/uploads/2026/08/Glu600_Chat-300x300.jpg",
+      "alt": "Glutathione",
+      "width": "300",
+      "height": "300",
+      "loading": "lazy",
+      "lazy_method": "native"
+    },
+    {
+      "src": "https://pepselect.com/wp-content/uploads/2026/08/Glu600_Chat-100x100.jpg",
+      "alt": "Glutathione",
+      "width": "100",
+      "height": "100",
+      "loading": "lazy",
+      "lazy_method": "native"
+    },
+    {
+      "src": "https://pepselect.com/wp-content/uploads/2026/08/CAG10_Chat-300x300.jpg",
+      "alt": "Cagrilintide",
+      "width": "300",
+      "height": "300",
+      "loading": "lazy",
+      "lazy_method": "native"
+    },
+    {
+      "src": "https://pepselect.com/wp-content/uploads/2026/08/CAG10_Chat-100x100.jpg",
+      "alt": "Cagrilintide",
+      "width": "100",
+      "height": "100",
+      "loading": "lazy",
+      "lazy_method": "native"
+    },
+    {
+      "src": "https://pepselect.com/wp-content/uploads/2026/08/GLP2-TZ20_Chat-300x300.jpg",
+      "alt": "GLP-2T",
+      "width": "300",
+      "height": "300",
+      "loading": "lazy",
+      "lazy_method": "native"
+    },
+    {
+      "src": "https://pepselect.com/wp-content/uploads/2026/08/GLP2-TZ20_Chat-100x100.jpg",
+      "alt": "GLP-2T",
+      "width": "100",
+      "height": "100",
+      "loading": "lazy",
+      "lazy_method": "native"
+    },
+    {
+      "src": "https://pepselect.com/wp-content/uploads/2026/08/GLP1-S15_chat-300x300.jpg",
+      "alt": "GLP-1 S",
+      "width": "300",
+      "height": "300",
+      "loading": "lazy",
+      "lazy_method": "native"
+    },
+    {
+      "src": "https://pepselect.com/wp-content/uploads/2026/08/GLP1-S15_chat-100x100.jpg",
+      "alt": "GLP-1 S",
+      "width": "100",
+      "height": "100",
+      "loading": "lazy",
+      "lazy_method": "native"
+    },
+    {
+      "src": "https://pepselect.com/wp-content/themes/pepselect-child/assets/images/brand/pep-select-logo-footer.png",
+      "alt": "Pep Select",
+      "width": "1407",
+      "height": "299",
+      "loading": "lazy",
+      "lazy_method": "native"
+    },
+    {
+      "src": "https://pepselect.com/wp-content/plugins/ps-access-gate/assets/pep-select-logo.png",
+      "alt": "Pep Select",
+      "width": null,
+      "height": null,
+      "loading": "eager",
+      "lazy_method": "none"
+    }
+  ],
+  "links": {
+    "internal": [
+      {
+        "href": "https://pepselect.com/",
+        "text": "",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/my-account/cash-back/",
+        "text": "Rewards",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/my-account/",
+        "text": "My Account",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/",
+        "text": "Home",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/shop/",
+        "text": "Compounds",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/testing/",
+        "text": "COAs",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/faq/",
+        "text": "FAQ",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/contact/",
+        "text": "Contact",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/my-account/cash-back/",
+        "text": "Rewards",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/",
+        "text": "Pep Select",
+        "rel": [
+          "home"
+        ]
+      },
+      {
+        "href": "https://pepselect.com/product/glp3-r10/",
+        "text": "",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/glp3-r10/",
+        "text": "GLP-3 R",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/glp3-r10/",
+        "text": "Learn more",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/tb500-10/",
+        "text": "",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/tb500-10/",
+        "text": "TB-500",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/tb500-10/",
+        "text": "Learn more",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/ghk-cu/",
+        "text": "",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/ghk-cu/",
+        "text": "GHK-CU",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/ghk-cu/",
+        "text": "Learn more",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/nad/",
+        "text": "",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/nad/",
+        "text": "NAD+",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/nad/",
+        "text": "Learn more",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/tesa-10/",
+        "text": "",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/tesa-10/",
+        "text": "Tesamorelin",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/tesa-10/",
+        "text": "Learn more",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/pt-141/",
+        "text": "",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/pt-141/",
+        "text": "PT-141",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/pt-141/",
+        "text": "Learn more",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/glp3-r20/",
+        "text": "Restocking soon",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/glp3-r20/",
+        "text": "GLP-3 R",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/glp3-r20/",
+        "text": "Notify when available",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/terms-conditions/",
+        "text": "terms",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/privacy-policy/",
+        "text": "privacy policy",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/glp3-r20/",
+        "text": "Continue shopping",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/glp3-r30/",
+        "text": "Restocking soon",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/glp3-r30/",
+        "text": "GLP-3 R",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/glp3-r30/",
+        "text": "Notify when available",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/terms-conditions/",
+        "text": "terms",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/privacy-policy/",
+        "text": "privacy policy",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/glp3-r30/",
+        "text": "Continue shopping",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/bpc157-10/",
+        "text": "Restocking soon",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/bpc157-10/",
+        "text": "BPC-157",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/bpc157-10/",
+        "text": "Notify when available",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/terms-conditions/",
+        "text": "terms",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/privacy-policy/",
+        "text": "privacy policy",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/bpc157-10/",
+        "text": "Continue shopping",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/motsc-10/",
+        "text": "Restocking soon",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/motsc-10/",
+        "text": "MOTS-C",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/motsc-10/",
+        "text": "Notify when available",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/terms-conditions/",
+        "text": "terms",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/privacy-policy/",
+        "text": "privacy policy",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/motsc-10/",
+        "text": "Continue shopping",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/ss-31/",
+        "text": "Restocking soon",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/ss-31/",
+        "text": "SS-31",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/ss-31/",
+        "text": "Notify when available",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/terms-conditions/",
+        "text": "terms",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/privacy-policy/",
+        "text": "privacy policy",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/ss-31/",
+        "text": "Continue shopping",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/kpv10/",
+        "text": "Restocking soon",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/kpv10/",
+        "text": "KPV",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/kpv10/",
+        "text": "Notify when available",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/terms-conditions/",
+        "text": "terms",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/privacy-policy/",
+        "text": "privacy policy",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/kpv10/",
+        "text": "Continue shopping",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/glutathione/",
+        "text": "Restocking soon",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/glutathione/",
+        "text": "Glutathione",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/glutathione/",
+        "text": "Notify when available",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/terms-conditions/",
+        "text": "terms",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/privacy-policy/",
+        "text": "privacy policy",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/glutathione/",
+        "text": "Continue shopping",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/cag10/",
+        "text": "Restocking soon",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/cag10/",
+        "text": "Cagrilintide",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/cag10/",
+        "text": "Notify when available",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/terms-conditions/",
+        "text": "terms",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/privacy-policy/",
+        "text": "privacy policy",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/cag10/",
+        "text": "Continue shopping",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/glp2-t20/",
+        "text": "Out of stock",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/glp2-t20/",
+        "text": "GLP-2T",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/glp2-t20/",
+        "text": "Notify when available",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/terms-conditions/",
+        "text": "terms",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/privacy-policy/",
+        "text": "privacy policy",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/glp2-t20/",
+        "text": "Continue shopping",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/glp1-s10/",
+        "text": "Out of stock",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/glp1-s10/",
+        "text": "GLP-1 S",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/glp1-s10/",
+        "text": "Notify when available",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/terms-conditions/",
+        "text": "terms",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/privacy-policy/",
+        "text": "privacy policy",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/product/glp1-s10/",
+        "text": "Continue shopping",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/",
+        "text": "",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/contact/",
+        "text": "Contact us",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/faq/",
+        "text": "FAQ",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/testing/",
+        "text": "Certificate of Analysis",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/track-your-order/",
+        "text": "Track your order",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/military-discount/",
+        "text": "Military & First responder discount",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/privacy-policy/",
+        "text": "Privacy Policy",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/terms-conditions/",
+        "text": "Terms and conditions",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/ruo-disclaimer/",
+        "text": "RUO Disclaimer",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/refund-shipping-policy/",
+        "text": "Refund & Shipping Policy",
+        "rel": []
+      },
+      {
+        "href": "https://pepselect.com/terms-conditions/",
+        "text": "Terms and Conditions",
+        "rel": []
+      }
+    ],
+    "external": [
+      {
+        "href": "mailto:support@pepselect.com",
+        "text": "support@pepselect.com",
+        "rel": []
+      },
+      {
+        "href": "tel:+18337377528",
+        "text": "1 (833) 737-7528",
+        "rel": []
+      },
+      {
+        "href": "https://google.com",
+        "text": "Under 21",
+        "rel": []
+      }
+    ]
+  },
+  "schema": [
+    {
+      "@type": "WebPage",
+      "@id": "https://pepselect.com/shop/",
+      "url": "https://pepselect.com/shop/",
+      "name": "Research Compounds | Pep Select",
+      "isPartOf": {
+        "@id": "https://pepselect.com/#website"
+      },
+      "primaryImageOfPage": {
+        "@id": "https://pepselect.com/shop/#primaryimage"
+      },
+      "image": {
+        "@id": "https://pepselect.com/shop/#primaryimage"
+      },
+      "thumbnailUrl": "https://pepselect.com/wp-content/uploads/2026/08/GLP3-RT10_Chat-scaled.jpg",
+      "datePublished": "2026-06-23T02:31:04+00:00",
+      "dateModified": "2026-08-14T05:32:49+00:00",
+      "description": "Browse Pep Select research compounds, review product details, and check available batch documentation before purchase.",
+      "breadcrumb": {
+        "@id": "https://pepselect.com/shop/#breadcrumb"
+      },
+      "inLanguage": "en-US",
+      "potentialAction": [
+        {
+          "@type": "ReadAction",
+          "target": [
+            "https://pepselect.com/shop/"
+          ]
+        }
+      ]
+    },
+    {
+      "@type": "ImageObject",
+      "inLanguage": "en-US",
+      "@id": "https://pepselect.com/shop/#primaryimage",
+      "url": "https://pepselect.com/wp-content/uploads/2026/08/GLP3-RT10_Chat-scaled.jpg",
+      "contentUrl": "https://pepselect.com/wp-content/uploads/2026/08/GLP3-RT10_Chat-scaled.jpg",
+      "width": 2049,
+      "height": 2560
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://pepselect.com/shop/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://pepselect.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Shop"
+        }
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://pepselect.com/#website",
+      "url": "https://pepselect.com/",
+      "name": "Pep Select",
+      "description": "Peptides Carefully Selected",
+      "publisher": {
+        "@id": "https://pepselect.com/#organization"
+      },
+      "potentialAction": [
+        {
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "https://pepselect.com/?s={search_term_string}"
+          },
+          "query-input": {
+            "@type": "PropertyValueSpecification",
+            "valueRequired": true,
+            "valueName": "search_term_string"
+          }
+        }
+      ],
+      "inLanguage": "en-US"
+    },
+    {
+      "@type": "OnlineStore",
+      "@id": "https://pepselect.com/#organization",
+      "name": "Pep Select",
+      "url": "https://pepselect.com/",
+      "logo": {
+        "@type": "ImageObject",
+        "inLanguage": "en-US",
+        "@id": "https://pepselect.com/#/schema/logo/image/",
+        "url": "https://pepselect.com/wp-content/uploads/2026/06/cropped-WhatsApp-Image-2026-06-30-at-1.50.57-PM.jpeg",
+        "contentUrl": "https://pepselect.com/wp-content/uploads/2026/06/cropped-WhatsApp-Image-2026-06-30-at-1.50.57-PM.jpeg",
+        "width": 512,
+        "height": 512,
+        "caption": "Pep Select"
+      },
+      "image": {
+        "@id": "https://pepselect.com/#/schema/logo/image/"
+      },
+      "hasMerchantReturnPolicy": {
+        "@type": "MerchantReturnPolicy",
+        "@id": "https://pepselect.com/#merchant-return-policy",
+        "applicableCountry": "US",
+        "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted",
+        "merchantReturnLink": "https://pepselect.com/refund-shipping-policy/"
+      }
+    }
+  ],
+  "open_graph": {
+    "og:locale": "en_US",
+    "og:type": "article",
+    "og:title": "Shop Research Peptides & Compounds | Pep Select",
+    "og:description": "Browse Pep Select research compounds, review product details, and check available batch documentation before purchase.",
+    "og:url": "https://pepselect.com/shop/",
+    "og:site_name": "Pep Select"
+  },
+  "twitter_card": {
+    "twitter:card": "summary_large_image",
+    "twitter:title": "Shop Research Peptides & Compounds | Pep Select"
+  },
+  "word_count": 952,
+  "hreflang": [],
+  "h3_suspicious": [
+    "KPV"
+  ]
+}

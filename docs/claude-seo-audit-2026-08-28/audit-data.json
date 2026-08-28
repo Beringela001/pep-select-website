@@ -1,0 +1,90 @@
+{
+ "audit_date": "2026-08-28",
+ "site": "https://pepselect.com",
+ "plugin": "claude-seo 2.2.4",
+ "auth_tier": "Tier 2 (API key + Service Account + GA4 property configured; GA4 access grant pending)",
+ "baseline": "docs/claude-seo-audit-2026-08-23",
+ "sitemap_urls": 62,
+ "sitemap_breakdown": {"post": 1, "page": 10, "ps_compound": 15, "ps_coa_test": 18, "product": 18},
+ "products": 17,
+ "products_out_of_stock": 10,
+ "products_with_coa_path": 14,
+ "products_without_coa_path": ["glp1-s10", "glp2-t20", "bacteriostatic-water-30ml"],
+ "compound_hubs": 15,
+ "coa_batch_reports": 18,
+ "domain_created": "2026-05-31",
+ "reverified_count": 111,
+ "counts": {
+  "VERIFIED FIXED": 15,
+  "PARTIALLY FIXED": 19,
+  "STILL OPEN": 50,
+  "BLOCKED BY REAL EVIDENCE": 12,
+  "SUPERSEDED": 14,
+  "REGRESSED": 1
+ },
+ "status_changes_since_0823": {
+  "ECOM-02": "BLOCKED BY REAL EVIDENCE -> PARTIALLY FIXED",
+  "ECOM-10": "NEW -> VERIFIED FIXED",
+  "CONT-15": "NEW -> PARTIALLY FIXED",
+  "ECOM-11": "NEW -> PARTIALLY FIXED",
+  "GOOG-05": "PARTIALLY FIXED -> REGRESSED (lab, n=2, VERIFY)",
+  "PERF-12": "NEW (watch) -> SUPERSEDED (not reproduced)"
+ },
+ "category_scores": {
+  "technical": 74,
+  "schema": 71,
+  "content": 48,
+  "on_page": 60,
+  "performance": 55,
+  "ecommerce": 58,
+  "above_fold_sxo": 40,
+  "geo": 62,
+  "geo_note": "rubric differs from 8/23 (38); no site change in authority signals",
+  "weighted_health_score": 62
+ },
+ "pagespeed": {
+  "home": {"desktop": 59, "mobile": [58, 71, 71], "mobile_lcp_s": [9.8, 4.6, 4.6], "mobile_cls": [0.081, 0.084, 0.084], "desktop_tbt_ms": 1770, "desktop_main_thread_s": 7.0},
+  "shop": {"desktop": 95, "mobile": [59, null, 60], "mobile_lcp_s": [10.0, null, 9.9], "mobile_cls": [0, null, 0]},
+  "product_ghk_cu": {"desktop": 86, "mobile": [57, 58, 58], "mobile_lcp_s": [5.4, 10.9, 10.4], "mobile_cls": [0, 0, 0]},
+  "mobile_median": 60,
+  "mobile_range": [57, 71],
+  "crux": "no data (origin ineligible)",
+  "crux_history": "no data"
+ },
+ "gsc_28d": {
+  "window": "2026-07-31..2026-08-25",
+  "clicks": 9, "impressions": 85, "ctr": 0.1059, "avg_position": 38.2,
+  "prior_0823": {"clicks": 2, "impressions": 24, "avg_position": 26.2},
+  "top_pages": [
+   {"page": "/", "clicks": 7, "impressions": 18, "position": 8.1},
+   {"page": "/product/glp3-r30/", "clicks": 1, "impressions": 11, "position": 44.6},
+   {"page": "/testing/retatrutide-20mg/psrt2062926jp/", "clicks": 1, "impressions": 2, "position": 5.0}
+  ],
+  "device": {"mobile": {"clicks": 6, "impressions": 23, "position": 2.8}, "desktop": {"clicks": 3, "impressions": 61, "position": 52.1}},
+  "sitemap": {"submitted": "2026-08-14", "errors": 0, "web_urls": 56, "image_urls": 24},
+  "url_inspection": {
+   "/": "PASS indexed; rich results Breadcrumbs PASS; referring URL Trustpilot",
+   "/product/kpv10/": "PASS indexed; merchant-listing warnings: aggregateRating, review, shippingDetails",
+   "/product/glp3-r30/": "PASS indexed; warnings: review, aggregateRating, gtin/brand, validFrom, hasMerchantReturnPolicy, shippingDetails"
+  },
+  "ga4": "Permission denied for property '549907385'"
+ },
+ "backlinks": {"tier": 0, "common_crawl_in_crawl": false, "referring_domains": null, "verdict": "INSUFFICIENT DATA"},
+ "security_headers_present": ["X-Content-Type-Options"],
+ "security_headers_absent": ["Strict-Transport-Security", "Content-Security-Policy", "X-Frame-Options", "Referrer-Policy", "Permissions-Policy"],
+ "new_findings": [
+  {"id": "MAP-04", "priority": "High", "class": "NEW", "evidence": "/order/ (noindex, nofollow WooCommerce page) listed in page-sitemap.xml."},
+  {"id": "CONT-17", "priority": "High", "class": "NEW", "evidence": "/about-us/ is noindex,follow on a ~7,000-word page; not in sitemap; top E-E-A-T gap per content specialist. Needs approval."},
+  {"id": "SCHEMA-13", "priority": "Medium", "class": "NEW", "evidence": "og:type=article on /shop/ and product pages."},
+  {"id": "PERF-13", "priority": "Medium", "class": "NEW", "evidence": "AdSense script chain (pagead2.googlesyndication) loaded on storefront alongside GTM. [VERIFY CLAIM] intent."},
+  {"id": "PERF-14", "priority": "High", "class": "NEW", "evidence": "Home desktop 59 / TBT 1770ms / main-thread 7.0s vs 86-95 on other templates; coincides with 8/26 exit-offer release. [VERIFY CLAIM] cause."},
+  {"id": "VIS-08", "priority": "Low", "class": "NEW", "evidence": "PSI: insufficient colour contrast on home."},
+  {"id": "TECH-09", "priority": "Low", "class": "NEW", "evidence": "PSI: browser console errors logged on home."},
+  {"id": "SXO-10", "priority": "Medium", "class": "NEW", "evidence": "Product titles/meta generic; batch-matched COA differentiator absent from snippets. Needs approval (copy)."}
+ ],
+ "specialist_corrections": [
+  "GEO specialist recommended FAQPage schema; rejected per plugin quality gate (FAQ rich results retired 2026-05-07) and SCHEMA-08."
+ ],
+ "not_spawned": ["seo-local", "seo-maps", "seo-cluster (no content program)", "seo-drift (no baseline)"],
+ "tool_issues": ["schema_ecommerce_validate.py AttributeError on list-form priceSpecification (plugin bug)", "shop mobile PSI run 2 failed at API", "four specialists hit turn limits; reported from partial passes"]
+}

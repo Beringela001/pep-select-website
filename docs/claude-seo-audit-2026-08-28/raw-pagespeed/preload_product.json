@@ -1,0 +1,23 @@
+{
+  "url": "https://pepselect.com/product/ghk-cu/",
+  "speculation_rules": {
+    "inline_blocks": 1,
+    "header_present": false,
+    "actions": [
+      "prefetch"
+    ]
+  },
+  "preload_hints": 0,
+  "prerender_links": 0,
+  "bfcache_signals": {
+    "cache_control_no_store": false,
+    "unload_listener": false,
+    "beforeunload_listener": false
+  },
+  "lcp_resource_hints": {
+    "preload_lcp_candidate": true,
+    "fetchpriority_high": 3
+  },
+  "score": 100,
+  "recommendations": []
+}

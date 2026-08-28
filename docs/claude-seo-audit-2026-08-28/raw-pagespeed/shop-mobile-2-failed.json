@@ -1,0 +1,20 @@
+{
+  "psi": {
+    "mobile": {
+      "url": "https://pepselect.com/shop/",
+      "strategy": "mobile",
+      "lighthouse_scores": {},
+      "lab_metrics": {},
+      "field_metrics": {},
+      "opportunities": [],
+      "diagnostics": [],
+      "failed_audits": [],
+      "passed_audits_count": 0,
+      "seo_audits": [],
+      "accessibility_audits": [],
+      "audit_details": {},
+      "analysis_timestamp": null,
+      "error": "PSI API error 500: 500 Server Error: Internal Server Error for url: https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=https%3A%2F%2Fpepselect.com%2Fshop%2F&strategy=MOBILE&category=PERFORMANCE&category=ACCESSIBILITY&category=BEST_PRACTICES&category=SEO"
+    }
+  }
+}
