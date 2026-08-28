@@ -1,0 +1,61 @@
+{
+  "brand": "Pep Select",
+  "category": "Research compounds for legitimate laboratory research and analytical purposes",
+  "positioning": "Carefully selected research compounds supported by transparent product information and available batch documentation.",
+  "audience": "Researchers and laboratory purchasers who value clear product information, batch documentation, traceability, straightforward ordering, and reasonable pricing.",
+  "voice": [
+    "calm",
+    "precise",
+    "evidence-first",
+    "direct",
+    "human",
+    "confident when supported"
+  ],
+  "visual_style": "Clinical-modern, editorial, clean, evidence-led, and restrained.",
+  "colors": {
+    "navy": "#002A53",
+    "dark_navy": "#001D3A",
+    "cyan": "#17A1CF",
+    "ink": "#13283D",
+    "slate": "#5E6F80",
+    "border": "#D7E1E9",
+    "surface": "#F3F8FC",
+    "cyan_soft": "#E8F6FB",
+    "white": "#FFFFFF"
+  },
+  "typography": {
+    "interface": "Plus Jakarta Sans",
+    "editorial": "Georgia",
+    "technical": "IBM Plex Mono"
+  },
+  "logo_light_surface": "../../../pepselect-child/assets/images/brand/pep-select-logo-header.png",
+  "logo_dark_surface": "../../../pepselect-child/assets/images/brand/pep-select-logo-footer.png",
+  "primary_ctas": [
+    "Explore Compounds",
+    "Review COAs",
+    "View Testing History",
+    "Review Batch Documentation"
+  ],
+  "required_footer": "For research use only.",
+  "default_destinations": {
+    "catalog": "https://pepselect.com/shop/",
+    "quality_archive": "https://pepselect.com/testing/"
+  },
+  "prohibited": [
+    "human-use implications",
+    "health or body-outcome claims",
+    "dosing or administration language",
+    "unsupported laboratory claims",
+    "invented purity percentages or results",
+    "unsupported comparisons or superiority",
+    "guarantees",
+    "scarcity or urgency without current evidence"
+  ],
+  "placements": {
+    "meta_feed": "1080x1350",
+    "square": "1080x1080",
+    "story_reels": "1080x1920",
+    "landscape": "1200x628"
+  }
+}
+

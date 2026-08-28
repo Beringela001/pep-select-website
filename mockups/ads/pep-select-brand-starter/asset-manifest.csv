@@ -1,0 +1,25 @@
+asset_id,type,source_path,recommended_use,notes
+logo-header,logo,pepselect-child/assets/images/brand/pep-select-logo-header.png,Light backgrounds and white cards,Production logo
+logo-footer,logo,pepselect-child/assets/images/brand/pep-select-logo-footer.png,Navy and dark backgrounds,Production reversed logo
+hero-2048,product-photo,pepselect-child/assets/images/hero/pepselect-home-hero-2048.webp,Landscape and feed hero creative,Primary multi-vial composition
+hero-1536,product-photo,pepselect-child/assets/images/hero/pepselect-home-hero-1536.webp,Feed and landscape creative,Large responsive source
+hero-1024,product-photo,pepselect-child/assets/images/hero/pepselect-home-hero-1024.webp,Square and medium placements,Responsive source
+hero-768,product-photo,pepselect-child/assets/images/hero/pepselect-home-hero-768.webp,Mobile and Story crops,Responsive source
+hero-640,product-photo,pepselect-child/assets/images/hero/pepselect-home-hero-640.webp,Mobile placements,Responsive source
+hero-480,product-photo,pepselect-child/assets/images/hero/pepselect-home-hero-480.webp,Small mobile placements,Responsive source
+hero-320,product-photo,pepselect-child/assets/images/hero/pepselect-home-hero-320.webp,Small mobile placements,Responsive source
+tesamorelin-vial-batch,vial-photo,pepselect-child/assets/images/why-pep-select/tesamorelin-10mg-vial-batch.webp,Batch identity and traceability creative,Shows vial front and batch-linked back label
+tesamorelin-label,vial-photo,pepselect-child/assets/images/why-pep-select/tesamorelin-10mg-left-label-new.webp,Product detail creative,Use only with current product facts
+tesamorelin-coa,documentation,pepselect-child/assets/images/why-pep-select/tesamorelin-10mg-coa-source.webp,COA and documentation creative,Verify record remains current before publishing
+nad-vial-batch,vial-photo,pepselect-child/assets/images/why-pep-select/nad-500mg-vial-batch-v3.webp,Batch identity creative,Use only with current product facts
+nad-coa,documentation,pepselect-child/assets/images/why-pep-select/nad-500mg-coa-source.webp,COA and documentation creative,Do not extract claims without record review
+glp3-vial-batch,vial-photo,pepselect-child/assets/images/why-pep-select/glp3-rt-20mg-vial-batch.webp,Batch identity creative,Use only with current product facts
+glp3-coa,documentation,pepselect-child/assets/images/why-pep-select/glp3-rt-20mg-coa-evidence.webp,COA and documentation creative,Do not extract claims without record review
+label-bpc157,product-photo,mockups/hero labels/BPC-157_10_NEW.jpg,Product-led creative,Confirm current packaging and catalog status
+label-ghkcu,product-photo,mockups/hero labels/GHK-CU_50_NEW.jpg,Product-led creative,Confirm current packaging and catalog status
+label-glp3rt,product-photo,mockups/hero labels/GLP3-RT_30_NEW.jpg,Product-led creative,Confirm current packaging and catalog status
+label-nad,product-photo,mockups/hero labels/NAD+_500_NEW.jpg,Product-led creative,Confirm current packaging and catalog status
+label-tesamorelin,product-photo,mockups/hero labels/TESSAMORELIN_10_NEW.jpg,Product-led creative,Confirm current packaging and catalog status
+reel-transparency,video,output/reels/pepselect-transparency-coa-reel-15s-v1.mp4,Organic or paid vertical video,Review current claims and destination before publishing
+reel-transparency-cover,video-cover,output/reels/pepselect-transparency-coa-reel-15s-v1-cover.jpg,Story or Reels cover,Existing creative direction
+
