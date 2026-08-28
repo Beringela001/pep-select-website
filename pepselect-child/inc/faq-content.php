@@ -94,7 +94,7 @@ function pepselect_child_get_faq_sections() {
 				),
 				array(
 					'question' => __( 'Where do you ship?', 'pepselect-child' ),
-					'answer'   => __( 'We ship to all 50 U.S. states, Washington, D.C., and Puerto Rico. Alaska and Puerto Rico orders ship by USPS only. We do not currently ship to the U.S. Virgin Islands, other U.S. territories, or overseas military addresses.', 'pepselect-child' ),
+					'answer'   => __( 'We ship to all 50 U.S. states, Washington, D.C., and Puerto Rico. Alaska and Puerto Rico orders ship by USPS only. For a Puerto Rico address, select Puerto Rico in the Country / Region field so checkout can calculate the correct tax and USPS rate. We do not currently ship to the U.S. Virgin Islands, other U.S. territories, or overseas military addresses.', 'pepselect-child' ),
 				),
 				array(
 					'question' => __( 'How do I track my order?', 'pepselect-child' ),

@@ -16,7 +16,7 @@ final class PepSelect_Shipping_Restrictions {
 		'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'DC', 'FL',
 		'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME',
 		'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH',
-		'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'PR',
+		'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA',
 		'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV',
 		'WI', 'WY',
 	);
@@ -93,7 +93,7 @@ final class PepSelect_Shipping_Restrictions {
 	 */
 	public function validate_checkout( array $data, $errors ): void {
 		$address = self::checkout_destination( $data );
-		if ( '' === $address['country'] || '' === $address['state'] || '' === $address['postcode'] ) {
+		if ( ! self::address_is_complete( $address ) ) {
 			return;
 		}
 
@@ -133,7 +133,7 @@ final class PepSelect_Shipping_Restrictions {
 			return array();
 		}
 
-		if ( ! self::destination_is_usps_only( $state, $postcode ) ) {
+		if ( ! self::destination_is_usps_only( $country, $state, $postcode ) ) {
 			return $rates;
 		}
 
@@ -152,7 +152,7 @@ final class PepSelect_Shipping_Restrictions {
 
 	public static function checkout_data_is_excluded( array $data ): bool {
 		$address = self::checkout_destination( $data );
-		if ( '' === $address['country'] || '' === $address['state'] || '' === $address['postcode'] ) {
+		if ( ! self::address_is_complete( $address ) ) {
 			return false;
 		}
 
@@ -200,22 +200,38 @@ final class PepSelect_Shipping_Restrictions {
 			|| 96799 === $zip;
 	}
 
-	public static function destination_is_usps_only( string $state, string $postcode ): bool {
+	public static function destination_is_usps_only( string $country, string $state, string $postcode ): bool {
+		$country  = strtoupper( trim( $country ) );
 		$state    = strtoupper( trim( $state ) );
 		$expected = self::expected_region_for_postcode( $postcode );
 
-		return in_array( $state, array( 'AK', 'PR' ), true ) && $state === $expected;
+		return ( 'PR' === $country && 'PR' === $expected )
+			|| ( 'US' === $country && 'AK' === $state && 'AK' === $expected );
 	}
 
 	public static function address_error_message( string $country, string $state, string $postcode ): string {
 		$country = strtoupper( trim( $country ) );
 		$state   = strtoupper( trim( $state ) );
 
-		if ( 'US' !== $country || ! self::state_is_allowed( $state ) || self::postcode_is_excluded( $postcode ) ) {
+		if ( self::postcode_is_excluded( $postcode ) ) {
 			return self::UNSUPPORTED_MESSAGE;
 		}
 
 		$expected = self::expected_region_for_postcode( $postcode );
+		if ( 'PR' === $country ) {
+			return 'PR' === $expected
+				? ''
+				: 'The ZIP code does not match Puerto Rico. Check the ZIP code or select the correct Country / Region.';
+		}
+
+		if ( 'US' !== $country || ! self::state_is_allowed( $state ) ) {
+			return self::UNSUPPORTED_MESSAGE;
+		}
+
+		if ( 'PR' === $expected ) {
+			return 'This ZIP code belongs to Puerto Rico. Select Puerto Rico in the Country / Region field.';
+		}
+
 		if ( '' !== $expected && $expected !== $state ) {
 			return sprintf(
 				'This ZIP code belongs to %s. Select %s in the State / Territory field.',
@@ -249,8 +265,16 @@ final class PepSelect_Shipping_Restrictions {
 	/** @param array{country:string,state:string,postcode:string} $address */
 	private static function destination_requires_rate_refresh( array $address ): bool {
 		return '' !== self::address_error_message( $address['country'], $address['state'], $address['postcode'] )
-			|| self::destination_is_usps_only( $address['state'], $address['postcode'] )
-			|| in_array( strtoupper( $address['state'] ), array( 'AK', 'HI', 'PR' ), true );
+			|| self::destination_is_usps_only( $address['country'], $address['state'], $address['postcode'] )
+			|| 'PR' === strtoupper( $address['country'] )
+			|| in_array( strtoupper( $address['state'] ), array( 'AK', 'HI' ), true );
+	}
+
+	/** @param array{country:string,state:string,postcode:string} $address */
+	private static function address_is_complete( array $address ): bool {
+		return '' !== $address['country']
+			&& '' !== $address['postcode']
+			&& ( 'PR' === strtoupper( $address['country'] ) || '' !== $address['state'] );
 	}
 
 	private function clean_checkout_value( $value ): string {

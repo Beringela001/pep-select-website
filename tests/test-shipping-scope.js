@@ -20,6 +20,10 @@ for (const [surface, source] of [['FAQ', faqContent], ['Refund & Shipping Policy
 		source.includes('Alaska and Puerto Rico orders ship by USPS only'),
 		`${surface} must state the USPS-only destinations`
 	);
+	assert.ok(
+		source.includes('select Puerto Rico in the Country / Region field'),
+		`${surface} must explain correct Puerto Rico address entry`
+	);
 	for (const excludedDestination of ['U.S. Virgin Islands', 'other U.S. territories', 'overseas military addresses']) {
 		assert.ok(
 			source.includes(excludedDestination),

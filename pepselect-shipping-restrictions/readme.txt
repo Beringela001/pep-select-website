@@ -2,7 +2,7 @@
 Contributors: pepselect
 Requires at least: 6.5
 Requires PHP: 8.1
-Stable tag: 0.2.0
+Stable tag: 0.2.1
 License: Proprietary
 
 Validates destination addresses and applies destination-specific carrier rules.
@@ -13,9 +13,13 @@ Adds three safeguards:
 
 * Allows the 50 U.S. states, Washington, D.C., and Puerto Rico.
 * Keeps Alaska and Puerto Rico shipping USPS-only.
-* Blocks mismatched Alaska, Hawaii, and Puerto Rico ZIP/state combinations.
+* Blocks mismatched Alaska and Hawaii ZIP/state combinations and Puerto Rico ZIP/country combinations.
 
 == Changelog ==
+
+= 0.2.1 =
+* Treat Puerto Rico as its WooCommerce Country / Region so customers can enter valid addresses.
+* Keep Puerto Rico rates USPS-only and block Puerto Rico ZIPs entered under the United States.
 
 = 0.2.0 =
 * Restore Alaska, Hawaii, and Puerto Rico shipping.

@@ -1,6 +1,13 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.55** - Restore Alaska, Hawaii, and Puerto Rico shipping.
+**Release candidate: 0.25.0-beta.56** - Correct Puerto Rico address entry and shipping calculation.
+
+## 0.25.0-beta.56 - 2026-08-27
+
+- Tell Puerto Rico customers to select Puerto Rico in Country / Region.
+- Clarify that doing so allows checkout to calculate the correct tax and USPS rate.
+
+**Previous release candidate: 0.25.0-beta.55** - Restore Alaska, Hawaii, and Puerto Rico shipping.
 
 ## 0.25.0-beta.55 - 2026-08-27
 
