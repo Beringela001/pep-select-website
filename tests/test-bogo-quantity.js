@@ -11,15 +11,9 @@ const noticeCss = fs.readFileSync(
   'utf8'
 );
 
-assert.match(plugin, /Plugin Name: Pep Select Automatic Free Vials/);
-assert.match(plugin, /Version:\s+1\.3\.0/);
-assert.match(plugin, /pepselect_bogo_product_add/);
-assert.match(plugin, /woocommerce_before_add_to_cart_button/);
-assert.match(plugin, /woocommerce_add_to_cart_quantity/);
-assert.match(plugin, /woocommerce_store_api_add_to_cart_data/);
-assert.match(plugin, /woocommerce_add_to_cart/);
+assert.match(plugin, /Plugin Name: Pep Select BOGO Cart Experience/);
+assert.match(plugin, /Version:\s+1\.4\.0/);
 assert.match(plugin, /woocommerce_get_item_data/);
-assert.match(plugin, /pepselect_bogo_replace_added_line_quantity/);
 assert.match(plugin, /pepselect_bogo_enqueue_cart_notice_styles/);
 assert.match(plugin, /pepselect_bogo_notice_text/);
 assert.match(plugin, /pepselect_bogo_regular_unit_price/);
@@ -32,6 +26,11 @@ assert.match(plugin, /pepselect-bogo-cart-notice/);
 assert.match(plugin, /'value'\s*=>\s*\$notice/);
 assert.match(plugin, /'display'\s*=>\s*\$notice/);
 assert.doesNotMatch(plugin, /xoo_wsc_product_args/);
+assert.doesNotMatch(plugin, /pepselect_bogo_product_add/);
+assert.doesNotMatch(plugin, /woocommerce_add_to_cart_quantity/);
+assert.doesNotMatch(plugin, /woocommerce_store_api_add_to_cart_data/);
+assert.doesNotMatch(plugin, /pepselect_bogo_replace_added_line_quantity/);
+assert.doesNotMatch(plugin, /WC\(\)->cart->set_quantity/);
 assert.doesNotMatch(plugin, /rest_post_dispatch/);
 assert.doesNotMatch(plugin, /woocommerce_after_cart_item_quantity_update/);
 assert.doesNotMatch(plugin, /inventory:/i);
@@ -54,17 +53,15 @@ for (const sku of ['GLP3R10', 'GLP3R20', 'GLP2T20', 'GLP1S10', 'MOTSC10', 'GHKCU
   assert.ok(plugin.includes(`'${sku}'`), `missing eligible SKU ${sku}`);
 }
 
-const physical = paid => paid + Math.floor(paid / 4);
-assert.equal(physical(1), 1);
-assert.equal(physical(3), 3);
-assert.equal(physical(4), 5);
-assert.equal(physical(5), 6);
-assert.equal(physical(8), 10);
+const literalQuantity = selected => selected;
+for (const quantity of [1, 4, 5, 6, 7, 8, 9, 10, 15]) {
+  assert.equal(literalQuantity(quantity), quantity);
+}
 
-const cartEdit = (_oldQuantity, newQuantity) => newQuantity;
-assert.equal(cartEdit(3, 4), 4);
-assert.equal(cartEdit(5, 4), 4);
-assert.equal(cartEdit(8, 9), 9);
-assert.equal(cartEdit(10, 9), 9);
+const freeVials = physicalQuantity => Math.floor(physicalQuantity / 5);
+assert.equal(freeVials(4), 0);
+assert.equal(freeVials(5), 1);
+assert.equal(freeVials(9), 1);
+assert.equal(freeVials(10), 2);
 
-console.log('Pep Select automatic free-vial plugin checks passed.');
+console.log('Pep Select BOGO cart experience checks passed.');

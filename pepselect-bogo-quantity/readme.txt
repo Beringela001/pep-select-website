@@ -1,12 +1,12 @@
-=== Pep Select Automatic Free Vials ===
-Version: 1.3.0
+=== Pep Select BOGO Cart Experience ===
+Version: 1.4.0
 
 Companion behavior for the live YITH Buy 4 get 1 free rule.
 
-* A customer selecting 4 sees 5 vials in the cart.
-* YITH discounts the earned fifth vial by 100%.
-* WooCommerce stores quantity 5, so orders and stock reduction stay truthful.
-* Cart line details say how many free vials are included without exposing internal inventory wording.
+* Cart and product quantity inputs always keep the exact number selected.
+* YITH discounts one vial at quantity 5, two at 10, and so on.
+* WooCommerce stores the literal physical quantity, so orders and stock reduction stay truthful.
+* Cart line details say how many free vials were added without exposing internal inventory wording.
 * Eligible lines in the Side Cart and full Cart show a compact "Add 5, one is on us." pill until the offer is earned.
 * Cart quantity controls represent physical vials: reducing 5 to 4 removes the free vial and does not add it back.
 
@@ -42,3 +42,7 @@ full Cart. Side Cart presentation and all pricing behavior are unchanged.
 1.3.0 simplifies the earned state to "1 free vial added," keeps the regular
 per-vial price, removes duplicate promotion labels, and aligns eligible Side
 Cart details in a stable grid. Savings and line totals remain visible.
+
+1.4.0 removes automatic quantity expansion and replacement. Product, Side Cart,
+and Cart inputs now keep 5 as 5, 8 as 8, 9 as 9, and 10 as 10 while YITH alone
+calculates the earned free-vial discount.

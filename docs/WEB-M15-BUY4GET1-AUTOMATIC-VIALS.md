@@ -1,20 +1,20 @@
-# WEB-M15 — Automatic Buy 4 get 1 vial
+# WEB-M15 — Buy 4 get 1 cart experience
 
 ## Outcome
 
-For eligible SKUs, selecting four vials adds a fifth vial to the visible cart
-before YITH calculates its 100% discount. WooCommerce stores, orders, and
-reduces stock by the visible physical quantity while charging for four.
+For eligible SKUs, every quantity input keeps the literal physical quantity the
+customer selected. At five vials YITH discounts one vial by 100%. WooCommerce
+stores, orders, and reduces stock by the same visible physical quantity.
 
 ## Live rule dependency
 
-YITH rule 1209 remains the pricing authority. It is configured as purchase 5,
-receive 1 at 100% discount. The rule's repeat option must remain enabled so
-eight paid vials become ten physical vials with two free.
+YITH rule 1209 remains the only pricing authority. It is configured as purchase
+5, receive 1 at 100% discount. The repeat option must remain enabled so ten
+physical vials receive two free-vial discounts.
 
 ## Eligibility
 
-Version 1.3.0 mirrors the products selected in rule 1209 by SKU:
+Version 1.4.0 mirrors the products selected in rule 1209 by SKU:
 GLP3R10, GLP3R20, GLP2T20, GLP1S10, MOTSC10, and GHKCU50.
 
 When rule 1209 eligibility changes, update `pepselect_bogo_skus()` in the same
@@ -22,21 +22,18 @@ release so price behavior and physical quantity cannot drift.
 
 ## Cart controls
 
-The full WooCommerce Cart block and the Xootix side cart display physical
-quantity. Four selected becomes five visible vials. The line identifies the
-free vial without exposing internal inventory wording. The product-page selector
-turns four selected vials into five. Once in the cart, the controls represent
-physical vials: decreasing five to four removes the free vial and increasing
-four to five earns it again.
+The product page, full WooCommerce Cart block, and Xootix Side Cart display and
+save the literal physical quantity. Five stays five, eight stays eight, nine
+stays nine, and ten stays ten. Decreasing five to four removes the free-vial
+discount; increasing four to five earns it.
 
 Eligible lines also carry a compact cart-only promotion pill. Below five vials
 it says "Add 5, one is on us." At five or more it confirms the number of free
-vials included. The marker is hidden outside the full Cart and Xootix drawer,
+vials added. The marker is hidden outside the full Cart and Xootix drawer,
 so checkout and order presentation remain unchanged.
 
-The expansion hook is scoped to the eligible product Add to Cart form. Side
-Cart and Cart block edits never pass that marker, preventing a saved quantity
-of four from being expanded back to five.
+Version 1.4.0 contains no quantity-expansion or line-replacement hooks. YITH
+calculates discounts but does not reinterpret the customer-entered quantity.
 
 ## Order 1560
 
