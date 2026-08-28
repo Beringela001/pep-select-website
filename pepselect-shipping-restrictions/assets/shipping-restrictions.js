@@ -92,6 +92,10 @@
 		updateAddressWarning( 'shipping' );
 	}
 
+	function queueWarningUpdate() {
+		window.setTimeout( updateWarnings, 0 );
+	}
+
 	document.addEventListener( 'input', function ( event ) {
 		if ( /_(country|state|postcode)$/.test( event.target.id || '' ) ) {
 			updateWarnings();
@@ -105,7 +109,7 @@
 	} );
 
 	if ( $ ) {
-		$( document.body ).on( 'updated_checkout checkout_error', updateWarnings );
+		$( document.body ).on( 'updated_checkout checkout_error', queueWarningUpdate );
 	}
 
 	if ( document.readyState === 'loading' ) {
