@@ -10,6 +10,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Prevent Site Kit from rendering the unused AdSense advertising tag.
+ *
+ * Pep Select does not run publisher advertising. Keep Site Kit Analytics and
+ * Search Console connected; these filters target only the AdSense module.
+ *
+ * @return bool
+ */
+function pepselect_child_block_unused_adsense_tag() {
+	return true;
+}
+add_filter( 'googlesitekit_adsense_tag_blocked', 'pepselect_child_block_unused_adsense_tag' );
+add_filter( 'googlesitekit_adsense_tag_amp_blocked', 'pepselect_child_block_unused_adsense_tag' );
+
+/**
  * Return whether the current request is the Quality Archive route.
  *
  * WordPress can expose the assigned posts page through is_home() instead of

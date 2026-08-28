@@ -1,6 +1,14 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.59** - Remove unused template assets and right-size global logo delivery.
+**Release candidate: 0.25.0-beta.60** - Stop unused Site Kit AdSense advertising payloads.
+
+## 0.25.0-beta.60 - 2026-08-28
+
+- Block Site Kit's AdSense tag on standard and AMP requests because Pep Select does not run publisher advertising.
+- Preserve Site Kit Analytics, Search Console, Tag Manager configuration, and WooCommerce event measurement.
+- Remove the audited AdSense and Google/DoubleClick advertising request chain without editing third-party plugin code.
+
+**Previous release candidate: 0.25.0-beta.59** - Remove unused template assets and right-size global logo delivery.
 
 ## 0.25.0-beta.59 - 2026-08-28
 

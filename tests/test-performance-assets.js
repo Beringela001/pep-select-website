@@ -50,6 +50,10 @@ assert.ok(performanceFile.includes("add_action( 'wp_print_styles', 'pepselect_ch
 assert.ok(performanceFile.includes("add_action( 'wp_print_styles', 'pepselect_child_inline_shell_styles', 999 )"));
 assert.ok(performanceFile.includes("add_action( 'wp_print_styles', 'pepselect_child_remove_elementor_styles', 996 )"));
 assert.ok(performanceFile.includes("add_action( 'wp_print_footer_scripts', 'pepselect_child_remove_elementor_scripts', 1 )"));
+assert.ok(performanceFile.includes("add_filter( 'googlesitekit_adsense_tag_blocked', 'pepselect_child_block_unused_adsense_tag' )"));
+assert.ok(performanceFile.includes("add_filter( 'googlesitekit_adsense_tag_amp_blocked', 'pepselect_child_block_unused_adsense_tag' )"));
+assert.ok(!performanceFile.includes("googlesitekit_analytics_tag_blocked"));
+assert.ok(!performanceFile.includes("googlesitekit_tagmanager_tag_blocked"));
 assert.ok(performanceFile.includes("'/plugins/elementor/'"));
 assert.ok(performanceFile.includes("'/plugins/elementor-pro/'"));
 assert.ok(performanceFile.includes("'elementor-post-'"));
