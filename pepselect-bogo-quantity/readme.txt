@@ -1,5 +1,5 @@
 === Pep Select BOGO Cart Experience ===
-Version: 1.5.0
+Version: 1.5.1
 
 Companion behavior for the live YITH Buy 4 get 1 free rule.
 
@@ -50,3 +50,6 @@ calculates the earned free-vial discount.
 1.5.0 reduces the Side Cart summary to one "Estimated total," removes its
 duplicate green savings treatments and shipping/address output, and leaves the
 full Cart savings presentation unchanged.
+
+1.5.1 supports the current Xootix footer filter and adds a presentation fallback
+so its checkout disclaimer stays removed after fragment refreshes.

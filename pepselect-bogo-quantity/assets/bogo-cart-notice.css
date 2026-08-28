@@ -124,6 +124,10 @@ body.woocommerce-cart .wc-block-cart-items__row:has(.pepselect-bogo-cart-notice)
 	display: none;
 }
 
+.xoo-wsc-modal .xoo-wsc-footer-txt {
+	display: none;
+}
+
 .xoo-wsc-product:has(.pepselect-bogo-cart-notice) .pepselect-bogo-side-cart-notice {
 	grid-area: notice;
 	margin: 0;
