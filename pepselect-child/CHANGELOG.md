@@ -1,6 +1,13 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.57** - Show Country / Region for Puerto Rico checkout.
+**Release candidate: 0.25.0-beta.58** - Align Puerto Rico checkout with domestic USPS rating.
+
+## 0.25.0-beta.58 - 2026-08-27
+
+- Tell Puerto Rico customers to select Puerto Rico in State / Territory.
+- Align checkout guidance with Easyship's domestic U.S. USPS address format.
+
+**Previous release candidate: 0.25.0-beta.57** - Show Country / Region for Puerto Rico checkout.
 
 ## 0.25.0-beta.57 - 2026-08-27
 

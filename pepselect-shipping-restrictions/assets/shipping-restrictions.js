@@ -56,23 +56,15 @@
 		}
 
 		expected = expectedRegion( postcode );
-		if ( country === 'PR' ) {
-			return expected === 'PR' ? '' : 'The ZIP code does not match Puerto Rico. Check the ZIP code or select the correct Country / Region.';
-		}
-
 		if ( country !== 'US' || allowedStates.indexOf( state ) === -1 ) {
 			return unsupportedMessage;
-		}
-
-		if ( expected === 'PR' ) {
-			return 'This ZIP code belongs to Puerto Rico. Select Puerto Rico in the Country / Region field.';
 		}
 
 		if ( expected && expected !== state ) {
 			return 'This ZIP code belongs to ' + regionNames[ expected ] + '. Select ' + regionNames[ expected ] + ' in the State / Territory field.';
 		}
 
-		if ( [ 'AK', 'HI' ].indexOf( state ) !== -1 && expected !== state ) {
+		if ( [ 'AK', 'HI', 'PR' ].indexOf( state ) !== -1 && expected !== state ) {
 			return 'The ZIP code does not match ' + regionNames[ state ] + '. Check the ZIP code or select the correct State / Territory.';
 		}
 
@@ -111,7 +103,7 @@
 
 		warningId = 'pepselect-' + prefix + '-shipping-address-error';
 		warning = document.getElementById( warningId );
-		message = country.value && postcode.value && ( country.value.toUpperCase() === 'PR' || state.value ) ? addressError(
+		message = country.value && state.value && postcode.value ? addressError(
 			country.value.toUpperCase(),
 			state.value.toUpperCase(),
 			postcode.value

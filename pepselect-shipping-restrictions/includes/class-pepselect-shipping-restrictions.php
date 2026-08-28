@@ -16,7 +16,7 @@ final class PepSelect_Shipping_Restrictions {
 		'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'DC', 'FL',
 		'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME',
 		'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH',
-		'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA',
+		'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'PR',
 		'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV',
 		'WI', 'WY',
 	);
@@ -39,11 +39,18 @@ final class PepSelect_Shipping_Restrictions {
 	private function __construct() {}
 
 	public function boot(): void {
+		add_filter( 'woocommerce_states', array( $this, 'add_puerto_rico_state' ), 20 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 		add_action( 'woocommerce_checkout_update_order_review', array( $this, 'clear_destination_rate_cache' ), 5 );
 		add_action( 'woocommerce_after_checkout_validation', array( $this, 'validate_checkout' ), 20, 2 );
 		add_filter( 'woocommerce_package_rates', array( $this, 'filter_package_rates' ), 100, 2 );
 		add_filter( 'woocommerce_checkout_fields', array( $this, 'label_state_as_territory' ), 30 );
+	}
+
+	/** @param array<string,array<string,string>> $states WooCommerce states by country. */
+	public function add_puerto_rico_state( array $states ): array {
+		$states['US']['PR'] = 'Puerto Rico';
+		return $states;
 	}
 
 	public function enqueue_assets(): void {
@@ -205,8 +212,9 @@ final class PepSelect_Shipping_Restrictions {
 		$state    = strtoupper( trim( $state ) );
 		$expected = self::expected_region_for_postcode( $postcode );
 
-		return ( 'PR' === $country && 'PR' === $expected )
-			|| ( 'US' === $country && 'AK' === $state && 'AK' === $expected );
+		return 'US' === $country
+			&& in_array( $state, array( 'AK', 'PR' ), true )
+			&& $state === $expected;
 	}
 
 	public static function address_error_message( string $country, string $state, string $postcode ): string {
@@ -218,18 +226,8 @@ final class PepSelect_Shipping_Restrictions {
 		}
 
 		$expected = self::expected_region_for_postcode( $postcode );
-		if ( 'PR' === $country ) {
-			return 'PR' === $expected
-				? ''
-				: 'The ZIP code does not match Puerto Rico. Check the ZIP code or select the correct Country / Region.';
-		}
-
 		if ( 'US' !== $country || ! self::state_is_allowed( $state ) ) {
 			return self::UNSUPPORTED_MESSAGE;
-		}
-
-		if ( 'PR' === $expected ) {
-			return 'This ZIP code belongs to Puerto Rico. Select Puerto Rico in the Country / Region field.';
 		}
 
 		if ( '' !== $expected && $expected !== $state ) {
@@ -266,15 +264,14 @@ final class PepSelect_Shipping_Restrictions {
 	private static function destination_requires_rate_refresh( array $address ): bool {
 		return '' !== self::address_error_message( $address['country'], $address['state'], $address['postcode'] )
 			|| self::destination_is_usps_only( $address['country'], $address['state'], $address['postcode'] )
-			|| 'PR' === strtoupper( $address['country'] )
-			|| in_array( strtoupper( $address['state'] ), array( 'AK', 'HI' ), true );
+			|| in_array( strtoupper( $address['state'] ), array( 'AK', 'HI', 'PR' ), true );
 	}
 
 	/** @param array{country:string,state:string,postcode:string} $address */
 	private static function address_is_complete( array $address ): bool {
 		return '' !== $address['country']
 			&& '' !== $address['postcode']
-			&& ( 'PR' === strtoupper( $address['country'] ) || '' !== $address['state'] );
+			&& '' !== $address['state'];
 	}
 
 	private function clean_checkout_value( $value ): string {
