@@ -1,0 +1,17 @@
+.pepselect-shipping-area-error {
+	margin: 0 0 8px;
+	color: var(--pep-color-error, #b42318);
+	font-family: "Plus Jakarta Sans", sans-serif;
+	font-size: 0.875rem;
+	font-weight: 600;
+	line-height: 1.45;
+}
+
+.pepselect-shipping-area-invalid input.input-text,
+.pepselect-shipping-area-invalid .select2-selection {
+	border-color: var(--pep-color-error, #b42318) !important;
+}
+
+.pepselect-shipping-area-error[hidden] {
+	display: none !important;
+}
