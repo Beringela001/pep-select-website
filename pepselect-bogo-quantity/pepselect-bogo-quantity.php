@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Pep Select Automatic Free Vials
  * Description: Makes Buy 4 get 1 free add the earned vial before YITH prices the cart.
- * Version:     1.2.1
+ * Version:     1.2.2
  * Author:      Pep Select
  * Text Domain: pepselect-bogo-quantity
  */
@@ -136,7 +136,7 @@ function pepselect_bogo_enqueue_cart_notice_styles() {
 		'pepselect-bogo-cart-notice',
 		plugin_dir_url( __FILE__ ) . 'assets/bogo-cart-notice.css',
 		array(),
-		'1.2.1'
+		'1.2.2'
 	);
 }
 add_action( 'wp_enqueue_scripts', 'pepselect_bogo_enqueue_cart_notice_styles' );
