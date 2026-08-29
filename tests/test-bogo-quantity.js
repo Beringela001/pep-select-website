@@ -10,9 +10,19 @@ const noticeCss = fs.readFileSync(
   path.join(__dirname, '..', 'pepselect-bogo-quantity', 'assets', 'bogo-cart-notice.css'),
   'utf8'
 );
+const discountClass = fs.readFileSync(
+  path.join(__dirname, '..', 'pepselect-bogo-quantity', 'includes', 'class-pepselect-compound-discount.php'),
+  'utf8'
+);
+const adminCss = fs.readFileSync(
+  path.join(__dirname, '..', 'pepselect-bogo-quantity', 'assets', 'compound-discount-admin.css'),
+  'utf8'
+);
 
 assert.match(plugin, /Plugin Name: Pep Select BOGO Cart Experience/);
-assert.match(plugin, /Version:\s+1\.5\.1/);
+assert.match(plugin, /Version:\s+1\.6\.0/);
+assert.match(plugin, /PEPSELECT_BOGO_VERSION', '1\.6\.0'/);
+assert.match(plugin, /class-pepselect-compound-discount\.php/);
 assert.match(plugin, /woocommerce_get_item_data/);
 assert.match(plugin, /pepselect_bogo_enqueue_cart_notice_styles/);
 assert.match(plugin, /pepselect_bogo_notice_text/);
@@ -57,6 +67,26 @@ assert.match(noticeCss, /"price price"/);
 assert.match(noticeCss, /\.xoo-wsc-psavings\s*\{\s*display:\s*none;/s);
 assert.match(noticeCss, /\.xoo-wsc-footer-txt\s*\{\s*display:\s*none;/s);
 assert.match(noticeCss, /\.xoo-wsc-sm-info,/);
+
+assert.match(discountClass, /pepselect_compound_discount_rule_v1/);
+assert.match(discountClass, /'woocommerce_page_'\s*\.\s*self::PAGE_SLUG/);
+assert.match(discountClass, /wc-product-search/);
+assert.match(discountClass, /woocommerce_json_search_products_and_variations/);
+assert.match(discountClass, /'match_mode'\s*=>\s*'all'/);
+assert.match(discountClass, /array\( 'any', 'all' \)/);
+assert.match(discountClass, /array\( 'percent', 'fixed_cart' \)/);
+assert.match(discountClass, /array\( 'quantity', 'subtotal' \)/);
+assert.match(discountClass, /woocommerce_before_calculate_totals/);
+assert.match(discountClass, /woocommerce_get_shop_coupon_data/);
+assert.match(discountClass, /pepselect-auto-compound/);
+assert.match(discountClass, /line_subtotal/);
+assert.match(discountClass, /manage_woocommerce/);
+assert.match(discountClass, /pepselect-bogo\/v1/);
+assert.match(discountClass, /if_revision/);
+assert.match(discountClass, /status'\s*=>\s*409/);
+assert.doesNotMatch(discountClass, /add_fee\s*\(/);
+assert.match(adminCss, /\.pepselect-switch/);
+assert.match(adminCss, /input:focus-visible/);
 
 for (const sku of ['GLP3R10', 'GLP3R20', 'GLP2T20', 'GLP1S10', 'MOTSC10', 'GHKCU50']) {
   assert.ok(plugin.includes(`'${sku}'`), `missing eligible SKU ${sku}`);

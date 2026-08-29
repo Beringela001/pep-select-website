@@ -1,0 +1,77 @@
+.pepselect-discount-settings .form-table {
+	max-width: 920px;
+	margin-top: 24px;
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 6px;
+}
+
+.pepselect-discount-settings .form-table th,
+.pepselect-discount-settings .form-table td {
+	padding: 20px;
+}
+
+.pepselect-discount-settings .select2-container {
+	min-width: 320px;
+}
+
+.pepselect-switch {
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.pepselect-switch input {
+	position: absolute;
+	opacity: 0;
+}
+
+.pepselect-switch span {
+	position: relative;
+	width: 38px;
+	height: 20px;
+	background: #8c8f94;
+	border-radius: 20px;
+	transition: background 160ms ease;
+}
+
+.pepselect-switch span::after {
+	content: "";
+	position: absolute;
+	top: 3px;
+	left: 3px;
+	width: 14px;
+	height: 14px;
+	background: #fff;
+	border-radius: 50%;
+	transition: transform 160ms ease;
+}
+
+.pepselect-switch input:checked + span {
+	background: #2271b1;
+}
+
+.pepselect-switch input:checked + span::after {
+	transform: translateX(18px);
+}
+
+.pepselect-switch input:focus-visible + span {
+	outline: 2px solid #2271b1;
+	outline-offset: 2px;
+}
+
+.pepselect-ops-note {
+	max-width: 880px;
+	padding: 14px 18px;
+	background: #f0f6fc;
+	border-left: 4px solid #2271b1;
+}
+
+@media (max-width: 782px) {
+	.pepselect-discount-settings .form-table,
+	.pepselect-discount-settings .select2-container,
+	.pepselect-discount-settings .wc-product-search {
+		width: 100% !important;
+		min-width: 0;
+	}
+}

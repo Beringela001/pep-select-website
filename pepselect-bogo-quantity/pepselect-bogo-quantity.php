@@ -2,12 +2,19 @@
 /**
  * Plugin Name: Pep Select BOGO Cart Experience
  * Description: Keeps Buy 4 get 1 quantities literal and explains earned free vials in Cart and Side Cart.
- * Version:     1.5.1
+ * Version:     1.6.0
  * Author:      Pep Select
  * Text Domain: pepselect-bogo-quantity
  */
 
 defined( 'ABSPATH' ) || exit;
+
+define( 'PEPSELECT_BOGO_VERSION', '1.6.0' );
+define( 'PEPSELECT_BOGO_FILE', __FILE__ );
+
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-pepselect-compound-discount.php';
+
+PepSelect_Compound_Discount::boot();
 
 /**
  * These are the SKUs in the live YITH "Buy 4 get 1 free" rule (rule 1209).
@@ -61,7 +68,7 @@ function pepselect_bogo_enqueue_cart_notice_styles() {
 		'pepselect-bogo-cart-notice',
 		plugin_dir_url( __FILE__ ) . 'assets/bogo-cart-notice.css',
 		array(),
-		'1.5.1'
+		PEPSELECT_BOGO_VERSION
 	);
 }
 add_action( 'wp_enqueue_scripts', 'pepselect_bogo_enqueue_cart_notice_styles' );

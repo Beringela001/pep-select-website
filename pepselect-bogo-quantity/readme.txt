@@ -1,5 +1,5 @@
 === Pep Select BOGO Cart Experience ===
-Version: 1.5.1
+Version: 1.6.0
 
 Companion behavior for the live YITH Buy 4 get 1 free rule.
 
@@ -53,3 +53,11 @@ full Cart savings presentation unchanged.
 
 1.5.1 supports the current Xootix footer filter and adds a presentation fallback
 so its checkout disclaimer stays removed after fragment refreshes.
+
+1.6.0 adds one configurable automatic compound promotion under WooCommerce >
+Compound Discounts. Managers can enable or disable it, select one or more
+products or variations, require any or all selected compounds, choose a
+percentage or fixed-cart discount, and qualify the promotion by eligible item
+quantity or eligible pre-discount subtotal. The rule uses WooCommerce's coupon
+engine and exposes an authenticated, schema-versioned REST contract for a future
+Pep Select Ops mapping. The existing YITH Buy 4 get 1 rule remains unchanged.
