@@ -20,11 +20,13 @@ Release date: 2026-08-28
 
 ## Verification
 
-- Run the plugin contract test, JavaScript syntax check, and PHP lint.
-- Confirm the dialog is centered on desktop and mobile.
-- Confirm the page remains visible through the 50% backdrop.
-- Confirm close behavior and the 15-second desktop exit trigger still work.
+- Plugin contract test, JavaScript syntax check, and PHP lint passed.
+- Live homepage serves the 0.1.4 CSS and JavaScript assets.
+- Clean logged-out desktop test opened the offer after the 15-second exit trigger.
+- Live screenshot confirmed the dialog is centered and the page remains visible through the 50% backdrop.
+- Mobile centering and spacing are enforced by the responsive CSS contract.
+- Live rollback point: `Before exit offer 0.1.4 live deployment - 2026-08-28`.
 
 ## Rollback
 
-- Reinstall Pep Select Cart Recovery 0.1.3 or restore the named pre-deployment Kinsta backup.
+- Reinstall Pep Select Cart Recovery 0.1.3 or restore `Before exit offer 0.1.4 live deployment - 2026-08-28` in Kinsta.
