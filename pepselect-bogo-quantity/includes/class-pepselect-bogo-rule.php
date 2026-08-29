@@ -25,6 +25,8 @@ final class PepSelect_BOGO_Rule {
 		add_filter( 'woocommerce_get_shop_coupon_data', array( __CLASS__, 'provide_virtual_coupon' ), 10, 3 );
 		add_filter( 'woocommerce_cart_totals_coupon_label', array( __CLASS__, 'coupon_label' ), 10, 2 );
 		add_filter( 'woocommerce_cart_totals_coupon_html', array( __CLASS__, 'coupon_html' ), 30, 2 );
+		add_filter( 'pepselect_product_has_b4g1', array( __CLASS__, 'product_page_is_eligible' ), 10, 2 );
+		add_filter( 'pepselect_child_b4g1_pill_label', array( __CLASS__, 'product_page_label' ), 10, 2 );
 	}
 
 	/** @return string[] */
@@ -117,6 +119,24 @@ final class PepSelect_BOGO_Rule {
 	public static function free_vials( $quantity ) {
 		$group = self::BUY_QUANTITY + self::FREE_QUANTITY;
 		return intdiv( max( 0, absint( $quantity ) ), $group ) * self::FREE_QUANTITY;
+	}
+
+	/**
+	 * Let the child theme's existing product-page pill use this rule instead of
+	 * waiting for a YITH pricing notice that no longer owns the promotion.
+	 *
+	 * @param bool            $detected Legacy YITH-detected state; intentionally ignored.
+	 * @param WC_Product|null $product  Product being rendered.
+	 * @return bool
+	 */
+	public static function product_page_is_eligible( $detected, $product ) {
+		unset( $detected );
+		return $product instanceof WC_Product && self::is_product_eligible( $product->get_id() );
+	}
+
+	/** @param string $label Existing label. @param WC_Product|null $product Product. @return string */
+	public static function product_page_label( $label, $product ) {
+		return self::product_page_is_eligible( false, $product ) ? __( 'Buy 4 get 1 free', 'pepselect-bogo-quantity' ) : $label;
 	}
 
 	/** Add the settings screen below WooCommerce. */

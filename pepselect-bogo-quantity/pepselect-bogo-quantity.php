@@ -2,14 +2,14 @@
 /**
  * Plugin Name: Pep Select BOGO Cart Experience
  * Description: Controls Buy 4 get 1 pricing, eligibility, and cart messaging from one Ops-ready rule.
- * Version:     1.8.0
+ * Version:     1.8.1
  * Author:      Pep Select
  * Text Domain: pepselect-bogo-quantity
  */
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'PEPSELECT_BOGO_VERSION', '1.8.0' );
+define( 'PEPSELECT_BOGO_VERSION', '1.8.1' );
 define( 'PEPSELECT_BOGO_FILE', __FILE__ );
 
 require_once plugin_dir_path( __FILE__ ) . 'includes/class-pepselect-compound-discount.php';

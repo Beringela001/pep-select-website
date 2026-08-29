@@ -28,8 +28,8 @@ const discountFrontend = fs.readFileSync(
 );
 
 assert.match(plugin, /Plugin Name: Pep Select BOGO Cart Experience/);
-assert.match(plugin, /Version:\s+1\.8\.0/);
-assert.match(plugin, /PEPSELECT_BOGO_VERSION', '1\.8\.0'/);
+assert.match(plugin, /Version:\s+1\.8\.1/);
+assert.match(plugin, /PEPSELECT_BOGO_VERSION', '1\.8\.1'/);
 assert.match(plugin, /class-pepselect-compound-discount\.php/);
 assert.match(plugin, /class-pepselect-bogo-rule\.php/);
 assert.match(plugin, /woocommerce_get_item_data/);
@@ -72,6 +72,9 @@ assert.match(bogoRule, /fixed_cart/);
 assert.match(bogoRule, /product_ids/);
 assert.match(bogoRule, /Turning this off removes both the automatic discount and its cart message/);
 assert.match(bogoRule, /YITH rule inactive/);
+assert.match(bogoRule, /pepselect_product_has_b4g1/);
+assert.match(bogoRule, /pepselect_child_b4g1_pill_label/);
+assert.match(bogoRule, /Buy 4 get 1 free/);
 
 assert.match(noticeCss, /\.pepselect-bogo-cart-notice\s*\{\s*display:\s*none;/s);
 assert.match(noticeCss, /body\.woocommerce-cart \.pepselect-bogo-cart-notice/);

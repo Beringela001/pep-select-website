@@ -1,5 +1,5 @@
 === Pep Select BOGO Cart Experience ===
-Version: 1.8.0
+Version: 1.8.1
 
 Single-source Buy 4 Get 1 pricing, eligibility, and cart presentation.
 
@@ -77,3 +77,7 @@ The same rule controls pricing and cart messages, so disabling it removes both.
 An authenticated, versioned `/wp-json/pepselect-bogo/v1/buy-four-get-one`
 endpoint and WordPress filters expose the rule for Pep Select Ops. The matching
 YITH Buy 4 Get 1 rule must remain inactive to prevent duplicate discounts.
+
+1.8.1 connects the existing product-page promotion pill to the plugin-owned
+rule. Eligible product pages show "Buy 4 get 1 free" even while YITH remains
+inactive; disabling the rule or removing a product hides the pill everywhere.

@@ -12,6 +12,10 @@ function apply_filters( $hook, $value ) {
 
 function do_action() {}
 
+function __( $value ) {
+	return $value;
+}
+
 function wc_format_decimal( $value ) {
 	return number_format( (float) $value, 2, '.', '' );
 }
@@ -65,6 +69,10 @@ class WC_Product {
 
 	public function get_price() {
 		return $this->price;
+	}
+
+	public function get_id() {
+		return $this->id;
 	}
 
 	public function is_type( $type ) {
@@ -173,5 +181,8 @@ pepselect_assert( 0.0 === PepSelect_BOGO_Rule::cart_discount_amount( $cart ), 'd
 
 $pepselect_test_options[ PepSelect_BOGO_Rule::OPTION ] = array( 'enabled' => true, 'product_ids' => array( 11 ) );
 pepselect_assert( PepSelect_BOGO_Rule::is_product_eligible( 33 ), 'selected parent makes its variation eligible' );
+pepselect_assert( PepSelect_BOGO_Rule::product_page_is_eligible( false, $pepselect_test_products[11] ), 'eligible product page receives the promotion pill' );
+pepselect_assert( ! PepSelect_BOGO_Rule::product_page_is_eligible( true, $pepselect_test_products[22] ), 'legacy YITH detection cannot enable an unselected product' );
+pepselect_assert( 'Buy 4 get 1 free' === PepSelect_BOGO_Rule::product_page_label( 'Legacy label', $pepselect_test_products[11] ), 'product pill uses the plugin label' );
 
 echo "Pep Select Buy 4 Get 1 rule checks passed.\n";
