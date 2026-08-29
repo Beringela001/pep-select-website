@@ -38,7 +38,14 @@ const mockup = fs.readFileSync(path.join(root, '..', 'mockups', 'cart-recovery',
   'if (pendingDesktopExit)'
 ].forEach((needle) => assert(js.includes(needle), `Missing JS contract: ${needle}`));
 
-assert(php.includes("const VERSION = '0.1.3'"), 'Plugin version must be 0.1.3');
+[
+  'display:grid',
+  'place-items:center',
+  'background:rgba(0,29,58,.5)!important',
+  'position:relative'
+].forEach((needle) => assert(css.includes(needle), `Missing centered modal contract: ${needle}`));
+
+assert(php.includes("const VERSION = '0.1.4'"), 'Plugin version must be 0.1.4');
 
 assert(!/dataLayer\.push\([^)]*email/i.test(js), 'Email must not be pushed to the dataLayer');
 assert(!/https?:\/\//.test(js + css), 'Public assets must not call third-party URLs');

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Pep Select Cart Recovery
  * Description: Lightweight exit offer, unique coupons, and Cart Abandonment Recovery integration for Pep Select.
- * Version: 0.1.3
+ * Version: 0.1.4
  * Author: Pep Select
  * Text Domain: pepselect-cart-recovery
  */
@@ -10,7 +10,7 @@
 defined( 'ABSPATH' ) || exit;
 
 final class PepSelect_Cart_Recovery {
-	const VERSION = '0.1.3';
+	const VERSION = '0.1.4';
 	const OPTION  = 'pepselect_cart_recovery_settings';
 	const NONCE   = 'pepselect_exit_offer_capture';
 
