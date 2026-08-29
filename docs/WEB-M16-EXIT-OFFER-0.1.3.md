@@ -24,12 +24,14 @@ Release date: 2026-08-28
 
 ## Verification
 
-- Run the plugin contract test.
-- Verify the package contains version 0.1.3.
-- Test logged-out desktop behavior after 15 seconds.
-- Confirm logged-in WooCommerce administrators remain excluded.
-- Confirm mobile still requires 45 seconds and 55% scroll depth.
+- Plugin contract test passed.
+- JavaScript syntax check and PHP lint passed.
+- Live homepage serves the 0.1.3 CSS and JavaScript assets.
+- Clean logged-out desktop test opened the offer after 15 seconds and a real top-edge cursor exit.
+- Administrator exclusion remains enforced by the existing PHP eligibility check.
+- Mobile behavior remains unchanged at 45 seconds and 55% scroll depth.
+- Live rollback point: `Before exit offer 0.1.3 live deployment - 2026-08-28`.
 
 ## Rollback
 
-- Reinstall Pep Select Cart Recovery 0.1.2 or restore the pre-deployment Kinsta backup.
+- Reinstall Pep Select Cart Recovery 0.1.2 or restore `Before exit offer 0.1.3 live deployment - 2026-08-28` in Kinsta.
