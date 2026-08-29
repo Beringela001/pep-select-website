@@ -1,6 +1,15 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.62** - Reduce logo transfer cost without changing the artwork.
+**Release candidate: 0.25.0-beta.64** - Block automated contact-form mail abuse without adding visitor tracking.
+
+## 0.25.0-beta.64 - 2026-08-29
+
+- Add a three-second minimum fill time to reject immediate automated submissions.
+- Limit valid submissions to five per hashed connection identity per hour without storing raw IP addresses.
+- Suppress exact duplicate messages for 15 minutes after successful delivery while preserving the existing support inbox and reply-to behavior.
+- Keep bot and throttle responses generic so automated senders receive no filtering signal.
+
+**Previous release candidate: 0.25.0-beta.62** - Reduce logo transfer cost without changing the artwork.
 
 ## 0.25.0-beta.62 - 2026-08-28
 

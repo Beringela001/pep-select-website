@@ -96,6 +96,7 @@ get_header();
 
 					<form class="pepselect-contact__form" method="post" action="<?php echo esc_url( pepselect_child_get_contact_url() ); ?>#pepselect-contact-form" id="pepselect-contact-form" novalidate>
 						<?php wp_nonce_field( 'pepselect_contact', 'pepselect_contact_nonce' ); ?>
+						<input type="hidden" name="pepselect_contact_started_at" value="0" autocomplete="off">
 
 						<div class="pepselect-contact__field-row">
 							<div class="pepselect-contact__field">

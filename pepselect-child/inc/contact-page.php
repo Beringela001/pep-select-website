@@ -46,6 +46,14 @@ function pepselect_child_enqueue_contact_assets() {
 		array( 'pepselect-child-foundations' ),
 		pepselect_child_asset_version( 'assets/css/contact.css' )
 	);
+
+	wp_enqueue_script(
+		'pepselect-child-contact',
+		get_stylesheet_directory_uri() . '/assets/js/contact.js',
+		array(),
+		pepselect_child_asset_version( 'assets/js/contact.js' ),
+		true
+	);
 }
 add_action( 'wp_enqueue_scripts', 'pepselect_child_enqueue_contact_assets', 40 );
 
@@ -56,6 +64,41 @@ add_action( 'wp_enqueue_scripts', 'pepselect_child_enqueue_contact_assets', 40 )
  */
 function pepselect_child_get_contact_url() {
 	return pepselect_child_get_page_url( 'contact' );
+}
+
+/**
+ * Mark an automated or throttled submission as accepted without sending mail.
+ *
+ * A generic success response gives bots no useful signal while preventing
+ * contact-form abuse from reaching the support inbox.
+ *
+ * @param array<string,mixed> $state Contact form state.
+ * @return void
+ */
+function pepselect_child_silence_contact_submission( $state ) {
+	$state['status']  = 'success';
+	$state['message'] = __( 'Thanks. Your message is on its way, and we\'ll reply within one business day.', 'pepselect-child' );
+	$state['values']  = array( 'name' => '', 'email' => '', 'subject' => '', 'body' => '' );
+	pepselect_child_set_contact_state( $state );
+}
+
+/**
+ * Build a privacy-preserving rate-limit key for the current connection.
+ *
+ * Only REMOTE_ADDR is trusted. Forwarded headers are intentionally ignored so
+ * visitors cannot choose their own rate-limit bucket. The address itself is
+ * never stored.
+ *
+ * @return string
+ */
+function pepselect_child_get_contact_rate_key() {
+	$remote_address = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
+
+	if ( '' === $remote_address ) {
+		return '';
+	}
+
+	return 'pepselect_contact_rate_' . hash_hmac( 'sha256', $remote_address, wp_salt( 'nonce' ) );
 }
 
 /**
@@ -97,10 +140,14 @@ function pepselect_child_handle_contact_submission() {
 	// Honeypot: a real user leaves this empty. Bots fill it.
 	$honeypot = isset( $_POST['pepselect_contact_website'] ) ? trim( (string) wp_unslash( $_POST['pepselect_contact_website'] ) ) : '';
 	if ( '' !== $honeypot ) {
-		// Silently treat as success so bots get no signal, but send nothing.
-		$state['status']  = 'success';
-		$state['message'] = __( 'Thanks. Your message is on its way, and we\'ll reply within one business day.', 'pepselect-child' );
-		pepselect_child_set_contact_state( $state );
+		pepselect_child_silence_contact_submission( $state );
+		return;
+	}
+
+	// A human cannot meaningfully complete the form in under three seconds.
+	$started_at = isset( $_POST['pepselect_contact_started_at'] ) ? absint( wp_unslash( $_POST['pepselect_contact_started_at'] ) ) : 0;
+	if ( 0 === $started_at || ( time() - $started_at ) < 3 ) {
+		pepselect_child_silence_contact_submission( $state );
 		return;
 	}
 
@@ -126,6 +173,25 @@ function pepselect_child_handle_contact_submission() {
 	if ( '' === $body ) {
 		$state['message'] = __( 'Please add a message before sending.', 'pepselect-child' );
 		pepselect_child_set_contact_state( $state );
+		return;
+	}
+
+	// Limit a hashed connection identity to five valid submissions per hour.
+	$rate_key = pepselect_child_get_contact_rate_key();
+	if ( '' !== $rate_key ) {
+		$attempt_count = (int) get_transient( $rate_key );
+		if ( $attempt_count >= 5 ) {
+			pepselect_child_silence_contact_submission( $state );
+			return;
+		}
+		set_transient( $rate_key, $attempt_count + 1, HOUR_IN_SECONDS );
+	}
+
+	// Suppress exact replay of a successfully delivered message for 15 minutes.
+	$duplicate_material = strtolower( $email ) . "\n" . strtolower( $subject ) . "\n" . $body;
+	$duplicate_key      = 'pepselect_contact_duplicate_' . hash_hmac( 'sha256', $duplicate_material, wp_salt( 'nonce' ) );
+	if ( false !== get_transient( $duplicate_key ) ) {
+		pepselect_child_silence_contact_submission( $state );
 		return;
 	}
 
@@ -155,6 +221,7 @@ function pepselect_child_handle_contact_submission() {
 	$sent = wp_mail( PEPSELECT_CONTACT_INBOX, $mail_subject, $mail_body, $headers );
 
 	if ( $sent ) {
+		set_transient( $duplicate_key, 1, 15 * MINUTE_IN_SECONDS );
 		$state['status']  = 'success';
 		$state['message'] = __( 'Thanks. Your message is on its way, and we\'ll reply within one business day.', 'pepselect-child' );
 		// Clear values so the form resets on success.
