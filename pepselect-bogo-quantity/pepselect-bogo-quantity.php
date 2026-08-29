@@ -1,32 +1,37 @@
 <?php
 /**
  * Plugin Name: Pep Select BOGO Cart Experience
- * Description: Keeps Buy 4 get 1 quantities literal and explains earned free vials in Cart and Side Cart.
- * Version:     1.7.1
+ * Description: Controls Buy 4 get 1 pricing, eligibility, and cart messaging from one Ops-ready rule.
+ * Version:     1.8.0
  * Author:      Pep Select
  * Text Domain: pepselect-bogo-quantity
  */
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'PEPSELECT_BOGO_VERSION', '1.7.1' );
+define( 'PEPSELECT_BOGO_VERSION', '1.8.0' );
 define( 'PEPSELECT_BOGO_FILE', __FILE__ );
 
 require_once plugin_dir_path( __FILE__ ) . 'includes/class-pepselect-compound-discount.php';
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-pepselect-bogo-rule.php';
 
 PepSelect_Compound_Discount::boot();
+PepSelect_BOGO_Rule::boot();
 
 /**
- * These are the SKUs in the live YITH "Buy 4 get 1 free" rule (rule 1209).
- * Keep the YITH rule and this list aligned when eligibility changes.
+ * Compatibility filter for integrations that still consume eligible SKUs.
  *
  * @return string[]
  */
 function pepselect_bogo_skus() {
-	return apply_filters(
-		'pepselect_bogo_skus',
-		array( 'GLP3R10', 'GLP3R20', 'GLP2T20', 'GLP1S10', 'MOTSC10', 'GHKCU50' )
-	);
+	$skus = array();
+	foreach ( PepSelect_BOGO_Rule::get_state()['product_ids'] as $product_id ) {
+		$product = function_exists( 'wc_get_product' ) ? wc_get_product( $product_id ) : null;
+		if ( $product && $product->get_sku() ) {
+			$skus[] = strtoupper( (string) $product->get_sku() );
+		}
+	}
+	return apply_filters( 'pepselect_bogo_skus', array_values( array_unique( $skus ) ) );
 }
 
 /**
@@ -34,22 +39,7 @@ function pepselect_bogo_skus() {
  * @return bool
  */
 function pepselect_bogo_is_eligible( $product_id ) {
-	if ( ! function_exists( 'wc_get_product' ) ) {
-		return false;
-	}
-
-	$product = wc_get_product( $product_id );
-	if ( ! $product ) {
-		return false;
-	}
-
-	$sku = $product->get_sku();
-	if ( '' === $sku && $product->is_type( 'variation' ) ) {
-		$parent = wc_get_product( $product->get_parent_id() );
-		$sku    = $parent ? $parent->get_sku() : '';
-	}
-
-	return in_array( strtoupper( (string) $sku ), pepselect_bogo_skus(), true );
+	return PepSelect_BOGO_Rule::is_product_eligible( $product_id );
 }
 
 /**
@@ -60,7 +50,7 @@ function pepselect_bogo_is_eligible( $product_id ) {
  * their existing presentation.
  */
 function pepselect_bogo_enqueue_cart_notice_styles() {
-	if ( is_admin() && ! wp_doing_ajax() ) {
+	if ( ! PepSelect_BOGO_Rule::is_enabled() || ( is_admin() && ! wp_doing_ajax() ) ) {
 		return;
 	}
 
@@ -81,7 +71,7 @@ add_action( 'wp_enqueue_scripts', 'pepselect_bogo_enqueue_cart_notice_styles' );
  */
 function pepselect_bogo_notice_text( $quantity ) {
 	$total = max( 1, (int) $quantity );
-	$free  = intdiv( $total, 5 );
+	$free  = PepSelect_BOGO_Rule::free_vials( $total );
 
 	if ( $free < 1 ) {
 		return __( 'Add 5, one is on us.', 'pepselect-bogo-quantity' );
@@ -93,38 +83,6 @@ function pepselect_bogo_notice_text( $quantity ) {
 		$free
 	);
 }
-
-/**
- * Keep the listed per-vial price truthful when YITH spreads a free vial's
- * discount across every unit in its formatted cart price.
- *
- * @param string $price         Existing formatted unit price.
- * @param array  $cart_item     WooCommerce cart item.
- * @param string $cart_item_key WooCommerce cart item key.
- * @return string
- */
-function pepselect_bogo_regular_unit_price( $price, $cart_item, $cart_item_key = '' ) {
-	unset( $cart_item_key );
-
-	$product_id = ! empty( $cart_item['variation_id'] ) ? $cart_item['variation_id'] : ( $cart_item['product_id'] ?? 0 );
-	$product    = $cart_item['data'] ?? null;
-	if ( ! $product instanceof WC_Product || ! pepselect_bogo_is_eligible( (int) $product_id ) ) {
-		return $price;
-	}
-
-	$regular_price = (float) $product->get_regular_price();
-	if ( $regular_price <= 0 ) {
-		return $price;
-	}
-
-	return wc_price(
-		wc_get_price_to_display(
-			$product,
-			array( 'price' => $regular_price )
-		)
-	);
-}
-add_filter( 'woocommerce_cart_item_price', 'pepselect_bogo_regular_unit_price', 999, 3 );
 
 /**
  * Reduce the Xootix footer to the single decision-driving number used by the

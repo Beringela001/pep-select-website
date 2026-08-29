@@ -150,6 +150,10 @@ final class PepSelect_Compound_Discount {
 			return;
 		}
 		$codes = array_map( array( __CLASS__, 'coupon_code_for_rule' ), self::get_state()['rules'] );
+		if ( class_exists( 'PepSelect_BOGO_Rule' ) ) {
+			$codes[] = PepSelect_BOGO_Rule::COUPON_CODE;
+		}
+		$codes = array_values( array_unique( array_filter( $codes ) ) );
 		if ( empty( $codes ) ) {
 			return;
 		}

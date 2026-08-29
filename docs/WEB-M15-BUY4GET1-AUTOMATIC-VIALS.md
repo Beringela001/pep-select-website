@@ -3,22 +3,24 @@
 ## Outcome
 
 For eligible SKUs, every quantity input keeps the literal physical quantity the
-customer selected. At five vials YITH discounts one vial by 100%. WooCommerce
+customer selected. At five vials the Pep Select plugin discounts one vial by
+100%. WooCommerce
 stores, orders, and reduces stock by the same visible physical quantity.
 
-## Live rule dependency
+## Pricing authority
 
-YITH rule 1209 remains the only pricing authority. It is configured as purchase
-5, receive 1 at 100% discount. The repeat option must remain enabled so ten
-physical vials receive two free-vial discounts.
+Version 1.8.0 makes the Pep Select plugin the only Buy 4 Get 1 authority. Its
+single saved rule controls promotion status, eligible compounds, pricing, and
+cart messaging. YITH rule 1209 must remain inactive to prevent duplication.
 
 ## Eligibility
 
-Version 1.5.1 mirrors the products selected in rule 1209 by SKU:
+Version 1.8.0 seeds the products formerly selected in rule 1209 by SKU:
 GLP3R10, GLP3R20, GLP2T20, GLP1S10, MOTSC10, and GHKCU50.
 
-When rule 1209 eligibility changes, update `pepselect_bogo_skus()` in the same
-release so price behavior and physical quantity cannot drift.
+Managers change eligibility under WooCommerce > Buy 4 Get 1. The authenticated
+`/wp-json/pepselect-bogo/v1/buy-four-get-one` endpoint exposes the exact same
+versioned rule to Ops, including its master switch and selected product IDs.
 
 ## Cart controls
 
@@ -32,8 +34,9 @@ it says "Add 5, one is on us." At five or more it confirms the number of free
 vials added. The marker is hidden outside the full Cart and Xootix drawer,
 so checkout and order presentation remain unchanged.
 
-Version 1.4.0 contains no quantity-expansion or line-replacement hooks. YITH
-calculates discounts but does not reinterpret the customer-entered quantity.
+Version 1.8.0 contains no quantity-expansion or line-replacement hooks. The
+plugin applies a managed WooCommerce discount without reinterpreting the
+customer-entered quantity.
 
 ## Order 1560
 

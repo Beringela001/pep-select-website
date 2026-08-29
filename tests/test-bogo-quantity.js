@@ -14,6 +14,10 @@ const discountClass = fs.readFileSync(
   path.join(__dirname, '..', 'pepselect-bogo-quantity', 'includes', 'class-pepselect-compound-discount.php'),
   'utf8'
 );
+const bogoRule = fs.readFileSync(
+  path.join(__dirname, '..', 'pepselect-bogo-quantity', 'includes', 'class-pepselect-bogo-rule.php'),
+  'utf8'
+);
 const adminCss = fs.readFileSync(
   path.join(__dirname, '..', 'pepselect-bogo-quantity', 'assets', 'compound-discount-admin.css'),
   'utf8'
@@ -24,14 +28,13 @@ const discountFrontend = fs.readFileSync(
 );
 
 assert.match(plugin, /Plugin Name: Pep Select BOGO Cart Experience/);
-assert.match(plugin, /Version:\s+1\.7\.1/);
-assert.match(plugin, /PEPSELECT_BOGO_VERSION', '1\.7\.1'/);
+assert.match(plugin, /Version:\s+1\.8\.0/);
+assert.match(plugin, /PEPSELECT_BOGO_VERSION', '1\.8\.0'/);
 assert.match(plugin, /class-pepselect-compound-discount\.php/);
+assert.match(plugin, /class-pepselect-bogo-rule\.php/);
 assert.match(plugin, /woocommerce_get_item_data/);
 assert.match(plugin, /pepselect_bogo_enqueue_cart_notice_styles/);
 assert.match(plugin, /pepselect_bogo_notice_text/);
-assert.match(plugin, /pepselect_bogo_regular_unit_price/);
-assert.match(plugin, /woocommerce_cart_item_price/);
 assert.match(plugin, /pepselect_bogo_simplify_side_cart_totals/);
 assert.match(plugin, /xoo_wsc_cart_totals/);
 assert.match(plugin, /Estimated total/);
@@ -54,6 +57,21 @@ assert.doesNotMatch(plugin, /WC\(\)->cart->set_quantity/);
 assert.doesNotMatch(plugin, /rest_post_dispatch/);
 assert.doesNotMatch(plugin, /woocommerce_after_cart_item_quantity_update/);
 assert.doesNotMatch(plugin, /inventory:/i);
+
+assert.match(bogoRule, /class PepSelect_BOGO_Rule/);
+assert.match(bogoRule, /pepselect_bogo_rule_v1/);
+assert.match(bogoRule, /'enabled'\s*=>\s*false/);
+assert.match(bogoRule, /pepselect_bogo_enabled/);
+assert.match(bogoRule, /pepselect_bogo_rule_updated/);
+assert.match(bogoRule, /pepselect_bogo_product_is_eligible/);
+assert.match(bogoRule, /\/buy-four-get-one/);
+assert.match(bogoRule, /manage_woocommerce/);
+assert.match(bogoRule, /if_revision/);
+assert.match(bogoRule, /woocommerce_get_shop_coupon_data/);
+assert.match(bogoRule, /fixed_cart/);
+assert.match(bogoRule, /product_ids/);
+assert.match(bogoRule, /Turning this off removes both the automatic discount and its cart message/);
+assert.match(bogoRule, /YITH rule inactive/);
 
 assert.match(noticeCss, /\.pepselect-bogo-cart-notice\s*\{\s*display:\s*none;/s);
 assert.match(noticeCss, /body\.woocommerce-cart \.pepselect-bogo-cart-notice/);
@@ -107,7 +125,7 @@ assert.match(discountFrontend, /wc-block-components-chip/);
 assert.match(discountFrontend, /MutationObserver/);
 
 for (const sku of ['GLP3R10', 'GLP3R20', 'GLP2T20', 'GLP1S10', 'MOTSC10', 'GHKCU50']) {
-  assert.ok(plugin.includes(`'${sku}'`), `missing eligible SKU ${sku}`);
+  assert.ok(bogoRule.includes(`'${sku}'`), `missing migration SKU ${sku}`);
 }
 
 const literalQuantity = selected => selected;

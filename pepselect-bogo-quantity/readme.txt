@@ -1,10 +1,10 @@
 === Pep Select BOGO Cart Experience ===
-Version: 1.7.1
+Version: 1.8.0
 
-Companion behavior for the live YITH Buy 4 get 1 free rule.
+Single-source Buy 4 Get 1 pricing, eligibility, and cart presentation.
 
 * Cart and product quantity inputs always keep the exact number selected.
-* YITH discounts one vial at quantity 5, two at 10, and so on.
+* The plugin discounts one vial at quantity 5, two at 10, and so on.
 * WooCommerce stores the literal physical quantity, so orders and stock reduction stay truthful.
 * Cart line details say how many free vials were added without exposing internal inventory wording.
 * Eligible lines in the Side Cart and full Cart show a compact "Add 5, one is on us." pill until the offer is earned.
@@ -70,3 +70,10 @@ the customer. Existing 1.6.0 settings migrate without changing the live rule.
 
 1.7.1 keeps the retired 1.6.0 internal coupon valid just long enough for an
 existing cart to replace it silently, avoiding a one-time invalid-coupon notice.
+
+1.8.0 removes the split source of truth between YITH and the cart presentation.
+WooCommerce > Buy 4 Get 1 now owns the master switch and eligible compounds.
+The same rule controls pricing and cart messages, so disabling it removes both.
+An authenticated, versioned `/wp-json/pepselect-bogo/v1/buy-four-get-one`
+endpoint and WordPress filters expose the rule for Pep Select Ops. The matching
+YITH Buy 4 Get 1 rule must remain inactive to prevent duplicate discounts.
