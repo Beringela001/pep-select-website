@@ -2,7 +2,7 @@
 Contributors: pepselect
 Requires at least: 6.5
 Requires PHP: 7.4
-Stable tag: 0.1.2
+Stable tag: 0.1.3
 License: Proprietary
 
 Native Pep Select exit offer and Cart Abandonment Recovery integration.
@@ -23,6 +23,7 @@ Native Pep Select exit offer and Cart Abandonment Recovery integration.
 * Shows no popup or assets until explicitly enabled.
 * Loads no third-party script, font, image, or popup service.
 * Sends non-identifying events to the existing dataLayer.
+* Recognizes desktop exit intent across a practical top-edge area and preserves an early exit signal until the engagement delay completes.
 * Connects a captured cart to the installed recovery plugin without editing vendor files.
 * Adds subscribers to FluentCRM when a list ID is configured.
 * Upgrades the same signup code to 15% when the configured 48-hour recovery template sends.

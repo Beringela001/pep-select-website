@@ -31,8 +31,14 @@ const mockup = fs.readFileSync(path.join(root, '..', 'mockups', 'cart-recovery',
   'pep_exit_offer_submit',
   'pep_exit_offer_success',
   'pep_cart_identified',
-  "sessionStorage.setItem('pep_exit_offer_email'"
+  "sessionStorage.setItem('pep_exit_offer_email'",
+  "document.documentElement.addEventListener('mouseleave', desktopExit)",
+  'eventObject.clientY > 40',
+  'pendingDesktopExit = true',
+  'if (pendingDesktopExit)'
 ].forEach((needle) => assert(js.includes(needle), `Missing JS contract: ${needle}`));
+
+assert(php.includes("const VERSION = '0.1.3'"), 'Plugin version must be 0.1.3');
 
 assert(!/dataLayer\.push\([^)]*email/i.test(js), 'Email must not be pushed to the dataLayer');
 assert(!/https?:\/\//.test(js + css), 'Public assets must not call third-party URLs');

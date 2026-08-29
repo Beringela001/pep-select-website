@@ -14,7 +14,9 @@
   var emailInput = root.querySelector('input[name="email"]');
   var opened = false;
   var eligible = false;
+  var pendingDesktopExit = false;
   var mobileReady = false;
+  var coarsePointer = window.matchMedia('(pointer: coarse)').matches;
   var storageKey = 'pep_exit_offer_state';
 
   function event(name, detail) {
@@ -78,16 +80,30 @@
     }).catch(function () { /* Recovery plugin remains independently retryable at checkout. */ });
   }
 
-  document.addEventListener('mouseout', function (eventObject) {
-    if (eventObject.clientY <= 8 && !eventObject.relatedTarget) open();
-  });
+  function desktopExit(eventObject) {
+    if (coarsePointer || eventObject.relatedTarget || eventObject.clientY > 40) return;
+
+    if (!eligible) {
+      pendingDesktopExit = true;
+      return;
+    }
+
+    open();
+  }
+
+  document.addEventListener('mouseout', desktopExit);
+  document.documentElement.addEventListener('mouseleave', desktopExit);
 
   window.setTimeout(function () {
     eligible = true;
     event('pep_exit_offer_eligible');
+    if (pendingDesktopExit) {
+      pendingDesktopExit = false;
+      open();
+    }
   }, 15000);
 
-  if (window.matchMedia('(pointer: coarse)').matches) {
+  if (coarsePointer) {
     window.setTimeout(function () { mobileReady = true; }, 45000);
     window.addEventListener('scroll', function () {
       var available = document.documentElement.scrollHeight - window.innerHeight;
