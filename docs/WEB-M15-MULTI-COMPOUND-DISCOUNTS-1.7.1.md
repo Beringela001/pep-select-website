@@ -1,4 +1,4 @@
-# WEB-M15: Multi-Rule Compound Discounts 1.7.0
+# WEB-M15: Multi-Rule Compound Discounts 1.7.1
 
 ## Outcome
 
@@ -10,6 +10,7 @@ WooCommerce > Compound Discounts now stores a collection of independent rules in
 - Labels are required, unique, and limited to 24 characters.
 - Automatic discount pills do not expose a remove control. Normal customer coupons and cash-back coupons remain removable.
 - Changing or deleting a rule removes its retired automatic coupon code from the cart.
+- Existing carts replace the retired 1.6.0 internal coupon silently, without exposing an invalid-coupon notice.
 
 ## Compatibility and Ops contract
 

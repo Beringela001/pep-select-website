@@ -73,6 +73,11 @@ function wc_get_notices() {
 
 function wc_set_notices() {}
 
+function WC() {
+	global $pepselect_test_wc;
+	return $pepselect_test_wc;
+}
+
 class WC_Cart {
 	private $items;
 	public $applied = array();
@@ -114,6 +119,16 @@ pepselect_assert( 2 === $migrated['schema_version'], 'legacy rule migrates to sc
 pepselect_assert( 1 === count( $migrated['rules'] ), 'legacy rule is preserved as one saved discount' );
 pepselect_assert( 'GHK+NAD DUO' === $migrated['rules'][0]['label'], 'legacy customer label is preserved' );
 pepselect_assert( in_array( 'pepselect-auto-compound', $migrated['retired_coupon_codes'], true ), 'legacy internal coupon is retired' );
+$pepselect_test_wc = (object) array(
+	'cart' => new PepSelect_Test_Cart(
+		array(
+			array( 'product_id' => 11, 'variation_id' => 0, 'quantity' => 1, 'line_subtotal' => 50 ),
+			array( 'product_id' => 22, 'variation_id' => 0, 'quantity' => 1, 'line_subtotal' => 50 ),
+		)
+	),
+);
+$legacy_coupon = PepSelect_Compound_Discount::provide_virtual_coupon( false, 'pepselect-auto-compound' );
+pepselect_assert( 'pepselect-auto-compound' === $legacy_coupon['code'], 'legacy coupon remains valid during silent cart migration' );
 
 $sanitized = PepSelect_Compound_Discount::sanitize_rule(
 	array(

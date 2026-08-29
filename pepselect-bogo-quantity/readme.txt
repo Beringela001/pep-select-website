@@ -1,5 +1,5 @@
 === Pep Select BOGO Cart Experience ===
-Version: 1.7.0
+Version: 1.7.1
 
 Companion behavior for the live YITH Buy 4 get 1 free rule.
 
@@ -67,3 +67,6 @@ its own activation switch, so several qualifying discounts can run together.
 The customer label is now the visible Cart and Checkout discount name, is
 limited to 24 characters, and automatic discount pills cannot be removed by
 the customer. Existing 1.6.0 settings migrate without changing the live rule.
+
+1.7.1 keeps the retired 1.6.0 internal coupon valid just long enough for an
+existing cart to replace it silently, avoiding a one-time invalid-coupon notice.

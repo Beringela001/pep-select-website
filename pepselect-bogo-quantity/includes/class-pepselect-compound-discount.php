@@ -412,11 +412,22 @@ final class PepSelect_Compound_Discount {
 		if ( false !== $data && null !== $data ) {
 			return $data;
 		}
-		$rule = self::find_rule_by_code( self::get_state()['rules'], $code );
+		$state     = self::get_state();
+		$formatted = wc_format_coupon_code( $code );
+		$legacy    = 0 === strcasecmp( self::LEGACY_CODE, $formatted );
+		$rule      = self::find_rule_by_code( $state['rules'], $formatted );
+		if ( ! $rule && $legacy ) {
+			foreach ( $state['rules'] as $candidate ) {
+				if ( 0 === strpos( $candidate['id'], 'legacy-' ) ) {
+					$rule = $candidate;
+					break;
+				}
+			}
+		}
 		if ( ! $rule || ! function_exists( 'WC' ) || ! WC()->cart || ! self::cart_qualifies( WC()->cart, $rule ) ) {
 			return $data;
 		}
-		return array( 'code' => self::coupon_code_for_rule( $rule ), 'description' => $rule['label'], 'discount_type' => $rule['discount_type'], 'amount' => $rule['discount_amount'], 'individual_use' => false, 'usage_limit' => 0, 'free_shipping' => false );
+		return array( 'code' => $legacy ? self::LEGACY_CODE : self::coupon_code_for_rule( $rule ), 'description' => $rule['label'], 'discount_type' => $rule['discount_type'], 'amount' => $rule['discount_amount'], 'individual_use' => false, 'usage_limit' => 0, 'free_shipping' => false );
 	}
 
 	/** @param string $label Existing label. @param WC_Coupon $coupon Coupon. @return string */

@@ -24,8 +24,8 @@ const discountFrontend = fs.readFileSync(
 );
 
 assert.match(plugin, /Plugin Name: Pep Select BOGO Cart Experience/);
-assert.match(plugin, /Version:\s+1\.7\.0/);
-assert.match(plugin, /PEPSELECT_BOGO_VERSION', '1\.7\.0'/);
+assert.match(plugin, /Version:\s+1\.7\.1/);
+assert.match(plugin, /PEPSELECT_BOGO_VERSION', '1\.7\.1'/);
 assert.match(plugin, /class-pepselect-compound-discount\.php/);
 assert.match(plugin, /woocommerce_get_item_data/);
 assert.match(plugin, /pepselect_bogo_enqueue_cart_notice_styles/);
