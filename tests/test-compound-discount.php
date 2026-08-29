@@ -14,6 +14,14 @@ function sanitize_text_field( $value ) {
 	return trim( strip_tags( (string) $value ) );
 }
 
+function sanitize_key( $value ) {
+	return preg_replace( '/[^a-z0-9_\-]/', '', strtolower( (string) $value ) );
+}
+
+function wc_format_coupon_code( $value ) {
+	return trim( (string) $value );
+}
+
 function is_wp_error( $value ) {
 	return $value instanceof WP_Error;
 }
@@ -26,6 +34,24 @@ function wp_json_encode( $value ) {
 	return json_encode( $value );
 }
 
+$pepselect_test_options = array(
+	'pepselect_compound_discount_rule_v1' => array(
+		'enabled'          => true,
+		'product_ids'      => array( 11, 22 ),
+		'match_mode'       => 'all',
+		'discount_type'    => 'percent',
+		'discount_amount'  => '20',
+		'threshold_type'   => 'quantity',
+		'threshold_amount' => '1',
+		'label'            => 'GHK+NAD DUO',
+	),
+);
+
+function get_option( $key, $default = false ) {
+	global $pepselect_test_options;
+	return array_key_exists( $key, $pepselect_test_options ) ? $pepselect_test_options[ $key ] : $default;
+}
+
 class WP_Error {
 	public function __construct( $code, $message ) {
 		$this->code    = $code;
@@ -33,8 +59,23 @@ class WP_Error {
 	}
 }
 
-class PepSelect_Test_Cart {
+function is_admin() {
+	return false;
+}
+
+function wp_doing_ajax() {
+	return false;
+}
+
+function wc_get_notices() {
+	return array();
+}
+
+function wc_set_notices() {}
+
+class WC_Cart {
 	private $items;
+	public $applied = array();
 
 	public function __construct( $items ) {
 		$this->items = $items;
@@ -43,7 +84,21 @@ class PepSelect_Test_Cart {
 	public function get_cart() {
 		return $this->items;
 	}
+
+	public function has_discount( $code ) {
+		return in_array( $code, $this->applied, true );
+	}
+
+	public function apply_coupon( $code ) {
+		$this->applied[] = $code;
+	}
+
+	public function remove_coupon( $code ) {
+		$this->applied = array_values( array_diff( $this->applied, array( $code ) ) );
+	}
 }
+
+class PepSelect_Test_Cart extends WC_Cart {}
 
 function pepselect_assert( $condition, $message ) {
 	if ( ! $condition ) {
@@ -53,6 +108,12 @@ function pepselect_assert( $condition, $message ) {
 }
 
 require_once dirname( __DIR__ ) . '/pepselect-bogo-quantity/includes/class-pepselect-compound-discount.php';
+
+$migrated = PepSelect_Compound_Discount::get_state();
+pepselect_assert( 2 === $migrated['schema_version'], 'legacy rule migrates to schema version 2' );
+pepselect_assert( 1 === count( $migrated['rules'] ), 'legacy rule is preserved as one saved discount' );
+pepselect_assert( 'GHK+NAD DUO' === $migrated['rules'][0]['label'], 'legacy customer label is preserved' );
+pepselect_assert( in_array( 'pepselect-auto-compound', $migrated['retired_coupon_codes'], true ), 'legacy internal coupon is retired' );
 
 $sanitized = PepSelect_Compound_Discount::sanitize_rule(
 	array(
@@ -64,6 +125,7 @@ $sanitized = PepSelect_Compound_Discount::sanitize_rule(
 		'threshold_type'   => 'quantity',
 		'threshold_amount' => 2.9,
 		'label'            => '<b>Pair offer</b>',
+		'id'               => 'Rule One',
 	)
 );
 
@@ -72,9 +134,21 @@ pepselect_assert( 'all' === $sanitized['match_mode'], 'invalid match mode uses a
 pepselect_assert( 100.0 === (float) $sanitized['discount_amount'], 'percentage is capped at 100' );
 pepselect_assert( 2 === (int) $sanitized['threshold_amount'], 'quantity minimum is an integer' );
 pepselect_assert( 'Pair offer' === $sanitized['label'], 'label is plain text' );
+pepselect_assert( 'ruleone' === $sanitized['id'], 'rule ID is normalized' );
+
+$long_label = PepSelect_Compound_Discount::sanitize_rule(
+	array(
+		'product_ids'      => array( 11 ),
+		'discount_amount'  => 10,
+		'threshold_amount' => 1,
+		'label'            => 'Tesamorelin+Ipamorelin+Long',
+	)
+);
+pepselect_assert( 24 === strlen( $long_label['label'] ), 'customer label is capped at 24 characters' );
+pepselect_assert( $long_label['label'] === PepSelect_Compound_Discount::coupon_code_for_rule( $long_label ), 'customer label is the visible coupon code' );
 
 $rule = array(
-	'schema_version'   => 1,
+	'id'               => 'pair-offer',
 	'enabled'          => true,
 	'product_ids'      => array( 11, 22 ),
 	'match_mode'       => 'all',
@@ -116,5 +190,17 @@ pepselect_assert( PepSelect_Compound_Discount::cart_qualifies( $variation_cart, 
 
 $rule['enabled'] = false;
 pepselect_assert( ! PepSelect_Compound_Discount::cart_qualifies( $variation_cart, $rule ), 'disabled rule never qualifies' );
+
+$pepselect_test_options['pepselect_compound_discount_rules_v2'] = array(
+	'schema_version'       => 2,
+	'retired_coupon_codes' => array(),
+	'rules'                => array(
+		array_merge( $rule, array( 'id' => 'stack-a', 'enabled' => true, 'product_ids' => array( 11 ), 'threshold_type' => 'quantity', 'threshold_amount' => 1, 'label' => 'PAIR A' ) ),
+		array_merge( $rule, array( 'id' => 'stack-b', 'enabled' => true, 'product_ids' => array( 11 ), 'threshold_type' => 'quantity', 'threshold_amount' => 1, 'label' => 'PAIR B' ) ),
+	),
+);
+$stacking_cart = new PepSelect_Test_Cart( array( array( 'product_id' => 11, 'variation_id' => 0, 'quantity' => 1, 'line_subtotal' => 50 ) ) );
+PepSelect_Compound_Discount::sync_automatic_coupons( $stacking_cart );
+pepselect_assert( array( 'PAIR A', 'PAIR B' ) === $stacking_cart->applied, 'multiple qualifying discounts apply together' );
 
 fwrite( STDOUT, "Pep Select compound discount behavior checks passed.\n" );

@@ -1,5 +1,5 @@
 === Pep Select BOGO Cart Experience ===
-Version: 1.6.0
+Version: 1.7.0
 
 Companion behavior for the live YITH Buy 4 get 1 free rule.
 
@@ -61,3 +61,9 @@ percentage or fixed-cart discount, and qualify the promotion by eligible item
 quantity or eligible pre-discount subtotal. The rule uses WooCommerce's coupon
 engine and exposes an authenticated, schema-versioned REST contract for a future
 Pep Select Ops mapping. The existing YITH Buy 4 get 1 rule remains unchanged.
+
+1.7.0 turns Compound Discounts into a multi-rule manager. Each saved rule has
+its own activation switch, so several qualifying discounts can run together.
+The customer label is now the visible Cart and Checkout discount name, is
+limited to 24 characters, and automatic discount pills cannot be removed by
+the customer. Existing 1.6.0 settings migrate without changing the live rule.

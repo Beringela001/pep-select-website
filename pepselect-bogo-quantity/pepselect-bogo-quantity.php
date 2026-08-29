@@ -2,14 +2,14 @@
 /**
  * Plugin Name: Pep Select BOGO Cart Experience
  * Description: Keeps Buy 4 get 1 quantities literal and explains earned free vials in Cart and Side Cart.
- * Version:     1.6.0
+ * Version:     1.7.0
  * Author:      Pep Select
  * Text Domain: pepselect-bogo-quantity
  */
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'PEPSELECT_BOGO_VERSION', '1.6.0' );
+define( 'PEPSELECT_BOGO_VERSION', '1.7.0' );
 define( 'PEPSELECT_BOGO_FILE', __FILE__ );
 
 require_once plugin_dir_path( __FILE__ ) . 'includes/class-pepselect-compound-discount.php';
