@@ -35,6 +35,7 @@ require_once get_stylesheet_directory() . '/inc/seo-semantics.php';
 require_once get_stylesheet_directory() . '/inc/seo-catalog.php';
 require_once get_stylesheet_directory() . '/inc/performance.php';
 require_once get_stylesheet_directory() . '/inc/guides.php';
+require_once get_stylesheet_directory() . '/inc/site-icon.php';
 
 /**
  * Determine whether the required Hello Elementor parent theme is available.
@@ -129,6 +130,7 @@ function pepselect_child_bootstrap() {
 	}
 
 	add_action( 'wp_enqueue_scripts', 'pepselect_child_enqueue_styles', 20 );
+	pepselect_child_register_site_icon();
 	pepselect_child_register_header_preview();
 	pepselect_child_register_footer_preview();
 	pepselect_child_register_homepage_preview();
