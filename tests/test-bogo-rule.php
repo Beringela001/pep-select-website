@@ -149,6 +149,7 @@ require_once dirname( __DIR__ ) . '/pepselect-bogo-quantity/includes/class-pepse
 $defaults = PepSelect_BOGO_Rule::get_state();
 pepselect_assert( false === $defaults['enabled'], 'new rule defaults off' );
 pepselect_assert( array( 11, 12, 13, 14, 15, 16 ) === $defaults['product_ids'], 'legacy SKUs seed the selectable compounds' );
+pepselect_assert( true === $defaults['stackable'], 'existing BOGO rules default to stackable' );
 pepselect_assert( 0 === PepSelect_BOGO_Rule::free_vials( 4 ), 'four physical vials earn none' );
 pepselect_assert( 1 === PepSelect_BOGO_Rule::free_vials( 5 ), 'five physical vials earn one' );
 pepselect_assert( 1 === PepSelect_BOGO_Rule::free_vials( 9 ), 'nine physical vials earn one' );
@@ -168,6 +169,7 @@ $coupon = PepSelect_BOGO_Rule::provide_virtual_coupon( false, PepSelect_BOGO_Rul
 pepselect_assert( 'fixed_cart' === $coupon['discount_type'], 'managed WooCommerce coupon applies the discount' );
 pepselect_assert( '200.00' === $coupon['amount'], 'coupon amount equals the earned vial value' );
 pepselect_assert( array( 11 ) === $coupon['product_ids'], 'coupon is restricted to selected compounds' );
+pepselect_assert( false === $coupon['individual_use'], 'stackable BOGO coupon can combine with other discounts' );
 
 PepSelect_BOGO_Rule::sync_automatic_coupon( $cart );
 pepselect_assert( $cart->has_discount( PepSelect_BOGO_Rule::COUPON_CODE ), 'enabled qualifying rule adds its coupon' );
@@ -184,5 +186,9 @@ pepselect_assert( PepSelect_BOGO_Rule::is_product_eligible( 33 ), 'selected pare
 pepselect_assert( PepSelect_BOGO_Rule::product_page_is_eligible( false, $pepselect_test_products[11] ), 'eligible product page receives the promotion pill' );
 pepselect_assert( ! PepSelect_BOGO_Rule::product_page_is_eligible( true, $pepselect_test_products[22] ), 'legacy YITH detection cannot enable an unselected product' );
 pepselect_assert( 'Buy 4 get 1 free' === PepSelect_BOGO_Rule::product_page_label( 'Legacy label', $pepselect_test_products[11] ), 'product pill uses the plugin label' );
+
+$pepselect_test_options[ PepSelect_BOGO_Rule::OPTION ]['stackable'] = false;
+$exclusive_coupon = PepSelect_BOGO_Rule::provide_virtual_coupon( false, PepSelect_BOGO_Rule::COUPON_CODE );
+pepselect_assert( true === $exclusive_coupon['individual_use'], 'exclusive BOGO coupon blocks stacking' );
 
 echo "Pep Select Buy 4 Get 1 rule checks passed.\n";

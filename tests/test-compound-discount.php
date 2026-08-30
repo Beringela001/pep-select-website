@@ -115,7 +115,7 @@ function pepselect_assert( $condition, $message ) {
 require_once dirname( __DIR__ ) . '/pepselect-bogo-quantity/includes/class-pepselect-compound-discount.php';
 
 $migrated = PepSelect_Compound_Discount::get_state();
-pepselect_assert( 2 === $migrated['schema_version'], 'legacy rule migrates to schema version 2' );
+pepselect_assert( 3 === $migrated['schema_version'], 'legacy rule migrates to schema version 3' );
 pepselect_assert( 1 === count( $migrated['rules'] ), 'legacy rule is preserved as one saved discount' );
 pepselect_assert( 'GHK+NAD DUO' === $migrated['rules'][0]['label'], 'legacy customer label is preserved' );
 pepselect_assert( in_array( 'pepselect-auto-compound', $migrated['retired_coupon_codes'], true ), 'legacy internal coupon is retired' );
@@ -150,6 +150,10 @@ pepselect_assert( 100.0 === (float) $sanitized['discount_amount'], 'percentage i
 pepselect_assert( 2 === (int) $sanitized['threshold_amount'], 'quantity minimum is an integer' );
 pepselect_assert( 'Pair offer' === $sanitized['label'], 'label is plain text' );
 pepselect_assert( 'ruleone' === $sanitized['id'], 'rule ID is normalized' );
+pepselect_assert( true === $sanitized['stackable'], 'legacy and omitted stacking settings default to stackable' );
+
+$exclusive = PepSelect_Compound_Discount::sanitize_rule( array_merge( $sanitized, array( 'stackable' => '0' ) ) );
+pepselect_assert( false === $exclusive['stackable'], 'compound rules can be exclusive' );
 
 $long_label = PepSelect_Compound_Discount::sanitize_rule(
 	array(

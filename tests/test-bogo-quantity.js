@@ -18,6 +18,18 @@ const bogoRule = fs.readFileSync(
   path.join(__dirname, '..', 'pepselect-bogo-quantity', 'includes', 'class-pepselect-bogo-rule.php'),
   'utf8'
 );
+const sitewideClass = fs.readFileSync(
+  path.join(__dirname, '..', 'pepselect-bogo-quantity', 'includes', 'class-pepselect-sitewide-discount.php'),
+  'utf8'
+);
+const stackingClass = fs.readFileSync(
+  path.join(__dirname, '..', 'pepselect-bogo-quantity', 'includes', 'class-pepselect-discount-stacking.php'),
+  'utf8'
+);
+const discountAdmin = fs.readFileSync(
+  path.join(__dirname, '..', 'pepselect-bogo-quantity', 'includes', 'class-pepselect-discount-admin.php'),
+  'utf8'
+);
 const adminCss = fs.readFileSync(
   path.join(__dirname, '..', 'pepselect-bogo-quantity', 'assets', 'compound-discount-admin.css'),
   'utf8'
@@ -27,11 +39,14 @@ const discountFrontend = fs.readFileSync(
   'utf8'
 );
 
-assert.match(plugin, /Plugin Name: Pep Select BOGO Cart Experience/);
-assert.match(plugin, /Version:\s+1\.8\.1/);
-assert.match(plugin, /PEPSELECT_BOGO_VERSION', '1\.8\.1'/);
+assert.match(plugin, /Plugin Name: Pep Select Cart Discounts/);
+assert.match(plugin, /Version:\s+2\.0\.0/);
+assert.match(plugin, /PEPSELECT_BOGO_VERSION', '2\.0\.0'/);
 assert.match(plugin, /class-pepselect-compound-discount\.php/);
 assert.match(plugin, /class-pepselect-bogo-rule\.php/);
+assert.match(plugin, /class-pepselect-sitewide-discount\.php/);
+assert.match(plugin, /class-pepselect-discount-admin\.php/);
+assert.match(plugin, /class-pepselect-discount-stacking\.php/);
 assert.match(plugin, /woocommerce_get_item_data/);
 assert.match(plugin, /pepselect_bogo_enqueue_cart_notice_styles/);
 assert.match(plugin, /pepselect_bogo_notice_text/);
@@ -75,6 +90,8 @@ assert.match(bogoRule, /YITH rule inactive/);
 assert.match(bogoRule, /pepselect_product_has_b4g1/);
 assert.match(bogoRule, /pepselect_child_b4g1_pill_label/);
 assert.match(bogoRule, /Buy 4 get 1 free/);
+assert.match(bogoRule, /'stackable'\s*=>\s*true/);
+assert.match(bogoRule, /individual_use'\s*=>\s*empty/);
 
 assert.match(noticeCss, /\.pepselect-bogo-cart-notice\s*\{\s*display:\s*none;/s);
 assert.match(noticeCss, /body\.woocommerce-cart \.pepselect-bogo-cart-notice/);
@@ -95,16 +112,15 @@ assert.match(noticeCss, /\.xoo-wsc-sm-info,/);
 
 assert.match(discountClass, /pepselect_compound_discount_rule_v1/);
 assert.match(discountClass, /pepselect_compound_discount_rules_v2/);
-assert.match(discountClass, /SCHEMA_VERSION\s*= 2/);
+assert.match(discountClass, /SCHEMA_VERSION\s*= 3/);
 assert.match(discountClass, /LABEL_LIMIT\s*= 24/);
-assert.match(discountClass, /'woocommerce_page_'\s*\.\s*self::PAGE_SLUG/);
+assert.match(discountClass, /PepSelect_Discount_Admin::PAGE_SLUG/);
 assert.match(discountClass, /wc-product-search/);
 assert.match(discountClass, /woocommerce_json_search_products_and_variations/);
 assert.match(discountClass, /'match_mode'\s*=>\s*'all'/);
 assert.match(discountClass, /array\( 'any', 'all' \)/);
 assert.match(discountClass, /array\( 'percent', 'fixed_cart' \)/);
 assert.match(discountClass, /array\( 'quantity', 'subtotal' \)/);
-assert.match(discountClass, /woocommerce_before_calculate_totals/);
 assert.match(discountClass, /woocommerce_get_shop_coupon_data/);
 assert.match(discountClass, /pepselect-auto-compound/);
 assert.match(discountClass, /pepselect_toggle_compound_discount/);
@@ -118,7 +134,24 @@ assert.match(discountClass, /manage_woocommerce/);
 assert.match(discountClass, /pepselect-bogo\/v1/);
 assert.match(discountClass, /if_revision/);
 assert.match(discountClass, /status'\s*=>\s*409/);
+assert.match(discountClass, /'stackable'\s*=>\s*true/);
+assert.match(discountClass, /estimated_discount_amount/);
 assert.doesNotMatch(discountClass, /add_fee\s*\(/);
+assert.match(discountAdmin, /add_menu_page/);
+assert.match(discountAdmin, /Cart Discounts/);
+assert.match(discountAdmin, /Buy 4 Get 1/);
+assert.match(discountAdmin, /Compound Discounts/);
+assert.match(discountAdmin, /Sitewide Discounts/);
+assert.match(sitewideClass, /pepselect_sitewide_discount_rules_v1/);
+assert.match(sitewideClass, /array\( 'none', 'quantity', 'subtotal' \)/);
+assert.match(sitewideClass, /array\( 'everyone', 'logged_in', 'subscribers', 'purchasers', 'vip', 'specific' \)/);
+assert.match(sitewideClass, /woocommerce_json_search_customers/);
+assert.match(sitewideClass, /pepselect_discount_customer_is_subscriber/);
+assert.match(sitewideClass, /pepselect_discount_customer_is_vip/);
+assert.match(sitewideClass, /individual_use'\s*=>\s*empty/);
+assert.match(stackingClass, /woocommerce_before_calculate_totals/);
+assert.match(stackingClass, /estimated_amount/);
+assert.match(stackingClass, /array_merge/);
 assert.match(adminCss, /\.pepselect-discount-layout/);
 assert.match(adminCss, /\.pepselect-rule-row/);
 assert.match(adminCss, /\.pepselect-switch-button/);

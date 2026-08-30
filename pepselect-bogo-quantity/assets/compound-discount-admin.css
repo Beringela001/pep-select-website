@@ -32,9 +32,14 @@
 }
 
 .pepselect-discount-settings .wc-product-search,
+.pepselect-discount-settings .wc-customer-search,
 .pepselect-discount-settings .select2-container {
 	width: 100% !important;
 	min-width: 0;
+}
+
+.pepselect-discount-overview {
+	grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .pepselect-rule-list {
@@ -172,7 +177,8 @@
 
 	.pepselect-discount-settings .form-table,
 	.pepselect-discount-settings .select2-container,
-	.pepselect-discount-settings .wc-product-search {
+	.pepselect-discount-settings .wc-product-search,
+	.pepselect-discount-settings .wc-customer-search {
 		width: 100% !important;
 		min-width: 0;
 	}

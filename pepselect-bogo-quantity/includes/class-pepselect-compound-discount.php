@@ -9,7 +9,7 @@ final class PepSelect_Compound_Discount {
 	const PAGE_SLUG      = 'pepselect-compound-discounts';
 	const LEGACY_CODE    = 'pepselect-auto-compound';
 	const REST_NAMESPACE = 'pepselect-bogo/v1';
-	const SCHEMA_VERSION = 2;
+	const SCHEMA_VERSION = 3;
 	const LABEL_LIMIT    = 24;
 	const MAX_RULES      = 50;
 
@@ -19,13 +19,11 @@ final class PepSelect_Compound_Discount {
 	/** Register WordPress, WooCommerce, and REST hooks. */
 	public static function boot() {
 		add_action( 'admin_menu', array( __CLASS__, 'register_settings_page' ) );
-		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'enqueue_admin_assets' ) );
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_frontend_assets' ) );
 		add_action( 'admin_post_pepselect_save_compound_discount', array( __CLASS__, 'handle_save_rule' ) );
 		add_action( 'admin_post_pepselect_toggle_compound_discount', array( __CLASS__, 'handle_toggle_rule' ) );
 		add_action( 'admin_post_pepselect_delete_compound_discount', array( __CLASS__, 'handle_delete_rule' ) );
 		add_action( 'rest_api_init', array( __CLASS__, 'register_rest_routes' ) );
-		add_action( 'woocommerce_before_calculate_totals', array( __CLASS__, 'sync_automatic_coupons' ), 20 );
 		add_filter( 'woocommerce_get_shop_coupon_data', array( __CLASS__, 'provide_virtual_coupon' ), 10, 3 );
 		add_filter( 'woocommerce_cart_totals_coupon_label', array( __CLASS__, 'coupon_label' ), 10, 2 );
 		add_filter( 'woocommerce_cart_totals_coupon_html', array( __CLASS__, 'coupon_html' ), 30, 2 );
@@ -42,6 +40,7 @@ final class PepSelect_Compound_Discount {
 			'discount_amount'  => '10',
 			'threshold_type'   => 'quantity',
 			'threshold_amount' => '2',
+			'stackable'        => true,
 			'label'            => '',
 		);
 	}
@@ -108,6 +107,7 @@ final class PepSelect_Compound_Discount {
 			'discount_amount'  => wc_format_decimal( $amount ),
 			'threshold_type'   => $threshold,
 			'threshold_amount' => wc_format_decimal( $minimum ),
+			'stackable'        => ! isset( $input['stackable'] ) || ! empty( $input['stackable'] ),
 			'label'            => $label,
 		);
 	}
@@ -131,7 +131,7 @@ final class PepSelect_Compound_Discount {
 
 	/** Add the settings screen below WooCommerce. */
 	public static function register_settings_page() {
-		add_submenu_page( 'woocommerce', __( 'Compound Discounts', 'pepselect-bogo-quantity' ), __( 'Compound Discounts', 'pepselect-bogo-quantity' ), 'manage_woocommerce', self::PAGE_SLUG, array( __CLASS__, 'render_settings_page' ) );
+		add_submenu_page( PepSelect_Discount_Admin::PAGE_SLUG, __( 'Compound Discounts', 'pepselect-bogo-quantity' ), __( 'Compound Discounts', 'pepselect-bogo-quantity' ), 'manage_woocommerce', self::PAGE_SLUG, array( __CLASS__, 'render_settings_page' ) );
 	}
 
 	/** @param string $hook_suffix Current admin hook. */
@@ -152,6 +152,11 @@ final class PepSelect_Compound_Discount {
 		$codes = array_map( array( __CLASS__, 'coupon_code_for_rule' ), self::get_state()['rules'] );
 		if ( class_exists( 'PepSelect_BOGO_Rule' ) ) {
 			$codes[] = PepSelect_BOGO_Rule::COUPON_CODE;
+		}
+		if ( class_exists( 'PepSelect_Sitewide_Discount' ) ) {
+			foreach ( PepSelect_Sitewide_Discount::get_state()['rules'] as $rule ) {
+				$codes[] = PepSelect_Sitewide_Discount::coupon_code_for_rule( $rule );
+			}
 		}
 		$codes = array_values( array_unique( array_filter( $codes ) ) );
 		if ( empty( $codes ) ) {
@@ -187,6 +192,7 @@ final class PepSelect_Compound_Discount {
 							<tr><th scope="row"><label for="pepselect-match-mode"><?php esc_html_e( 'Compound requirement', 'pepselect-bogo-quantity' ); ?></label></th><td><select id="pepselect-match-mode" name="rule[match_mode]"><option value="all" <?php selected( $rule['match_mode'], 'all' ); ?>><?php esc_html_e( 'Require all selected compounds', 'pepselect-bogo-quantity' ); ?></option><option value="any" <?php selected( $rule['match_mode'], 'any' ); ?>><?php esc_html_e( 'Require any selected compound', 'pepselect-bogo-quantity' ); ?></option></select></td></tr>
 							<tr><th scope="row"><?php esc_html_e( 'Discount', 'pepselect-bogo-quantity' ); ?></th><td><select name="rule[discount_type]"><option value="percent" <?php selected( $rule['discount_type'], 'percent' ); ?>><?php esc_html_e( 'Percentage', 'pepselect-bogo-quantity' ); ?></option><option value="fixed_cart" <?php selected( $rule['discount_type'], 'fixed_cart' ); ?>><?php esc_html_e( 'Fixed dollar amount', 'pepselect-bogo-quantity' ); ?></option></select> <input type="number" min="0.01" step="0.01" name="rule[discount_amount]" value="<?php echo esc_attr( $rule['discount_amount'] ); ?>" class="small-text" required></td></tr>
 							<tr><th scope="row"><?php esc_html_e( 'Minimum', 'pepselect-bogo-quantity' ); ?></th><td><select name="rule[threshold_type]"><option value="quantity" <?php selected( $rule['threshold_type'], 'quantity' ); ?>><?php esc_html_e( 'Eligible item quantity', 'pepselect-bogo-quantity' ); ?></option><option value="subtotal" <?php selected( $rule['threshold_type'], 'subtotal' ); ?>><?php esc_html_e( 'Eligible item subtotal', 'pepselect-bogo-quantity' ); ?></option></select> <input type="number" min="0.01" step="0.01" name="rule[threshold_amount]" value="<?php echo esc_attr( $rule['threshold_amount'] ); ?>" class="small-text" required><p class="description"><?php esc_html_e( 'Measured before discounts and only across the selected compounds.', 'pepselect-bogo-quantity' ); ?></p></td></tr>
+							<tr><th scope="row"><?php esc_html_e( 'Stacking', 'pepselect-bogo-quantity' ); ?></th><td><select name="rule[stackable]"><option value="1" <?php selected( $rule['stackable'], true ); ?>><?php esc_html_e( 'Stack with other discounts', 'pepselect-bogo-quantity' ); ?></option><option value="0" <?php selected( $rule['stackable'], false ); ?>><?php esc_html_e( 'Do not stack', 'pepselect-bogo-quantity' ); ?></option></select><p class="description"><?php esc_html_e( 'Exclusive discounts cannot combine with BOGO, compound, sitewide, or coupon-code discounts.', 'pepselect-bogo-quantity' ); ?></p></td></tr>
 							<tr><th scope="row"><label for="pepselect-discount-label"><?php esc_html_e( 'Customer label', 'pepselect-bogo-quantity' ); ?></label></th><td><input id="pepselect-discount-label" type="text" class="regular-text" name="rule[label]" value="<?php echo esc_attr( $rule['label'] ); ?>" maxlength="<?php echo esc_attr( self::LABEL_LIMIT ); ?>" required><p class="description"><?php printf( esc_html__( 'Shown in Cart and Checkout. Maximum %d characters.', 'pepselect-bogo-quantity' ), self::LABEL_LIMIT ); ?></p></td></tr>
 						</table>
 						<?php submit_button( $edit_id ? __( 'Update discount', 'pepselect-bogo-quantity' ) : __( 'Save discount', 'pepselect-bogo-quantity' ) ); ?>
@@ -318,8 +324,8 @@ final class PepSelect_Compound_Discount {
 	/** @param WP_REST_Request $request Request. @return WP_REST_Response|WP_Error */
 	public static function rest_update_rules( $request ) {
 		$body = $request->get_json_params();
-		if ( self::SCHEMA_VERSION !== absint( $body['schema_version'] ?? 0 ) || ! is_array( $body['rules'] ?? null ) ) {
-			return new WP_Error( 'pepselect_discount_schema', __( 'schema_version 2 and a rules array are required.', 'pepselect-bogo-quantity' ), array( 'status' => 400 ) );
+		if ( ! in_array( absint( $body['schema_version'] ?? 0 ), array( 2, self::SCHEMA_VERSION ), true ) || ! is_array( $body['rules'] ?? null ) ) {
+			return new WP_Error( 'pepselect_discount_schema', __( 'schema_version 3 and a rules array are required.', 'pepselect-bogo-quantity' ), array( 'status' => 400 ) );
 		}
 		$current = self::get_state();
 		if ( ! empty( $body['if_revision'] ) && ! hash_equals( self::revision( $current ), sanitize_text_field( $body['if_revision'] ) ) ) {
@@ -345,6 +351,9 @@ final class PepSelect_Compound_Discount {
 			}
 			if ( isset( $ids[ $rule['id'] ] ) || isset( $codes[ strtolower( $code ) ] ) ) {
 				return new WP_Error( 'pepselect_discount_duplicate', __( 'Rule IDs and customer labels must be unique.', 'pepselect-bogo-quantity' ), array( 'status' => 400 ) );
+			}
+			if ( self::label_is_duplicate( $rule, $state['rules'] ) ) {
+				return new WP_Error( 'pepselect_discount_managed_conflict', __( 'That customer label is already used by another managed discount.', 'pepselect-bogo-quantity' ), array( 'status' => 400 ) );
 			}
 			if ( function_exists( 'wc_get_coupon_id_by_code' ) && wc_get_coupon_id_by_code( $code ) ) {
 				return new WP_Error( 'pepselect_discount_coupon_conflict', __( 'A published WooCommerce coupon already uses that customer label.', 'pepselect-bogo-quantity' ), array( 'status' => 400 ) );
@@ -385,6 +394,31 @@ final class PepSelect_Compound_Discount {
 			}
 		}
 		self::$syncing = false;
+	}
+
+	/** Return every current and retired coupon to the shared stacking coordinator. */
+	public static function discount_candidates( $cart ) {
+		$state      = self::get_state();
+		$candidates = array();
+		foreach ( $state['rules'] as $rule ) {
+			$candidates[] = array( 'code' => self::coupon_code_for_rule( $rule ), 'qualifies' => self::cart_qualifies( $cart, $rule ), 'stackable' => ! empty( $rule['stackable'] ), 'estimated_amount' => self::estimated_discount_amount( $cart, $rule ) );
+		}
+		foreach ( $state['retired_coupon_codes'] as $code ) {
+			$candidates[] = array( 'code' => $code, 'qualifies' => false, 'stackable' => true, 'estimated_amount' => 0 );
+		}
+		return $candidates;
+	}
+
+	/** Estimate an order-level rule's savings for exclusive-rule selection. */
+	public static function estimated_discount_amount( $cart, $rule ) {
+		if ( ! self::cart_qualifies( $cart, $rule ) ) {
+			return 0.0;
+		}
+		$subtotal = 0.0;
+		foreach ( $cart->get_cart() as $item ) {
+			$subtotal += max( 0, (float) ( $item['line_subtotal'] ?? 0 ) );
+		}
+		return 'percent' === $rule['discount_type'] ? $subtotal * (float) $rule['discount_amount'] / 100 : min( $subtotal, (float) $rule['discount_amount'] );
 	}
 
 	/** @param WC_Cart $cart Cart. @param array<string,mixed> $rule Rule. @return bool */
@@ -431,7 +465,7 @@ final class PepSelect_Compound_Discount {
 		if ( ! $rule || ! function_exists( 'WC' ) || ! WC()->cart || ! self::cart_qualifies( WC()->cart, $rule ) ) {
 			return $data;
 		}
-		return array( 'code' => $legacy ? self::LEGACY_CODE : self::coupon_code_for_rule( $rule ), 'description' => $rule['label'], 'discount_type' => $rule['discount_type'], 'amount' => $rule['discount_amount'], 'individual_use' => false, 'usage_limit' => 0, 'free_shipping' => false );
+		return array( 'code' => $legacy ? self::LEGACY_CODE : self::coupon_code_for_rule( $rule ), 'description' => $rule['label'], 'discount_type' => $rule['discount_type'], 'amount' => $rule['discount_amount'], 'individual_use' => empty( $rule['stackable'] ), 'usage_limit' => 0, 'free_shipping' => false );
 	}
 
 	/** @param string $label Existing label. @param WC_Coupon $coupon Coupon. @return string */
@@ -519,6 +553,16 @@ final class PepSelect_Compound_Discount {
 				return true;
 			}
 		}
+		if ( class_exists( 'PepSelect_BOGO_Rule' ) && 0 === strcasecmp( PepSelect_BOGO_Rule::COUPON_CODE, $code ) ) {
+			return true;
+		}
+		if ( class_exists( 'PepSelect_Sitewide_Discount' ) ) {
+			foreach ( PepSelect_Sitewide_Discount::get_state()['rules'] as $rule ) {
+				if ( 0 === strcasecmp( PepSelect_Sitewide_Discount::coupon_code_for_rule( $rule ), $code ) ) {
+					return true;
+				}
+			}
+		}
 		return function_exists( 'wc_get_coupon_id_by_code' ) && (bool) wc_get_coupon_id_by_code( $code );
 	}
 
@@ -545,7 +589,7 @@ final class PepSelect_Compound_Discount {
 	private static function rule_summary( $rule ) {
 		$discount = 'percent' === $rule['discount_type'] ? $rule['discount_amount'] . '%' : '$' . $rule['discount_amount'];
 		$minimum  = 'quantity' === $rule['threshold_type'] ? sprintf( _n( '%s eligible item', '%s eligible items', absint( $rule['threshold_amount'] ), 'pepselect-bogo-quantity' ), $rule['threshold_amount'] ) : '$' . $rule['threshold_amount'] . ' eligible subtotal';
-		return sprintf( __( '%1$s off · %2$s · %3$d compounds', 'pepselect-bogo-quantity' ), $discount, $minimum, count( $rule['product_ids'] ) );
+		return sprintf( __( '%1$s off · %2$s · %3$d compounds · %4$s', 'pepselect-bogo-quantity' ), $discount, $minimum, count( $rule['product_ids'] ), $rule['stackable'] ? __( 'stackable', 'pepselect-bogo-quantity' ) : __( 'exclusive', 'pepselect-bogo-quantity' ) );
 	}
 
 	/** @return string */
@@ -589,7 +633,7 @@ final class PepSelect_Compound_Discount {
 
 	/** @param array<string,mixed> $state State. @return array<string,mixed> */
 	private static function rest_payload( $state ) {
-		return array( 'schema_version' => self::SCHEMA_VERSION, 'revision' => self::revision( $state ), 'rules' => $state['rules'], 'contract' => array( 'max_rules' => self::MAX_RULES, 'customer_label_max_length' => self::LABEL_LIMIT, 'customer_label_is_coupon_code' => true, 'match_mode' => array( 'any', 'all' ), 'discount_type' => array( 'percent', 'fixed_cart' ), 'threshold_type' => array( 'quantity', 'subtotal' ) ) );
+		return array( 'schema_version' => self::SCHEMA_VERSION, 'revision' => self::revision( $state ), 'rules' => $state['rules'], 'contract' => array( 'max_rules' => self::MAX_RULES, 'customer_label_max_length' => self::LABEL_LIMIT, 'customer_label_is_coupon_code' => true, 'match_mode' => array( 'any', 'all' ), 'discount_type' => array( 'percent', 'fixed_cart' ), 'threshold_type' => array( 'quantity', 'subtotal' ), 'stackable' => true ) );
 	}
 
 	/** @param array<string,mixed> $state State. @return string */

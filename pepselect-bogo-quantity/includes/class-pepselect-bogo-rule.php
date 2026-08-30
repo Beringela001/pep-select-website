@@ -7,7 +7,7 @@ final class PepSelect_BOGO_Rule {
 	const OPTION         = 'pepselect_bogo_rule_v1';
 	const PAGE_SLUG      = 'pepselect-buy-four-get-one';
 	const REST_NAMESPACE = 'pepselect-bogo/v1';
-	const SCHEMA_VERSION = 1;
+	const SCHEMA_VERSION = 2;
 	const COUPON_CODE    = 'Buy 4 Get 1 Free';
 	const BUY_QUANTITY   = 4;
 	const FREE_QUANTITY  = 1;
@@ -18,10 +18,8 @@ final class PepSelect_BOGO_Rule {
 	/** Register WordPress, WooCommerce, and REST hooks. */
 	public static function boot() {
 		add_action( 'admin_menu', array( __CLASS__, 'register_settings_page' ) );
-		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'enqueue_admin_assets' ) );
 		add_action( 'admin_post_pepselect_save_bogo_rule', array( __CLASS__, 'handle_save' ) );
 		add_action( 'rest_api_init', array( __CLASS__, 'register_rest_routes' ) );
-		add_action( 'woocommerce_before_calculate_totals', array( __CLASS__, 'sync_automatic_coupon' ), 10 );
 		add_filter( 'woocommerce_get_shop_coupon_data', array( __CLASS__, 'provide_virtual_coupon' ), 10, 3 );
 		add_filter( 'woocommerce_cart_totals_coupon_label', array( __CLASS__, 'coupon_label' ), 10, 2 );
 		add_filter( 'woocommerce_cart_totals_coupon_html', array( __CLASS__, 'coupon_html' ), 30, 2 );
@@ -57,6 +55,7 @@ final class PepSelect_BOGO_Rule {
 			'product_ids'    => self::default_product_ids(),
 			'buy_quantity'   => self::BUY_QUANTITY,
 			'free_quantity'  => self::FREE_QUANTITY,
+			'stackable'      => true,
 			'label'          => self::COUPON_CODE,
 		);
 	}
@@ -74,6 +73,7 @@ final class PepSelect_BOGO_Rule {
 			'product_ids'    => $product_ids,
 			'buy_quantity'   => self::BUY_QUANTITY,
 			'free_quantity'  => self::FREE_QUANTITY,
+			'stackable'      => ! isset( $input['stackable'] ) || ! empty( $input['stackable'] ),
 			'label'          => self::COUPON_CODE,
 		);
 	}
@@ -141,7 +141,7 @@ final class PepSelect_BOGO_Rule {
 
 	/** Add the settings screen below WooCommerce. */
 	public static function register_settings_page() {
-		add_submenu_page( 'woocommerce', __( 'Buy 4 Get 1', 'pepselect-bogo-quantity' ), __( 'Buy 4 Get 1', 'pepselect-bogo-quantity' ), 'manage_woocommerce', self::PAGE_SLUG, array( __CLASS__, 'render_settings_page' ) );
+		add_submenu_page( PepSelect_Discount_Admin::PAGE_SLUG, __( 'Buy 4 Get 1', 'pepselect-bogo-quantity' ), __( 'Buy 4 Get 1', 'pepselect-bogo-quantity' ), 'manage_woocommerce', self::PAGE_SLUG, array( __CLASS__, 'render_settings_page' ) );
 	}
 
 	/** @param string $hook_suffix Current admin hook. */
@@ -174,6 +174,7 @@ final class PepSelect_BOGO_Rule {
 					<table class="form-table" role="presentation">
 						<tr><th scope="row"><?php esc_html_e( 'Promotion status', 'pepselect-bogo-quantity' ); ?></th><td><label><input type="checkbox" name="rule[enabled]" value="1" <?php checked( $state['enabled'] ); ?>> <?php esc_html_e( 'Enabled', 'pepselect-bogo-quantity' ); ?></label><p class="description"><?php esc_html_e( 'Turning this off removes both the automatic discount and its cart message.', 'pepselect-bogo-quantity' ); ?></p></td></tr>
 						<tr><th scope="row"><label for="pepselect-bogo-products"><?php esc_html_e( 'Compounds', 'pepselect-bogo-quantity' ); ?></label></th><td><select id="pepselect-bogo-products" class="wc-product-search" multiple="multiple" name="rule[product_ids][]" data-placeholder="<?php esc_attr_e( 'Search for compoundsâ€¦', 'pepselect-bogo-quantity' ); ?>" data-action="woocommerce_json_search_products_and_variations" required><?php foreach ( $state['product_ids'] as $product_id ) : $product = wc_get_product( $product_id ); if ( $product ) : ?><option value="<?php echo esc_attr( $product_id ); ?>" selected><?php echo wp_kses_post( $product->get_formatted_name() ); ?></option><?php endif; endforeach; ?></select><p class="description"><?php esc_html_e( 'Each selected compound earns one free vial for every five physical vials in its cart line.', 'pepselect-bogo-quantity' ); ?></p></td></tr>
+						<tr><th scope="row"><?php esc_html_e( 'Stacking', 'pepselect-bogo-quantity' ); ?></th><td><select name="rule[stackable]"><option value="1" <?php selected( $state['stackable'], true ); ?>><?php esc_html_e( 'Stack with other discounts', 'pepselect-bogo-quantity' ); ?></option><option value="0" <?php selected( $state['stackable'], false ); ?>><?php esc_html_e( 'Do not stack', 'pepselect-bogo-quantity' ); ?></option></select><p class="description"><?php esc_html_e( 'When exclusive, Buy 4 Get 1 cannot combine with compound, sitewide, or coupon-code discounts.', 'pepselect-bogo-quantity' ); ?></p></td></tr>
 						<tr><th scope="row"><?php esc_html_e( 'Customer label', 'pepselect-bogo-quantity' ); ?></th><td><code><?php echo esc_html( self::COUPON_CODE ); ?></code><p class="description"><?php esc_html_e( 'Shown as the automatic discount in Cart and Checkout.', 'pepselect-bogo-quantity' ); ?></p></td></tr>
 					</table>
 					<?php submit_button( __( 'Save promotion', 'pepselect-bogo-quantity' ) ); ?>
@@ -221,8 +222,8 @@ final class PepSelect_BOGO_Rule {
 	/** @param WP_REST_Request $request Request. @return WP_REST_Response|WP_Error */
 	public static function rest_update( $request ) {
 		$body = $request->get_json_params();
-		if ( self::SCHEMA_VERSION !== absint( $body['schema_version'] ?? 0 ) || ! is_array( $body['product_ids'] ?? null ) ) {
-			return new WP_Error( 'pepselect_bogo_schema', __( 'schema_version 1 and a product_ids array are required.', 'pepselect-bogo-quantity' ), array( 'status' => 400 ) );
+		if ( ! in_array( absint( $body['schema_version'] ?? 0 ), array( 1, self::SCHEMA_VERSION ), true ) || ! is_array( $body['product_ids'] ?? null ) ) {
+			return new WP_Error( 'pepselect_bogo_schema', __( 'schema_version 2 and a product_ids array are required.', 'pepselect-bogo-quantity' ), array( 'status' => 400 ) );
 		}
 		$current = self::get_state();
 		if ( ! empty( $body['if_revision'] ) && ! hash_equals( self::revision( $current ), sanitize_text_field( $body['if_revision'] ) ) ) {
@@ -256,6 +257,13 @@ final class PepSelect_BOGO_Rule {
 		self::$syncing = false;
 	}
 
+	/** Expose this rule to the shared stacking coordinator. */
+	public static function discount_candidates( $cart ) {
+		$state  = self::get_state();
+		$amount = self::cart_discount_amount( $cart );
+		return array( array( 'code' => self::COUPON_CODE, 'qualifies' => self::is_enabled( $state ) && $amount > 0, 'stackable' => ! empty( $state['stackable'] ), 'estimated_amount' => $amount ) );
+	}
+
 	/** @param WC_Cart $cart Cart. @return float */
 	public static function cart_discount_amount( $cart ) {
 		$amount = 0.0;
@@ -287,7 +295,7 @@ final class PepSelect_BOGO_Rule {
 		$amount = self::cart_discount_amount( WC()->cart );
 		// Keep an existing session coupon valid long enough for sync to remove it
 		// silently after the rule is disabled or the cart stops qualifying.
-		return array( 'code' => self::COUPON_CODE, 'description' => self::COUPON_CODE, 'discount_type' => 'fixed_cart', 'amount' => wc_format_decimal( $amount ), 'product_ids' => $state['product_ids'], 'individual_use' => false, 'usage_limit' => 0, 'free_shipping' => false );
+		return array( 'code' => self::COUPON_CODE, 'description' => self::COUPON_CODE, 'discount_type' => 'fixed_cart', 'amount' => wc_format_decimal( $amount ), 'product_ids' => $state['product_ids'], 'individual_use' => empty( $state['stackable'] ), 'usage_limit' => 0, 'free_shipping' => false );
 	}
 
 	/** @param string $label Existing label. @param WC_Coupon $coupon Coupon. @return string */
@@ -314,7 +322,7 @@ final class PepSelect_BOGO_Rule {
 				}
 			}
 		}
-		return array_merge( $state, array( 'revision' => self::revision( $state ), 'eligible_skus' => array_values( array_unique( $skus ) ), 'contract' => array( 'endpoint' => '/pepselect-bogo/v1/buy-four-get-one', 'authority' => 'plugin', 'yith_rule_must_be_inactive' => true ) ) );
+		return array_merge( $state, array( 'revision' => self::revision( $state ), 'eligible_skus' => array_values( array_unique( $skus ) ), 'contract' => array( 'endpoint' => '/pepselect-bogo/v1/buy-four-get-one', 'authority' => 'plugin', 'yith_rule_must_be_inactive' => true, 'stackable' => true ) ) );
 	}
 
 	/** @param array<string,mixed> $state State. @return string */

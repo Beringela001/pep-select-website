@@ -1,22 +1,28 @@
 <?php
 /**
- * Plugin Name: Pep Select BOGO Cart Experience
- * Description: Controls Buy 4 get 1 pricing, eligibility, and cart messaging from one Ops-ready rule.
- * Version:     1.8.1
+ * Plugin Name: Pep Select Cart Discounts
+ * Description: Manages BOGO, compound, and sitewide automatic discounts from one Ops-ready admin area.
+ * Version:     2.0.0
  * Author:      Pep Select
  * Text Domain: pepselect-bogo-quantity
  */
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'PEPSELECT_BOGO_VERSION', '1.8.1' );
+define( 'PEPSELECT_BOGO_VERSION', '2.0.0' );
 define( 'PEPSELECT_BOGO_FILE', __FILE__ );
 
 require_once plugin_dir_path( __FILE__ ) . 'includes/class-pepselect-compound-discount.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/class-pepselect-bogo-rule.php';
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-pepselect-sitewide-discount.php';
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-pepselect-discount-admin.php';
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-pepselect-discount-stacking.php';
 
+PepSelect_Discount_Admin::boot();
 PepSelect_Compound_Discount::boot();
 PepSelect_BOGO_Rule::boot();
+PepSelect_Sitewide_Discount::boot();
+PepSelect_Discount_Stacking::boot();
 
 /**
  * Compatibility filter for integrations that still consume eligible SKUs.

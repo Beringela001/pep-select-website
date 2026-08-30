@@ -1,7 +1,7 @@
-=== Pep Select BOGO Cart Experience ===
-Version: 1.8.1
+=== Pep Select Cart Discounts ===
+Version: 2.0.0
 
-Single-source Buy 4 Get 1 pricing, eligibility, and cart presentation.
+Single-source BOGO, compound, and sitewide automatic discount management.
 
 * Cart and product quantity inputs always keep the exact number selected.
 * The plugin discounts one vial at quantity 5, two at 10, and so on.
@@ -81,3 +81,12 @@ YITH Buy 4 Get 1 rule must remain inactive to prevent duplicate discounts.
 1.8.1 connects the existing product-page promotion pill to the plugin-owned
 rule. Eligible product pages show "Buy 4 get 1 free" even while YITH remains
 inactive; disabling the rule or removing a product hides the pill everywhere.
+
+2.0.0 consolidates every automatic discount under one Cart Discounts admin
+menu with Overview, Buy 4 Get 1, Compound Discounts, and Sitewide Discounts
+submenus. BOGO and every saved compound/sitewide rule can be stackable or
+exclusive. If exclusive rules overlap, the greatest estimated savings wins.
+Sitewide rules support optional compound-subtotal or compound-quantity minimums
+and audiences for everyone, logged-in customers, subscribers, purchasers, VIPs,
+or specifically selected customer accounts. The authenticated Ops contracts
+expose the same rule and stacking fields.
