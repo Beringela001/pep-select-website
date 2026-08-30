@@ -36,61 +36,49 @@ Coupon note:
 
 Button: `Explore compounds`
 
-Support note: `Questions before you order? Reply to this email and a real person from Pep Select will help.`
+Support note: `Questions before you order? Reply to this email and one of our team members will be happy to help.`
 
 ## Email 1: About 90 minutes
 
-Subject: `Your cart kept your place`
+Subject: `Want another look?`
 
-Preheader: `Your saved items are ready when you are.`
+Preheader: `Your Pep Select cart is ready when you are.`
 
-Eyebrow: `Where you left off`
+Eyebrow: `Your saved cart`
 
-Heading: `Your cart kept your place.`
+Heading: `Pick up where you left off.`
 
 Body:
 
 `Hi {{customer.firstname}},`
 
-`You got pulled away. Your cart did not take it personally. Your items are still here when you are ready.`
+`The compounds you selected are still in your cart if you would like to take another look.`
 
-Saved-cart note:
+Button: `View my cart`
 
-- Heading: `Right where you left it`
-- Body: `Open your saved cart to review the same items, product details, and available batch documentation.`
-
-Button: `Return to my cart`
-
-Button note: `This link restores your saved cart. Any discount already connected to it comes along too.`
-
-Support note: `Have a question first? Reply here or write to support@pepselect.com. Ordering is optional. Our humans will answer your questions.`
+Support note: `Need an answer first? Reply to this email and one of our team members will be happy to help.`
 
 ## Email 2: 24 hours
 
-Subject: `Did a question stop your checkout?`
+Subject: `Need a hand?`
 
-Preheader: `Ask us about a product, batch document, shipping, or checkout.`
+Preheader: `Questions before ordering? Just reply to this email.`
 
-Eyebrow: `A quick check-in`
+Eyebrow: `A quick note`
 
-Heading: `The tabs multiplied. We get it.`
+Heading: `Any questions?`
 
 Body:
 
 `Hi {{customer.firstname}},`
 
-`Your cart is still saved. If a product detail, batch document, shipping question, or checkout issue made you pause, reply and tell us what got in the way.`
+`Just a quick note to let you know your cart is still available if you would like another look.`
 
-Help note:
+`If something is not clear, reply to this email and one of our team members will be happy to help.`
 
-- Heading: `Skip the chatbot obstacle course`
-- Body: `Send us the question. A real person will help you find the useful answer.`
+Button: `View my cart`
 
-Button: `Review my cart`
-
-Button note: `This link returns you to the same saved items.`
-
-Support note: `Have a question first? Reply here or write to support@pepselect.com. Ordering is optional. Our humans will answer your questions.`
+Support note: None. The reply invitation already appears above the cart.
 
 ## Email 3: 48 hours
 
