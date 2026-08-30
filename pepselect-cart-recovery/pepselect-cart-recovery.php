@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Pep Select Cart Recovery
  * Description: Lightweight exit offer, unique coupons, and Cart Abandonment Recovery integration for Pep Select.
- * Version: 0.1.4
+ * Version: 0.1.5
  * Author: Pep Select
  * Text Domain: pepselect-cart-recovery
  */
@@ -10,9 +10,10 @@
 defined( 'ABSPATH' ) || exit;
 
 final class PepSelect_Cart_Recovery {
-	const VERSION = '0.1.4';
-	const OPTION  = 'pepselect_cart_recovery_settings';
-	const NONCE   = 'pepselect_exit_offer_capture';
+	const VERSION                     = '0.1.5';
+	const OPTION                      = 'pepselect_cart_recovery_settings';
+	const NONCE                       = 'pepselect_exit_offer_capture';
+	const MARKETING_EMAILS_PER_SECOND = 1;
 
 	private static $instance;
 
@@ -32,8 +33,25 @@ final class PepSelect_Cart_Recovery {
 		add_filter( 'wcar_add_token_data', array( $this, 'attach_coupon_to_recovery_link' ), 20, 2 );
 		add_filter( 'wcf_ca_should_send_email', array( $this, 'require_signup_code_for_upgrade' ), 20, 2 );
 		add_filter( 'cartflows_ca_email_headers', array( $this, 'recovery_headers' ), 20 );
+		add_filter( 'fluent_crm/global_email_limit_per_second', array( $this, 'limit_marketing_delivery_rate' ), 100, 2 );
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
 		add_action( 'admin_menu', array( $this, 'register_settings_page' ) );
+	}
+
+	/**
+	 * Keep FluentCRM campaign bursts below recipient-provider throttle thresholds.
+	 *
+	 * WooCommerce transactional mail uses a separate WP Mail SMTP route and does
+	 * not pass through FluentCRM, so it remains unaffected by this limit.
+	 *
+	 * @param int   $limit          FluentCRM's resolved delivery limit.
+	 * @param array $email_settings FluentCRM global email settings.
+	 * @return int
+	 */
+	public function limit_marketing_delivery_rate( $limit, $email_settings ) {
+		unset( $limit, $email_settings );
+
+		return self::MARKETING_EMAILS_PER_SECOND;
 	}
 
 	public static function activate() {

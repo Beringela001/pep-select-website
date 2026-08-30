@@ -2,7 +2,7 @@
 Contributors: pepselect
 Requires at least: 6.5
 Requires PHP: 7.4
-Stable tag: 0.1.4
+Stable tag: 0.1.5
 License: Proprietary
 
 Native Pep Select exit offer and Cart Abandonment Recovery integration.
@@ -27,3 +27,4 @@ Native Pep Select exit offer and Cart Abandonment Recovery integration.
 * Connects a captured cart to the installed recovery plugin without editing vendor files.
 * Adds subscribers to FluentCRM when a list ID is configured.
 * Upgrades the same signup code to 15% when the configured 48-hour recovery template sends.
+* Limits FluentCRM marketing delivery to one message per second to reduce recipient-provider deferrals.

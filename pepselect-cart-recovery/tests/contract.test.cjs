@@ -18,6 +18,9 @@ const mockup = fs.readFileSync(path.join(root, '..', 'mockups', 'cart-recovery',
   "add_filter( 'woo_ca_recovery_email_data'",
   "add_filter( 'wcar_add_token_data'",
   "add_filter( 'wcf_ca_should_send_email'",
+  "add_filter( 'fluent_crm/global_email_limit_per_second'",
+  'MARKETING_EMAILS_PER_SECOND = 1',
+  'return self::MARKETING_EMAILS_PER_SECOND',
   "'enabled'            => 0",
   "'final_template_id'  => 0",
   'upgrade_coupon( $code, 15 )',
@@ -45,7 +48,7 @@ const mockup = fs.readFileSync(path.join(root, '..', 'mockups', 'cart-recovery',
   'position:relative'
 ].forEach((needle) => assert(css.includes(needle), `Missing centered modal contract: ${needle}`));
 
-assert(php.includes("const VERSION = '0.1.4'"), 'Plugin version must be 0.1.4');
+assert(php.includes("const VERSION                     = '0.1.5'"), 'Plugin version must be 0.1.5');
 
 assert(!/dataLayer\.push\([^)]*email/i.test(js), 'Email must not be pushed to the dataLayer');
 assert(!/https?:\/\//.test(js + css), 'Public assets must not call third-party URLs');
