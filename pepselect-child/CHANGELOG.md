@@ -1,6 +1,14 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.70** - Force the coded About template ahead of its stored Elementor page assignment.
+**Release candidate: 0.25.0-beta.71** - Remove obsolete Elementor plugin compatibility after permanent retirement.
+
+## 0.25.0-beta.71 - 2026-08-30
+
+- Remove Elementor editor, legacy-shell, Theme Builder suppression, single-product override, asset-dequeue, font-consolidation, and Marquee cleanup paths that no longer have an installed provider.
+- Preserve the Hello Elementor parent-theme dependency, fallback header/footer suppression, and all coded WooCommerce, COA, navigation, account, cart, and checkout ownership.
+- Archive all 13 non-empty stored Elementor templates before plugin deletion; Elementor reported the fourteenth Library item, Default Kit ID 7, as empty and not exportable.
+
+**Previous release candidate: 0.25.0-beta.70** - Force the coded About template ahead of its stored Elementor page assignment.
 
 ## 0.25.0-beta.70 - 2026-08-30
 

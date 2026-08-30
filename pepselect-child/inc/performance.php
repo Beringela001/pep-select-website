@@ -56,89 +56,6 @@ function pepselect_child_is_seo_performance_template() {
 }
 
 /**
- * Return whether performance cleanup may replace Elementor front-end assets.
- *
- * The audited Home, Shop, product, Quality Archive, About, and Contact templates are
- * rendered by the child theme or the COA plugin. Elementor remains available
- * in its editor and preview requests, where its runtime assets are required.
- *
- * @return bool
- */
-function pepselect_child_can_remove_elementor_assets() {
-	if ( ! pepselect_child_is_seo_performance_template() && ! is_page( 'contact' ) ) {
-		return false;
-	}
-
-	return ! function_exists( 'pepselect_child_is_elementor_editor_request' )
-		|| ! pepselect_child_is_elementor_editor_request();
-}
-
-/**
- * Return whether a registered asset belongs to Elementor's front-end runtime.
- *
- * @param string $handle Registered WordPress asset handle.
- * @param string $src    Registered asset source URL or path.
- * @return bool
- */
-function pepselect_child_is_elementor_frontend_asset( $handle, $src ) {
-	$src = (string) $src;
-
-	return false !== strpos( $src, '/plugins/elementor/' )
-		|| false !== strpos( $src, '/plugins/elementor-pro/' )
-		|| false !== strpos( $src, '/uploads/elementor/css/' );
-}
-
-/**
- * Remove unused Elementor styles from fully coded audited templates.
- *
- * @return void
- */
-function pepselect_child_remove_elementor_styles() {
-	global $wp_styles;
-
-	if ( is_admin() || ! pepselect_child_can_remove_elementor_assets() || ! $wp_styles instanceof WP_Styles ) {
-		return;
-	}
-
-	foreach ( $wp_styles->registered as $handle => $asset ) {
-		if ( ! pepselect_child_is_elementor_frontend_asset( $handle, $asset->src ) ) {
-			continue;
-		}
-
-		wp_dequeue_style( $handle );
-		wp_deregister_style( $handle );
-	}
-}
-add_action( 'wp_print_styles', 'pepselect_child_remove_elementor_styles', 996 );
-
-/**
- * Remove unused Elementor scripts from fully coded audited templates.
- *
- * This also removes the orphaned frontend bundle currently logging
- * `elementorFrontendConfig is not defined` in Lighthouse.
- *
- * @return void
- */
-function pepselect_child_remove_elementor_scripts() {
-	global $wp_scripts;
-
-	if ( is_admin() || ! pepselect_child_can_remove_elementor_assets() || ! $wp_scripts instanceof WP_Scripts ) {
-		return;
-	}
-
-	foreach ( $wp_scripts->registered as $handle => $asset ) {
-		if ( ! pepselect_child_is_elementor_frontend_asset( $handle, $asset->src ) ) {
-			continue;
-		}
-
-		wp_dequeue_script( $handle );
-		wp_deregister_script( $handle );
-	}
-}
-add_action( 'wp_print_scripts', 'pepselect_child_remove_elementor_scripts', 996 );
-add_action( 'wp_print_footer_scripts', 'pepselect_child_remove_elementor_scripts', 1 );
-
-/**
  * Defer non-critical helpers while preserving their dependency order.
  *
  * Checkout and account requests are outside this template boundary. These
@@ -279,8 +196,8 @@ add_filter( 'wp_resource_hints', 'pepselect_child_font_resource_hints', 10, 2 );
 /**
  * Remove files that have no matching component on the audited templates.
  *
- * This runs after plugin and Elementor enqueue callbacks. WooCommerce product,
- * cart, checkout, rewards, pricing, side-cart, and back-in-stock assets remain
+ * This runs after plugin enqueue callbacks. WooCommerce product, cart,
+ * checkout, rewards, pricing, side-cart, and back-in-stock assets remain
  * untouched.
  *
  * @return void
@@ -291,8 +208,6 @@ function pepselect_child_optimize_seo_template_assets() {
 	}
 
 	$unused_styles = array(
-		'deensimc-marquee-common-styles',
-		'deensimc-text-marquee-style',
 		'jetpack-forms-layout',
 		'mediaelement',
 		'wp-mediaelement',
@@ -320,20 +235,10 @@ function pepselect_child_optimize_seo_template_assets() {
 		wp_deregister_style( $style_handle );
 	}
 
-	$unused_scripts = array(
-		'deensimc-marquee-track-fill',
-		'deensimc-handle-animation-duration',
-		'deensimc-init-text-length-toggle',
-		'deensimc-text-marquee-script',
-	);
-
-	foreach ( $unused_scripts as $script_handle ) {
-		wp_dequeue_script( $script_handle );
-	}
 }
-// Elementor and several commerce plugins enqueue styles after
-// wp_enqueue_scripts. Run immediately before WordPress prints the stylesheet
-// queue so those late registrations are visible and can be handled reliably.
+// Several commerce plugins enqueue styles after wp_enqueue_scripts. Run
+// immediately before WordPress prints the stylesheet queue so those late
+// registrations are visible and can be handled reliably.
 add_action( 'wp_print_styles', 'pepselect_child_optimize_seo_template_assets', 997 );
 
 /**
@@ -359,61 +264,6 @@ function pepselect_child_filter_testing_unused_style_tags( $html, $handle ) {
 	return $html;
 }
 add_filter( 'style_loader_tag', 'pepselect_child_filter_testing_unused_style_tags', 20, 2 );
-
-/**
- * Replace Elementor's four separate Google Fonts stylesheets with one request.
- *
- * The combined URL preserves every family, weight, and italic variant already
- * requested by Elementor. This is request consolidation, not a typography
- * change.
- *
- * @return void
- */
-function pepselect_child_consolidate_google_fonts() {
-	if ( is_admin() || ! pepselect_child_is_seo_performance_template() ) {
-		return;
-	}
-
-	$elementor_font_handles = array(
-		'elementor-gf-roboto',
-		'elementor-gf-robotoslab',
-		'elementor-gf-plusjakartasans',
-		'elementor-gf-ibmplexmono',
-	);
-
-	$has_elementor_fonts = false;
-
-	foreach ( $elementor_font_handles as $style_handle ) {
-		if ( wp_style_is( $style_handle, 'enqueued' ) ) {
-			$has_elementor_fonts = true;
-		}
-
-		wp_dequeue_style( $style_handle );
-		wp_deregister_style( $style_handle );
-	}
-
-	if ( ! $has_elementor_fonts ) {
-		return;
-	}
-
-	$variants = '100,100italic,200,200italic,300,300italic,400,400italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic';
-	$families = array(
-		'Roboto:' . $variants,
-		'Roboto Slab:' . $variants,
-		'Plus Jakarta Sans:' . $variants,
-		'IBM Plex Mono:' . $variants,
-	);
-	$font_url = add_query_arg(
-		array(
-			'family'  => implode( '|', $families ),
-			'display' => 'swap',
-		),
-		'https://fonts.googleapis.com/css'
-	);
-
-	wp_enqueue_style( 'pepselect-google-fonts', $font_url, array(), null );
-}
-add_action( 'wp_print_styles', 'pepselect_child_consolidate_google_fonts', 998 );
 
 /**
  * Inline the small Pep Select shell styles on the four audited templates.

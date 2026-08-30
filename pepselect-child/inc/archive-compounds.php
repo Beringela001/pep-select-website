@@ -3,9 +3,8 @@
  * Coded compounds archive (WEB-2D).
  *
  * Routes the shop page, product taxonomies, and product searches to the
- * coded archive template, replacing the legacy Elementor loop and archive
- * templates. The late template_include priority mirrors the homepage
- * mechanism so retained legacy templates cannot reclaim these routes.
+ * coded archive template. The late template_include priority mirrors the
+ * homepage mechanism and keeps route ownership explicit.
  *
  * @package PepSelectChild
  */
@@ -21,10 +20,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 function pepselect_child_is_compounds_archive_request() {
 	if ( ! class_exists( 'WooCommerce' ) ) {
-		return false;
-	}
-
-	if ( function_exists( 'pepselect_child_is_elementor_editor_request' ) && pepselect_child_is_elementor_editor_request() ) {
 		return false;
 	}
 

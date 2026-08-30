@@ -1,10 +1,10 @@
 # Pep Select child theme
 
-- Version: 0.25.0-beta.34
+- Version: 0.25.0-beta.71
 - Parent: Hello Elementor (`hello-elementor`)
 - Text domain: `pepselect-child`
 
-Pep Select is the lightweight presentation child theme for the controlled customer-facing rebuild. Version 0.25.0-beta.34 preserves the complete Live baseline while keeping the first Yoast description as the single meta-description owner for guide posts without changing their visible excerpts. WooCommerce remains the source of truth for product images, item data, totals, addresses, accounts, shipping methods, and order status.
+Pep Select is the lightweight presentation child theme for the coded customer-facing site. WooCommerce remains the source of truth for product images, item data, totals, addresses, accounts, shipping methods, and order status.
 
 ## Requirements and safe failure
 
@@ -14,7 +14,7 @@ Pep Select is the lightweight presentation child theme for the controlled custom
 
 The `Template: hello-elementor` declaration allows WordPress to reject activation when the parent is missing. A defensive runtime guard also prevents child assets from loading and displays an administrator notice if the parent becomes unavailable after activation.
 
-Installing a ZIP does not activate a theme automatically. The child theme is already active on Staging under the separately documented WEB-2B activation checkpoint; this local version does not modify Staging or Live.
+Installing a ZIP does not activate a theme automatically. The Pep Select child theme is the active theme on Staging and Live.
 
 ## Foundation scope
 
@@ -24,18 +24,14 @@ Installing a ZIP does not activate a theme automatically. The child theme is alr
 - Bundles no font files. Georgia and system fallbacks remain available when Plus Jakarta Sans or IBM Plex Mono are not supplied by an approved site-level font source.
 - Adds no business logic, database access, migration, analytics, tracking, remote request, dependency, or administrative asset.
 - Uses narrow WooCommerce presentation overrides while preserving WooCommerce data, triggers, calculations, and customer-account behavior.
-- Renders the coded header and footer by default on normal front-end requests while preserving Elementor page content between them.
-- Suppresses Elementor Header #1323 and Footer #391 only for requests where the coded shell is active; it does not change or delete their stored conditions.
+- Renders the coded header and footer on supported front-end requests.
 - Keeps `?pepselect_header_preview=1`, `?pepselect_footer_preview=1`, and `?pepselect_shell_preview=1` as administrator-only compatibility controls.
-- Adds administrator-only `?pepselect_legacy_shell=1` to restore the preserved Elementor shell for one request; explicit shell-control responses receive no-cache headers.
-- Bypasses coded-shell replacement in wp-admin, Elementor editor, Customizer, login, REST, AJAX, cron, feed, and CLI contexts.
-- Uses the confirmed Elementor Header #1323 Media Library logo attachment when no WordPress Custom Logo is set, without storing an environment URL.
-- Uses the confirmed Elementor Footer #391 Media Library logo attachment when no WordPress Custom Logo is set, without storing an environment URL.
+- Bypasses coded-shell replacement in wp-admin, Customizer, login, REST, AJAX, cron, feed, and CLI contexts.
+- Uses the configured WordPress Custom Logo, with the approved bundled brand mark as its fallback.
 - Uses the officially documented YITH remaining-points shortcode only for logged-in users and only when registered; otherwise it shows the Rewards destination without a numeric balance.
 - Uses the confirmed Xootix side-cart shortcode only when registered, with an environment-neutral cart fallback.
 - Preserves current research-use statements, support email, footer destinations, exact published FDA disclaimer, and dynamic copyright year; the coded footer omits the external developer credit.
-- Leaves existing Elementor page content, Header #1323, Footer #391, and all Elementor display conditions stored and unchanged.
-- Adds `?pepselect_home_preview=1` as a capability-gated coded homepage preview on the WordPress front page only; unauthorized and ordinary requests continue to use the existing homepage.
+- Adds `?pepselect_home_preview=1` as a capability-gated coded homepage preview on the WordPress front page.
 - Queries featured and fallback products through WooCommerce public APIs for the hero and four-product storefront without template overrides or stored-data changes.
 - Uses an action-only Quality Archive feature because COA Archive version 0.4.0 exposes no supported generic homepage-preview projection.
 - Loads a dependency-free, preview-only FAQ controller for semantic accordion state and keyboard navigation.
@@ -92,4 +88,4 @@ The `woocommerce/` directory is deliberately absent. Add an override only in its
 
 ## Rollback boundary
 
-The existing Elementor homepage, Hello Elementor parent theme, and stored Elementor Header #1323 and Footer #391 remain the rollback baseline. Remove `?pepselect_home_preview=1` to return to the unchanged homepage. A logged-in administrator may use `?pepselect_legacy_shell=1` for a one-request shell check; reactivating the parent theme remains the immediate full rollback.
+Hello Elementor remains installed as the required parent theme; Elementor Core, Elementor Pro, and Marquee Addons have been retired. Recovery copies of the former Elementor templates and environment backups are maintained outside the theme. Reinstalling an earlier signed-off Pep Select child-theme package is the code rollback path.

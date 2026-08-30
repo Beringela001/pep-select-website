@@ -26,10 +26,6 @@ function pepselect_child_enqueue_product_assets() {
 		return;
 	}
 
-	if ( function_exists( 'pepselect_child_is_elementor_editor_request' ) && pepselect_child_is_elementor_editor_request() ) {
-		return;
-	}
-
 	wp_enqueue_style(
 		'pepselect-child-cards',
 		get_stylesheet_directory_uri() . '/assets/css/cards.css',
@@ -101,16 +97,11 @@ function pepselect_child_is_single_compound_request() {
 		return false;
 	}
 
-	if ( function_exists( 'pepselect_child_is_elementor_editor_request' ) && pepselect_child_is_elementor_editor_request() ) {
-		return false;
-	}
-
 	return true;
 }
 
 /**
- * Seize the single-product template so the legacy Elementor Theme Builder
- * single-product template no longer renders these pages. The late priority
+ * Route single products to the coded compound template. The late priority
  * mirrors the archive and homepage mechanism.
  *
  * @param string $template Resolved template.
@@ -126,22 +117,6 @@ function pepselect_child_single_compound_template( $template ) {
 	return file_exists( $coded ) ? $coded : $template;
 }
 add_filter( 'template_include', 'pepselect_child_single_compound_template', 99 );
-
-/**
- * Prevent Elementor's Theme Builder from taking over single-product output.
- *
- * @param bool $do_override Whether Elementor should override the location.
- * @param string $location  Theme Builder location.
- * @return bool
- */
-function pepselect_child_block_elementor_single_product( $do_override, $location = '' ) {
-	if ( 'single' === $location && pepselect_child_is_single_compound_request() ) {
-		return false;
-	}
-
-	return $do_override;
-}
-add_filter( 'elementor/theme/need_override_location', 'pepselect_child_block_elementor_single_product', 10, 2 );
 
 
 
@@ -333,10 +308,6 @@ function pepselect_product_has_b4g1( $detected = false, $product = null ) {
  */
 function pepselect_child_pills_buffer_start() {
 	if ( ! function_exists( 'is_product' ) || ! is_product() ) {
-		return;
-	}
-
-	if ( function_exists( 'pepselect_child_is_elementor_editor_request' ) && pepselect_child_is_elementor_editor_request() ) {
 		return;
 	}
 

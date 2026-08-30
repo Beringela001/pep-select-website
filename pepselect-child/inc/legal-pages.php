@@ -2,12 +2,10 @@
 /**
  * Routing and assets for the four coded legal pages.
  *
- * The legal copy lives in Elementor widgets on these pages, not in
- * post_content. Rather than ask the owner to edit page templates, this seizes
- * template_include at priority 99 (the same mechanism inc/single-product.php
- * uses) for the four known slugs, so Elementor never renders them and there is
- * no double-render risk. Any slug not in the data file is left untouched, so
- * unrelated pages fall through to normal WordPress behaviour.
+ * The approved legal copy lives in the child theme's versioned data file.
+ * This seizes template_include at priority 99 for the four known slugs so the
+ * coded documents remain the sole public source. Any slug not in the data file
+ * falls through to normal WordPress behaviour.
  *
  * @package PepSelectChild
  */

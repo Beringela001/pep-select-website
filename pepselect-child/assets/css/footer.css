@@ -2,8 +2,6 @@
  * Coded site footer.
  */
 
-.pepselect-footer-preview .elementor-location-footer,
-.pepselect-footer-preview [data-elementor-type="footer"],
 .pepselect-footer-preview #site-footer {
 	display: none !important;
 }

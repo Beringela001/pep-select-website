@@ -4,8 +4,6 @@
  * Loaded only when the coded shell owns the front-end request.
  */
 
-.pepselect-header-preview .elementor-location-header,
-.pepselect-header-preview [data-elementor-type="header"],
 .pepselect-header-preview #site-header {
 	display: none !important;
 }
@@ -17,7 +15,7 @@
 
 /*
  * Component isolation: the coded shell must retain the same geometry on
- * Elementor, WooCommerce, COA, product, archive, and ordinary page contexts.
+ * WooCommerce, COA, product, archive, and ordinary page contexts.
  */
 #pepselect-site-header .pepselect-header__logo-link {
 	flex: 0 0 auto;

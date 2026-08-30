@@ -3,7 +3,7 @@
  *
  * Same utility-page signature as FAQ and track-order: a small label as the
  * page title, left-aligned, in a split layout (intro + support hub left, form
- * card right). The form is coded on our tokens, not Elementor. Colors, radii,
+ * card right). The form is coded on our tokens. Colors, radii,
  * and type come from foundations.css.
  */
 

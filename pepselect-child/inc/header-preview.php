@@ -40,30 +40,6 @@ function pepselect_child_preview_flag_is_set( $flag ) {
 }
 
 /**
- * Determine whether the request is an authenticated Elementor editor preview.
- *
- * @return bool
- */
-function pepselect_child_is_elementor_editor_request() {
-	if ( ! is_user_logged_in() || ! current_user_can( 'edit_posts' ) ) {
-		return false;
-	}
-
-	if ( did_action( 'elementor/loaded' ) && class_exists( '\\Elementor\\Plugin' ) ) {
-		$elementor = \Elementor\Plugin::$instance;
-
-		if ( isset( $elementor->editor ) && is_object( $elementor->editor ) && method_exists( $elementor->editor, 'is_edit_mode' ) && $elementor->editor->is_edit_mode() ) {
-			return true;
-		}
-	}
-
-	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only editor routing check; capability is required above.
-	$preview_id = isset( $_GET['elementor-preview'] ) ? absint( wp_unslash( $_GET['elementor-preview'] ) ) : 0;
-
-	return 0 < $preview_id;
-}
-
-/**
  * Determine whether the current request supports the coded front-end shell.
  *
  * @return bool
@@ -85,20 +61,7 @@ function pepselect_child_is_supported_frontend_shell_request() {
 		return false;
 	}
 
-	if ( pepselect_child_is_elementor_editor_request() ) {
-		return false;
-	}
-
 	return true;
-}
-
-/**
- * Determine whether an administrator requested the preserved Elementor shell.
- *
- * @return bool
- */
-function pepselect_child_is_legacy_shell_request() {
-	return pepselect_child_is_supported_frontend_shell_request() && pepselect_child_preview_flag_is_set( 'pepselect_legacy_shell' );
 }
 
 /**
@@ -107,7 +70,7 @@ function pepselect_child_is_legacy_shell_request() {
  * @return bool
  */
 function pepselect_child_should_render_coded_shell() {
-	return pepselect_child_is_supported_frontend_shell_request() && ! pepselect_child_is_legacy_shell_request();
+	return pepselect_child_is_supported_frontend_shell_request();
 }
 
 /**
@@ -118,8 +81,7 @@ function pepselect_child_should_render_coded_shell() {
 function pepselect_child_is_explicit_shell_control_request() {
 	return pepselect_child_preview_flag_is_set( 'pepselect_header_preview' )
 		|| pepselect_child_preview_flag_is_set( 'pepselect_footer_preview' )
-		|| pepselect_child_preview_flag_is_set( 'pepselect_shell_preview' )
-		|| pepselect_child_is_legacy_shell_request();
+		|| pepselect_child_preview_flag_is_set( 'pepselect_shell_preview' );
 }
 
 /**
@@ -139,27 +101,8 @@ function pepselect_child_is_header_preview_request() {
 function pepselect_child_register_header_preview() {
 	add_action( 'template_redirect', 'pepselect_child_shell_control_no_cache' );
 	add_filter( 'body_class', 'pepselect_child_header_preview_body_class' );
-	add_filter( 'elementor/theme/get_location_templates/template_id', 'pepselect_child_suppress_elementor_header_preview', 10, 2 );
 	add_action( 'wp_enqueue_scripts', 'pepselect_child_enqueue_header_preview_assets', 30 );
 	add_action( 'wp_body_open', 'pepselect_child_render_header_preview', 5 );
-}
-
-/**
- * Suppress Header #1323 through Elementor's documented location filter.
- *
- * The Hello Elementor fallback header is hidden by scoped CSS. Elementor page
- * content remains untouched, and legacy/editor requests bypass suppression.
- *
- * @param int    $template_id Elementor Theme Builder template ID.
- * @param string $location    Elementor Theme Builder location when available.
- * @return int
- */
-function pepselect_child_suppress_elementor_header_preview( $template_id, $location = '' ) {
-	if ( pepselect_child_is_header_preview_request() && ( 'header' === $location || 1323 === absint( $template_id ) ) ) {
-		return 0;
-	}
-
-	return $template_id;
 }
 
 /**
@@ -174,7 +117,7 @@ function pepselect_child_shell_control_no_cache() {
 }
 
 /**
- * Add the body class used to hide the Elementor or parent-theme header.
+ * Add the body class used to hide the parent-theme fallback header.
  *
  * @param string[] $classes Existing body classes.
  * @return string[]

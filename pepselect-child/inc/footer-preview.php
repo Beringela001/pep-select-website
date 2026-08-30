@@ -25,27 +25,8 @@ function pepselect_child_is_footer_preview_request() {
  */
 function pepselect_child_register_footer_preview() {
 	add_filter( 'body_class', 'pepselect_child_footer_preview_body_class' );
-	add_filter( 'elementor/theme/get_location_templates/template_id', 'pepselect_child_suppress_elementor_footer_preview', 10, 2 );
 	add_action( 'wp_enqueue_scripts', 'pepselect_child_enqueue_footer_preview_assets', 30 );
 	add_action( 'wp_footer', 'pepselect_child_render_footer_preview', 5 );
-}
-
-/**
- * Suppress Footer #391 through Elementor's documented location filter.
- *
- * The Hello Elementor fallback footer is hidden by scoped CSS. Elementor page
- * content remains untouched, and legacy/editor requests bypass suppression.
- *
- * @param int    $template_id Elementor Theme Builder template ID.
- * @param string $location    Elementor Theme Builder location when available.
- * @return int
- */
-function pepselect_child_suppress_elementor_footer_preview( $template_id, $location = '' ) {
-	if ( pepselect_child_is_footer_preview_request() && ( 'footer' === $location || 391 === absint( $template_id ) ) ) {
-		return 0;
-	}
-
-	return $template_id;
 }
 
 /**

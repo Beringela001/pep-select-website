@@ -19,10 +19,7 @@ function pepselect_child_is_about_request() {
 }
 
 /**
- * Force the coded template ahead of the page's legacy Elementor assignment.
- *
- * The stored Elementor document remains untouched for rollback, but it no
- * longer owns the public About route while the child theme is active.
+ * Force the coded template regardless of historical page-template metadata.
  *
  * @param string $template Resolved template path.
  * @return string

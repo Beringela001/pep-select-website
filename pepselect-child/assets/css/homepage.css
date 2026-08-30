@@ -742,8 +742,7 @@
 
 /*
  * Each question is a clean bordered card. Every interactive state declares
- * an explicit palette background and color so retained Elementor global
- * button styles cannot bleed into the coded accordion.
+ * an explicit palette background and color for stable accordion states.
  */
 .pepselect-home__accordion-item {
 	overflow: hidden;

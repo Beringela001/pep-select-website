@@ -87,8 +87,8 @@
 
 /*
  * Each question is a bordered card. Every interactive state declares an
- * explicit palette background and color so retained Elementor global button
- * styles cannot bleed into the coded accordion. Mirrors the homepage FAQ.
+ * explicit palette background and color for stable accordion states. Mirrors
+ * the homepage FAQ.
  */
 .pepselect-faq__accordion-item {
 	overflow: hidden;

@@ -28,7 +28,7 @@ assert.ok(template.includes("'fetchpriority' => 'high'"), 'About hero image is m
 assert.ok(template.includes('Explore Compounds'), 'Primary catalog CTA is missing');
 assert.ok(template.includes('Review COAs'), 'COA CTA is missing');
 assert.ok(template.includes('independent laboratory testing before a compound is released for sale'), 'Confirmed testing policy is missing');
-assert.ok(!template.includes('the_content()'), 'Elementor-authored page content must not render');
+assert.ok(!template.includes('the_content()'), 'legacy page-builder content must not render');
 assert.ok(!/Compounds verified|Third-party tested|100%|20\+/.test(template), 'Legacy counters or unsupported totals remain');
 
 assert.ok(seo.includes('About Pep Select | Research Compounds & Batch COAs'), 'About SEO title is missing');

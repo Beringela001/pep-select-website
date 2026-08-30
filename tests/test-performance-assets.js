@@ -14,6 +14,24 @@ const footerPreviewFile = fs.readFileSync(
 	path.join(__dirname, '..', 'pepselect-child', 'inc', 'footer-preview.php'),
 	'utf8'
 );
+const retirementFiles = [
+	performanceFile,
+	headerPreviewFile,
+	footerPreviewFile,
+	fs.readFileSync(path.join(__dirname, '..', 'pepselect-child', 'inc', 'archive-compounds.php'), 'utf8'),
+	fs.readFileSync(path.join(__dirname, '..', 'pepselect-child', 'inc', 'single-product.php'), 'utf8'),
+	fs.readFileSync(path.join(__dirname, '..', 'pepselect-child', 'assets', 'css', 'header.css'), 'utf8'),
+	fs.readFileSync(path.join(__dirname, '..', 'pepselect-child', 'assets', 'css', 'footer.css'), 'utf8'),
+	fs.readFileSync(path.join(__dirname, '..', 'pepselect-child', 'assets', 'css', 'checkout.css'), 'utf8'),
+].join('\n');
+const themeBootstrap = fs.readFileSync(
+	path.join(__dirname, '..', 'pepselect-child', 'inc', 'setup.php'),
+	'utf8'
+);
+const themeMetadata = fs.readFileSync(
+	path.join(__dirname, '..', 'pepselect-child', 'style.css'),
+	'utf8'
+);
 const brandAssetDirectory = path.join(__dirname, '..', 'pepselect-child', 'assets', 'images', 'brand');
 const accessGateLogo = path.join(__dirname, '..', 'ps-access-gate', 'assets', 'pep-select-logo.png');
 const confettiLoaderFile = fs.readFileSync(
@@ -34,36 +52,38 @@ const confettiLoaderFile = fs.readFileSync(
 	'pepselect-child-bisn-form',
 ].forEach((handle) => assert.ok(performanceFile.includes(`'${handle}'`), `missing Quality Archive cleanup for ${handle}`));
 
-[
-	'elementor-gf-roboto',
-	'elementor-gf-robotoslab',
-	'elementor-gf-plusjakartasans',
-	'elementor-gf-ibmplexmono',
-].forEach((handle) => assert.ok(performanceFile.includes(`'${handle}'`), `missing font consolidation for ${handle}`));
-
-assert.ok(performanceFile.includes("wp_enqueue_style( 'pepselect-google-fonts'"));
 assert.ok(performanceFile.includes("'testing' === get_post_field( 'post_name', $queried_id )"));
 assert.ok(performanceFile.includes("'/testing' === untrailingslashit( (string) $request_path )"));
-assert.ok(performanceFile.includes("! is_page( 'contact' )"));
-assert.ok(performanceFile.includes("implode( '|', $families )"));
 assert.ok(performanceFile.includes("wp_register_style( 'pepselect-child-foundations', false"));
 assert.ok(performanceFile.includes("wp_add_inline_style( 'pepselect-child-foundations', $combined_css )"));
 assert.ok(performanceFile.includes('wp_deregister_style( $style_handle )'));
 assert.ok(performanceFile.includes("add_filter( 'style_loader_tag', 'pepselect_child_filter_testing_unused_style_tags', 20, 2 )"));
 assert.ok(performanceFile.includes("add_filter( 'wp_resource_hints', 'pepselect_child_font_resource_hints', 10, 2 )"));
 assert.ok(performanceFile.includes("add_action( 'wp_print_styles', 'pepselect_child_optimize_seo_template_assets', 997 )"));
-assert.ok(performanceFile.includes("add_action( 'wp_print_styles', 'pepselect_child_consolidate_google_fonts', 998 )"));
 assert.ok(performanceFile.includes("add_action( 'wp_print_styles', 'pepselect_child_inline_shell_styles', 999 )"));
-assert.ok(performanceFile.includes("add_action( 'wp_print_styles', 'pepselect_child_remove_elementor_styles', 996 )"));
-assert.ok(performanceFile.includes("add_action( 'wp_print_footer_scripts', 'pepselect_child_remove_elementor_scripts', 1 )"));
 assert.ok(performanceFile.includes("add_filter( 'googlesitekit_adsense_tag_blocked', 'pepselect_child_block_unused_adsense_tag' )"));
 assert.ok(performanceFile.includes("add_filter( 'googlesitekit_adsense_tag_amp_blocked', 'pepselect_child_block_unused_adsense_tag' )"));
 assert.ok(!performanceFile.includes("googlesitekit_analytics_tag_blocked"));
 assert.ok(!performanceFile.includes("googlesitekit_tagmanager_tag_blocked"));
-assert.ok(performanceFile.includes("'/plugins/elementor/'"));
-assert.ok(performanceFile.includes("'/plugins/elementor-pro/'"));
-assert.ok(performanceFile.includes("'/uploads/elementor/css/'"));
-assert.ok(!performanceFile.includes("0 === strpos( (string) $handle, 'elementor-post-'"));
+[
+	'pepselect_child_is_elementor_editor_request',
+	'pepselect_child_is_legacy_shell_request',
+	'pepselect_child_suppress_elementor_header_preview',
+	'pepselect_child_suppress_elementor_footer_preview',
+	'pepselect_child_block_elementor_single_product',
+	'pepselect_child_remove_elementor_styles',
+	'pepselect_child_remove_elementor_scripts',
+	'pepselect_child_consolidate_google_fonts',
+	'/plugins/elementor/',
+	'/plugins/elementor-pro/',
+	'/uploads/elementor/css/',
+	'deensimc-marquee',
+].forEach((legacyReference) => {
+	assert.ok(!retirementFiles.includes(legacyReference), `obsolete Elementor compatibility remains: ${legacyReference}`);
+});
+assert.ok(themeMetadata.includes('Template: hello-elementor'), 'Hello Elementor must remain the parent theme');
+assert.ok(themeBootstrap.includes("wp_get_theme( 'hello-elementor' )"), 'Hello Elementor availability guard must remain');
+assert.ok(performanceFile.includes("array( 'hello-elementor' )"), 'Hello Elementor style dependency must remain');
 [
 	'jquery-blockui',
 	'js-cookie',

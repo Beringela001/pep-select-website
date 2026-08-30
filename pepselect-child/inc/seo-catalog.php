@@ -173,7 +173,7 @@ add_filter( 'wpseo_exclude_from_sitemap_by_post_ids', 'pepselect_child_exclude_s
  * Give the homepage and Shop page clear, page-specific search titles.
  *
  * These filters change document and social metadata only. They do not alter
- * the visible Elementor headings or landing-page copy.
+ * visible headings or landing-page copy.
  *
  * @param string $title Existing document or social title.
  * @return string
