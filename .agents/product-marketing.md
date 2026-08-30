@@ -1,7 +1,7 @@
 # Product Marketing Context
 
-**Document version:** v3
-**Last updated:** 2026-08-22
+**Document version:** v4
+**Last updated:** 2026-08-30
 
 ## Product Overview
 
@@ -163,6 +163,21 @@ Every factual statement within these territories still requires current evidence
 - Feel Better
 - Try It Today
 
+## Email and Retention Strategy
+
+Treat the permissioned email audience as a portable business asset and use paid or organic acquisition to begin a longer evidence-led relationship. Email does not relax Pep Select's evidence, research-use, privacy, or claim-verification rules.
+
+Build retention around seven distinct customer jobs: welcome, checkout recovery, browse follow-up, post-purchase support, high-value customer recognition, winback, and evidence-led reorder consideration. Each flow requires its own eligibility, consent, suppression, timing, measurement, and stop conditions. The implementation roadmap and source-technique assessment live in `docs/EMAIL-MARKETING-STRATEGY.md`.
+
+Priority order:
+
+1. Stabilize and measure the existing four-message checkout-recovery sequence.
+2. Add permissioned welcome and post-purchase flows, splitting first-time and returning customers where the message genuinely differs.
+3. Add winback and high-value-customer flows after purchase-history segments are validated.
+4. Test browse follow-up and reorder reminders only after privacy, tracking, cadence, and research-use language receive explicit approval.
+
+Never use predicted personal consumption, depletion, health outcomes, consumer transformation testimonials, fabricated scarcity, or unverified trust badges. Moderate all customer-supplied content before email use. Keep regular encrypted list exports with documented access, retention, unsubscribe, and suppression handling.
+
 ## Homepage Copy Workflow
 
 WEB-2C homepage copy must follow this sequence:
@@ -195,6 +210,7 @@ No homepage copy is approved for publication until Paulo reviews it.
 
 ## Changelog
 
+- v4 (2026-08-30) — Added the owned-email and retention strategy distilled from a peptide-email case study; adapted seven lifecycle flows to Pep Select's evidence, consent, deliverability, and research-use boundaries.
 - v3 (2026-08-22) — Removed the marketing-claim guardrails at the owner's direction. Evidence, documentation accuracy, and claim-verification rules remain in place.
 - v2 (2026-08-18) — Restored the Jordan Reyes internal decision lens from the original WEB-2C journey and recorded the owner-confirmed pre-release independent-testing policy. The original business goal and brand voice remain unchanged.
 - v1 (2026-07-16) — Initial Pep Select product-marketing, evidence, voice, and copy-compliance context.
