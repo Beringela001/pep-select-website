@@ -59,3 +59,5 @@
 - Never commit, quote, summarize, package, or reproduce the private supplement in completion reports or public artifacts.
 - Use Product Marketing, Copywriting, CRO, Copy Editing, and Stop Slop in that order.
 - Stop Slop is the final cleanup pass, not the primary writer.
+- Never use route-specific prohibition wording such as “dosing,” “injection,” or “ingestion” in customer-facing website or email copy. Use the concise laboratory-study statement defined in `.agents/product-marketing.md`.
+- Mobile inspection is mandatory for every customer-facing email before testing, scheduling, or sending; specifically check cart/product lists, image scaling, overflow, CTA visibility, link wrapping, and footer alignment.

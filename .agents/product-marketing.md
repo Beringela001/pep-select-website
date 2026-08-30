@@ -187,6 +187,10 @@ Priority order:
 
 Never use predicted personal consumption, depletion, health outcomes, consumer transformation testimonials, fabricated scarcity, or unverified trust badges. Do not reserve evidence access for a customer tier or use status-driven VIP framing. Moderate all customer-supplied content before email use. Keep regular encrypted list exports with documented access, retention, unsubscribe, and suppression handling.
 
+For customer-facing website and email copy, never spell out alarming route-specific prohibitions such as “dosing,” “injection,” or “ingestion.” Use the concise standard statement: “All products are intended for laboratory study and identification purposes only. Not intended for human or animal use.” Keep the required limitation clear without adding graphic or fear-inducing wording.
+
+Every customer-facing email must receive a mobile-width visual inspection before testing, scheduling, or sending. Verify that product and cart-item lists do not crop, images stay within the viewport, text and links wrap cleanly, buttons remain fully visible and tappable, and footer content stays centered and readable.
+
 Lead recovery with saved-cart accuracy, documentation, operational clarity, and support. Treat discounts as measured interventions. Do not make the current stacked recovery offer a permanent default unless a holdout test shows profitable incremental orders after coupon cost, fulfillment cost, and repeat-purchase effects.
 
 ## Homepage Copy Workflow
