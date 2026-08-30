@@ -259,7 +259,7 @@ Do not skip to option 4 because options 1–3 look tedious.
 - **Copy:** calm, precise, plain English. Audience is researchers and lab purchasers. Never imply human use, dosing, medical outcomes, or guaranteed purity. No em-dashes. Run through `.agents/product-marketing.md` and `.agents/skills` before delivery.
 - **Never touch the COA plugin's cards or files.** Read-only via core APIs where data is needed.
 - **HPOS compatibility mode stays on.** Disabling it silently stops Easyship receiving orders.
-- **Legacy REST API stays installed** — required permanently for Easyship.
+- **Legacy REST API stays removed.** Easyship 0.9.16 and the Control App use current REST integrations; do not reinstall the legacy plugin unless a named `/wc-api/` consumer is demonstrated.
 - Amber is reserved for the Square payment instruction panel. Do not reuse it for offers or upsells.
 - Every release: bump `style.css`, CHANGELOG entry, commit, push, ZIP to `dist/`, print SHA-256, and build a rollback ZIP alongside.
 

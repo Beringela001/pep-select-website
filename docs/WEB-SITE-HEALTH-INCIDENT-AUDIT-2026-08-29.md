@@ -19,7 +19,7 @@ Several real maintenance and abuse issues were found. The highest-confidence che
 | Cart-abandonment email | The message came from Cart Abandonment Recovery for WooCommerce, not FluentCRM. | Operational confusion, not a broken automation. | Document ownership; do not expect these recipients in FluentCRM list 5. |
 | FluentCRM list 5 | List 5 is the explicit Pep Select Offers / exit-offer destination and currently has no subscribers. | No evidence that cart recovery should add contacts there. | Leave logic unchanged unless marketing explicitly chooses a consent-compliant shared audience. |
 | Contact email | The message was submitted through the coded contact form. The form had only a nonce and honeypot. Historical messages show repeated unsolicited SEO outreach. | Inbox abuse and mail reputation/load risk. | Theme 0.25.0-beta.66 adds timing, hashed-IP throttling, and duplicate suppression. |
-| HPOS and Legacy REST API | WooCommerce warns that HPOS and WooCommerce Legacy REST API 1.0.5 are active together. | Unsupported storage/API combination. | Leave Legacy REST API active at the owner's direction; do not infer that Easyship needs it. |
+| HPOS and Legacy REST API | The Legacy REST plugin had been active beside HPOS, but no `/wc-api/*` consumer was found in the Control App, Easyship 0.9.16, or sampled Live access logs. Easyship uses its own `/wp-json/easyship/v1/token` route and the Control App uses `/wp-json/wc/v3/*`. | The unsupported storage/API combination was unnecessary. | Removed WooCommerce Legacy REST API 1.0.5 from staging and Live after staging rate validation. Do not reinstall it unless a named legacy consumer is demonstrated. |
 | Control App dependency | Control App source and operations documentation use `/wp-json/wc/v3/*`, including HPOS-safe by-ID order reads. No legacy `/wc-api/*` dependency was found. | Control App does not justify keeping Legacy REST API active. Unknown external consumers must still be checked. | Test order/product/webhook sync after staging deactivation. |
 | Background work | Kinsta reported 388 PHP worker-limit events with two workers. | Requests can queue during traffic or cron bursts even without 500 responses. | Recheck after Easyship logging fix and scheduled-action cleanup; profile slow endpoints before increasing plan capacity. |
 | Scheduled Actions | 134 historical failures were present, mostly obsolete WooPayments or migration work; 24 actions were pending. | Old failures create noise; pending actions need current-state verification. | Do not bulk-delete. Verify recurring owners, run due actions normally, and archive only confirmed obsolete records. |
@@ -47,7 +47,7 @@ Theme 0.25.0-beta.66 contains:
 - Replaced staging theme 0.25.0-beta.63 with 0.25.0-beta.66. A final browser check exposed that the original head-loaded timing script ran before the form existed; beta.66 waits for the DOM and exposes a non-sensitive initialization marker. Staging verification confirmed the hidden field, current script, and `data-pep-initialized="true"` marker without exposing its timestamp.
 - Verified package `dist/pepselect-child-0.25.0-beta.66.zip` at 2,691,092 bytes with SHA-256 `2633E8C41FC63C31C58134CC65C2DDFEB40591BCCB0E36BD1A381204FD597F9F`.
 - Verified the home, shop, cart, checkout, and contact routes render without a fatal/critical-error page. An unrelated existing Elementor `elementorFrontendConfig is not defined` console error remains on the contact page.
-- Left WooCommerce Legacy REST API active and unchanged at the owner's direction.
+- Deactivated and removed WooCommerce Legacy REST API 1.0.5. With it inactive, the saved Washington checkout still returned USPS Priority Mail $12.97, FedEx Standard Overnight $55.55, UPS 2nd Day Air $15.17, and FedEx Ground $14.91; the selected-rate total remained $98.16. Easyship stayed active and the HPOS incompatibility warning disappeared.
 - During staging validation, did not submit the contact form, place an order, or modify Live.
 
 ## Live deployment record
@@ -59,7 +59,9 @@ Theme 0.25.0-beta.66 contains:
 - Verified Live home, shop, cart, checkout, and contact routes without a fatal/critical-error page. The populated cart qualified for Free shipping and checkout rendered its shipping choice without submitting an order.
 - Verified the Live contact page loads the current contact script and exposes `data-pep-initialized="true"` on the protected hidden field. No contact message was submitted.
 - Found no August 29 fatal-error log. The latest listed Easyship log remained August 26 after deployment checks.
-- Left WooCommerce Legacy REST API active and unchanged at the owner's direction.
+- With owner authorization, deleted only the verified oldest bottom manual backup, `Before exit offer 0.1.4 live deployment - 2026-08-28` (August 28 at 11:09 PM), then created and verified `Before Legacy REST removal live - 2026-08-29` (August 29 at 8:44 PM).
+- Deactivated and removed WooCommerce Legacy REST API 1.0.5. Easyship remained active, the HPOS incompatibility warning disappeared, and all Kinsta caches were cleared.
+- Rechecked Live home, shop, cart, checkout, and contact after removal. Every route rendered without a fatal/critical-error page; no order or contact message was submitted.
 
 ## Staging remediation sequence
 
@@ -68,7 +70,7 @@ Theme 0.25.0-beta.66 contains:
 3. Confirm Easyship remains connected, token remains populated, and product/order sync completes.
 4. Test cart quantity changes and checkout rates for Georgia, Alaska, and Puerto Rico with representative products.
 5. Confirm the Easyship warning volume stops and no checkout fatal/error appears.
-6. Leave WooCommerce Legacy REST API active pending a separate owner decision.
+6. Remove WooCommerce Legacy REST API after confirming no named `/wc-api/*` consumer and passing the staging rate test. Completed on staging and Live.
 7. Test Control App order reads, product reads/writes, status write-back, and webhook inventory.
 8. Deploy and test theme 0.25.0-beta.66 contact protection.
 9. Identify the vulnerable package and stage plugin updates in compatible dependency groups.
@@ -80,16 +82,16 @@ Theme 0.25.0-beta.66 contains:
 - Product, cart, checkout, account, order tracking, payment, shipping, rewards, VerifyPass, and COA flows pass on staging.
 - Easyship returns rates for the required domestic destination matrix.
 - Cart quantity changes do not produce a fatal error.
-- Control App `/wp-json/wc/v3/*` reads and writes pass; Legacy REST API remains active by owner decision.
+- Control App `/wp-json/wc/v3/*` reads and writes pass; Legacy REST API remains absent unless a named legacy consumer is documented.
 - Contact form sends one legitimate message, silently drops an immediate bot-style submission, suppresses an exact replay, and throttles the sixth valid attempt within one hour.
 - No new PHP fatal, HTTP 500 pattern, or unresolved scheduled-action backlog appears during the observation window.
 
 ## Rollback
 
 - Easyship: restore the staging backup or reinstall 0.9.15 only if 0.9.16 fails the acceptance matrix.
-- Legacy REST API: no rollback action is needed because it was not changed.
+- Legacy REST API: restore the verified August 29, 8:44 PM Live backup or reinstall and activate WooCommerce Legacy REST API 1.0.5 only if a named integration fails and proves a `/wc-api/*` dependency.
 - Contact protection: redeploy theme 0.25.0-beta.63 if legitimate submissions fail, then diagnose the exact guard involved.
-- Live rollback: restore the verified August 29, 8:30 PM manual backup if the Easyship or theme release causes a production regression.
+- Live rollback: restore the verified August 29, 8:30 PM manual backup if the Easyship or theme release causes a production regression; use the 8:44 PM backup for the later Legacy REST removal milestone.
 
 ## Evidence boundaries
 
