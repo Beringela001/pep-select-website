@@ -39,6 +39,7 @@ assert.match(recovery, /One of our team members will help\./);
 assert.match(recoveryCoupon, /pep_company_footer_html/);
 
 for (const template of [
+  'pepselect-child/woocommerce/emails/admin-new-order.php',
   'pepselect-child/woocommerce/emails/customer-new-account.php',
   'pepselect-child/woocommerce/emails/customer-on-hold-order.php',
   'pepselect-child/woocommerce/emails/customer-completed-order.php',

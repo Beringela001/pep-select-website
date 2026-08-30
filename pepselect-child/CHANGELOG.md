@@ -1,6 +1,11 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.77** - Standardize the company footer and soften the American-ownership treatment.
+**Release candidate: 0.25.0-beta.78** - Complete the shared company footer across every WooCommerce email.
+
+## 0.25.0-beta.78 - 2026-08-30
+
+- Replace the admin new-order email's short order label with the same full company footer used by the rest of the WooCommerce email workflow.
+- Preserve the admin order number as quiet footer context while keeping the ownership line, website, address, email, and phone number consistent.
 
 ## 0.25.0-beta.77 - 2026-08-30
 

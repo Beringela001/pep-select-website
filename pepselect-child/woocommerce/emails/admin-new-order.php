@@ -148,7 +148,13 @@ if ( '' === $pep_points_value ) {
 					<?php endif; ?>
 
 				</td></tr>
-				<tr><td class="pep-admin-footer" style="padding:0 44px 34px;"><table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%"><tr><td align="center" style="border-top:1px solid <?php echo esc_attr( $pep['border'] ); ?>;padding-top:22px;"><p style="color:<?php echo esc_attr( $pep['navy'] ); ?>;font-family:<?php echo esc_attr( $pep['font'] ); ?>;font-size:12px;font-weight:700;line-height:1.45;margin:0;"><?php printf( esc_html__( 'Pep Select · Order #%s', 'pepselect-child' ), esc_html( $pep_order_number ) ); ?></p></td></tr></table></td></tr>
+				<?php
+				$pep_admin_footer_context = sprintf(
+					'<span style="color:#AFC2D3;">%s</span>',
+					esc_html( sprintf( __( 'Admin order alert · Order #%s', 'pepselect-child' ), $pep_order_number ) )
+				);
+				echo wp_kses_post( pepselect_child_email_company_footer_row_html( $pep_admin_footer_context ) );
+				?>
 			</table>
 			<!--[if mso]></td></tr></table><![endif]-->
 		</td></tr>
