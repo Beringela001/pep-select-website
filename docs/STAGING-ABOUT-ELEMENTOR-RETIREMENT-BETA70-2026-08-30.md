@@ -41,3 +41,13 @@ The plugin files remain installed on staging for one-click rollback. Hello Eleme
 ## Rollback
 
 Reactivate Elementor, then Elementor Pro, then Marquee Addons. If theme rollback is also required, restore the named manual staging backup.
+
+## Live deployment
+
+Beta.70 was deployed to production after the staging gate passed. Before deployment, the oldest live manual backup (`Before beta63 new site icon live - 2026-08-29`, created Aug 28, 2026 at 11:51 PM) was removed to free the required slot. The replacement live backup is:
+
+`Before coded About and Elementor retirement beta70 live - 2026-08-30`
+
+Production then received the same theme ZIP and the same plugin deactivation order used on staging. Elementor, Elementor Pro, and Marquee Addons are inactive; their files remain installed for rollback. Pep Select remains the active child theme and Hello Elementor 3.4.9 remains its installed parent.
+
+The production smoke test passed Home, About, Shop, Tesamorelin product, Quality Archive, FAQ, Contact, Military Discount, Cart, Checkout, My Account, and Track Order. No tested route displayed a fatal error or exposed shortcode. The live About page is indexable, uses the production canonical URL, contains AboutPage schema, and loads no Elementor, Elementor Pro, or Marquee Addons plugin assets.
