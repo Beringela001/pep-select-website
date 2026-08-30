@@ -181,6 +181,38 @@
 		}
 	}
 
+	function ensurePuertoRicoAutocompleteCountryOption() {
+		[ 'shipping_country', 'billing_country' ].forEach( function ( fieldId ) {
+			var country = document.getElementById( fieldId );
+			var option;
+
+			if ( ! country || country.querySelector( 'option[value="PR"]' ) ) {
+				return;
+			}
+
+			option = document.createElement( 'option' );
+			option.value = 'PR';
+			option.textContent = 'Puerto Rico';
+			option.hidden = true;
+			option.setAttribute( 'data-pepselect-autocomplete-only', 'true' );
+			country.appendChild( option );
+		} );
+	}
+
+	function normalizePuertoRicoCountryField( field ) {
+		var prefix;
+		var state;
+
+		if ( ! field || field.value !== 'PR' || ! /^(billing|shipping)_country$/.test( field.id || '' ) ) {
+			return;
+		}
+
+		prefix = /^billing_/.test( field.id ) ? 'billing' : 'shipping';
+		state = document.getElementById( prefix + '_state' );
+		field.value = 'US';
+		setAddressField( state, 'PR' );
+	}
+
 	function normalizePuertoRicoAutocomplete( event ) {
 		var input = event.target;
 		var prefix;
@@ -206,6 +238,7 @@
 		}
 	} );
 	document.addEventListener( 'change', function ( event ) {
+		normalizePuertoRicoCountryField( event.target );
 		if ( /_(country|state|postcode)$/.test( event.target.id || '' ) ) {
 			updateWarnings();
 		}
@@ -213,12 +246,20 @@
 	document.addEventListener( 'fc_gaa_address_autocompleted', normalizePuertoRicoAutocomplete );
 
 	if ( $ ) {
-		$( document.body ).on( 'updated_checkout checkout_error', queueWarningUpdate );
+		$( document.body ).on( 'updated_checkout', function () {
+			ensurePuertoRicoAutocompleteCountryOption();
+			queueWarningUpdate();
+		} );
+		$( document.body ).on( 'checkout_error', queueWarningUpdate );
 	}
 
 	if ( document.readyState === 'loading' ) {
-		document.addEventListener( 'DOMContentLoaded', updateWarnings );
+		document.addEventListener( 'DOMContentLoaded', function () {
+			ensurePuertoRicoAutocompleteCountryOption();
+			updateWarnings();
+		} );
 	} else {
+		ensurePuertoRicoAutocompleteCountryOption();
 		updateWarnings();
 	}
 }( window, document, window.jQuery ) );
