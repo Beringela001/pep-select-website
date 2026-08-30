@@ -97,6 +97,7 @@ assert(adminJs.includes('wp.media'), 'The admin must support selecting a backgro
 assert(adminJs.includes("updatePreview('exit')"), 'The admin must live-preview the exit popup');
 assert(adminJs.includes("updatePreview('promo')"), 'The admin must live-preview the campaign popup');
 assert(adminJs.includes("campaignButton.hidden = !String(value('promo_button')"), 'The campaign preview button must disappear when its label is blank');
+assert(adminJs.includes("campaignButton.style.display = campaignButton.hidden ? 'none' : ''"), 'The preview must override WordPress button display styles');
 assert(adminCss.includes('.pep-recovery-grid'), 'The admin campaign form must remain responsive');
 assert(adminCss.includes('.pep-recovery-preview__stage'), 'The admin must include a visual popup preview');
 assert(php.includes("data-pep-tab=\"exit\""), 'The admin must expose a clear Exit Popup tab');

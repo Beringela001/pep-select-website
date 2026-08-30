@@ -891,7 +891,7 @@ final class PepSelect_Cart_Recovery {
 							<button type="button" class="pep-recovery-preview__button" data-pep-preview-bind="exit_button"><?php echo esc_html( $this->replace_tokens( $settings['exit_button'], $settings ) ); ?></button>
 						<?php else : ?>
 							<div class="pep-recovery-preview__code" data-pep-preview-code <?php if ( ! $settings['promo_code'] ) : ?>hidden<?php endif; ?>><span data-pep-preview-bind="promo_code_label"><?php echo esc_html( $settings['promo_code_label'] ); ?></span><strong data-pep-preview-bind="promo_code"><?php echo esc_html( $settings['promo_code'] ); ?></strong></div>
-							<button type="button" class="pep-recovery-preview__button" data-pep-preview-bind="promo_button" <?php if ( ! $settings['promo_button'] ) : ?>hidden<?php endif; ?>><?php echo esc_html( $settings['promo_button'] ); ?></button>
+							<button type="button" class="pep-recovery-preview__button" data-pep-preview-bind="promo_button" <?php if ( ! $settings['promo_button'] ) : ?>hidden style="display:none"<?php endif; ?>><?php echo esc_html( $settings['promo_button'] ); ?></button>
 						<?php endif; ?>
 						<p class="pep-recovery-preview__fineprint" data-pep-preview-bind="<?php echo esc_attr( $prefix ); ?>_fineprint"><?php echo esc_html( $this->replace_tokens( $settings[ $prefix . '_fineprint' ], $settings ) ); ?></p>
 					</div>

@@ -68,7 +68,10 @@
     var code = preview.querySelector('[data-pep-preview-code]');
     if (code) code.hidden = !String(value('promo_code') || '').trim();
     var campaignButton = preview.querySelector('[data-pep-preview-bind="promo_button"]');
-    if (campaignButton) campaignButton.hidden = !String(value('promo_button') || '').trim();
+    if (campaignButton) {
+      campaignButton.hidden = !String(value('promo_button') || '').trim();
+      campaignButton.style.display = campaignButton.hidden ? 'none' : '';
+    }
   }
 
   function updateAll() {
