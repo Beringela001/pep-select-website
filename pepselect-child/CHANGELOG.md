@@ -1,5 +1,13 @@
 # Changelog
 
+**Release candidate: 0.25.0-beta.68** - Load side-cart confetti only when a celebration is triggered.
+
+## 0.25.0-beta.68 - 2026-08-29
+
+- Replace the side-cart plugin's 127 KiB initial confetti dependency with a tiny on-demand loader on the audited storefront templates.
+- Preserve the plugin's configured progress-bar celebrations by loading its original vendor bundle when `confetti.create()` is first called.
+- Keep the original WordPress script handle and dependency order so the side-cart runtime remains compatible.
+
 **Release candidate: 0.25.0-beta.67** - Remove unused Elementor runtime assets from the coded Contact template.
 
 ## 0.25.0-beta.67 - 2026-08-29

@@ -173,6 +173,64 @@ add_action( 'wp_enqueue_scripts', 'pepselect_child_defer_seo_template_scripts', 
 add_action( 'wp_print_scripts', 'pepselect_child_defer_seo_template_scripts', 995 );
 
 /**
+ * Replace the side-cart confetti bundle with a tiny on-demand loader.
+ *
+ * The premium side cart declares its 127 KiB celebration library as a hard
+ * dependency even though it is only used after a progress-bar checkpoint is
+ * reached. Keep the registered handle and dependency order intact, but defer
+ * downloading and parsing the vendor bundle until its async create() method is
+ * actually called.
+ *
+ * @return void
+ */
+function pepselect_child_lazy_load_side_cart_confetti() {
+	static $configured = false;
+
+	if ( $configured || is_admin() || ! pepselect_child_is_seo_performance_template() ) {
+		return;
+	}
+
+	global $wp_scripts;
+
+	if ( ! $wp_scripts instanceof WP_Scripts || ! isset( $wp_scripts->registered['xoo-confetti'] ) ) {
+		return;
+	}
+
+	$script          = $wp_scripts->registered['xoo-confetti'];
+	$original_source = (string) $script->src;
+
+	// Only replace the verified Side Cart WooCommerce dependency. If the plugin
+	// changes ownership or registration, retain its original loading behavior.
+	if ( false === strpos( $original_source, '/woocommerce-side-cart-premium/assets/library/confetti/' ) ) {
+		return;
+	}
+
+	if ( 0 === strpos( $original_source, '//' ) ) {
+		$original_source = ( is_ssl() ? 'https:' : 'http:' ) . $original_source;
+	} elseif ( 0 === strpos( $original_source, '/' ) ) {
+		$original_source = home_url( $original_source );
+	}
+
+	if ( ! wp_http_validate_url( $original_source ) ) {
+		return;
+	}
+
+	$script->src = get_stylesheet_directory_uri() . '/assets/js/confetti-loader.js';
+	$script->ver = pepselect_child_asset_version( 'assets/js/confetti-loader.js' );
+
+	wp_add_inline_script(
+		'xoo-confetti',
+		'window.pepselectConfettiSource = ' . wp_json_encode( $original_source ) . ';',
+		'before'
+	);
+	wp_script_add_data( 'xoo-confetti', 'strategy', 'defer' );
+
+	$configured = true;
+}
+add_action( 'wp_enqueue_scripts', 'pepselect_child_lazy_load_side_cart_confetti', 1000 );
+add_action( 'wp_print_footer_scripts', 'pepselect_child_lazy_load_side_cart_confetti', 0 );
+
+/**
  * Return stylesheet handles verified unused on the Quality Archive.
  *
  * @return string[]

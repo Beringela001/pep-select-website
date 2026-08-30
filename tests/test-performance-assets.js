@@ -16,6 +16,10 @@ const footerPreviewFile = fs.readFileSync(
 );
 const brandAssetDirectory = path.join(__dirname, '..', 'pepselect-child', 'assets', 'images', 'brand');
 const accessGateLogo = path.join(__dirname, '..', 'ps-access-gate', 'assets', 'pep-select-logo.png');
+const confettiLoaderFile = fs.readFileSync(
+	path.join(__dirname, '..', 'pepselect-child', 'assets', 'js', 'confetti-loader.js'),
+	'utf8'
+);
 
 [
 	'ywpar-blocks-style',
@@ -73,6 +77,13 @@ assert.ok(!performanceFile.includes("0 === strpos( (string) $handle, 'elementor-
 ].forEach((handle) => assert.ok(performanceFile.includes(`'${handle}'`), `missing defer strategy for ${handle}`));
 assert.ok(!performanceFile.includes("wp_dequeue_script( 'jquery'"));
 assert.ok(!performanceFile.includes("wp_deregister_script( 'jquery'"));
+assert.ok(performanceFile.includes("$wp_scripts->registered['xoo-confetti']"));
+assert.ok(performanceFile.includes("'/woocommerce-side-cart-premium/assets/library/confetti/'"));
+assert.ok(performanceFile.includes("'/assets/js/confetti-loader.js'"));
+assert.ok(performanceFile.includes("window.pepselectConfettiSource"));
+assert.ok(confettiLoaderFile.includes("typeof window.confetti?.create === 'function'"));
+assert.ok(confettiLoaderFile.includes('document.head.appendChild( script )'));
+assert.ok(confettiLoaderFile.includes('proxy.create = async'));
 assert.ok(headerPreviewFile.includes('pep-select-logo-header-448.webp'));
 assert.ok(headerPreviewFile.includes('pep-select-logo-header-320.webp'));
 assert.ok(headerPreviewFile.includes('srcset="%2$s 320w, %1$s 448w"'));
