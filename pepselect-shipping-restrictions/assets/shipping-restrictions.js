@@ -216,20 +216,28 @@
 	function normalizePuertoRicoAutocomplete( event ) {
 		var input = event.target;
 		var prefix;
-		var country;
-		var state;
+		var delays = [ 0, 100, 400, 1000 ];
 
 		if ( getPlaceCountryCode( event.detail && event.detail.place ) !== 'PR' ) {
 			return;
 		}
 
 		prefix = /^billing_/.test( input.id || '' ) ? 'billing' : 'shipping';
-		country = document.getElementById( prefix + '_country' );
-		state = document.getElementById( prefix + '_state' );
 
-		setAddressField( country, 'US' );
-		setAddressField( state, 'PR' );
-		queueWarningUpdate();
+		delays.forEach( function ( delay ) {
+			window.setTimeout( function () {
+				var country = document.getElementById( prefix + '_country' );
+				var state = document.getElementById( prefix + '_state' );
+
+				if ( country && country.value !== 'US' ) {
+					setAddressField( country, 'US' );
+				}
+				if ( state && state.value !== 'PR' ) {
+					setAddressField( state, 'PR' );
+				}
+				queueWarningUpdate();
+			}, delay );
+		} );
 	}
 
 	document.addEventListener( 'input', function ( event ) {
