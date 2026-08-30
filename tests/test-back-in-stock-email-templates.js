@@ -30,6 +30,7 @@ assert.match(html, /You can give the refresh button a rest/);
 assert.match(html, /Good news\. It\\'s back\./);
 assert.match(html, /available batch documentation before ordering/);
 assert.match(html, /support@pepselect\.com/);
+assert.match(html, /American-owned and operated/);
 assert.match(html, /For laboratory research use only/);
 assert.match(html, /max-width:680px/);
 assert.match(html, /@media only screen and \(max-width:520px\)/);
@@ -39,6 +40,7 @@ assert.match(plain, /STOCK NOTIFICATION CONFIRMED/);
 assert.match(plain, /YOUR STOCK NOTIFICATION/);
 assert.match(plain, /Review product details:/);
 assert.match(plain, /View product:/);
+assert.match(plain, /American-owned and operated/);
 assert.doesNotMatch(plain, /limited stock|act quickly/i);
 
 console.log('Back-in-stock email template checks passed.');

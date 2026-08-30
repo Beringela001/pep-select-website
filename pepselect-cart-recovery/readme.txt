@@ -2,7 +2,7 @@
 Contributors: pepselect
 Requires at least: 6.5
 Requires PHP: 7.4
-Stable tag: 0.2.0
+Stable tag: 0.2.1
 License: Proprietary
 
 Native Pep Select exit offer and Cart Abandonment Recovery integration.
@@ -19,6 +19,7 @@ Native Pep Select exit offer and Cart Abandonment Recovery integration.
 
 * Creates a unique, email-restricted 20% coupon in WooCommerce.
 * Emails the code in the Pep Select transactional-email design without creating an account.
+* Identifies Pep Select as American-owned and operated in the customer email footer.
 * Coupons can combine with eligible offers.
 * Uses a 7-day expiry by default.
 * Shows no popup or assets until explicitly enabled.

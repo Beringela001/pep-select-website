@@ -53,6 +53,35 @@ function pepselect_child_email_support_address() {
 }
 
 /**
+ * Company-level ownership line used across customer-facing email footers.
+ *
+ * This wording describes Pep Select, not the origin of any product.
+ *
+ * @return string
+ */
+function pepselect_child_company_ownership_line() {
+	return __( '🇺🇸 American-owned and operated.', 'pepselect-child' );
+}
+
+/**
+ * Add the ownership line to WooCommerce emails that use its default footer.
+ *
+ * Custom Pep Select templates include the same line directly so it remains
+ * visible in clients that do not render the WooCommerce footer template.
+ *
+ * @param string $text Existing WooCommerce footer text.
+ * @return string
+ */
+function pepselect_child_email_footer_text( $text ) {
+	if ( false !== stripos( wp_strip_all_tags( (string) $text ), 'American-owned and operated' ) ) {
+		return $text;
+	}
+
+	return pepselect_child_company_ownership_line() . "\n" . $text;
+}
+add_filter( 'woocommerce_email_footer_text', 'pepselect_child_email_footer_text', 20 );
+
+/**
  * Put the order's creation date and number at the front of the admin alert.
  *
  * The order timestamp is formatted in the store timezone by WooCommerce, so

@@ -1,6 +1,14 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.71** - Remove obsolete Elementor plugin compatibility after permanent retirement.
+**Release candidate: 0.25.0-beta.72** - Add direct American ownership and ship-from facts to customer trust surfaces.
+
+## 0.25.0-beta.72 - 2026-08-30
+
+- Add the owner-confirmed `🇺🇸 American-owned and operated.` line to the website footer and coded customer-email footers without making a product-origin claim.
+- State plainly in the full and homepage FAQs that Pep Select orders ship from New York or Georgia.
+- Preserve all research-use, testing, commerce, email-routing, and shipping logic.
+
+**Previous release candidate: 0.25.0-beta.71** - Remove obsolete Elementor plugin compatibility after permanent retirement.
 
 ## 0.25.0-beta.71 - 2026-08-30
 

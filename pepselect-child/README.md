@@ -1,6 +1,6 @@
 # Pep Select child theme
 
-- Version: 0.25.0-beta.71
+- Version: 0.25.0-beta.72
 - Parent: Hello Elementor (`hello-elementor`)
 - Text domain: `pepselect-child`
 

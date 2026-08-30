@@ -2,7 +2,7 @@
 
 **Status:** Internal strategy. No email, automation, discount, platform migration, or customer-data export is authorized by this document.
 
-**Revision:** v2
+**Revision:** v3
 
 **Last updated:** 2026-08-30
 
@@ -110,6 +110,8 @@ The video's example escalated from reminders to a 15% discount and deadline urge
 
 Use verified Pep Select evidence close to the claim it supports: current batch records, accurate order expectations, real support access, and genuine customer feedback that passes moderation.
 
+Every customer-facing email footer should quietly include `🇺🇸 American-owned and operated.` Keep the line subordinate to the message, attach the flag only to that company-level statement, and do not use it to imply that a compound is made, manufactured, sourced, or bottled in the United States. When shipping origin is relevant, say `Pep Select orders ship from New York or Georgia.` Do not recast this as "fulfillment locations" or warehouse-scale language.
+
 Keep batch-level email claims mechanically tied to authoritative records. If an email cannot identify the exact shipped or available batch, use product-level language and link to the testing-history page. Never infer the batch from a product name, vial image, prior purchase, cap color, or packaging resemblance.
 
 Do not adopt these source suggestions without separate proof and approval:
@@ -180,5 +182,6 @@ Paulo must approve each flow's audience, timing, offer, claims, and copy before 
 
 ## Revision History
 
+- v3 (2026-08-30): Added the owner-confirmed American ownership footer line and direct New York/Georgia ship-from wording, with boundaries against product-origin and dropshipping implications.
 - v2 (2026-08-30): Made batch matching the proof spine, replaced VIP framing with a returning-customer relationship flow, and gated the stacked recovery offer behind profitable incremental-lift evidence.
 - v1 (2026-08-30): Adapted the source video's lifecycle-email techniques to Pep Select's existing systems and boundaries.

@@ -85,6 +85,10 @@ function pepselect_child_get_faq_sections() {
 			'title' => __( 'Shipping', 'pepselect-child' ),
 			'items' => array(
 				array(
+					'question' => __( 'Where do Pep Select orders ship from?', 'pepselect-child' ),
+					'answer'   => __( 'Pep Select orders ship from New York or Georgia.', 'pepselect-child' ),
+				),
+				array(
 					'question' => __( 'When do orders ship?', 'pepselect-child' ),
 					'answer'   => __( 'Orders placed before 10:00 AM ET, Monday through Thursday, ship the same day. After 10:00 AM ET on those days, orders ship the next day. Orders placed Friday through Sunday ship on Monday. Holidays can shift these times when carrier services are closed.', 'pepselect-child' ),
 				),

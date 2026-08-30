@@ -1,6 +1,6 @@
 # Product Marketing Context
 
-**Document version:** v5
+**Document version:** v6
 **Last updated:** 2026-08-30
 
 ## Product Overview
@@ -138,7 +138,14 @@ Use `[VERIFY CLAIM]` when evidence is unavailable. Flag uncertainty instead of g
 
 ## Approved Message Territories
 
-Copy may focus on careful selection, batch documentation, third-party laboratory reports, testing-history access, traceability, clear status communication, transparent product information, dependable fulfillment processes, reasonable and accessible pricing, professional customer support, straightforward ordering, research-use limitations, and documentation review before purchase.
+Copy may focus on careful selection, batch documentation, third-party laboratory reports, testing-history access, traceability, clear status communication, transparent product information, reasonable and accessible pricing, professional customer support, straightforward ordering, research-use limitations, and documentation review before purchase.
+
+Owner-confirmed operational facts may be stated plainly:
+
+- `🇺🇸 American-owned and operated.`
+- `Pep Select orders ship from New York or Georgia.`
+
+The ownership line describes the company only. It must not be presented as a claim that products are made, manufactured, sourced, bottled, or otherwise of U.S. origin. Keep the flag attached to the exact company-level wording and away from product-origin language. Say orders "ship from" New York or Georgia; do not substitute "fulfillment locations," warehouse language, or phrasing that implies dropshipping or a large distribution operation.
 
 Every factual statement within these territories still requires current evidence.
 
@@ -214,6 +221,7 @@ No homepage copy is approved for publication until Paulo reviews it.
 
 ## Changelog
 
+- v6 (2026-08-30) — Recorded the owner-confirmed American ownership and New York/Georgia ship-from facts, including exact wording and the boundary against product-origin or dropshipping implications.
 - v5 (2026-08-30) — Made exact batch matching the email proof spine, replaced VIP framing with a returning-customer relationship flow, and added an incremental-profit gate for stacked recovery discounts.
 - v4 (2026-08-30) — Added the owned-email and retention strategy distilled from a peptide-email case study; adapted seven lifecycle flows to Pep Select's evidence, consent, deliverability, and research-use boundaries.
 - v3 (2026-08-22) — Removed the marketing-claim guardrails at the owner's direction. Evidence, documentation accuracy, and claim-verification rules remain in place.
