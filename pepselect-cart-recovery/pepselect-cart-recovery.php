@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Pep Select Cart Recovery
  * Description: Lightweight exit offer, unique coupons, and Cart Abandonment Recovery integration for Pep Select.
- * Version: 0.4.0
+ * Version: 0.4.1
  * Author: Pep Select
  * Text Domain: pepselect-cart-recovery
  */
@@ -10,7 +10,7 @@
 defined( 'ABSPATH' ) || exit;
 
 final class PepSelect_Cart_Recovery {
-	const VERSION                     = '0.4.0';
+	const VERSION                     = '0.4.1';
 	const OPTION                      = 'pepselect_cart_recovery_settings';
 	const NONCE                       = 'pepselect_exit_offer_capture';
 	const MARKETING_EMAILS_PER_SECOND = 1;
@@ -891,7 +891,7 @@ final class PepSelect_Cart_Recovery {
 							<button type="button" class="pep-recovery-preview__button" data-pep-preview-bind="exit_button"><?php echo esc_html( $this->replace_tokens( $settings['exit_button'], $settings ) ); ?></button>
 						<?php else : ?>
 							<div class="pep-recovery-preview__code" data-pep-preview-code <?php if ( ! $settings['promo_code'] ) : ?>hidden<?php endif; ?>><span data-pep-preview-bind="promo_code_label"><?php echo esc_html( $settings['promo_code_label'] ); ?></span><strong data-pep-preview-bind="promo_code"><?php echo esc_html( $settings['promo_code'] ); ?></strong></div>
-							<button type="button" class="pep-recovery-preview__button" data-pep-preview-bind="promo_button"><?php echo esc_html( $settings['promo_button'] ); ?></button>
+							<button type="button" class="pep-recovery-preview__button" data-pep-preview-bind="promo_button" <?php if ( ! $settings['promo_button'] ) : ?>hidden<?php endif; ?>><?php echo esc_html( $settings['promo_button'] ); ?></button>
 						<?php endif; ?>
 						<p class="pep-recovery-preview__fineprint" data-pep-preview-bind="<?php echo esc_attr( $prefix ); ?>_fineprint"><?php echo esc_html( $this->replace_tokens( $settings[ $prefix . '_fineprint' ], $settings ) ); ?></p>
 					</div>
@@ -955,7 +955,7 @@ final class PepSelect_Cart_Recovery {
 							<?php $this->admin_field( $settings, 'promo_body', __( 'Supporting paragraph', 'pepselect-cart-recovery' ), __( 'Explains the sale, announcement, or reason to click.', 'pepselect-cart-recovery' ), 'textarea' ); ?>
 							<?php $this->admin_field( $settings, 'promo_code_label', __( 'Code label', 'pepselect-cart-recovery' ), __( 'The small words above the optional promotion code.', 'pepselect-cart-recovery' ) ); ?>
 							<?php $this->admin_field( $settings, 'promo_code', __( 'Promotion code to display', 'pepselect-cart-recovery' ), __( 'Optional. This displays a code but does not create it. Create the coupon in WooCommerce first.', 'pepselect-cart-recovery' ) ); ?>
-							<?php $this->admin_field( $settings, 'promo_button', __( 'Button text', 'pepselect-cart-recovery' ), __( 'The action visitors press.', 'pepselect-cart-recovery' ) ); ?>
+							<?php $this->admin_field( $settings, 'promo_button', __( 'Button text (optional)', 'pepselect-cart-recovery' ), __( 'Leave this blank to remove the button. Visitors can close the popup and continue browsing the website.', 'pepselect-cart-recovery' ) ); ?>
 							<?php $this->admin_field( $settings, 'promo_url', __( 'Button destination', 'pepselect-cart-recovery' ), __( 'The page opened after the button is pressed, such as a sale or shop page.', 'pepselect-cart-recovery' ), 'url' ); ?>
 							<?php $this->admin_field( $settings, 'promo_fineprint', __( 'Small print below the button', 'pepselect-cart-recovery' ), __( 'Optional short terms or timing note.', 'pepselect-cart-recovery' ) ); ?>
 						</div></section>

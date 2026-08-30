@@ -77,7 +77,7 @@ const mockup = fs.readFileSync(path.join(root, '..', 'mockups', 'cart-recovery',
   'max-height:calc(100vh - 36px)'
 ].forEach((needle) => assert(css.includes(needle), `Missing centered modal contract: ${needle}`));
 
-assert(php.includes("const VERSION                     = '0.4.0'"), 'Plugin version must be 0.4.0');
+assert(php.includes("const VERSION                     = '0.4.1'"), 'Plugin version must be 0.4.1');
 
 assert(!/dataLayer\.push\([^)]*email/i.test(js), 'Email must not be pushed to the dataLayer');
 assert(!/https?:\/\//.test(js + css), 'Public assets must not call third-party URLs');
@@ -96,10 +96,12 @@ assert(php.includes("'email_code_note'"), 'The configurable email must retain an
 assert(adminJs.includes('wp.media'), 'The admin must support selecting a background image');
 assert(adminJs.includes("updatePreview('exit')"), 'The admin must live-preview the exit popup');
 assert(adminJs.includes("updatePreview('promo')"), 'The admin must live-preview the campaign popup');
+assert(adminJs.includes("campaignButton.hidden = !String(value('promo_button')"), 'The campaign preview button must disappear when its label is blank');
 assert(adminCss.includes('.pep-recovery-grid'), 'The admin campaign form must remain responsive');
 assert(adminCss.includes('.pep-recovery-preview__stage'), 'The admin must include a visual popup preview');
 assert(php.includes("data-pep-tab=\"exit\""), 'The admin must expose a clear Exit Popup tab');
 assert(php.includes("data-pep-tab=\"promo\""), 'The admin must expose a clear Campaign Popup tab');
+assert(php.includes("if ( $settings['promo_button'] )"), 'The public campaign button must remain optional');
 assert(Buffer.byteLength(js) < 12000, 'JavaScript performance budget exceeded');
 assert(Buffer.byteLength(css) < 8000, 'CSS performance budget exceeded');
 

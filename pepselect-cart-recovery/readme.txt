@@ -2,7 +2,7 @@
 Contributors: pepselect
 Requires at least: 6.5
 Requires PHP: 7.4
-Stable tag: 0.4.0
+Stable tag: 0.4.1
 License: Proprietary
 
 Native Pep Select exit offer and Cart Abandonment Recovery integration.
@@ -41,3 +41,4 @@ Native Pep Select exit offer and Cart Abandonment Recovery integration.
 * Suppresses the email-capture popup during an active scheduled promotion by default so visitors do not receive competing modal messages.
 * Provides separate Exit Popup and Campaign Popup administration tabs with desktop/mobile live previews and plain-language field guidance.
 * Provides an authenticated, capability-protected WordPress REST settings endpoint for future Control Ops integration.
+* Removes the Campaign Popup button when its button-text setting is blank.
