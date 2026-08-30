@@ -309,22 +309,11 @@ $pep_logo_url = 'https://pepselect.com/wp-content/uploads/2026/06/Logo_Pepselect
 							</p>
 						</td>
 					</tr>
-					<tr>
-						<td class="pep-email-footer" style="padding:0 44px 34px;">
-							<table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%">
-								<tr>
-									<td align="center" style="border-top:1px solid <?php echo esc_attr( $pep['border'] ); ?>; padding-top:24px;">
-										<p style="color:<?php echo esc_attr( $pep['navy'] ); ?>; font-family:<?php echo esc_attr( $pep['font'] ); ?>; font-size:12px; font-weight:700; line-height:1.45; margin:0 0 2px;">Pep Select</p>
-										<p style="color:#0D708E; font-family:<?php echo esc_attr( $pep['font'] ); ?>; font-size:11px; line-height:1.45; margin:0 0 8px;"><a href="<?php echo esc_url( home_url( '/' ) ); ?>" style="color:#0D708E; text-decoration:none;">pepselect.com</a> · <a href="mailto:<?php echo esc_attr( $pep_support_email ); ?>" style="color:#0D708E; text-decoration:none;"><span class="pep-email-desktop-label"><?php esc_html_e( 'Contact support', 'pepselect-child' ); ?></span><span class="pep-email-mobile-label pep-email-mobile-only" style="max-height:0; mso-hide:all; overflow:hidden;"><?php esc_html_e( 'Support', 'pepselect-child' ); ?></span></a></p>
-										<p style="color:<?php echo esc_attr( $pep['navy'] ); ?>; font-family:<?php echo esc_attr( $pep['font'] ); ?>; font-size:15px; font-weight:800; line-height:1.45; margin:0 0 8px;"><?php echo esc_html( function_exists( 'pepselect_child_company_ownership_line' ) ? pepselect_child_company_ownership_line() : __( '🇺🇸 American-owned and operated.', 'pepselect-child' ) ); ?></p>
-										<p class="pep-email-desktop-only" style="color:<?php echo esc_attr( $pep['slate'] ); ?>; display:block; font-family:<?php echo esc_attr( $pep['font'] ); ?>; font-size:10px; line-height:1.45; margin:0;">
-											<?php esc_html_e( 'For laboratory research use only.', 'pepselect-child' ); ?>
-										</p>
-									</td>
-								</tr>
-							</table>
-						</td>
-					</tr>
+					<?php
+					if ( function_exists( 'pepselect_child_email_company_footer_row_html' ) ) {
+						echo pepselect_child_email_company_footer_row_html( esc_html__( 'For laboratory research use only.', 'pepselect-child' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					}
+					?>
 				</table>
 				<!--[if mso]>
 				</td></tr></table>

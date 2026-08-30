@@ -53,6 +53,24 @@ function pepselect_child_email_support_address() {
 }
 
 /**
+ * Public company details used in every customer-facing email footer.
+ *
+ * @return array<string,string>
+ */
+function pepselect_child_email_company_details() {
+	return array(
+		'name'        => 'Pep Select',
+		'website'     => 'pepselect.com',
+		'website_url' => home_url( '/' ),
+		'address_1'   => '2090 Baker Rd, Ste 304 #A85',
+		'address_2'   => 'Kennesaw, GA 30144',
+		'email'       => pepselect_child_email_support_address(),
+		'phone'       => '1 (833) 737-7528',
+		'phone_url'   => 'tel:+18337377528',
+	);
+}
+
+/**
  * Company-level ownership line used across customer-facing email footers.
  *
  * This wording describes Pep Select, not the origin of any product.
@@ -70,26 +88,89 @@ function pepselect_child_company_ownership_line() {
  */
 function pepselect_child_company_ownership_email_html() {
 	return sprintf(
-		'<strong style="color:#001D3A;font-size:15px;font-weight:800;line-height:1.45;">%s</strong>',
+		'<strong style="color:#FFFFFF;font-size:16px;font-weight:800;line-height:1.45;">%s</strong>',
 		esc_html( pepselect_child_company_ownership_line() )
 	);
 }
 
 /**
- * Add the ownership line to WooCommerce emails that use its default footer.
+ * Shared, email-client-safe company footer.
  *
- * Custom Pep Select templates include the same line directly so it remains
- * visible in clients that do not render the WooCommerce footer template.
+ * The navy field follows Pep Select marketing emails while the generous
+ * spacing and muted secondary type keep it from overpowering the message.
+ * Optional context stays below the company details for unsubscribe or
+ * transactional disclosures owned by the sending system.
+ *
+ * @param string $context_html Escaped or trusted internal HTML appended below the company details.
+ * @return string
+ */
+function pepselect_child_email_company_footer_html( $context_html = '' ) {
+	$company = pepselect_child_email_company_details();
+	$year    = wp_date( 'Y' );
+
+	ob_start();
+	?>
+	<table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%" style="background-color:#002A53;border-collapse:separate;border-radius:0 0 16px 16px;width:100%;">
+		<tr>
+			<td style="padding:30px 44px 28px;">
+				<table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%">
+					<tr>
+						<td align="center" style="padding:0 0 22px;">
+							<p style="font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;line-height:1.45;margin:0;"><?php echo wp_kses_post( pepselect_child_company_ownership_email_html() ); ?></p>
+						</td>
+					</tr>
+					<tr>
+						<td align="center" style="border-top:1px solid #315775;color:#D8E6F2;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:12px;line-height:1.7;padding:22px 0 0;">
+							<strong style="color:#FFFFFF;font-size:14px;"><?php echo esc_html( $company['name'] ); ?></strong><br>
+							<a href="<?php echo esc_url( $company['website_url'] ); ?>" style="color:#7DD6F2;text-decoration:none;" target="_blank"><?php echo esc_html( $company['website'] ); ?></a><br>
+							<?php echo esc_html( $company['address_1'] ); ?><br>
+							<?php echo esc_html( $company['address_2'] ); ?><br>
+							<a href="mailto:<?php echo esc_attr( $company['email'] ); ?>" style="color:#7DD6F2;text-decoration:none;"><?php echo esc_html( $company['email'] ); ?></a><br>
+							<a href="<?php echo esc_url( $company['phone_url'] ); ?>" style="color:#7DD6F2;text-decoration:none;"><?php echo esc_html( $company['phone'] ); ?></a>
+						</td>
+					</tr>
+					<?php if ( '' !== trim( $context_html ) ) : ?>
+					<tr><td align="center" style="color:#AFC2D3;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:11px;line-height:1.6;padding:22px 0 0;"><?php echo wp_kses_post( $context_html ); ?></td></tr>
+					<?php endif; ?>
+					<tr><td align="center" style="color:#8FA8BA;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:10px;line-height:1.5;padding:18px 0 0;">&copy; <?php echo esc_html( $year ); ?> Pep Select. <?php esc_html_e( 'All rights reserved.', 'pepselect-child' ); ?></td></tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+	<?php
+	return trim( (string) ob_get_clean() );
+}
+
+/**
+ * Footer row for Pep Select standalone HTML email templates.
+ *
+ * @param string $context_html Optional disclosure or unsubscribe HTML.
+ * @return string
+ */
+function pepselect_child_email_company_footer_row_html( $context_html = '' ) {
+	return '<tr><td class="pep-email-footer" style="padding:0;">' . pepselect_child_email_company_footer_html( $context_html ) . '</td></tr>';
+}
+
+/**
+ * Provide a complete fallback when a WooCommerce renderer uses only the
+ * footer-text filter instead of the theme's email-footer template override.
  *
  * @param string $text Existing WooCommerce footer text.
  * @return string
  */
 function pepselect_child_email_footer_text( $text ) {
-	if ( false !== stripos( wp_strip_all_tags( (string) $text ), 'American-owned and operated' ) ) {
-		return $text;
-	}
+	$company = pepselect_child_email_company_details();
+	$details = sprintf(
+		'%1$s<br>%2$s<br>%3$s<br><a href="mailto:%4$s">%4$s</a><br><a href="%5$s">%6$s</a>',
+		esc_html( $company['website'] ),
+		esc_html( $company['address_1'] ),
+		esc_html( $company['address_2'] ),
+		esc_attr( $company['email'] ),
+		esc_url( $company['phone_url'] ),
+		esc_html( $company['phone'] )
+	);
 
-	return pepselect_child_company_ownership_email_html() . '<br><br>' . $text;
+	return pepselect_child_company_ownership_email_html() . '<br>' . $details . '<br><br>' . wp_kses_post( (string) $text );
 }
 add_filter( 'woocommerce_email_footer_text', 'pepselect_child_email_footer_text', 20 );
 

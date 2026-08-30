@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Pep Select Cart Recovery
  * Description: Lightweight exit offer, unique coupons, and Cart Abandonment Recovery integration for Pep Select.
- * Version: 0.4.2
+ * Version: 0.4.3
  * Author: Pep Select
  * Text Domain: pepselect-cart-recovery
  */
@@ -10,7 +10,7 @@
 defined( 'ABSPATH' ) || exit;
 
 final class PepSelect_Cart_Recovery {
-	const VERSION                     = '0.4.2';
+	const VERSION                     = '0.4.3';
 	const OPTION                      = 'pepselect_cart_recovery_settings';
 	const NONCE                       = 'pepselect_exit_offer_capture';
 	const MARKETING_EMAILS_PER_SECOND = 1;
@@ -556,6 +556,11 @@ final class PepSelect_Cart_Recovery {
 				}
 			}
 		}
+
+		if ( is_object( $email_data ) && ! empty( $email_data->email_body ) && false === strpos( $email_data->email_body, 'data-pepselect-company-footer' ) ) {
+			$email_data->email_body .= $this->company_footer_html();
+		}
+
 		return $email_data;
 	}
 
@@ -591,6 +596,32 @@ final class PepSelect_Cart_Recovery {
 
 		$headers = preg_replace( '/^Reply-To:.*(?:\r\n|\n|\r)/mi', '', (string) $headers );
 		return rtrim( $headers ) . "\r\nReply-To: Pep Select <support@pepselect.com>\r\n";
+	}
+
+	/**
+	 * Shared company footer for cart recovery and signup-code messages.
+	 *
+	 * This plugin is intentionally self-contained so its outgoing email still
+	 * has the complete footer if the storefront theme is temporarily switched.
+	 *
+	 * @param string $context_html Optional delivery or unsubscribe context.
+	 * @return string
+	 */
+	private function company_footer_html( $context_html = '' ) {
+		ob_start();
+		?>
+		<table border="0" cellpadding="0" cellspacing="0" data-pepselect-company-footer="1" role="presentation" width="100%" style="background-color:#002A53;border-collapse:separate;width:100%;">
+			<tr><td align="center" style="padding:30px 32px 28px;">
+				<p style="color:#FFFFFF;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:16px;font-weight:800;line-height:1.45;margin:0 0 20px;">🇺🇸 American-owned and operated.</p>
+				<p style="border-top:1px solid #315775;color:#D8E6F2;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:12px;line-height:1.7;margin:0;padding:20px 0 0;"><strong style="color:#FFFFFF;font-size:14px;">Pep Select</strong><br><a href="<?php echo esc_url( home_url( '/' ) ); ?>" style="color:#7DD6F2;text-decoration:none;">pepselect.com</a><br>2090 Baker Rd, Ste 304 #A85<br>Kennesaw, GA 30144<br><a href="mailto:support@pepselect.com" style="color:#7DD6F2;text-decoration:none;">support@pepselect.com</a><br><a href="tel:+18337377528" style="color:#7DD6F2;text-decoration:none;">1 (833) 737-7528</a></p>
+				<?php if ( '' !== trim( $context_html ) ) : ?>
+					<p style="color:#AFC2D3;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:11px;line-height:1.6;margin:20px 0 0;"><?php echo wp_kses_post( $context_html ); ?></p>
+				<?php endif; ?>
+				<p style="color:#8FA8BA;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:10px;line-height:1.5;margin:16px 0 0;">&copy; <?php echo esc_html( wp_date( 'Y' ) ); ?> Pep Select. <?php esc_html_e( 'All rights reserved.', 'pepselect-cart-recovery' ); ?></p>
+			</td></tr>
+		</table>
+		<?php
+		return trim( (string) ob_get_clean() );
 	}
 
 	private function add_to_fluentcrm( $email ) {
@@ -634,6 +665,15 @@ final class PepSelect_Cart_Recovery {
 		$pep_shop_url        = home_url( '/shop/' );
 		$pep_support_email   = 'support@pepselect.com';
 		$pep_unsubscribe_url = 'mailto:support@pepselect.com?subject=' . rawurlencode( 'Unsubscribe me from Pep Select emails' );
+		$pep_company_footer_html = $this->company_footer_html(
+			sprintf(
+				'%1$s<br><a href="%2$s" style="color:#7DD6F2;text-decoration:underline;">%3$s</a> &middot; %4$s',
+				esc_html__( 'You received this email because you requested a Pep Select discount code. Your signup also includes occasional product and restock emails.', 'pepselect-cart-recovery' ),
+				esc_url( $pep_unsubscribe_url ),
+				esc_html__( 'Unsubscribe anytime', 'pepselect-cart-recovery' ),
+				esc_html__( 'For laboratory research use only.', 'pepselect-cart-recovery' )
+			)
+		);
 		$pep_logo_url        = 'https://pepselect.com/wp-content/uploads/2026/06/Logo_Pepselect_Whitebackground-1.png';
 		$pep_email_copy      = array(
 			'preheader'  => $this->replace_tokens( $settings['email_preheader'], $settings ),

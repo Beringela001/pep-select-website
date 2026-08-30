@@ -30,15 +30,14 @@ assert.ok(faq.includes(shipFromLine));
 assert.ok(homepageFaq.includes(shipFromLine));
 assert.match(emailHelpers, /woocommerce_email_footer_text/);
 assert.ok(emailHelpers.includes(ownershipLine));
-assert.match(emailHelpers, /font-size:15px;font-weight:800/);
-
-for (const template of emailTemplates) {
-	assert.match(read(template), /American-owned and operated/, `${template} is missing the ownership line`);
-}
+assert.match(emailHelpers, /font-size:16px;font-weight:800/);
 
 for (const template of emailTemplates.slice( 0, 4 )) {
-	assert.match(read(template), /font-size:15px;\s*font-weight:800/, `${template} is missing the prominent ownership treatment`);
+	assert.match(read(template), /pepselect_child_email_company_footer_row_html/, `${template} is not using the shared company footer`);
 }
+
+assert.match(read(emailTemplates[4]), /American-owned and operated/);
+assert.match(read(emailTemplates[5]), /pep_company_footer_html/);
 
 for (const content of [siteFooter, faq, homepageFaq, emailHelpers, ...emailTemplates.map(read)]) {
   assert.doesNotMatch(content, /fulfillment locations/i);
