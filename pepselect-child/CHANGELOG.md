@@ -1,6 +1,22 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.68** - Load side-cart confetti only when a celebration is triggered.
+**Release candidate: 0.25.0-beta.70** - Force the coded About template ahead of its stored Elementor page assignment.
+
+## 0.25.0-beta.70 - 2026-08-30
+
+- Select `page-about-us.php` through the child theme's template filter so legacy Elementor page metadata cannot retain ownership of the public route.
+- Keep the stored Elementor document unchanged as rollback data while the coded template owns `/about-us/`.
+
+**Previous release candidate: 0.25.0-beta.69** - Replace the last public Elementor page with a coded, indexable About page.
+
+## 0.25.0-beta.69 - 2026-08-30
+
+- Replace the Elementor-authored About page body with a responsive child-theme template while keeping the page out of header and footer navigation.
+- Source the hero vial from the current Tesamorelin WooCommerce product image, with a published-product fallback instead of a copied legacy image.
+- Remove the obsolete About `noindex` and sitemap exclusion, then add a focused search title, description, canonical URL, social image, and AboutPage schema.
+- Remove Elementor front-end assets from the coded About route and preserve the confirmed research-use, testing, catalog, and Quality Archive boundaries.
+
+**Previous release candidate: 0.25.0-beta.68** - Load side-cart confetti only when a celebration is triggered.
 
 ## 0.25.0-beta.68 - 2026-08-29
 

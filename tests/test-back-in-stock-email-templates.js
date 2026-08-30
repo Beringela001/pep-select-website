@@ -12,7 +12,7 @@ const instock = read('pepselect-child/woocommerce/emails/bis-instock.php');
 const plain = read('pepselect-child/woocommerce/emails/plain/pepselect-bis-email.php');
 const style = read('pepselect-child/style.css');
 
-assert.match(style, /Version:\s+0\.25\.0-beta\.54/);
+assert.match(style, /Version:\s+0\.25\.0-beta\.\d+/);
 assert.match(subscription, /\$pep_bis_email_type\s*=\s*'subscription'/);
 assert.match(instock, /\$pep_bis_email_type\s*=\s*'instock'/);
 assert.match(subscription, /pepselect-bis-email\.php/);

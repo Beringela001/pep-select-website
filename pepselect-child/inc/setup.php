@@ -18,6 +18,7 @@ require_once get_stylesheet_directory() . '/inc/compound-status.php';
 require_once get_stylesheet_directory() . '/inc/archive-compounds.php';
 require_once get_stylesheet_directory() . '/inc/compound-content.php';
 require_once get_stylesheet_directory() . '/inc/single-product.php';
+require_once get_stylesheet_directory() . '/inc/about-page.php';
 require_once get_stylesheet_directory() . '/inc/faq-page.php';
 require_once get_stylesheet_directory() . '/inc/contact-page.php';
 require_once get_stylesheet_directory() . '/inc/legal-pages.php';

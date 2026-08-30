@@ -42,7 +42,7 @@ function pepselect_child_is_testing_template() {
 }
 
 /**
- * Return whether the current request is one of the four PageSpeed templates.
+ * Return whether the current request is a coded PageSpeed template.
  *
  * @return bool
  */
@@ -51,13 +51,14 @@ function pepselect_child_is_seo_performance_template() {
 		|| is_home()
 		|| ( function_exists( 'is_shop' ) && is_shop() )
 		|| ( function_exists( 'is_product' ) && is_product() )
-		|| pepselect_child_is_testing_template();
+		|| pepselect_child_is_testing_template()
+		|| is_page( 'about-us' );
 }
 
 /**
  * Return whether performance cleanup may replace Elementor front-end assets.
  *
- * The audited Home, Shop, product, Quality Archive, and Contact templates are
+ * The audited Home, Shop, product, Quality Archive, About, and Contact templates are
  * rendered by the child theme or the COA plugin. Elementor remains available
  * in its editor and preview requests, where its runtime assets are required.
  *
