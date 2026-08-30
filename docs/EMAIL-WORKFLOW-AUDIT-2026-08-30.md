@@ -23,6 +23,9 @@ The shared WooCommerce footer override covers every standard WooCommerce email i
 | Order on-hold | Built | Child theme template |
 | Processing order | Built | Child theme template |
 | Completed order | Built | Child theme template |
+| Refunded order — full and partial | Built | Child theme template |
+| Reset password | Built | Child theme template |
+| Confirm email address | Built | Child theme template |
 | Back In Stock — subscription confirmation | Built | Shared BIS template |
 | Back In Stock — product available | Built | Shared BIS template |
 | Exit-offer discount code | Built | Cart recovery plugin |
@@ -39,13 +42,9 @@ These now receive the correct Pep Select footer, but their message body still ne
 | --- | --- | --- |
 | Cancelled order | Disabled | Design before enabling |
 | Failed order | Enabled | High priority because it is customer-facing and enabled |
-| Refunded order | Enabled | High priority; must cover full and partial refunds clearly |
-| Order details | Manual | High priority; includes paid/unpaid invoice and payment-link states |
 | Customer note | Enabled | Medium priority; preserve the staff-authored note prominently |
-| Reset password | Enabled | High priority account-security workflow |
 | POS completed order | Manual | Medium priority if POS is actively used |
 | POS refunded order | Manual | Medium priority if POS is actively used |
-| Confirm email address | Enabled | High priority account verification workflow |
 | Expiring Points | Enabled | Medium priority YITH rewards workflow |
 | Updated Points | Enabled | Medium priority YITH rewards workflow |
 
@@ -60,14 +59,12 @@ These are operational messages sent to Pep Select staff, not customers. The shar
 | Failed order | Standard WooCommerce admin body; enabled |
 | Payment gateway enabled | Extension-provided admin body; enabled |
 
+## Manual WooCommerce fallback retained without redesign
+
+| Email | Status | Decision |
+| --- | --- | --- |
+| Order details | Manual | Retained as a WooCommerce fallback and removed from the Pep Select redesign roadmap by owner decision |
+
 ## Recommended next design batch
 
-Build the enabled, high-impact customer workflows together:
-
-1. Failed order
-2. Refunded order, including full and partial variants
-3. Order details, including paid and unpaid variants
-4. Reset password
-5. Confirm email address
-
-Then build customer notes, rewards notices, and the two POS notices as one secondary batch.
+Build failed-order recovery and customer notes as the next customer-service batch. Then group rewards notices and the two POS notices into one secondary batch.

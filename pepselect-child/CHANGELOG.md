@@ -1,6 +1,14 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.78** - Complete the shared company footer across every WooCommerce email.
+**Release candidate: 0.25.0-beta.79** - Rebuild the refund and account-verification email workflows.
+
+## 0.25.0-beta.79 - 2026-08-30
+
+- Add a responsive Pep Select refund email with distinct full-refund and partial-refund messaging while preserving WooCommerce's order summary and refund calculations.
+- Add responsive reset-password and confirm-email messages that preserve WooCommerce's signed, one-time account links.
+- Add matching plain-text versions and route all three HTML messages through one shared Pep Select canvas and company footer.
+
+**Previous release candidate: 0.25.0-beta.78** - Complete the shared company footer across every WooCommerce email.
 
 ## 0.25.0-beta.78 - 2026-08-30
 

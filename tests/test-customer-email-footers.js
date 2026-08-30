@@ -43,6 +43,7 @@ for (const template of [
   'pepselect-child/woocommerce/emails/customer-new-account.php',
   'pepselect-child/woocommerce/emails/customer-on-hold-order.php',
   'pepselect-child/woocommerce/emails/customer-completed-order.php',
+  'pepselect-child/woocommerce/emails/pepselect-simple-message.php',
   'pepselect-child/woocommerce/emails/pepselect-bis-email.php',
 ]) {
   assert.match(read(template), /pepselect_child_email_company_footer_row_html/);
