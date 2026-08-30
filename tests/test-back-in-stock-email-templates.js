@@ -38,7 +38,7 @@ assert.match(plain, /STOCK NOTIFICATION CONFIRMED/);
 assert.match(plain, /YOUR STOCK NOTIFICATION/);
 assert.match(plain, /Review product details:/);
 assert.match(plain, /View product:/);
-assert.match(plain, /American-owned and operated/);
+assert.match(plain, /American-owned and operated company/);
 assert.match(plain, /2090 Baker Rd, Ste 304 #A85/);
 assert.match(plain, /1 \(833\) 737-7528/);
 assert.doesNotMatch(plain, /limited stock|act quickly/i);

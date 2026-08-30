@@ -1,6 +1,16 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.75** - Keep normal homepage loads anchored at the global header without overriding history restoration.
+**Release candidate: 0.25.0-beta.77** - Standardize the company footer and soften the American-ownership treatment.
+
+## 0.25.0-beta.77 - 2026-08-30
+
+- Add the complete company contact footer to shared and custom WooCommerce email layouts.
+- Replace the platform-dependent flag emoji with a small email-safe flag image.
+- Present `Pep Select is an American-owned and operated company.` at 13px regular weight so it supports the footer instead of dominating it.
+- Add a shared narrow-screen safeguard for every WooCommerce-rendered email so order and product tables wrap inside the mobile canvas instead of cropping.
+- Enforce the same approved footer at FluentCRM send time so saved campaigns, automations, and future newsletters cannot drift back to the older ownership treatment.
+
+**Previous release candidate: 0.25.0-beta.75** - Keep normal homepage loads anchored at the global header without overriding history restoration.
 
 ## 0.25.0-beta.75 - 2026-08-30
 

@@ -5,7 +5,7 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const read = (relative) => fs.readFileSync(path.join(root, relative), 'utf8');
 
-const ownershipLine = '🇺🇸 American-owned and operated.';
+const ownershipLine = 'Pep Select is an American-owned and operated company.';
 const shipFromLine = 'Pep Select orders ship from New York or Georgia.';
 
 const siteFooter = read('pepselect-child/template-parts/footer/site-footer.php');
@@ -24,19 +24,19 @@ const emailTemplates = [
 
 assert.ok(siteFooter.includes(ownershipLine));
 assert.match(siteFooter, /class="pepselect-footer__ownership"/);
-assert.match(footerStyles, /\.pepselect-footer__research-copy \.pepselect-footer__ownership[\s\S]*font-size:\s*17px;[\s\S]*font-weight:\s*var\(--pep-font-weight-bold\);/);
+assert.match(footerStyles, /\.pepselect-footer__research-copy \.pepselect-footer__ownership[\s\S]*font-size:\s*13px;[\s\S]*font-weight:\s*var\(--pep-font-weight-regular\);/);
 assert.match(faq, /Where do Pep Select orders ship from\?/);
 assert.ok(faq.includes(shipFromLine));
 assert.ok(homepageFaq.includes(shipFromLine));
 assert.match(emailHelpers, /woocommerce_email_footer_text/);
 assert.ok(emailHelpers.includes(ownershipLine));
-assert.match(emailHelpers, /font-size:16px;font-weight:800/);
+assert.match(emailHelpers, /font-size:13px;font-weight:400/);
 
 for (const template of emailTemplates.slice( 0, 4 )) {
 	assert.match(read(template), /pepselect_child_email_company_footer_row_html/, `${template} is not using the shared company footer`);
 }
 
-assert.match(read(emailTemplates[4]), /American-owned and operated/);
+assert.match(read(emailTemplates[4]), /American-owned and operated company/);
 assert.match(read(emailTemplates[5]), /pep_company_footer_html/);
 
 for (const content of [siteFooter, faq, homepageFaq, emailHelpers, ...emailTemplates.map(read)]) {

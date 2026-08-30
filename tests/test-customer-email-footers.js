@@ -10,7 +10,7 @@ const requiredCompanyDetails = [
   'Kennesaw, GA 30144',
   'support@pepselect.com',
   '1 (833) 737-7528',
-  'American-owned and operated',
+  'American-owned and operated company',
 ];
 
 const helper = read('pepselect-child/inc/emails.php');
@@ -24,9 +24,18 @@ for (const detail of requiredCompanyDetails) {
 }
 
 assert.match(helper, /background-color:#002A53/);
+assert.match(helper, /woocommerce_email_styles/);
+assert.match(helper, /#body_content table\.shop_table/);
+assert.match(helper, /overflow-wrap: anywhere !important/);
+assert.match(helper, /fluentcrm_email_body_text/);
+assert.match(helper, /pepselect_child_fluentcrm_company_footer/);
 assert.match(wooFooter, /pepselect_child_email_company_footer_html/);
 assert.match(recovery, /data-pepselect-company-footer/);
 assert.match(recovery, /email_body\s*\.=/);
+assert.match(recovery, /normalize_recovery_email_body/);
+assert.match(recovery, /data-pepselect-mobile-email/);
+assert.match(recovery, /table\.shop_table/);
+assert.match(recovery, /One of our team members will help\./);
 assert.match(recoveryCoupon, /pep_company_footer_html/);
 
 for (const template of [

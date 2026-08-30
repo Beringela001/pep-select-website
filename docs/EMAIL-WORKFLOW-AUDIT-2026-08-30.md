@@ -6,7 +6,7 @@ Audited against the live WooCommerce email registry on August 30, 2026.
 
 Every customer-facing HTML email uses the same navy Pep Select company footer:
 
-- 🇺🇸 American-owned and operated.
+- 🇺🇸 Pep Select is an American-owned and operated company.
 - pepselect.com
 - 2090 Baker Rd, Ste 304 #A85
 - Kennesaw, GA 30144

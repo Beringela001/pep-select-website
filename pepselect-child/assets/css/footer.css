@@ -83,12 +83,19 @@
 }
 
 .pepselect-footer__research-copy .pepselect-footer__ownership {
+	display: flex;
+	align-items: center;
+	gap: 8px;
 	margin-top: 14px;
-	color: var(--pep-color-white);
-	font-size: 17px;
-	font-weight: var(--pep-font-weight-bold);
-	letter-spacing: 0.01em;
+	color: var(--pep-color-border);
+	font-size: 13px;
+	font-weight: var(--pep-font-weight-regular);
 	line-height: 1.45;
+}
+
+.pepselect-footer__ownership img {
+	flex: 0 0 auto;
+	border-radius: 2px;
 }
 
 .pepselect-footer__support {

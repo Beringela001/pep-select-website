@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Pep Select Cart Recovery
  * Description: Lightweight exit offer, unique coupons, and Cart Abandonment Recovery integration for Pep Select.
- * Version: 0.4.3
+ * Version: 0.4.4
  * Author: Pep Select
  * Text Domain: pepselect-cart-recovery
  */
@@ -10,7 +10,7 @@
 defined( 'ABSPATH' ) || exit;
 
 final class PepSelect_Cart_Recovery {
-	const VERSION                     = '0.4.3';
+	const VERSION                     = '0.4.4';
 	const OPTION                      = 'pepselect_cart_recovery_settings';
 	const NONCE                       = 'pepselect_exit_offer_capture';
 	const MARKETING_EMAILS_PER_SECOND = 1;
@@ -557,11 +557,62 @@ final class PepSelect_Cart_Recovery {
 			}
 		}
 
-		if ( is_object( $email_data ) && ! empty( $email_data->email_body ) && false === strpos( $email_data->email_body, 'data-pepselect-company-footer' ) ) {
-			$email_data->email_body .= $this->company_footer_html();
+		if ( is_object( $email_data ) && ! empty( $email_data->email_body ) ) {
+			$email_data->email_body = $this->normalize_recovery_email_body( $email_data->email_body );
+			if ( false === strpos( $email_data->email_body, 'data-pepselect-company-footer' ) ) {
+				$email_data->email_body .= $this->company_footer_html();
+			}
 		}
 
 		return $email_data;
+	}
+
+	/**
+	 * Keep database-authored recovery emails aligned with the shared footer and
+	 * protect the injected cart-product table from clipping on phones.
+	 *
+	 * @param string $body Recovery template HTML before WCAR expands tokens.
+	 * @return string
+	 */
+	private function normalize_recovery_email_body( $body ) {
+		$body = (string) $body;
+		$body = str_replace(
+			array(
+				'Our humans will answer your questions.',
+				'A real person from Pep Select will help.',
+			),
+			'One of our team members will help.',
+			$body
+		);
+
+		// Remove the superseded light footer embedded in the three saved templates.
+		$body = preg_replace(
+			'#<tr><td\s+colspan=["\']2["\'][^>]*background:\s*#f6f8fa[^>]*>.*?American-owned and operated\..*?</td></tr>#is',
+			'',
+			$body
+		);
+
+		$mobile_css = <<<'HTML'
+<style type="text/css" data-pepselect-mobile-email="1">
+@media only screen and (max-width:520px){
+.pep-recovery-email{box-sizing:border-box!important;max-width:100%!important;width:100%!important}
+.pep-recovery-email>table{box-sizing:border-box!important;margin:0!important;max-width:100%!important;padding:8px!important;width:100%!important}
+.pep-recovery-email td[style*="padding: 30px 36px 22px"]{padding:26px 18px 20px!important}
+.pep-recovery-email td[style*="padding: 0 36px 32px"]{padding:0 18px 26px!important}
+.pep-recovery-email table.shop_table,.pep-recovery-email table.woocommerce-table,.pep-recovery-email table.wcf-ca-cart-products,.pep-recovery-email table.cartflows-ca-cart-products{box-sizing:border-box!important;max-width:100%!important;table-layout:fixed!important;width:100%!important}
+.pep-recovery-email table.shop_table th,.pep-recovery-email table.shop_table td,.pep-recovery-email table.woocommerce-table th,.pep-recovery-email table.woocommerce-table td,.pep-recovery-email table.wcf-ca-cart-products th,.pep-recovery-email table.wcf-ca-cart-products td,.pep-recovery-email table.cartflows-ca-cart-products th,.pep-recovery-email table.cartflows-ca-cart-products td{box-sizing:border-box!important;min-width:0!important;overflow-wrap:anywhere!important;padding-left:7px!important;padding-right:7px!important;word-break:break-word!important}
+.pep-recovery-email table.shop_table img,.pep-recovery-email table.woocommerce-table img,.pep-recovery-email table.wcf-ca-cart-products img,.pep-recovery-email table.cartflows-ca-cart-products img{height:auto!important;max-width:52px!important;width:52px!important}
+.pep-recovery-email table.shop_table th:nth-last-child(-n+2),.pep-recovery-email table.shop_table td:nth-last-child(-n+2),.pep-recovery-email table.woocommerce-table th:nth-last-child(-n+2),.pep-recovery-email table.woocommerce-table td:nth-last-child(-n+2){width:64px!important}
+.pep-recovery-email a{overflow-wrap:anywhere!important;word-break:break-word!important}
+}
+</style>
+HTML;
+
+		if ( false !== strpos( $body, 'data-pepselect-mobile-email="1"' ) ) {
+			return $body;
+		}
+
+		return $mobile_css . '<div class="pep-recovery-email">' . $body . '</div>';
 	}
 
 	public function require_signup_code_for_final_email( $should_send, $email_data ) {
@@ -608,11 +659,12 @@ final class PepSelect_Cart_Recovery {
 	 * @return string
 	 */
 	private function company_footer_html( $context_html = '' ) {
+		$flag_url = plugin_dir_url( __FILE__ ) . 'assets/us-flag-email.png';
 		ob_start();
 		?>
 		<table border="0" cellpadding="0" cellspacing="0" data-pepselect-company-footer="1" role="presentation" width="100%" style="background-color:#002A53;border-collapse:separate;width:100%;">
 			<tr><td align="center" style="padding:30px 32px 28px;">
-				<p style="color:#FFFFFF;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:16px;font-weight:800;line-height:1.45;margin:0 0 20px;">🇺🇸 American-owned and operated.</p>
+				<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin:0 auto 20px;"><tr><td style="padding:0 8px 0 0;vertical-align:middle;"><img alt="United States flag" height="13" src="<?php echo esc_url( $flag_url ); ?>" style="border:0;border-radius:2px;display:block;height:13px;width:24px;" width="24"></td><td style="color:#D8E6F2;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:13px;font-weight:400;line-height:1.45;vertical-align:middle;">Pep Select is an American-owned and operated company.</td></tr></table>
 				<p style="border-top:1px solid #315775;color:#D8E6F2;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:12px;line-height:1.7;margin:0;padding:20px 0 0;"><strong style="color:#FFFFFF;font-size:14px;">Pep Select</strong><br><a href="<?php echo esc_url( home_url( '/' ) ); ?>" style="color:#7DD6F2;text-decoration:none;">pepselect.com</a><br>2090 Baker Rd, Ste 304 #A85<br>Kennesaw, GA 30144<br><a href="mailto:support@pepselect.com" style="color:#7DD6F2;text-decoration:none;">support@pepselect.com</a><br><a href="tel:+18337377528" style="color:#7DD6F2;text-decoration:none;">1 (833) 737-7528</a></p>
 				<?php if ( '' !== trim( $context_html ) ) : ?>
 					<p style="color:#AFC2D3;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:11px;line-height:1.6;margin:20px 0 0;"><?php echo wp_kses_post( $context_html ); ?></p>

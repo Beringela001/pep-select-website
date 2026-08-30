@@ -28,7 +28,8 @@
 </main>
 <style>
   .email-footer{background:#002a53;border-top:0;color:#afc2d3;margin:0;padding:28px 44px 30px;text-align:center}
-  .email-footer .ownership{color:#fff;display:block;font-size:16px;font-weight:800;margin:0 0 18px}
+  .email-footer .ownership{align-items:center;color:#d8e6f2;display:flex;font-size:13px;font-weight:400;gap:8px;justify-content:center;margin:0 0 18px}
+  .email-footer .ownership img{border-radius:2px;display:block;height:13px;width:24px}
   .email-footer .company{border-top:1px solid #315775;display:block;font-size:12px;line-height:1.7;padding-top:18px}
   .email-footer .company strong{color:#fff;font-size:14px}
   .email-footer a{color:#7dd6f2}
@@ -40,7 +41,7 @@
     var context = index === 0
       ? 'You received this email because you requested a Pep Select discount code.<br><a href="#">Unsubscribe anytime</a> · For laboratory research use only.'
       : 'For laboratory research use only. · <a href="#">Stop cart reminders</a>';
-    footer.innerHTML = '<span class="ownership">🇺🇸 American-owned and operated.</span><span class="company"><strong>Pep Select</strong><br><a href="#">pepselect.com</a><br>2090 Baker Rd, Ste 304 #A85<br>Kennesaw, GA 30144<br><a href="mailto:support@pepselect.com">support@pepselect.com</a><br><a href="tel:+18337377528">1 (833) 737-7528</a></span><span class="context">' + context + '</span>';
+    footer.innerHTML = '<span class="ownership"><img src="../../pepselect-child/assets/images/brand/us-flag-email.png" alt="United States flag" width="24" height="13">Pep Select is an American-owned and operated company.</span><span class="company"><strong>Pep Select</strong><br><a href="#">pepselect.com</a><br>2090 Baker Rd, Ste 304 #A85<br>Kennesaw, GA 30144<br><a href="mailto:support@pepselect.com">support@pepselect.com</a><br><a href="tel:+18337377528">1 (833) 737-7528</a></span><span class="context">' + context + '</span>';
   });
 </script>
 </body>

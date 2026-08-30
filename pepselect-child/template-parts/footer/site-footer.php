@@ -29,7 +29,7 @@ $support_mail = 'support@pepselect.com';
 				<div class="pepselect-footer__research-copy">
 					<p><?php esc_html_e( 'All products sold on this website are intended for research and identification purposes only. These products are not intended for human dosing, injection, or ingestion.', 'pepselect-child' ); ?></p>
 					<p><?php esc_html_e( 'Pep Select requires independent laboratory testing before a compound is released for sale.', 'pepselect-child' ); ?></p>
-					<p class="pepselect-footer__ownership"><?php esc_html_e( '🇺🇸 American-owned and operated.', 'pepselect-child' ); ?></p>
+					<p class="pepselect-footer__ownership"><img alt="United States flag" height="13" src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/brand/us-flag-email.png' ); ?>" width="24"><span><?php esc_html_e( 'Pep Select is an American-owned and operated company.', 'pepselect-child' ); ?></span></p>
 				</div>
 
 				<p class="pepselect-footer__support">

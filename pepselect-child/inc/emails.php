@@ -78,7 +78,7 @@ function pepselect_child_email_company_details() {
  * @return string
  */
 function pepselect_child_company_ownership_line() {
-	return __( '🇺🇸 American-owned and operated.', 'pepselect-child' );
+	return __( 'Pep Select is an American-owned and operated company.', 'pepselect-child' );
 }
 
 /**
@@ -88,7 +88,8 @@ function pepselect_child_company_ownership_line() {
  */
 function pepselect_child_company_ownership_email_html() {
 	return sprintf(
-		'<strong style="color:#FFFFFF;font-size:16px;font-weight:800;line-height:1.45;">%s</strong>',
+		'<table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation"><tr><td style="padding:0 8px 0 0;vertical-align:middle;"><img alt="United States flag" height="13" src="%1$s" style="border:0;border-radius:2px;display:block;height:13px;width:24px;" width="24"></td><td style="color:#D8E6F2;font-family:\'Plus Jakarta Sans\',-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Helvetica,Arial,sans-serif;font-size:13px;font-weight:400;line-height:1.45;vertical-align:middle;">%2$s</td></tr></table>',
+		esc_url( get_stylesheet_directory_uri() . '/assets/images/brand/us-flag-email.png' ),
 		esc_html( pepselect_child_company_ownership_line() )
 	);
 }
@@ -116,7 +117,7 @@ function pepselect_child_email_company_footer_html( $context_html = '' ) {
 				<table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%">
 					<tr>
 						<td align="center" style="padding:0 0 22px;">
-							<p style="font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;line-height:1.45;margin:0;"><?php echo wp_kses_post( pepselect_child_company_ownership_email_html() ); ?></p>
+							<?php echo wp_kses_post( pepselect_child_company_ownership_email_html() ); ?>
 						</td>
 					</tr>
 					<tr>
@@ -173,6 +174,126 @@ function pepselect_child_email_footer_text( $text ) {
 	return pepselect_child_company_ownership_email_html() . '<br>' . $details . '<br><br>' . wp_kses_post( (string) $text );
 }
 add_filter( 'woocommerce_email_footer_text', 'pepselect_child_email_footer_text', 20 );
+
+/**
+ * Prevent standard WooCommerce email tables from overflowing narrow screens.
+ *
+ * Custom Pep Select canvases own their responsive rules. This supplements the
+ * remaining WooCommerce, POS, points, refund, note, and password emails that
+ * continue to use WooCommerce's shared email wrapper.
+ *
+ * @param string $css Existing WooCommerce email CSS.
+ * @return string
+ */
+function pepselect_child_mobile_email_styles( $css ) {
+	$css .= <<<'CSS'
+
+@media screen and (max-width: 600px) {
+	body,
+	#wrapper {
+		margin: 0 !important;
+		min-width: 0 !important;
+		width: 100% !important;
+	}
+	#wrapper {
+		box-sizing: border-box !important;
+		padding: 8px !important;
+	}
+	#template_container,
+	#template_header,
+	#template_body,
+	#template_footer {
+		box-sizing: border-box !important;
+		max-width: 100% !important;
+		width: 100% !important;
+	}
+	#template_header_image img,
+	#body_content img {
+		height: auto !important;
+		max-width: 100% !important;
+	}
+	#body_content_inner {
+		box-sizing: border-box !important;
+		padding: 20px 18px !important;
+	}
+	#body_content table.td,
+	#body_content table.shop_table {
+		max-width: 100% !important;
+		table-layout: fixed !important;
+		width: 100% !important;
+	}
+	#body_content table.td th,
+	#body_content table.td td,
+	#body_content table.shop_table th,
+	#body_content table.shop_table td {
+		box-sizing: border-box !important;
+		height: auto !important;
+		min-width: 0 !important;
+		overflow-wrap: anywhere !important;
+		padding-left: 8px !important;
+		padding-right: 8px !important;
+		word-break: break-word !important;
+	}
+	#body_content table.td th:first-child,
+	#body_content table.td td:first-child,
+	#body_content table.shop_table th:first-child,
+	#body_content table.shop_table td:first-child {
+		width: auto !important;
+	}
+	#body_content a {
+		overflow-wrap: anywhere !important;
+		word-break: break-word !important;
+	}
+}
+CSS;
+
+	return $css;
+}
+add_filter( 'woocommerce_email_styles', 'pepselect_child_mobile_email_styles', 30 );
+
+/**
+ * Keep every FluentCRM campaign and automation email on the approved company
+ * footer, including campaigns saved before the footer was standardized.
+ *
+ * @param string $email_body Final FluentCRM email HTML.
+ * @return string
+ */
+function pepselect_child_fluentcrm_company_footer( $email_body ) {
+	$email_body = (string) $email_body;
+	$company    = pepselect_child_email_company_details();
+
+	if ( false !== strpos( $email_body, 'data-pepselect-company-footer="1"' ) ) {
+		return $email_body;
+	}
+
+	$has_approved_footer = false !== strpos( $email_body, pepselect_child_company_ownership_line() )
+		&& false !== strpos( $email_body, $company['address_1'] )
+		&& false !== strpos( $email_body, $company['email'] )
+		&& false !== strpos( $email_body, $company['phone'] );
+	if ( $has_approved_footer ) {
+		return $email_body;
+	}
+
+	$ownership = '<div data-pepselect-company-footer="1" style="margin:0 0 22px;text-align:center;">' . pepselect_child_company_ownership_email_html() . '</div>';
+	$updated   = preg_replace(
+		'#<div[^>]*>\s*Pep Select is an American Owned and Operated company.*?</div>#is',
+		$ownership,
+		$email_body,
+		1,
+		$count
+	);
+	if ( $count && is_string( $updated ) ) {
+		return $updated;
+	}
+
+	$footer = pepselect_child_email_company_footer_html();
+	if ( false !== stripos( $email_body, '</body>' ) ) {
+		return preg_replace( '#</body>#i', $footer . '</body>', $email_body, 1 );
+	}
+
+	return $email_body . $footer;
+}
+add_filter( 'fluentcrm_email_body_text', 'pepselect_child_fluentcrm_company_footer', 30, 3 );
 
 /**
  * Put the order's creation date and number at the front of the admin alert.
