@@ -1,6 +1,13 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.66** - Make contact timing initialization safely verifiable.
+**Release candidate: 0.25.0-beta.67** - Remove unused Elementor runtime assets from the coded Contact template.
+
+## 0.25.0-beta.67 - 2026-08-29
+
+- Treat the coded Contact page as safe for the existing Elementor front-end asset cleanup while preserving Elementor editor and preview requests.
+- Remove the orphaned Elementor front-end bundle that logged `elementorFrontendConfig is not defined` on `/contact/`.
+
+**Previous release candidate: 0.25.0-beta.66** - Make contact timing initialization safely verifiable.
 
 ## 0.25.0-beta.66 - 2026-08-29
 

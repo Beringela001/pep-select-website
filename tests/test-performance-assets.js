@@ -40,6 +40,7 @@ const accessGateLogo = path.join(__dirname, '..', 'ps-access-gate', 'assets', 'p
 assert.ok(performanceFile.includes("wp_enqueue_style( 'pepselect-google-fonts'"));
 assert.ok(performanceFile.includes("'testing' === get_post_field( 'post_name', $queried_id )"));
 assert.ok(performanceFile.includes("'/testing' === untrailingslashit( (string) $request_path )"));
+assert.ok(performanceFile.includes("! is_page( 'contact' )"));
 assert.ok(performanceFile.includes("implode( '|', $families )"));
 assert.ok(performanceFile.includes("wp_register_style( 'pepselect-child-foundations', false"));
 assert.ok(performanceFile.includes("wp_add_inline_style( 'pepselect-child-foundations', $combined_css )"));

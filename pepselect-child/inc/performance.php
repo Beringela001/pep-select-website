@@ -57,14 +57,14 @@ function pepselect_child_is_seo_performance_template() {
 /**
  * Return whether performance cleanup may replace Elementor front-end assets.
  *
- * The audited Home, Shop, product, and Quality Archive templates are rendered
- * by the child theme or the COA plugin. Elementor remains available in its
- * editor and preview requests, where its runtime assets are required.
+ * The audited Home, Shop, product, Quality Archive, and Contact templates are
+ * rendered by the child theme or the COA plugin. Elementor remains available
+ * in its editor and preview requests, where its runtime assets are required.
  *
  * @return bool
  */
 function pepselect_child_can_remove_elementor_assets() {
-	if ( ! pepselect_child_is_seo_performance_template() ) {
+	if ( ! pepselect_child_is_seo_performance_template() && ! is_page( 'contact' ) ) {
 		return false;
 	}
 
