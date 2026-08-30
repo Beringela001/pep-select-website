@@ -1,53 +1,75 @@
-# Pep Select Stay in the Loop and Cart Recovery Copy
+# Pep Select Email Offer and Cart Recovery Copy
 
-Status: revised review set. No live changes.
+Status: implementation copy for the four-email recovery sequence.
 
-## Stay in the Loop form
+## Exit offer form
 
-Eyebrow: `Join the list`
+Eyebrow: `Before you go`
 
-Headline: `Stay in the loop and get an additional 10% off.`
+Headline: `Your email just found 20% off.`
 
-Body: `Get new product updates, restock notes, and the occasional useful email.`
+Body: `Drop it below and we will send a private discount code straight to your inbox.`
 
 Field placeholder: `Email address`
 
-Button: `Get 10% off`
+Button: `Send my 20% code`
 
-Inbox note: `We respect your inbox. Unsubscribe anytime.`
+Inbox note: `Your code comes with occasional product and restock emails. Unsubscribe anytime.`
+
+## Email 0: Immediately after signup
+
+Subject: `Your private 20% code from Pep Select`
+
+Preheader: `The private code you asked for is inside.`
+
+Eyebrow: `Fair trade`
+
+Heading: `Your 20% code has landed.`
+
+Body: `You gave us your email. We promised 20% off. Fair trade.`
+
+Coupon note:
+
+- Heading: `Your private code`
+- Code: dynamically generated 20% code
+- Body: `Use this code at checkout with the same email address. It expires in the configured number of days and can be combined with eligible offers.`
+
+Button: `Explore compounds`
+
+Support note: `Questions before you order? Reply to this email and a real person from Pep Select will help.`
 
 ## Email 1: About 90 minutes
 
-Subject: `A quick note about your saved cart`
+Subject: `Your cart kept your place`
 
-Preheader: `Your items are still here, along with the details you were reviewing.`
+Preheader: `Your saved items are ready when you are.`
 
 Eyebrow: `Where you left off`
 
-Heading: `Your cart is saved.`
+Heading: `Your cart kept your place.`
 
 Body:
 
 `Hi {{customer.firstname}},`
 
-`Your cart is still here. No countdown clock or dramatic music. You can pick up where you left off whenever you are ready.`
+`You got pulled away. Your cart did not take it personally. Your items are still here when you are ready.`
 
 Saved-cart note:
 
-- Heading: `Your cart is saved`
-- Body: `The product details and available batch documentation are ready when you are.`
+- Heading: `Right where you left it`
+- Body: `Open your saved cart to review the same items, product details, and available batch documentation.`
 
 Button: `Return to my cart`
 
-Button note: `This link restores your saved cart. If you have a discount code, it comes along too.`
+Button note: `This link restores your saved cart. Any discount already connected to it comes along too.`
 
 Support note: `Have a question first? Reply here or write to support@pepselect.com. Ordering is optional. Our humans will answer your questions.`
 
 ## Email 2: 24 hours
 
-Subject: `A quick check-in on your saved cart`
+Subject: `Did a question stop your checkout?`
 
-Preheader: `If a product, document, or checkout question stopped you, reply here.`
+Preheader: `Ask us about a product, batch document, shipping, or checkout.`
 
 Eyebrow: `A quick check-in`
 
@@ -57,12 +79,12 @@ Body:
 
 `Hi {{customer.firstname}},`
 
-`Your cart is still saved. If a product detail, batch document, shipping question, or checkout issue made you pause, reply and tell us what you need.`
+`Your cart is still saved. If a product detail, batch document, shipping question, or checkout issue made you pause, reply and tell us what got in the way.`
 
 Help note:
 
 - Heading: `Skip the chatbot obstacle course`
-- Body: `Send us your question. We will help you find the useful answer.`
+- Body: `Send us the question. A real person will help you find the useful answer.`
 
 Button: `Review my cart`
 
@@ -72,27 +94,27 @@ Support note: `Have a question first? Reply here or write to support@pepselect.c
 
 ## Email 3: 48 hours
 
-Subject: `A little help with the research decision`
+Subject: `We found another 5% for your cart`
 
-Preheader: `Your 10% code is now 15% off.`
+Preheader: `This new 5% code can be used with your private 20% code.`
 
-Eyebrow: `A little help`
+Eyebrow: `One last nudge`
 
-Heading: `Your code is now 15% off.`
+Heading: `We found another 5%.`
 
 Body:
 
 `Hi {{customer.firstname}},`
 
-`We get it. Research decisions can feel as complicated as a chain of amino acids.`
+`Your cart is still here, so we added a little more encouragement.`
 
-`Let us make this one a little easier. Your discount code is now 15% off.`
+`Use this new 5% code with the private 20% code we already sent you.`
 
 Coupon note:
 
-- Heading: `Your upgraded code`
-- Code: `{{cart.coupon_code}}`
-- Body: `Use it on eligible items, or use the button below and we will bring it back with your cart.`
+- Heading: `Your extra 5% code`
+- Code: `{{pepselect.bonus_coupon_code}}`
+- Body: `Enter this code with your private 20% code at checkout. Both codes are restricted to the email address that received them.`
 
 Button: `Return to my cart`
 
@@ -100,6 +122,6 @@ Support note: `Have a question first? Reply here or write to support@pepselect.c
 
 ## Coupon behavior
 
-The Stay in the Loop form creates the original 10% code. The 48-hour email upgrades that same code to 15%. It does not create a second code.
+The exit offer creates the original 20% code and emails it immediately. The 48-hour email creates a separate 5% code. Both coupons are email-restricted, single-use, and configured to combine with eligible offers. The extra 5% code is not created by the 90-minute or 24-hour emails.
 
 All three recovery emails use `{{cart.checkout_url}}` for the button, `{{cart.product.table}}` for the cart, and `{{cart.unsubscribe}}` for the reminder unsubscribe link.

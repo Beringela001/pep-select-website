@@ -10,7 +10,6 @@
   var form = root.querySelector('[data-pep-exit-form]');
   var message = root.querySelector('[data-pep-exit-message]');
   var success = root.querySelector('[data-pep-exit-success]');
-  var codeButton = root.querySelector('[data-pep-exit-code]');
   var emailInput = root.querySelector('input[name="email"]');
   var opened = false;
   var eligible = false;
@@ -132,7 +131,7 @@
     var original = button.textContent;
     var trap = form.querySelector('input[name="company"]');
     button.disabled = true;
-    button.textContent = 'Making your code…';
+    button.textContent = 'Sending your code…';
     event('pep_exit_offer_submit');
 
     post({
@@ -145,7 +144,6 @@
       var email = emailInput.value;
       try { sessionStorage.setItem('pep_exit_offer_email', email); } catch (error) { /* Optional. */ }
       form.hidden = true;
-      codeButton.textContent = response.data.code;
       success.hidden = false;
       suppress(180, 'submitted');
       event('pep_exit_offer_success');
@@ -156,11 +154,6 @@
       button.textContent = original;
     });
   });
-
-  codeButton.addEventListener('click', function () {
-    if (navigator.clipboard) navigator.clipboard.writeText(codeButton.textContent);
-    codeButton.textContent = codeButton.textContent + ' · copied';
-  }, { once: true });
 
   document.body.addEventListener('added_to_cart', function () {
     try { identifyCart(sessionStorage.getItem('pep_exit_offer_email')); } catch (error) { /* Optional. */ }
