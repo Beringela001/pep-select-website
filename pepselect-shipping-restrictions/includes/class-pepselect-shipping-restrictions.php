@@ -45,12 +45,48 @@ final class PepSelect_Shipping_Restrictions {
 		add_action( 'woocommerce_after_checkout_validation', array( $this, 'validate_checkout' ), 20, 2 );
 		add_filter( 'woocommerce_package_rates', array( $this, 'filter_package_rates' ), 100, 2 );
 		add_filter( 'woocommerce_checkout_fields', array( $this, 'label_state_as_territory' ), 30 );
+		add_filter( 'fc_gaa_google_autocomplete_js_settings', array( $this, 'configure_google_address_autocomplete' ), 100 );
 	}
 
 	/** @param array<string,array<string,string>> $states WooCommerce states by country. */
 	public function add_puerto_rico_state( array $states ): array {
 		$states['US']['PR'] = 'Puerto Rico';
 		return $states;
+	}
+
+	/**
+	 * Let Google suggest Puerto Rico while WooCommerce stores it as US:PR.
+	 *
+	 * @param array $settings Fluid Checkout Google Autocomplete settings.
+	 */
+	public function configure_google_address_autocomplete( array $settings ): array {
+		$input_ids = array(
+			'address_1',
+			'shipping_address_1',
+			'billing_address_1',
+			'shipping-address_1',
+			'billing-address_1',
+			'_shipping_address_1',
+			'_billing_address_1',
+		);
+
+		if ( ! isset( $settings['allowedCountries'] ) || ! is_array( $settings['allowedCountries'] ) ) {
+			$settings['allowedCountries'] = array();
+		}
+
+		foreach ( $input_ids as $input_id ) {
+			$countries = isset( $settings['allowedCountries'][ $input_id ] ) && is_array( $settings['allowedCountries'][ $input_id ] )
+				? $settings['allowedCountries'][ $input_id ]
+				: array();
+
+			$settings['allowedCountries'][ $input_id ] = array_values(
+				array_unique(
+					array_merge( $countries, array( 'US', 'PR' ) )
+				)
+			);
+		}
+
+		return $settings;
 	}
 
 	public function enqueue_assets(): void {

@@ -39,6 +39,22 @@ pepselect_shipping_assert( PepSelect_Shipping_Restrictions::destination_is_usps_
 pepselect_shipping_assert( ! PepSelect_Shipping_Restrictions::destination_is_usps_only( 'US', 'HI', '96801' ), 'Hawaii should use returned live carrier options.' );
 
 $restriction = PepSelect_Shipping_Restrictions::instance();
+$autocomplete_settings = $restriction->configure_google_address_autocomplete(
+	array(
+		'allowedCountries' => array(
+			'shipping_address_1' => array( 'US' ),
+		),
+	)
+);
+pepselect_shipping_assert(
+	array( 'US', 'PR' ) === $autocomplete_settings['allowedCountries']['shipping_address_1'],
+	'Shipping autocomplete should include the United States and Puerto Rico.'
+);
+pepselect_shipping_assert(
+	array( 'US', 'PR' ) === $autocomplete_settings['allowedCountries']['billing_address_1'],
+	'Billing autocomplete should include the United States and Puerto Rico.'
+);
+
 $rates       = array(
 	'free_shipping:1' => new PepSelect_Test_Rate( 'Free shipping' ),
 	'easyship:usps'   => new PepSelect_Test_Rate( 'USPS - Priority Mail' ),

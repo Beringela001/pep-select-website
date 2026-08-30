@@ -153,6 +153,53 @@
 		window.setTimeout( updateWarnings, 0 );
 	}
 
+	function getPlaceCountryCode( place ) {
+		var components = place && ( place.addressComponents || place.address_components );
+		var country;
+
+		if ( ! Array.isArray( components ) ) {
+			return '';
+		}
+
+		country = components.find( function ( component ) {
+			return Array.isArray( component.types ) && component.types.indexOf( 'country' ) !== -1;
+		} );
+
+		return String( country && ( country.shortText || country.short_name ) || '' ).toUpperCase();
+	}
+
+	function setAddressField( field, value ) {
+		if ( ! field ) {
+			return;
+		}
+
+		field.value = value;
+		if ( $ ) {
+			$( field ).val( value ).trigger( 'change' );
+		} else {
+			field.dispatchEvent( new Event( 'change', { bubbles: true } ) );
+		}
+	}
+
+	function normalizePuertoRicoAutocomplete( event ) {
+		var input = event.target;
+		var prefix;
+		var country;
+		var state;
+
+		if ( getPlaceCountryCode( event.detail && event.detail.place ) !== 'PR' ) {
+			return;
+		}
+
+		prefix = /^billing_/.test( input.id || '' ) ? 'billing' : 'shipping';
+		country = document.getElementById( prefix + '_country' );
+		state = document.getElementById( prefix + '_state' );
+
+		setAddressField( country, 'US' );
+		setAddressField( state, 'PR' );
+		queueWarningUpdate();
+	}
+
 	document.addEventListener( 'input', function ( event ) {
 		if ( /_(country|state|postcode)$/.test( event.target.id || '' ) ) {
 			updateWarnings();
@@ -163,6 +210,7 @@
 			updateWarnings();
 		}
 	} );
+	document.addEventListener( 'fc_gaa_address_autocompleted', normalizePuertoRicoAutocomplete );
 
 	if ( $ ) {
 		$( document.body ).on( 'updated_checkout checkout_error', queueWarningUpdate );
