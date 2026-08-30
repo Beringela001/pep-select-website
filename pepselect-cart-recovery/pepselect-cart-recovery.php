@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Pep Select Cart Recovery
  * Description: Lightweight exit offer, unique coupons, and Cart Abandonment Recovery integration for Pep Select.
- * Version: 0.3.0
+ * Version: 0.4.0
  * Author: Pep Select
  * Text Domain: pepselect-cart-recovery
  */
@@ -10,7 +10,7 @@
 defined( 'ABSPATH' ) || exit;
 
 final class PepSelect_Cart_Recovery {
-	const VERSION                     = '0.3.0';
+	const VERSION                     = '0.4.0';
 	const OPTION                      = 'pepselect_cart_recovery_settings';
 	const NONCE                       = 'pepselect_exit_offer_capture';
 	const MARKETING_EMAILS_PER_SECOND = 1;
@@ -37,6 +37,7 @@ final class PepSelect_Cart_Recovery {
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
 		add_action( 'admin_menu', array( $this, 'register_settings_page' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
+		add_action( 'rest_api_init', array( $this, 'register_rest_routes' ) );
 	}
 
 	/**
@@ -132,7 +133,8 @@ final class PepSelect_Cart_Recovery {
 	}
 
 	private function settings() {
-		return wp_parse_args( (array) get_option( self::OPTION, array() ), self::defaults() );
+		$settings = wp_parse_args( (array) get_option( self::OPTION, array() ), self::defaults() );
+		return apply_filters( 'pepselect_popup_settings', $settings );
 	}
 
 	private function is_eligible_page() {
@@ -656,6 +658,70 @@ final class PepSelect_Cart_Recovery {
 		register_setting( 'pepselect_cart_recovery', self::OPTION, array( $this, 'sanitize_settings' ) );
 	}
 
+	/**
+	 * Provide one stable, authenticated settings surface for the future Ops UI.
+	 * WordPress Application Passwords can authenticate the external client without
+	 * adding a second settings store or exposing popup controls publicly.
+	 */
+	public function register_rest_routes() {
+		register_rest_route(
+			'pepselect/v1',
+			'/popup-settings',
+			array(
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'rest_get_settings' ),
+					'permission_callback' => array( $this, 'rest_settings_permission' ),
+				),
+				array(
+					'methods'             => WP_REST_Server::EDITABLE,
+					'callback'            => array( $this, 'rest_update_settings' ),
+					'permission_callback' => array( $this, 'rest_settings_permission' ),
+				),
+			)
+		);
+	}
+
+	public function rest_settings_permission() {
+		if ( current_user_can( 'manage_woocommerce' ) ) {
+			return true;
+		}
+		return new WP_Error( 'pepselect_popup_forbidden', __( 'You do not have permission to manage popup settings.', 'pepselect-cart-recovery' ), array( 'status' => 403 ) );
+	}
+
+	public function rest_get_settings() {
+		return rest_ensure_response(
+			array(
+				'version'  => self::VERSION,
+				'settings' => $this->settings(),
+			)
+		);
+	}
+
+	public function rest_update_settings( WP_REST_Request $request ) {
+		$payload = $request->get_json_params();
+		$payload = is_array( $payload ) && isset( $payload['settings'] ) && is_array( $payload['settings'] ) ? $payload['settings'] : $payload;
+		if ( ! is_array( $payload ) ) {
+			return new WP_Error( 'pepselect_popup_invalid_payload', __( 'Send popup settings as a JSON object.', 'pepselect-cart-recovery' ), array( 'status' => 400 ) );
+		}
+
+		$merged    = array_merge( $this->settings(), $payload );
+		$sanitized = $this->sanitize_settings( $merged );
+		if ( ! empty( $payload['promo_enabled'] ) && empty( $sanitized['promo_enabled'] ) ) {
+			return new WP_Error( 'pepselect_popup_invalid_schedule', __( 'The campaign popup needs a valid start and end time before it can be enabled.', 'pepselect-cart-recovery' ), array( 'status' => 400 ) );
+		}
+
+		update_option( self::OPTION, $sanitized );
+		do_action( 'pepselect_popup_settings_updated', $sanitized, 'rest', get_current_user_id() );
+
+		return rest_ensure_response(
+			array(
+				'version'  => self::VERSION,
+				'settings' => $sanitized,
+			)
+		);
+	}
+
 	public function sanitize_settings( $input ) {
 		$defaults = self::defaults();
 		$input    = is_array( $input ) ? $input : array();
@@ -729,8 +795,8 @@ final class PepSelect_Cart_Recovery {
 	public function register_settings_page() {
 		add_submenu_page(
 			'woocommerce',
-			__( 'Pep Select Cart Recovery', 'pepselect-cart-recovery' ),
-			__( 'Campaign Popups', 'pepselect-cart-recovery' ),
+			__( 'Pep Select Popups', 'pepselect-cart-recovery' ),
+			__( 'Popups', 'pepselect-cart-recovery' ),
 			'manage_woocommerce',
 			'pepselect-cart-recovery',
 			array( $this, 'settings_page' )
@@ -744,6 +810,15 @@ final class PepSelect_Cart_Recovery {
 		wp_enqueue_media();
 		wp_enqueue_style( 'pepselect-cart-recovery-admin', plugin_dir_url( __FILE__ ) . 'assets/admin.css', array(), self::VERSION );
 		wp_enqueue_script( 'pepselect-cart-recovery-admin', plugin_dir_url( __FILE__ ) . 'assets/admin.js', array(), self::VERSION, true );
+		wp_localize_script(
+			'pepselect-cart-recovery-admin',
+			'pepSelectPopupAdmin',
+			array(
+				'discount' => $this->discount_label(),
+				'days'     => (string) max( 1, absint( $this->settings()['coupon_expiry_days'] ) ),
+				'support'  => 'support@pepselect.com',
+			)
+		);
 	}
 
 	private function admin_field( $settings, $key, $label, $description = '', $type = 'text', $attributes = array() ) {
@@ -753,11 +828,11 @@ final class PepSelect_Cart_Recovery {
 		<div class="pep-recovery-field">
 			<label for="pep-<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $label ); ?></label>
 			<?php if ( 'textarea' === $type ) : ?>
-				<textarea id="pep-<?php echo esc_attr( $key ); ?>" name="<?php echo esc_attr( $name ); ?>" rows="3"><?php echo esc_textarea( $value ); ?></textarea>
+				<textarea id="pep-<?php echo esc_attr( $key ); ?>" name="<?php echo esc_attr( $name ); ?>" data-pep-setting="<?php echo esc_attr( $key ); ?>" rows="3"><?php echo esc_textarea( $value ); ?></textarea>
 			<?php elseif ( 'image' === $type ) : ?>
-				<div class="pep-recovery-image-field"><input id="pep-<?php echo esc_attr( $key ); ?>" name="<?php echo esc_attr( $name ); ?>" type="url" value="<?php echo esc_attr( $value ); ?>"><button class="button" type="button" data-pep-media-target="pep-<?php echo esc_attr( $key ); ?>"><?php esc_html_e( 'Choose image', 'pepselect-cart-recovery' ); ?></button></div>
+				<div class="pep-recovery-image-field"><input id="pep-<?php echo esc_attr( $key ); ?>" name="<?php echo esc_attr( $name ); ?>" data-pep-setting="<?php echo esc_attr( $key ); ?>" type="url" value="<?php echo esc_attr( $value ); ?>"><button class="button" type="button" data-pep-media-target="pep-<?php echo esc_attr( $key ); ?>"><?php esc_html_e( 'Choose image', 'pepselect-cart-recovery' ); ?></button></div>
 			<?php else : ?>
-				<input id="pep-<?php echo esc_attr( $key ); ?>" name="<?php echo esc_attr( $name ); ?>" type="<?php echo esc_attr( $type ); ?>" value="<?php echo esc_attr( $value ); ?>" <?php foreach ( $attributes as $attribute => $attribute_value ) { echo esc_attr( $attribute ) . '="' . esc_attr( $attribute_value ) . '" '; } ?>>
+				<input id="pep-<?php echo esc_attr( $key ); ?>" name="<?php echo esc_attr( $name ); ?>" data-pep-setting="<?php echo esc_attr( $key ); ?>" type="<?php echo esc_attr( $type ); ?>" value="<?php echo esc_attr( $value ); ?>" <?php foreach ( $attributes as $attribute => $attribute_value ) { echo esc_attr( $attribute ) . '="' . esc_attr( $attribute_value ) . '" '; } ?>>
 			<?php endif; ?>
 			<?php if ( $description ) : ?><p class="description"><?php echo wp_kses_post( $description ); ?></p><?php endif; ?>
 		</div>
@@ -766,92 +841,130 @@ final class PepSelect_Cart_Recovery {
 
 	private function admin_colors( $settings, $prefix ) {
 		$labels = array(
-			'overlay_color'     => __( 'Page overlay color', 'pepselect-cart-recovery' ),
-			'overlay_opacity'   => __( 'Page overlay opacity', 'pepselect-cart-recovery' ),
-			'card_color'        => __( 'Popup background color', 'pepselect-cart-recovery' ),
-			'card_image'        => __( 'Popup background image', 'pepselect-cart-recovery' ),
-			'card_tint_color'   => __( 'Image tint color', 'pepselect-cart-recovery' ),
-			'card_tint_opacity' => __( 'Image tint opacity', 'pepselect-cart-recovery' ),
-			'text_color'        => __( 'Heading color', 'pepselect-cart-recovery' ),
-			'muted_color'       => __( 'Body text color', 'pepselect-cart-recovery' ),
-			'accent_color'      => __( 'Eyebrow/accent color', 'pepselect-cart-recovery' ),
-			'button_color'      => __( 'Button color', 'pepselect-cart-recovery' ),
-			'button_text_color' => __( 'Button text color', 'pepselect-cart-recovery' ),
+			'overlay_color'     => array( __( 'Page overlay color', 'pepselect-cart-recovery' ), __( 'The color covering the website behind the popup.', 'pepselect-cart-recovery' ) ),
+			'overlay_opacity'   => array( __( 'Page overlay strength', 'pepselect-cart-recovery' ), __( '0 is invisible. 1 completely hides the page. 0.5 is the current balanced setting.', 'pepselect-cart-recovery' ) ),
+			'card_color'        => array( __( 'Popup background color', 'pepselect-cart-recovery' ), __( 'The solid color inside the popup.', 'pepselect-cart-recovery' ) ),
+			'card_image'        => array( __( 'Popup background image', 'pepselect-cart-recovery' ), __( 'Optional image behind the popup copy. Leave blank for a solid background.', 'pepselect-cart-recovery' ) ),
+			'card_tint_color'   => array( __( 'Image tint color', 'pepselect-cart-recovery' ), __( 'A color layer placed over the background image so the words remain readable.', 'pepselect-cart-recovery' ) ),
+			'card_tint_opacity' => array( __( 'Image tint strength', 'pepselect-cart-recovery' ), __( 'Raise this when the background image makes the words hard to read.', 'pepselect-cart-recovery' ) ),
+			'text_color'        => array( __( 'Heading color', 'pepselect-cart-recovery' ), __( 'Changes the large headline.', 'pepselect-cart-recovery' ) ),
+			'muted_color'       => array( __( 'Body text color', 'pepselect-cart-recovery' ), __( 'Changes the paragraph and small supporting text.', 'pepselect-cart-recovery' ) ),
+			'accent_color'      => array( __( 'Small label color', 'pepselect-cart-recovery' ), __( 'Changes the short all-caps line above the headline.', 'pepselect-cart-recovery' ) ),
+			'button_color'      => array( __( 'Button color', 'pepselect-cart-recovery' ), __( 'Changes the main action button.', 'pepselect-cart-recovery' ) ),
+			'button_text_color' => array( __( 'Button text color', 'pepselect-cart-recovery' ), __( 'Changes the words inside the action button.', 'pepselect-cart-recovery' ) ),
 		);
-		foreach ( $labels as $suffix => $label ) {
+		foreach ( $labels as $suffix => $field ) {
 			$key = $prefix . '_' . $suffix;
 			if ( 'card_image' === $suffix ) {
-				$this->admin_field( $settings, $key, $label, __( 'Optional. The fixed popup frame remains unchanged.', 'pepselect-cart-recovery' ), 'image' );
+				$this->admin_field( $settings, $key, $field[0], $field[1], 'image' );
 			} elseif ( false !== strpos( $suffix, 'opacity' ) ) {
-				$this->admin_field( $settings, $key, $label, __( 'Use a value from 0 to 1.', 'pepselect-cart-recovery' ), 'number', array( 'min' => '0', 'max' => '1', 'step' => '0.05' ) );
+				$this->admin_field( $settings, $key, $field[0], $field[1], 'number', array( 'min' => '0', 'max' => '1', 'step' => '0.05' ) );
 			} else {
-				$this->admin_field( $settings, $key, $label, '', 'color' );
+				$this->admin_field( $settings, $key, $field[0], $field[1], 'color' );
 			}
 		}
+	}
+
+	private function admin_preview( $settings, $prefix ) {
+		$is_exit = 'exit' === $prefix;
+		?>
+		<aside class="pep-recovery-preview" data-pep-preview="<?php echo esc_attr( $prefix ); ?>" style="<?php echo esc_attr( $this->popup_style( $prefix, $settings ) ); ?>">
+			<div class="pep-recovery-preview__toolbar">
+				<div><strong><?php esc_html_e( 'Live preview', 'pepselect-cart-recovery' ); ?></strong><span><?php esc_html_e( 'Updates while you type. Save to publish.', 'pepselect-cart-recovery' ); ?></span></div>
+				<div class="pep-recovery-device" role="group" aria-label="<?php esc_attr_e( 'Preview size', 'pepselect-cart-recovery' ); ?>">
+					<button type="button" class="is-active" data-pep-device="desktop" aria-pressed="true"><?php esc_html_e( 'Desktop', 'pepselect-cart-recovery' ); ?></button>
+					<button type="button" data-pep-device="mobile" aria-pressed="false"><?php esc_html_e( 'Mobile', 'pepselect-cart-recovery' ); ?></button>
+				</div>
+			</div>
+			<div class="pep-recovery-preview__stage">
+				<div class="pep-recovery-preview__site"><span></span><span></span><span></span></div>
+				<div class="pep-recovery-preview__overlay"></div>
+				<div class="pep-recovery-preview__popup">
+					<div class="pep-recovery-preview__tint"></div>
+					<button type="button" class="pep-recovery-preview__close" aria-label="<?php esc_attr_e( 'Preview close button', 'pepselect-cart-recovery' ); ?>">&times;</button>
+					<div class="pep-recovery-preview__content">
+						<p class="pep-recovery-preview__eyebrow" data-pep-preview-bind="<?php echo esc_attr( $prefix ); ?>_eyebrow"><?php echo esc_html( $this->replace_tokens( $settings[ $prefix . '_eyebrow' ], $settings ) ); ?></p>
+						<h3 data-pep-preview-bind="<?php echo esc_attr( $prefix ); ?>_heading"><?php echo esc_html( $this->replace_tokens( $settings[ $prefix . '_heading' ], $settings ) ); ?></h3>
+						<p class="pep-recovery-preview__body" data-pep-preview-bind="<?php echo esc_attr( $prefix ); ?>_body"><?php echo esc_html( $this->replace_tokens( $settings[ $prefix . '_body' ], $settings ) ); ?></p>
+						<?php if ( $is_exit ) : ?>
+							<input type="text" disabled data-pep-preview-placeholder="exit_placeholder" placeholder="<?php echo esc_attr( $settings['exit_placeholder'] ); ?>">
+							<button type="button" class="pep-recovery-preview__button" data-pep-preview-bind="exit_button"><?php echo esc_html( $this->replace_tokens( $settings['exit_button'], $settings ) ); ?></button>
+						<?php else : ?>
+							<div class="pep-recovery-preview__code" data-pep-preview-code <?php if ( ! $settings['promo_code'] ) : ?>hidden<?php endif; ?>><span data-pep-preview-bind="promo_code_label"><?php echo esc_html( $settings['promo_code_label'] ); ?></span><strong data-pep-preview-bind="promo_code"><?php echo esc_html( $settings['promo_code'] ); ?></strong></div>
+							<button type="button" class="pep-recovery-preview__button" data-pep-preview-bind="promo_button"><?php echo esc_html( $settings['promo_button'] ); ?></button>
+						<?php endif; ?>
+						<p class="pep-recovery-preview__fineprint" data-pep-preview-bind="<?php echo esc_attr( $prefix ); ?>_fineprint"><?php echo esc_html( $this->replace_tokens( $settings[ $prefix . '_fineprint' ], $settings ) ); ?></p>
+					</div>
+				</div>
+			</div>
+		</aside>
+		<?php
 	}
 
 	public function settings_page() {
 		$settings = $this->settings();
 		?>
-		<div class="wrap pep-recovery-admin"><h1><?php esc_html_e( 'Pep Select Campaign Popups', 'pepselect-cart-recovery' ); ?></h1>
-			<p><?php esc_html_e( 'Manage the evergreen email offer and one date-scheduled promotion. The popup frame and responsive layout remain fixed.', 'pepselect-cart-recovery' ); ?></p>
-			<p class="pep-recovery-token-note"><strong><?php esc_html_e( 'Available wording tokens:', 'pepselect-cart-recovery' ); ?></strong> <code>{discount}</code> <code>{days}</code> <code>{support_email}</code></p>
+		<div class="wrap pep-recovery-admin">
+			<div class="pep-recovery-heading"><div><h1><?php esc_html_e( 'Pep Select Popups', 'pepselect-cart-recovery' ); ?></h1><p><?php esc_html_e( 'Choose a popup below. The preview shows exactly which words, colors, image, and button each setting controls.', 'pepselect-cart-recovery' ); ?></p></div><span class="pep-recovery-version"><?php echo esc_html( 'v' . self::VERSION ); ?></span></div>
 			<?php settings_errors( self::OPTION ); ?>
+			<nav class="pep-recovery-tabs" role="tablist" aria-label="<?php esc_attr_e( 'Popup type', 'pepselect-cart-recovery' ); ?>">
+				<button type="button" role="tab" id="pep-tab-exit" aria-controls="pep-panel-exit" aria-selected="true" data-pep-tab="exit"><span><?php esc_html_e( 'Exit Popup', 'pepselect-cart-recovery' ); ?></span><small><?php esc_html_e( 'Email signup + automatic discount', 'pepselect-cart-recovery' ); ?></small><strong data-pep-status="enabled"><?php echo $settings['enabled'] ? esc_html__( 'On', 'pepselect-cart-recovery' ) : esc_html__( 'Off', 'pepselect-cart-recovery' ); ?></strong></button>
+				<button type="button" role="tab" id="pep-tab-promo" aria-controls="pep-panel-promo" aria-selected="false" data-pep-tab="promo"><span><?php esc_html_e( 'Campaign Popup', 'pepselect-cart-recovery' ); ?></span><small><?php esc_html_e( 'Scheduled sale or announcement', 'pepselect-cart-recovery' ); ?></small><strong data-pep-status="promo_enabled"><?php echo $settings['promo_enabled'] ? esc_html__( 'On', 'pepselect-cart-recovery' ) : esc_html__( 'Off', 'pepselect-cart-recovery' ); ?></strong></button>
+			</nav>
 			<form method="post" action="options.php"><?php settings_fields( 'pepselect_cart_recovery' ); ?>
-				<section class="pep-recovery-card"><h2><?php esc_html_e( 'Email capture offer', 'pepselect-cart-recovery' ); ?></h2>
-					<label class="pep-recovery-toggle"><input name="<?php echo esc_attr( self::OPTION ); ?>[enabled]" type="checkbox" value="1" <?php checked( $settings['enabled'], 1 ); ?>> <?php esc_html_e( 'Enable the email capture popup', 'pepselect-cart-recovery' ); ?></label>
-					<div class="pep-recovery-grid">
-						<div class="pep-recovery-field"><label for="pep-discount-type"><?php esc_html_e( 'Discount type', 'pepselect-cart-recovery' ); ?></label><select id="pep-discount-type" name="<?php echo esc_attr( self::OPTION ); ?>[discount_type]"><option value="percent" <?php selected( $settings['discount_type'], 'percent' ); ?>><?php esc_html_e( 'Percentage', 'pepselect-cart-recovery' ); ?></option><option value="fixed_cart" <?php selected( $settings['discount_type'], 'fixed_cart' ); ?>><?php esc_html_e( 'Fixed cart amount', 'pepselect-cart-recovery' ); ?></option></select></div>
-						<?php $this->admin_field( $settings, 'discount_amount', __( 'Discount amount', 'pepselect-cart-recovery' ), __( 'Changing this creates new coupons with the new value. Existing issued coupons remain unchanged.', 'pepselect-cart-recovery' ), 'number', array( 'min' => '0.01', 'max' => '10000', 'step' => '0.01' ) ); ?>
-						<?php $this->admin_field( $settings, 'coupon_prefix', __( 'Unique coupon prefix', 'pepselect-cart-recovery' ), __( 'The plugin adds a private random suffix for each email address.', 'pepselect-cart-recovery' ) ); ?>
-						<?php $this->admin_field( $settings, 'coupon_expiry_days', __( 'Coupon expiry (days)', 'pepselect-cart-recovery' ), '', 'number', array( 'min' => '1', 'max' => '365' ) ); ?>
-						<?php $this->admin_field( $settings, 'dismiss_days', __( 'Dismiss cooldown (days)', 'pepselect-cart-recovery' ), '', 'number', array( 'min' => '1', 'max' => '365' ) ); ?>
-						<?php $this->admin_field( $settings, 'fluentcrm_list_id', __( 'FluentCRM list ID', 'pepselect-cart-recovery' ), __( 'Use 0 to disable list sync.', 'pepselect-cart-recovery' ), 'number', array( 'min' => '0' ) ); ?>
-						<?php $this->admin_field( $settings, 'final_template_id', __( '48-hour recovery template ID', 'pepselect-cart-recovery' ), __( 'The final recovery email remains managed in Cart Abandonment Recovery. If you change the primary discount, update that email wording to match.', 'pepselect-cart-recovery' ), 'number', array( 'min' => '0' ) ); ?>
-					</div>
-				</section>
+				<div class="pep-recovery-panel is-active" id="pep-panel-exit" role="tabpanel" aria-labelledby="pep-tab-exit" data-pep-panel="exit">
+					<div class="pep-recovery-layout"><div class="pep-recovery-editor">
+						<section class="pep-recovery-card pep-recovery-intro"><div><span class="pep-recovery-kicker"><?php esc_html_e( 'Exit Popup', 'pepselect-cart-recovery' ); ?></span><h2><?php esc_html_e( 'Turn a visitor who is leaving into an email subscriber.', 'pepselect-cart-recovery' ); ?></h2><p><?php esc_html_e( 'The visitor enters only an email address. WooCommerce creates a private discount code, emails it, and restricts it to that address. No account is created.', 'pepselect-cart-recovery' ); ?></p></div><label class="pep-recovery-switch"><input name="<?php echo esc_attr( self::OPTION ); ?>[enabled]" data-pep-setting="enabled" type="checkbox" value="1" <?php checked( $settings['enabled'], 1 ); ?>><span></span><b><?php esc_html_e( 'Exit popup enabled', 'pepselect-cart-recovery' ); ?></b></label></section>
+						<section class="pep-recovery-card"><h2><?php esc_html_e( 'When does this appear?', 'pepselect-cart-recovery' ); ?></h2><div class="pep-recovery-explainer"><div><b><?php esc_html_e( 'Desktop', 'pepselect-cart-recovery' ); ?></b><p><?php esc_html_e( 'After 15 seconds, when the visitor moves toward the top of the browser to leave.', 'pepselect-cart-recovery' ); ?></p></div><div><b><?php esc_html_e( 'Mobile', 'pepselect-cart-recovery' ); ?></b><p><?php esc_html_e( 'After 45 seconds and after the visitor has scrolled beyond 55% of the page.', 'pepselect-cart-recovery' ); ?></p></div><div><b><?php esc_html_e( 'It stays out of the way', 'pepselect-cart-recovery' ); ?></b><p><?php esc_html_e( 'It never appears at checkout or inside My Account, and waits after a visitor dismisses it.', 'pepselect-cart-recovery' ); ?></p></div></div></section>
+						<section class="pep-recovery-card"><h2><?php esc_html_e( 'Discount and frequency', 'pepselect-cart-recovery' ); ?></h2><p class="description"><?php esc_html_e( 'These settings control the private WooCommerce coupon created after someone submits an email.', 'pepselect-cart-recovery' ); ?></p><div class="pep-recovery-grid">
+							<div class="pep-recovery-field"><label for="pep-discount-type"><?php esc_html_e( 'Discount type', 'pepselect-cart-recovery' ); ?></label><select id="pep-discount-type" name="<?php echo esc_attr( self::OPTION ); ?>[discount_type]" data-pep-setting="discount_type"><option value="percent" <?php selected( $settings['discount_type'], 'percent' ); ?>><?php esc_html_e( 'Percentage', 'pepselect-cart-recovery' ); ?></option><option value="fixed_cart" <?php selected( $settings['discount_type'], 'fixed_cart' ); ?>><?php esc_html_e( 'Fixed cart amount', 'pepselect-cart-recovery' ); ?></option></select><p class="description"><?php esc_html_e( 'Choose percent off or a fixed dollar amount.', 'pepselect-cart-recovery' ); ?></p></div>
+							<?php $this->admin_field( $settings, 'discount_amount', __( 'Discount amount', 'pepselect-cart-recovery' ), __( 'Used for every new code. Codes already issued do not change.', 'pepselect-cart-recovery' ), 'number', array( 'min' => '0.01', 'max' => '10000', 'step' => '0.01' ) ); ?>
+							<?php $this->admin_field( $settings, 'coupon_prefix', __( 'Coupon prefix', 'pepselect-cart-recovery' ), __( 'The readable beginning of every code. A private random ending is added automatically.', 'pepselect-cart-recovery' ) ); ?>
+							<?php $this->admin_field( $settings, 'coupon_expiry_days', __( 'Code expires after', 'pepselect-cart-recovery' ), __( 'Number of days the emailed code remains valid.', 'pepselect-cart-recovery' ), 'number', array( 'min' => '1', 'max' => '365' ) ); ?>
+							<?php $this->admin_field( $settings, 'dismiss_days', __( 'Wait after dismissal', 'pepselect-cart-recovery' ), __( 'Number of days before a visitor who closed the popup can see it again.', 'pepselect-cart-recovery' ), 'number', array( 'min' => '1', 'max' => '365' ) ); ?>
+						</div></section>
+						<section class="pep-recovery-card"><h2><?php esc_html_e( 'Words inside the popup', 'pepselect-cart-recovery' ); ?></h2><p class="pep-recovery-token-note"><strong><?php esc_html_e( 'Automatic words:', 'pepselect-cart-recovery' ); ?></strong> <code>{discount}</code> <?php esc_html_e( 'shows the current offer amount.', 'pepselect-cart-recovery' ); ?></p><div class="pep-recovery-grid">
+							<?php $this->admin_field( $settings, 'exit_eyebrow', __( 'Small label', 'pepselect-cart-recovery' ), __( 'The short all-caps line above the headline.', 'pepselect-cart-recovery' ) ); ?>
+							<?php $this->admin_field( $settings, 'exit_heading', __( 'Main headline', 'pepselect-cart-recovery' ), __( 'The largest text in the popup.', 'pepselect-cart-recovery' ) ); ?>
+							<?php $this->admin_field( $settings, 'exit_body', __( 'Supporting paragraph', 'pepselect-cart-recovery' ), __( 'Explains what the visitor receives for entering an email.', 'pepselect-cart-recovery' ), 'textarea' ); ?>
+							<?php $this->admin_field( $settings, 'exit_placeholder', __( 'Email box placeholder', 'pepselect-cart-recovery' ), __( 'The light text shown inside the empty email field.', 'pepselect-cart-recovery' ) ); ?>
+							<?php $this->admin_field( $settings, 'exit_button', __( 'Button text', 'pepselect-cart-recovery' ), __( 'The action visitors press to request the code.', 'pepselect-cart-recovery' ) ); ?>
+							<?php $this->admin_field( $settings, 'exit_fineprint', __( 'Small print below the button', 'pepselect-cart-recovery' ), __( 'Use this for the email and unsubscribe notice.', 'pepselect-cart-recovery' ) ); ?>
+							<?php $this->admin_field( $settings, 'exit_loading', __( 'Button text while sending', 'pepselect-cart-recovery' ), __( 'Briefly replaces the button text after it is pressed.', 'pepselect-cart-recovery' ) ); ?>
+							<?php $this->admin_field( $settings, 'exit_success', __( 'Success headline', 'pepselect-cart-recovery' ), __( 'Appears after the email has been accepted.', 'pepselect-cart-recovery' ) ); ?>
+							<?php $this->admin_field( $settings, 'exit_success_note', __( 'Success supporting text', 'pepselect-cart-recovery' ), __( 'Tells the visitor what to do with the code.', 'pepselect-cart-recovery' ) ); ?>
+						</div></section>
+						<details class="pep-recovery-card" open><summary><?php esc_html_e( 'Popup colors and background', 'pepselect-cart-recovery' ); ?></summary><p class="description"><?php esc_html_e( 'Every change below is visible in the preview before you save it.', 'pepselect-cart-recovery' ); ?></p><div class="pep-recovery-grid"><?php $this->admin_colors( $settings, 'exit' ); ?></div></details>
+						<details class="pep-recovery-card"><summary><?php esc_html_e( 'Discount email wording', 'pepselect-cart-recovery' ); ?></summary><p class="description"><?php esc_html_e( 'This is the email sent immediately with the private coupon. The established Pep Select email layout does not change.', 'pepselect-cart-recovery' ); ?></p><p class="pep-recovery-token-note"><code>{discount}</code> <code>{days}</code> <code>{support_email}</code> <?php esc_html_e( 'are filled automatically.', 'pepselect-cart-recovery' ); ?></p><div class="pep-recovery-grid"><?php foreach ( array( 'email_subject' => 'Email subject', 'email_preheader' => 'Inbox preview text', 'email_label' => 'Header label', 'email_eyebrow' => 'Small label', 'email_heading' => 'Email headline', 'email_greeting' => 'Greeting', 'email_intro' => 'Opening paragraph', 'email_code_label' => 'Code label', 'email_code_note' => 'Instructions below code', 'email_extra' => 'Additional paragraph', 'email_button' => 'Email button text', 'email_support' => 'Support line' ) as $key => $label ) { $this->admin_field( $settings, $key, __( $label, 'pepselect-cart-recovery' ) ); } ?></div></details>
+						<details class="pep-recovery-card"><summary><?php esc_html_e( 'Connections for email and cart recovery', 'pepselect-cart-recovery' ); ?></summary><p class="description"><?php esc_html_e( 'These IDs connect the popup to existing Pep Select systems. Leave them alone unless the matching list or email template changes.', 'pepselect-cart-recovery' ); ?></p><div class="pep-recovery-grid"><?php $this->admin_field( $settings, 'fluentcrm_list_id', __( 'FluentCRM list ID', 'pepselect-cart-recovery' ), __( 'Adds submitted emails to this list. Use 0 to skip list syncing.', 'pepselect-cart-recovery' ), 'number', array( 'min' => '0' ) ); ?><?php $this->admin_field( $settings, 'final_template_id', __( '48-hour recovery email ID', 'pepselect-cart-recovery' ), __( 'Adds the separate 5% code to this Cart Abandonment Recovery email.', 'pepselect-cart-recovery' ), 'number', array( 'min' => '0' ) ); ?></div></details>
+					</div><?php $this->admin_preview( $settings, 'exit' ); ?></div>
+				</div>
 
-				<section class="pep-recovery-card"><h2><?php esc_html_e( 'Email capture popup wording', 'pepselect-cart-recovery' ); ?></h2><div class="pep-recovery-grid">
-					<?php $this->admin_field( $settings, 'exit_eyebrow', __( 'Eyebrow', 'pepselect-cart-recovery' ) ); ?>
-					<?php $this->admin_field( $settings, 'exit_heading', __( 'Heading', 'pepselect-cart-recovery' ) ); ?>
-					<?php $this->admin_field( $settings, 'exit_body', __( 'Body', 'pepselect-cart-recovery' ), '', 'textarea' ); ?>
-					<?php $this->admin_field( $settings, 'exit_placeholder', __( 'Email placeholder', 'pepselect-cart-recovery' ) ); ?>
-					<?php $this->admin_field( $settings, 'exit_button', __( 'Button label', 'pepselect-cart-recovery' ) ); ?>
-					<?php $this->admin_field( $settings, 'exit_loading', __( 'Button loading label', 'pepselect-cart-recovery' ) ); ?>
-					<?php $this->admin_field( $settings, 'exit_fineprint', __( 'Fine print', 'pepselect-cart-recovery' ) ); ?>
-					<?php $this->admin_field( $settings, 'exit_success', __( 'Success message', 'pepselect-cart-recovery' ) ); ?>
-					<?php $this->admin_field( $settings, 'exit_success_note', __( 'Success note', 'pepselect-cart-recovery' ) ); ?>
-				</div></section>
-
-				<section class="pep-recovery-card"><h2><?php esc_html_e( 'Email capture popup appearance', 'pepselect-cart-recovery' ); ?></h2><div class="pep-recovery-grid"><?php $this->admin_colors( $settings, 'exit' ); ?></div></section>
-
-				<section class="pep-recovery-card"><h2><?php esc_html_e( 'Coupon email wording', 'pepselect-cart-recovery' ); ?></h2><p><?php esc_html_e( 'The established Pep Select email layout remains unchanged.', 'pepselect-cart-recovery' ); ?></p><div class="pep-recovery-grid">
-					<?php foreach ( array( 'email_subject' => 'Subject', 'email_preheader' => 'Preheader', 'email_label' => 'Header label', 'email_eyebrow' => 'Eyebrow', 'email_heading' => 'Heading', 'email_greeting' => 'Greeting', 'email_intro' => 'Opening copy', 'email_code_label' => 'Code label', 'email_code_note' => 'Code note', 'email_extra' => 'Additional copy', 'email_button' => 'Button label', 'email_support' => 'Support copy' ) as $key => $label ) { $this->admin_field( $settings, $key, __( $label, 'pepselect-cart-recovery' ) ); } ?>
-				</div></section>
-
-				<section class="pep-recovery-card"><h2><?php esc_html_e( 'Scheduled promotion popup', 'pepselect-cart-recovery' ); ?></h2>
-					<label class="pep-recovery-toggle"><input name="<?php echo esc_attr( self::OPTION ); ?>[promo_enabled]" type="checkbox" value="1" <?php checked( $settings['promo_enabled'], 1 ); ?>> <?php esc_html_e( 'Enable the scheduled promotion', 'pepselect-cart-recovery' ); ?></label>
-					<label class="pep-recovery-toggle"><input name="<?php echo esc_attr( self::OPTION ); ?>[promo_suppress_exit]" type="checkbox" value="1" <?php checked( $settings['promo_suppress_exit'], 1 ); ?>> <?php esc_html_e( 'Do not show the email capture popup while this promotion is active', 'pepselect-cart-recovery' ); ?></label>
-					<p class="description"><?php printf( esc_html__( 'Dates use the website timezone: %s. The popup stops automatically at the end time.', 'pepselect-cart-recovery' ), esc_html( wp_timezone_string() ) ); ?></p>
-					<div class="pep-recovery-grid">
-						<?php $this->admin_field( $settings, 'promo_start', __( 'Start date and time', 'pepselect-cart-recovery' ), '', 'datetime-local' ); ?>
-						<?php $this->admin_field( $settings, 'promo_end', __( 'End date and time', 'pepselect-cart-recovery' ), '', 'datetime-local' ); ?>
-						<?php $this->admin_field( $settings, 'promo_delay_seconds', __( 'Show after (seconds)', 'pepselect-cart-recovery' ), '', 'number', array( 'min' => '0', 'max' => '86400' ) ); ?>
-						<?php $this->admin_field( $settings, 'promo_dismiss_days', __( 'Dismiss cooldown (days)', 'pepselect-cart-recovery' ), __( 'Changing the campaign dates or heading starts a new visitor campaign.', 'pepselect-cart-recovery' ), 'number', array( 'min' => '1', 'max' => '365' ) ); ?>
-						<?php $this->admin_field( $settings, 'promo_eyebrow', __( 'Eyebrow', 'pepselect-cart-recovery' ) ); ?>
-						<?php $this->admin_field( $settings, 'promo_heading', __( 'Heading', 'pepselect-cart-recovery' ) ); ?>
-						<?php $this->admin_field( $settings, 'promo_body', __( 'Body', 'pepselect-cart-recovery' ), '', 'textarea' ); ?>
-						<?php $this->admin_field( $settings, 'promo_code_label', __( 'Promotion code label', 'pepselect-cart-recovery' ) ); ?>
-						<?php $this->admin_field( $settings, 'promo_code', __( 'Promotion code', 'pepselect-cart-recovery' ), __( 'Optional display only. Create and configure the coupon in WooCommerce before publishing it here.', 'pepselect-cart-recovery' ) ); ?>
-						<?php $this->admin_field( $settings, 'promo_button', __( 'Button label', 'pepselect-cart-recovery' ) ); ?>
-						<?php $this->admin_field( $settings, 'promo_url', __( 'Button destination', 'pepselect-cart-recovery' ), '', 'url' ); ?>
-						<?php $this->admin_field( $settings, 'promo_fineprint', __( 'Fine print', 'pepselect-cart-recovery' ) ); ?>
-					</div>
-				</section>
-
-				<section class="pep-recovery-card"><h2><?php esc_html_e( 'Scheduled promotion appearance', 'pepselect-cart-recovery' ); ?></h2><div class="pep-recovery-grid"><?php $this->admin_colors( $settings, 'promo' ); ?></div></section>
-				<?php submit_button( __( 'Save campaign settings', 'pepselect-cart-recovery' ) ); ?>
+				<div class="pep-recovery-panel" id="pep-panel-promo" role="tabpanel" aria-labelledby="pep-tab-promo" data-pep-panel="promo" hidden>
+					<div class="pep-recovery-layout"><div class="pep-recovery-editor">
+						<section class="pep-recovery-card pep-recovery-intro"><div><span class="pep-recovery-kicker"><?php esc_html_e( 'Campaign Popup', 'pepselect-cart-recovery' ); ?></span><h2><?php esc_html_e( 'Run a scheduled sale or announcement.', 'pepselect-cart-recovery' ); ?></h2><p><?php esc_html_e( 'This popup appears after a visitor arrives, only between the start and end times you choose. It stops automatically when the campaign ends.', 'pepselect-cart-recovery' ); ?></p></div><label class="pep-recovery-switch"><input name="<?php echo esc_attr( self::OPTION ); ?>[promo_enabled]" data-pep-setting="promo_enabled" type="checkbox" value="1" <?php checked( $settings['promo_enabled'], 1 ); ?>><span></span><b><?php esc_html_e( 'Campaign popup enabled', 'pepselect-cart-recovery' ); ?></b></label></section>
+						<section class="pep-recovery-card"><h2><?php esc_html_e( 'Schedule and frequency', 'pepselect-cart-recovery' ); ?></h2><p class="description"><?php printf( esc_html__( 'Times use the website timezone: %s.', 'pepselect-cart-recovery' ), esc_html( wp_timezone_string() ) ); ?></p><div class="pep-recovery-grid">
+							<?php $this->admin_field( $settings, 'promo_start', __( 'Start showing', 'pepselect-cart-recovery' ), __( 'The first date and time visitors can see this campaign.', 'pepselect-cart-recovery' ), 'datetime-local' ); ?>
+							<?php $this->admin_field( $settings, 'promo_end', __( 'Stop showing', 'pepselect-cart-recovery' ), __( 'The popup turns itself off at this date and time.', 'pepselect-cart-recovery' ), 'datetime-local' ); ?>
+							<?php $this->admin_field( $settings, 'promo_delay_seconds', __( 'Wait after page opens', 'pepselect-cart-recovery' ), __( 'Seconds between page arrival and the popup opening. Use 0 for immediate.', 'pepselect-cart-recovery' ), 'number', array( 'min' => '0', 'max' => '86400' ) ); ?>
+							<?php $this->admin_field( $settings, 'promo_dismiss_days', __( 'Wait after dismissal', 'pepselect-cart-recovery' ), __( 'Days before someone who closed this campaign can see it again.', 'pepselect-cart-recovery' ), 'number', array( 'min' => '1', 'max' => '365' ) ); ?>
+						</div><label class="pep-recovery-check"><input name="<?php echo esc_attr( self::OPTION ); ?>[promo_suppress_exit]" data-pep-setting="promo_suppress_exit" type="checkbox" value="1" <?php checked( $settings['promo_suppress_exit'], 1 ); ?>><span><b><?php esc_html_e( 'Pause the Exit Popup while this campaign is active', 'pepselect-cart-recovery' ); ?></b><small><?php esc_html_e( 'Recommended. Visitors see one clear message instead of two competing popups.', 'pepselect-cart-recovery' ); ?></small></span></label></section>
+						<section class="pep-recovery-card"><h2><?php esc_html_e( 'Words and action', 'pepselect-cart-recovery' ); ?></h2><div class="pep-recovery-grid">
+							<?php $this->admin_field( $settings, 'promo_eyebrow', __( 'Small label', 'pepselect-cart-recovery' ), __( 'The short all-caps line above the headline.', 'pepselect-cart-recovery' ) ); ?>
+							<?php $this->admin_field( $settings, 'promo_heading', __( 'Main headline', 'pepselect-cart-recovery' ), __( 'The largest text in the popup.', 'pepselect-cart-recovery' ) ); ?>
+							<?php $this->admin_field( $settings, 'promo_body', __( 'Supporting paragraph', 'pepselect-cart-recovery' ), __( 'Explains the sale, announcement, or reason to click.', 'pepselect-cart-recovery' ), 'textarea' ); ?>
+							<?php $this->admin_field( $settings, 'promo_code_label', __( 'Code label', 'pepselect-cart-recovery' ), __( 'The small words above the optional promotion code.', 'pepselect-cart-recovery' ) ); ?>
+							<?php $this->admin_field( $settings, 'promo_code', __( 'Promotion code to display', 'pepselect-cart-recovery' ), __( 'Optional. This displays a code but does not create it. Create the coupon in WooCommerce first.', 'pepselect-cart-recovery' ) ); ?>
+							<?php $this->admin_field( $settings, 'promo_button', __( 'Button text', 'pepselect-cart-recovery' ), __( 'The action visitors press.', 'pepselect-cart-recovery' ) ); ?>
+							<?php $this->admin_field( $settings, 'promo_url', __( 'Button destination', 'pepselect-cart-recovery' ), __( 'The page opened after the button is pressed, such as a sale or shop page.', 'pepselect-cart-recovery' ), 'url' ); ?>
+							<?php $this->admin_field( $settings, 'promo_fineprint', __( 'Small print below the button', 'pepselect-cart-recovery' ), __( 'Optional short terms or timing note.', 'pepselect-cart-recovery' ) ); ?>
+						</div></section>
+						<details class="pep-recovery-card" open><summary><?php esc_html_e( 'Popup colors and background', 'pepselect-cart-recovery' ); ?></summary><p class="description"><?php esc_html_e( 'Every change below is visible in the preview before you save it.', 'pepselect-cart-recovery' ); ?></p><div class="pep-recovery-grid"><?php $this->admin_colors( $settings, 'promo' ); ?></div></details>
+					</div><?php $this->admin_preview( $settings, 'promo' ); ?></div>
+				</div>
+				<div class="pep-recovery-save"><div><strong><?php esc_html_e( 'Preview first. Save when it looks right.', 'pepselect-cart-recovery' ); ?></strong><span><?php esc_html_e( 'Nothing changes on the website until you save.', 'pepselect-cart-recovery' ); ?></span></div><?php submit_button( __( 'Save popup settings', 'pepselect-cart-recovery' ), 'primary', 'submit', false ); ?></div>
 			</form>
+			<div class="pep-recovery-ops-note"><span aria-hidden="true">↔</span><div><strong><?php esc_html_e( 'Ready for Ops control', 'pepselect-cart-recovery' ); ?></strong><p><?php esc_html_e( 'Both popup tabs use one protected WordPress settings API. Control Ops can read and update these same options later without creating a second popup system.', 'pepselect-cart-recovery' ); ?></p></div></div>
 		</div>
 		<?php
 	}

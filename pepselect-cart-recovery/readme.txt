@@ -2,7 +2,7 @@
 Contributors: pepselect
 Requires at least: 6.5
 Requires PHP: 7.4
-Stable tag: 0.3.0
+Stable tag: 0.4.0
 License: Proprietary
 
 Native Pep Select exit offer and Cart Abandonment Recovery integration.
@@ -11,10 +11,11 @@ Native Pep Select exit offer and Cart Abandonment Recovery integration.
 
 1. Install and activate WooCommerce and Cart Abandonment Recovery for WooCommerce.
 2. Install and activate this plugin.
-3. Open WooCommerce > Exit Offer.
-4. Configure the email offer, coupon value, wording, email copy, and appearance.
-5. Optionally configure one scheduled promotion with a start time, end time, display delay, CTA, code, and appearance.
-6. Leave each public popup disabled until its settings are ready.
+3. Open WooCommerce > Popups.
+4. Use the Exit Popup or Campaign Popup tab and watch the live preview while editing.
+5. Configure the email offer, coupon value, wording, email copy, and appearance under Exit Popup.
+6. Optionally configure one Campaign Popup with a start time, end time, display delay, CTA, code, and appearance.
+7. Leave each public popup disabled until its settings are ready.
 
 == Behavior ==
 
@@ -38,3 +39,5 @@ Native Pep Select exit offer and Cart Abandonment Recovery integration.
 * Supports one scheduled promotional popup with site-timezone start/end controls and an automatic stop at the configured end time.
 * Supports a configurable delay after arrival, dismiss cooldown, destination, optional displayed promotion code, and independent visual settings.
 * Suppresses the email-capture popup during an active scheduled promotion by default so visitors do not receive competing modal messages.
+* Provides separate Exit Popup and Campaign Popup administration tabs with desktop/mobile live previews and plain-language field guidance.
+* Provides an authenticated, capability-protected WordPress REST settings endpoint for future Control Ops integration.
