@@ -1,6 +1,12 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.64** - Block automated contact-form mail abuse without adding visitor tracking.
+**Release candidate: 0.25.0-beta.65** - Initialize the contact-form timing guard after cached markup loads.
+
+## 0.25.0-beta.65 - 2026-08-29
+
+- Wait for `DOMContentLoaded` before setting the minimum-fill timestamp when the script is loaded in the document head.
+
+**Previous release candidate: 0.25.0-beta.64** - Block automated contact-form mail abuse without adding visitor tracking.
 
 ## 0.25.0-beta.64 - 2026-08-29
 

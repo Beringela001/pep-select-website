@@ -5,9 +5,17 @@
 ( function () {
 	'use strict';
 
-	const startedAt = document.querySelector( '[name="pepselect_contact_started_at"]' );
+	const setStartedAt = function () {
+		const startedAt = document.querySelector( '[name="pepselect_contact_started_at"]' );
 
-	if ( startedAt ) {
-		startedAt.value = String( Math.floor( Date.now() / 1000 ) );
+		if ( startedAt ) {
+			startedAt.value = String( Math.floor( Date.now() / 1000 ) );
+		}
+	};
+
+	if ( 'loading' === document.readyState ) {
+		document.addEventListener( 'DOMContentLoaded', setStartedAt, { once: true } );
+	} else {
+		setStartedAt();
 	}
 }() );
