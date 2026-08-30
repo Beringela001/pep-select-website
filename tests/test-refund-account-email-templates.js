@@ -17,6 +17,8 @@ assert.match(shared, /max-width:680px/);
 assert.match(shared, /@media only screen and \(max-width:520px\)/);
 assert.match(shared, /pepselect_child_email_company_footer_row_html/);
 assert.match(shared, /pep-email-order-content/);
+assert.match(shared, /th:nth-child\(3\).*white-space:nowrap/);
+assert.match(shared, /td:first-child img\{display:none/);
 
 for (const template of [refund, reset, verify]) {
   assert.match(template, /pepselect-simple-message\.php/);

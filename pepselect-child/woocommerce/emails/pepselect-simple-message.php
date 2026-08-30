@@ -41,7 +41,11 @@ $pep_logo_url = 'https://pepselect.com/wp-content/uploads/2026/06/Logo_Pepselect
 			.pep-email-panel{padding:18px!important}.pep-email-button-table{width:100%!important}.pep-email-button{box-sizing:border-box!important;display:block!important;width:100%!important}
 			.pep-email-desktop-only{display:none!important;font-size:0!important;line-height:0!important;max-height:0!important;mso-hide:all!important;overflow:hidden!important}
 			.pep-email-order-content table,.pep-email-order-content tbody,.pep-email-order-content tr{max-width:100%!important;width:100%!important}
-			.pep-email-order-content th,.pep-email-order-content td{font-size:12px!important;min-width:0!important;padding-left:7px!important;padding-right:7px!important}
+			.pep-email-order-content th,.pep-email-order-content td{font-size:12px!important;min-width:0!important;padding-left:5px!important;padding-right:5px!important}
+			.pep-email-order-content th:first-child,.pep-email-order-content td:first-child{overflow-wrap:anywhere!important;width:60%!important;word-break:normal!important}
+			.pep-email-order-content th:nth-child(2),.pep-email-order-content td:nth-child(2){overflow-wrap:normal!important;text-align:center!important;white-space:nowrap!important;width:14%!important;word-break:normal!important}
+			.pep-email-order-content th:nth-child(3),.pep-email-order-content td:nth-child(3){overflow-wrap:normal!important;text-align:right!important;white-space:nowrap!important;width:26%!important;word-break:normal!important}
+			.pep-email-order-content td:first-child img{display:none!important;height:0!important;width:0!important}
 		}
 	</style>
 </head>
