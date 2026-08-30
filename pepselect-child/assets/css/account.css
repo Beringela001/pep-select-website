@@ -802,44 +802,41 @@
 	color: var(--pep-color-navy);
 }
 
-/*
- * Login / Register page.
- *
- * A centered card with the Google button (Nextend) at the top, an "or"
- * divider, then the WooCommerce login/register forms on our tokens. Nextend's
- * button markup is restyled to our palette. Field logic stays native.
- */
+/* Login / Register page: one focused account-access card. */
 .pepselect-login {
+	width: 100vw;
+	margin-right: calc(50% - 50vw);
+	margin-left: calc(50% - 50vw);
+	padding-block: clamp(48px, 7vw, 80px) clamp(64px, 8vw, 96px);
 	background: var(--pep-color-surface);
 	font-family: var(--pep-font-interface);
-	padding-block: 72px 96px;
-	/* Break out of any constrained content wrapper so the band is full-width. */
-	width: 100vw;
-	margin-left: calc(50% - 50vw);
-	margin-right: calc(50% - 50vw);
+}
+
+.woocommerce-account:not(.logged-in) {
+	overflow-x: clip;
 }
 
 .pepselect-login__inner {
-	width: min(100%, 960px);
+	width: min(100%, 560px);
 	margin: 0 auto;
 	padding-inline: var(--pep-layout-gutter);
 }
 
 .pepselect-login__panel {
+	box-sizing: border-box;
 	width: 100%;
-	max-width: 860px;
+	max-width: 520px;
 	margin: 0 auto;
-	padding: clamp(28px, 4vw, 48px);
+	padding: clamp(28px, 5vw, 44px);
 	background: var(--pep-color-white);
 	border: 1px solid var(--pep-color-border);
 	border-radius: var(--pep-radius-large);
-	box-shadow: 0 24px 60px rgb(0 42 83 / 6%);
-	box-sizing: border-box;
+	box-shadow: 0 24px 64px rgb(0 42 83 / 8%);
 }
 
 .pepselect-login__head {
+	margin-bottom: 24px;
 	text-align: center;
-	margin-bottom: 28px;
 }
 
 .pepselect-login__title {
@@ -853,77 +850,76 @@
 .pepselect-login__lead {
 	margin: 0;
 	color: var(--pep-color-slate);
-	font-size: 16px;
-}
-
-/* Google (Nextend) button area. */
-.pepselect-login__social {
-	max-width: 420px;
-	margin: 0 auto 8px;
-}
-
-.pepselect-login__social .nsl-container {
-	margin: 0 !important;
-}
-
-.pepselect-login__social .nsl-container .nsl-button,
-.pepselect-login__social a.nsl-button {
-	width: 100% !important;
-	border-radius: var(--pep-radius-pill) !important;
-	overflow: hidden;
-}
-
-/* Divider. */
-.pepselect-login__divider {
-	max-width: 420px;
-	margin: 20px auto 24px;
-	display: flex;
-	align-items: center;
-	gap: 14px;
-	color: var(--pep-color-neutral);
-	font-size: 13px;
-	text-transform: uppercase;
-	letter-spacing: 0.08em;
-}
-
-.pepselect-login__divider::before,
-.pepselect-login__divider::after {
-	content: "";
-	flex: 1;
-	height: 1px;
-	background: var(--pep-color-border);
-}
-
-/* Forms grid: login + register side by side, stack on mobile.
- * Two columns by default (registration is enabled); the single-column case is
- * handled by the width cap and the register column simply being absent. */
-.pepselect-login__forms {
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	gap: 40px;
-	width: 100%;
-	max-width: 760px;
-	margin: 0 auto;
-	box-sizing: border-box;
-}
-
-/* When only the login column exists (registration off), narrow and center. */
-.pepselect-login__forms:not(:has(.pepselect-login__col--register)) {
-	grid-template-columns: 1fr;
-	max-width: 400px;
-}
-
-.pepselect-login__col-title {
-	margin: 0 0 20px;
-	color: var(--pep-color-navy);
 	font-size: 15px;
-	font-weight: 700;
-	letter-spacing: 0.06em;
-	text-transform: uppercase;
+	line-height: 1.55;
+}
+
+/* Both forms remain available without JavaScript. Tabs appear once enhanced. */
+.pepselect-login__tabs {
+	display: none;
+	grid-template-columns: 1fr 1fr;
+	margin: 0 0 26px;
+	border-bottom: 1px solid var(--pep-color-border);
+}
+
+.pepselect-login--enhanced .pepselect-login__tabs {
+	display: grid;
+}
+
+.pepselect-login__tab {
+	position: relative;
+	min-height: 46px;
+	padding: 10px 12px;
+	border: 0;
+	background: transparent;
+	color: var(--pep-color-slate);
+	font: 700 14px/1.2 var(--pep-font-interface);
+	cursor: pointer;
+}
+
+.pepselect-login__tab::after {
+	position: absolute;
+	right: 0;
+	bottom: -1px;
+	left: 0;
+	height: 3px;
+	background: transparent;
+	content: "";
+}
+
+.pepselect-login__tab[aria-selected="true"] {
+	color: var(--pep-color-navy);
+}
+
+.pepselect-login__tab[aria-selected="true"]::after {
+	background: var(--pep-color-cyan);
+}
+
+.pepselect-login__tab:focus-visible {
+	outline: 3px solid rgb(23 161 207 / 25%);
+	outline-offset: 2px;
+}
+
+.pepselect-login__forms {
+	box-sizing: border-box;
+	width: 100%;
+	margin: 0 auto;
+}
+
+.pepselect-login__col + .pepselect-login__col {
+	margin-top: 42px;
+	padding-top: 42px;
+	border-top: 1px solid var(--pep-color-border);
+}
+
+.pepselect-login--enhanced .pepselect-login__col + .pepselect-login__col {
+	margin-top: 0;
+	padding-top: 0;
+	border-top: 0;
 }
 
 .pepselect-login__form .form-row {
-	margin-bottom: 18px;
+	margin: 0 0 18px;
 }
 
 .pepselect-login__form label {
@@ -938,9 +934,10 @@
 .pepselect-login__form input[type="email"],
 .pepselect-login__form input[type="password"] {
 	width: 100%;
+	min-height: 48px;
 	padding: 12px 14px;
 	border: 1px solid var(--pep-color-border);
-	border-radius: var(--pep-radius-small);
+	border-radius: var(--pep-radius-card-inner);
 	background: var(--pep-color-white);
 	color: var(--pep-color-ink);
 	font-family: var(--pep-font-interface);
@@ -954,20 +951,49 @@
 	box-shadow: 0 0 0 3px rgb(23 161 207 / 15%);
 }
 
-.pepselect-login__form .woocommerce-form-login__rememberme {
+.pepselect-login__options {
 	display: flex;
 	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	margin: -2px 0 20px;
+}
+
+.pepselect-login__form .woocommerce-form-login__rememberme {
+	display: inline-flex;
+	align-items: center;
 	gap: 8px;
+	margin: 0;
 	color: var(--pep-color-slate);
 	font-size: 14px;
-	margin-bottom: 16px;
+	font-weight: 500;
+}
+
+.pepselect-login__form .woocommerce-form-login__rememberme input {
+	width: 16px;
+	height: 16px;
+	margin: 0;
+	accent-color: var(--pep-color-cyan);
+}
+
+.pepselect-login__forgot {
+	color: var(--pep-color-cyan);
+	font-size: 14px;
+	font-weight: 600;
+	text-decoration: none;
+}
+
+.pepselect-login__forgot:hover {
+	color: var(--pep-color-navy);
+	text-decoration: underline;
 }
 
 .pepselect-login__form button[type="submit"] {
 	width: 100%;
+	min-height: 48px;
 	padding: 13px 24px;
 	border: 0;
-	border-radius: var(--pep-radius-pill);
+	border-radius: var(--pep-radius-card-inner);
 	background: var(--pep-color-cyan);
 	color: var(--pep-color-white);
 	font-family: var(--pep-font-interface);
@@ -982,46 +1008,28 @@
 	transform: translateY(-1px);
 }
 
-.pepselect-login__form .lost_password {
-	margin-top: 14px;
-	font-size: 14px;
-}
-
-.pepselect-login__form .lost_password a {
-	color: var(--pep-color-cyan);
-	text-decoration: none;
-}
-
-.pepselect-login__form .lost_password a:hover {
-	color: var(--pep-color-navy);
-}
-
 .pepselect-login__hint {
 	color: var(--pep-color-slate);
 	font-size: 14px;
 	line-height: 1.55;
 }
 
-/* Register column separated by a rule on desktop. */
-@media (min-width: 721px) {
-	.pepselect-login__col--register {
-		padding-left: 40px;
-		border-left: 1px solid var(--pep-color-border);
-	}
-}
-
-@media (max-width: 720px) {
-	.pepselect-login__forms,
-	.pepselect-login__forms:not(:has(.pepselect-login__col--register)) {
-		grid-template-columns: 1fr;
-		max-width: 400px;
+@media (max-width: 480px) {
+	.pepselect-login {
+		padding-block: 32px 56px;
 	}
 
-	.pepselect-login__col--register {
-		padding-left: 0;
-		border-left: 0;
-		padding-top: 32px;
-		border-top: 1px solid var(--pep-color-border);
+	.pepselect-login__inner {
+		padding-inline: 16px;
+	}
+
+	.pepselect-login__panel {
+		padding: 26px 20px 28px;
+	}
+
+	.pepselect-login__options {
+		align-items: flex-start;
+		gap: 12px;
 	}
 }
 
@@ -1059,11 +1067,11 @@ body.woocommerce-account:not(.logged-in) h1.entry-title {
 	display: none;
 }
 
-/* Nextend's real Google button (Pro, placed via WooCommerce integration).
- * Constrain and center it above the forms; keep Nextend's own branding. */
+/* Nextend's Google button keeps its official logo and authentication flow. */
 .pepselect-login .nsl-container {
-	max-width: 420px;
-	margin: 0 auto 8px !important;
+	width: 100%;
+	max-width: none;
+	margin: 0 !important;
 }
 
 .pepselect-login .nsl-container .nsl-container-buttons {
@@ -1072,35 +1080,39 @@ body.woocommerce-account:not(.logged-in) h1.entry-title {
 
 .pepselect-login .nsl-container .nsl-button {
 	width: 100% !important;
-	border-radius: var(--pep-radius-pill) !important;
+	min-height: 48px;
+	border: 1px solid var(--pep-color-border) !important;
+	border-radius: var(--pep-radius-card-inner) !important;
+	background: var(--pep-color-white) !important;
+	box-shadow: none !important;
 	overflow: hidden;
 }
 
-/* Nextend renders an "or" divider itself in some layouts; if not, this stays
- * hidden harmlessly. Stretch columns to equal height. */
-.pepselect-login__forms {
-	align-items: stretch;
+.pepselect-login .nsl-button-label-container {
+	color: var(--pep-color-ink) !important;
+	font-family: var(--pep-font-interface) !important;
+	font-size: 14px !important;
+	font-weight: 600 !important;
 }
 
-.pepselect-login__col {
-	display: flex;
-	flex-direction: column;
+.pepselect-login [id^="nsl-custom-login-form-"] .nsl-separator {
+	margin: 24px 0 !important;
+	color: var(--pep-color-neutral) !important;
+	font: 600 12px/1 var(--pep-font-interface) !important;
 }
 
-/* If Nextend wraps the form area, let it grow so both cards match height. */
-.pepselect-login__col .woocommerce-form,
-.pepselect-login__col form {
-	flex: 1 1 auto;
+.pepselect-login [id^="nsl-custom-login-form-"] .nsl-separator::before,
+.pepselect-login [id^="nsl-custom-login-form-"] .nsl-separator::after {
+	margin: 0 12px !important;
+	background: var(--pep-color-border) !important;
 }
 
-/* Shrink WooCommerce's registration privacy notice to the minimum: one small,
- * muted line so the register column is not visually heavier than login. */
 .pepselect-login .woocommerce-privacy-policy-text,
 .pepselect-login .woocommerce-privacy-policy-text p {
-	margin: 6px 0 0;
+	margin: 4px 0 18px;
 	color: var(--pep-color-neutral);
-	font-size: 11px;
-	line-height: 1.4;
+	font-size: 12px;
+	line-height: 1.55;
 }
 
 .pepselect-login .woocommerce-privacy-policy-text a {

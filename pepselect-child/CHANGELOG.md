@@ -1,6 +1,14 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.79** - Rebuild the refund and account-verification email workflows.
+**Release candidate: 0.25.0-beta.80** - Focus the logged-out account experience.
+
+## 0.25.0-beta.80 - 2026-08-30
+
+- Replace the competing login and registration columns with one responsive card and accessible account-access tabs.
+- Remove YITH's optional date-of-birth field from account registration while preserving other WooCommerce registration hooks.
+- Expand the Google sign-in popup within the available desktop display and remove the logged-out page's horizontal overflow.
+
+**Previous release candidate: 0.25.0-beta.79** - Rebuild the refund and account-verification email workflows.
 
 ## 0.25.0-beta.79 - 2026-08-30
 

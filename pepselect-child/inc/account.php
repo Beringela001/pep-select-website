@@ -494,6 +494,29 @@ function pepselect_child_handle_sms_preferences() {
 add_action( 'template_redirect', 'pepselect_child_handle_sms_preferences', 20 );
 
 /**
+ * Render third-party registration fields without YITH's optional birthday row.
+ *
+ * The hook remains intact for WooCommerce privacy copy and other integrations.
+ * Existing birthday metadata is not changed.
+ *
+ * @return void
+ */
+function pepselect_child_render_registration_fields_without_birthday() {
+	ob_start();
+	do_action( 'woocommerce_register_form' );
+	$fields_markup = (string) ob_get_clean();
+
+	$fields_markup = preg_replace(
+		'~<p\b[^>]*>(?:(?!</p>).)*<input\b[^>]*\bname=(["\'])yith_birthday\1[^>]*>(?:(?!</p>).)*</p>~is',
+		'',
+		$fields_markup,
+		1
+	);
+
+	echo $fields_markup; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Preserved output from trusted registration hooks.
+}
+
+/**
  * Enqueue account presentation on WooCommerce account pages only.
  *
  * @return void
@@ -517,6 +540,16 @@ function pepselect_child_enqueue_account_assets() {
 		pepselect_child_asset_version( 'assets/js/account-cashback.js' ),
 		true
 	);
+
+	if ( ! is_user_logged_in() ) {
+		wp_enqueue_script(
+			'pepselect-child-account-login',
+			get_stylesheet_directory_uri() . '/assets/js/account-login.js',
+			array(),
+			pepselect_child_asset_version( 'assets/js/account-login.js' ),
+			true
+		);
+	}
 }
 add_action( 'wp_enqueue_scripts', 'pepselect_child_enqueue_account_assets', 40 );
 
