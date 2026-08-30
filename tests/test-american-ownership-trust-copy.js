@@ -9,6 +9,7 @@ const ownershipLine = '🇺🇸 American-owned and operated.';
 const shipFromLine = 'Pep Select orders ship from New York or Georgia.';
 
 const siteFooter = read('pepselect-child/template-parts/footer/site-footer.php');
+const footerStyles = read('pepselect-child/assets/css/footer.css');
 const faq = read('pepselect-child/inc/faq-content.php');
 const homepageFaq = read('pepselect-child/inc/homepage-preview.php');
 const emailHelpers = read('pepselect-child/inc/emails.php');
@@ -22,14 +23,21 @@ const emailTemplates = [
 ];
 
 assert.ok(siteFooter.includes(ownershipLine));
+assert.match(siteFooter, /class="pepselect-footer__ownership"/);
+assert.match(footerStyles, /\.pepselect-footer__research-copy \.pepselect-footer__ownership[\s\S]*font-size:\s*17px;[\s\S]*font-weight:\s*var\(--pep-font-weight-bold\);/);
 assert.match(faq, /Where do Pep Select orders ship from\?/);
 assert.ok(faq.includes(shipFromLine));
 assert.ok(homepageFaq.includes(shipFromLine));
 assert.match(emailHelpers, /woocommerce_email_footer_text/);
 assert.ok(emailHelpers.includes(ownershipLine));
+assert.match(emailHelpers, /font-size:15px;font-weight:800/);
 
 for (const template of emailTemplates) {
-  assert.match(read(template), /American-owned and operated/, `${template} is missing the ownership line`);
+	assert.match(read(template), /American-owned and operated/, `${template} is missing the ownership line`);
+}
+
+for (const template of emailTemplates.slice( 0, 4 )) {
+	assert.match(read(template), /font-size:15px;\s*font-weight:800/, `${template} is missing the prominent ownership treatment`);
 }
 
 for (const content of [siteFooter, faq, homepageFaq, emailHelpers, ...emailTemplates.map(read)]) {

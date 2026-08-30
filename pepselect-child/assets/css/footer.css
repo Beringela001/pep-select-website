@@ -82,6 +82,15 @@
 	margin-top: 8px;
 }
 
+.pepselect-footer__research-copy .pepselect-footer__ownership {
+	margin-top: 14px;
+	color: var(--pep-color-white);
+	font-size: 17px;
+	font-weight: var(--pep-font-weight-bold);
+	letter-spacing: 0.01em;
+	line-height: 1.45;
+}
+
 .pepselect-footer__support {
 	display: flex;
 	flex-wrap: wrap;

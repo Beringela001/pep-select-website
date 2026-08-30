@@ -1,6 +1,14 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.72** - Add direct American ownership and ship-from facts to customer trust surfaces.
+**Release candidate: 0.25.0-beta.73** - Make American ownership prominent across the site and transactional email footers.
+
+## 0.25.0-beta.73 - 2026-08-30
+
+- Render `🇺🇸 American-owned and operated.` larger, bold, and high-contrast in the coded website footer.
+- Render the same company-level line at 15px, bold, and navy in custom and default WooCommerce customer-email footers.
+- Preserve the exact ownership wording and all existing product-origin, research-use, shipping, order, and email-routing boundaries.
+
+**Previous release candidate: 0.25.0-beta.72** - Add direct American ownership and ship-from facts to customer trust surfaces.
 
 ## 0.25.0-beta.72 - 2026-08-30
 

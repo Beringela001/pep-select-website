@@ -64,6 +64,18 @@ function pepselect_child_company_ownership_line() {
 }
 
 /**
+ * Prominent, email-client-safe ownership treatment for WooCommerce footers.
+ *
+ * @return string
+ */
+function pepselect_child_company_ownership_email_html() {
+	return sprintf(
+		'<strong style="color:#001D3A;font-size:15px;font-weight:800;line-height:1.45;">%s</strong>',
+		esc_html( pepselect_child_company_ownership_line() )
+	);
+}
+
+/**
  * Add the ownership line to WooCommerce emails that use its default footer.
  *
  * Custom Pep Select templates include the same line directly so it remains
@@ -77,7 +89,7 @@ function pepselect_child_email_footer_text( $text ) {
 		return $text;
 	}
 
-	return pepselect_child_company_ownership_line() . "\n" . $text;
+	return pepselect_child_company_ownership_email_html() . '<br><br>' . $text;
 }
 add_filter( 'woocommerce_email_footer_text', 'pepselect_child_email_footer_text', 20 );
 
