@@ -1,6 +1,12 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.65** - Initialize the contact-form timing guard after cached markup loads.
+**Release candidate: 0.25.0-beta.66** - Make contact timing initialization safely verifiable.
+
+## 0.25.0-beta.66 - 2026-08-29
+
+- Add a non-sensitive data marker after the browser initializes the minimum-fill timestamp, allowing staging verification without exposing the timestamp value.
+
+**Previous release candidate: 0.25.0-beta.65** - Initialize the contact-form timing guard after cached markup loads.
 
 ## 0.25.0-beta.65 - 2026-08-29
 

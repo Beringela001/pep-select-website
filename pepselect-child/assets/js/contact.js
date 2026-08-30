@@ -10,6 +10,7 @@
 
 		if ( startedAt ) {
 			startedAt.value = String( Math.floor( Date.now() / 1000 ) );
+			startedAt.dataset.pepInitialized = 'true';
 		}
 	};
 

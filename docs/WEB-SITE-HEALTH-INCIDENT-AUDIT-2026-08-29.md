@@ -18,7 +18,7 @@ Several real maintenance and abuse issues were found. The highest-confidence che
 | Easyship product data | Easyship lists 15 products, a 1 lb fallback weight, and no fallback dimensions. | Products missing dimensions may receive incomplete or less accurate rate selection. | Audit dimensions for all shippable products before removing fallback behavior. |
 | Cart-abandonment email | The message came from Cart Abandonment Recovery for WooCommerce, not FluentCRM. | Operational confusion, not a broken automation. | Document ownership; do not expect these recipients in FluentCRM list 5. |
 | FluentCRM list 5 | List 5 is the explicit Pep Select Offers / exit-offer destination and currently has no subscribers. | No evidence that cart recovery should add contacts there. | Leave logic unchanged unless marketing explicitly chooses a consent-compliant shared audience. |
-| Contact email | The message was submitted through the coded contact form. The form had only a nonce and honeypot. Historical messages show repeated unsolicited SEO outreach. | Inbox abuse and mail reputation/load risk. | Theme 0.25.0-beta.65 adds timing, hashed-IP throttling, and duplicate suppression. |
+| Contact email | The message was submitted through the coded contact form. The form had only a nonce and honeypot. Historical messages show repeated unsolicited SEO outreach. | Inbox abuse and mail reputation/load risk. | Theme 0.25.0-beta.66 adds timing, hashed-IP throttling, and duplicate suppression. |
 | HPOS and Legacy REST API | WooCommerce warns that HPOS and WooCommerce Legacy REST API 1.0.5 are active together. | Unsupported storage/API combination. | Leave Legacy REST API active at the owner's direction; do not infer that Easyship needs it. |
 | Control App dependency | Control App source and operations documentation use `/wp-json/wc/v3/*`, including HPOS-safe by-ID order reads. No legacy `/wc-api/*` dependency was found. | Control App does not justify keeping Legacy REST API active. Unknown external consumers must still be checked. | Test order/product/webhook sync after staging deactivation. |
 | Background work | Kinsta reported 388 PHP worker-limit events with two workers. | Requests can queue during traffic or cron bursts even without 500 responses. | Recheck after Easyship logging fix and scheduled-action cleanup; profile slow endpoints before increasing plan capacity. |
@@ -29,7 +29,7 @@ Several real maintenance and abuse issues were found. The highest-confidence che
 
 ## Implemented locally
 
-Theme 0.25.0-beta.65 contains:
+Theme 0.25.0-beta.66 contains:
 
 - three-second minimum form-fill time;
 - five valid submissions per hashed connection identity per hour;
@@ -44,7 +44,8 @@ Theme 0.25.0-beta.65 contains:
 - Updated Easyship 0.9.15 to 0.9.16. The existing connection token remained populated.
 - Changed cart quantity from six to one without a fatal error. For the saved Washington address, checkout returned USPS Priority Mail $12.97, FedEx Standard Overnight $55.55, UPS 2nd Day Air $15.17, and FedEx Ground $14.91. The selected-rate total was $98.16.
 - Found no new Easyship log or fatal-error row after the rate test. Historical Easyship logs remain through August 28.
-- Replaced staging theme 0.25.0-beta.63 with the contact-protection build. A final browser check exposed that the head-loaded timing script ran before the form existed; 0.25.0-beta.65 corrects this and still requires staging replacement and browser verification.
+- Replaced staging theme 0.25.0-beta.63 with 0.25.0-beta.66. A final browser check exposed that the original head-loaded timing script ran before the form existed; beta.66 waits for the DOM and exposes a non-sensitive initialization marker. Staging verification confirmed the hidden field, current script, and `data-pep-initialized="true"` marker without exposing its timestamp.
+- Verified package `dist/pepselect-child-0.25.0-beta.66.zip` at 2,691,092 bytes with SHA-256 `2633E8C41FC63C31C58134CC65C2DDFEB40591BCCB0E36BD1A381204FD597F9F`.
 - Verified the home, shop, cart, checkout, and contact routes render without a fatal/critical-error page. An unrelated existing Elementor `elementorFrontendConfig is not defined` console error remains on the contact page.
 - Left WooCommerce Legacy REST API active and unchanged at the owner's direction.
 - Did not submit the contact form, place an order, or modify Live.
@@ -58,7 +59,7 @@ Theme 0.25.0-beta.65 contains:
 5. Confirm the Easyship warning volume stops and no checkout fatal/error appears.
 6. Leave WooCommerce Legacy REST API active pending a separate owner decision.
 7. Test Control App order reads, product reads/writes, status write-back, and webhook inventory.
-8. Deploy and test theme 0.25.0-beta.65 contact protection.
+8. Deploy and test theme 0.25.0-beta.66 contact protection.
 9. Identify the vulnerable package and stage plugin updates in compatible dependency groups.
 10. Review pending Scheduled Actions and the two failed FluentCRM sends using their current provider responses.
 11. Review Kinsta worker saturation after the noisy Easyship code and due jobs are corrected.
