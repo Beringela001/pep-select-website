@@ -6,7 +6,7 @@ Date: August 29, 2026
 
 The storefront is not broadly broken. Product, cart, and checkout requests completed successfully during the audit, no current HTTP 500 pattern was found, and Easyship remains connected to WooCommerce. The absence of orders today is therefore not enough to identify an outage.
 
-Several real maintenance and abuse issues were found. The highest-confidence checkout issue is an outdated Easyship plugin that is known to misidentify WooCommerce 10.x, generate excessive errors, and cause checkout issues on some stores.
+Several real maintenance and abuse issues were found. The highest-confidence checkout issue was an outdated Easyship plugin known to misidentify WooCommerce 10.x, generate excessive errors, and cause checkout issues on some stores. Easyship 0.9.16 is now active on staging and Live.
 
 ## Confirmed findings
 
@@ -14,7 +14,7 @@ Several real maintenance and abuse issues were found. The highest-confidence che
 | --- | --- | --- | --- |
 | Storefront and checkout | Public storefront and checkout returned HTTP 200 with no current browser-console or HTTP 500 failure pattern. | No broad outage found. A transaction can still fail for a customer-specific address, rate, or payment response. | Run a staged checkout matrix after updates, then one controlled live smoke test after deployment approval. |
 | Easyship connection | Easyship shows `pepselect.com` connected and last synced August 29 at 2:08 PM. WordPress contains the matching access token. Order auto-sync is every 6 hours. | Credentials are not missing. | Do not rotate or reconnect the token. |
-| Easyship plugin | Live runs Easyship 0.9.15. Staging was updated to 0.9.16. The official 0.9.16 changelog fixes WooCommerce 10.x being treated as old, which caused excessive logging and checkout issues on some sites. | High-confidence source of the observed `api_key`, `api_secret`, `es_taxes_duties`, and deprecated product-property noise. | Keep observing staging before requesting a live update. |
+| Easyship plugin | Staging and Live now run Easyship 0.9.16. The official 0.9.16 changelog fixes WooCommerce 10.x being treated as old, which caused excessive logging and checkout issues on some sites. | The identified compatibility defect is remediated; continued observation is still required. | Monitor checkout and WooCommerce logs for recurrence. |
 | Easyship product data | Easyship lists 15 products, a 1 lb fallback weight, and no fallback dimensions. | Products missing dimensions may receive incomplete or less accurate rate selection. | Audit dimensions for all shippable products before removing fallback behavior. |
 | Cart-abandonment email | The message came from Cart Abandonment Recovery for WooCommerce, not FluentCRM. | Operational confusion, not a broken automation. | Document ownership; do not expect these recipients in FluentCRM list 5. |
 | FluentCRM list 5 | List 5 is the explicit Pep Select Offers / exit-offer destination and currently has no subscribers. | No evidence that cart recovery should add contacts there. | Leave logic unchanged unless marketing explicitly chooses a consent-compliant shared audience. |
@@ -48,7 +48,18 @@ Theme 0.25.0-beta.66 contains:
 - Verified package `dist/pepselect-child-0.25.0-beta.66.zip` at 2,691,092 bytes with SHA-256 `2633E8C41FC63C31C58134CC65C2DDFEB40591BCCB0E36BD1A381204FD597F9F`.
 - Verified the home, shop, cart, checkout, and contact routes render without a fatal/critical-error page. An unrelated existing Elementor `elementorFrontendConfig is not defined` console error remains on the contact page.
 - Left WooCommerce Legacy REST API active and unchanged at the owner's direction.
-- Did not submit the contact form, place an order, or modify Live.
+- During staging validation, did not submit the contact form, place an order, or modify Live.
+
+## Live deployment record
+
+- Confirmed the MyKinsta environment as Live. Because all five manual-backup slots were occupied, deleted only the verified oldest bottom entry: `Before compound discounts 1.7.0 live - 2026-08-28`, created August 28 at 10:51 PM.
+- Created and verified manual backup `Before contact protection beta66 live deployment - 2026-08-29`, created August 29 at 8:30 PM.
+- Updated active Easyship 0.9.15 to 0.9.16 and verified the plugin remained active.
+- Replaced active Pep Select theme 0.25.0-beta.63 with 0.25.0-beta.66 using the staged package and cleared all Kinsta caches.
+- Verified Live home, shop, cart, checkout, and contact routes without a fatal/critical-error page. The populated cart qualified for Free shipping and checkout rendered its shipping choice without submitting an order.
+- Verified the Live contact page loads the current contact script and exposes `data-pep-initialized="true"` on the protected hidden field. No contact message was submitted.
+- Found no August 29 fatal-error log. The latest listed Easyship log remained August 26 after deployment checks.
+- Left WooCommerce Legacy REST API active and unchanged at the owner's direction.
 
 ## Staging remediation sequence
 
@@ -78,7 +89,7 @@ Theme 0.25.0-beta.66 contains:
 - Easyship: restore the staging backup or reinstall 0.9.15 only if 0.9.16 fails the acceptance matrix.
 - Legacy REST API: no rollback action is needed because it was not changed.
 - Contact protection: redeploy theme 0.25.0-beta.63 if legitimate submissions fail, then diagnose the exact guard involved.
-- Live changes: require a fresh backup and explicit deployment authorization. No live configuration or plugin changes were made during this audit.
+- Live rollback: restore the verified August 29, 8:30 PM manual backup if the Easyship or theme release causes a production regression.
 
 ## Evidence boundaries
 
