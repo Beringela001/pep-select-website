@@ -3,7 +3,7 @@
  * Plugin Name: PS Access Gate
  * Plugin URI:  https://pepselect.com
  * Description: Compliance-grade access verification gate for research-use-only sites: researcher type, checkbox confirmations, numbered attestation, versioned consent, FDA/503A/503B legal block, and timestamped consent recording with CSV export. Cache-safe, fully configurable.
- * Version:     2.1.3
+ * Version:     2.2.2
  * Author:      PepSelect
  * License:     GPL-2.0+
  * Text Domain: ps-access-gate
@@ -60,10 +60,17 @@ class PS_Access_Gate {
 		return array(
 			'enabled'          => 1,
 			'logo_url'         => '',
+			'logo_use_bundled' => 1,
 			'kicker'           => 'Research Gate',
-			'heading'          => 'Researcher Verification',
+			'heading'          => 'Welcome',
 			'heading_accent'   => '',
 			'intro'            => 'Research materials are supplied to qualified researchers for in vitro laboratory use only.',
+
+			// Simple two-button layout (default). 'advanced' restores the full researcher-type/checkbox/attestation card.
+			'layout_mode'      => 'simple',
+			'confirm_sentence' => 'All products are sold for Research Use Only. To continue you confirm that you are a qualified research professional aged 21 or older.',
+			'agree_label'      => 'I Agree',
+			'under21_label'    => 'Under 21',
 
 			// Researcher type dropdown
 			'show_type'        => 1,
@@ -99,6 +106,7 @@ class PS_Access_Gate {
 			'record_consent'   => 1,
 
 			'bg_color'         => '#001D3A', // --pep-color-dark-navy
+			'backdrop_opacity' => 100,       // % opacity of the backdrop behind the card (0-100)
 			'accent_color'     => '#002A53', // --pep-color-navy (primary CTA)
 			'link_color'       => '#17A1CF', // --pep-color-cyan
 			'card_bg'          => '#FFFFFF',
@@ -296,7 +304,7 @@ JS;
 		$d   = self::defaults();
 		$out = array();
 
-		foreach ( array( 'enabled', 'show_remember', 'bubbles', 'hide_logged_in', 'show_type', 'attest_open', 'record_consent' ) as $flag ) {
+		foreach ( array( 'enabled', 'show_remember', 'bubbles', 'hide_logged_in', 'show_type', 'attest_open', 'record_consent', 'logo_use_bundled' ) as $flag ) {
 			$out[ $flag ] = empty( $in[ $flag ] ) ? 0 : 1;
 		}
 
@@ -305,22 +313,28 @@ JS;
 
 		foreach ( array( 'kicker', 'heading', 'heading_accent', 'type_label', 'attest_label', 'form_version',
 			'button_label', 'remember_label', 'footer_note', 'address_line', 'copyright_line',
-			'exit_text', 'exit_link_label' ) as $t ) {
+			'exit_text', 'exit_link_label', 'agree_label', 'under21_label' ) as $t ) {
 			$out[ $t ] = sanitize_text_field( $in[ $t ] ?? $d[ $t ] );
 		}
 
 		$out['cookie_name'] = preg_replace( '/[^a-zA-Z0-9_]/', '', $in['cookie_name'] ?? $d['cookie_name'] );
 		if ( '' === $out['cookie_name'] ) $out['cookie_name'] = $d['cookie_name'];
 
+		$mode = sanitize_text_field( $in['layout_mode'] ?? '' );
+		$out['layout_mode'] = in_array( $mode, array( 'simple', 'advanced' ), true ) ? $mode : $d['layout_mode'];
+
 		$out['remember_days'] = max( 1, min( 365, intval( $in['remember_days'] ?? $d['remember_days'] ) ) );
 
 		$allowed = array( 'b' => array(), 'strong' => array(), 'em' => array(), 'i' => array(), 'br' => array(),
 			'a' => array( 'href' => array(), 'target' => array(), 'rel' => array() ) );
-		foreach ( array( 'intro', 'checkboxes', 'attest_items', 'legal_box' ) as $rich ) {
+		foreach ( array( 'intro', 'confirm_sentence', 'checkboxes', 'attest_items', 'legal_box' ) as $rich ) {
 			$out[ $rich ] = wp_kses( $in[ $rich ] ?? $d[ $rich ], $allowed );
 		}
 
 		$out['type_options'] = sanitize_textarea_field( $in['type_options'] ?? $d['type_options'] );
+
+		$bo = isset( $in['backdrop_opacity'] ) ? (int) $in['backdrop_opacity'] : $d['backdrop_opacity'];
+		$out['backdrop_opacity'] = max( 0, min( 100, $bo ) );
 
 		foreach ( array( 'bg_color', 'accent_color', 'link_color', 'card_bg', 'text_color' ) as $c ) {
 			$v = sanitize_hex_color( $in[ $c ] ?? '' );
@@ -378,6 +392,31 @@ JS;
 					</td></tr>
 					<tr><th scope="row">Intro text</th><td>
 						<textarea class="large-text" rows="2" name="<?php echo esc_attr( $k ); ?>[intro]"><?php echo esc_textarea( $s['intro'] ); ?></textarea>
+						<p class="description">Shown in Advanced layout only.</p>
+					</td></tr>
+
+					<tr><th colspan="2"><h2 style="margin-bottom:0;">Layout</h2></th></tr>
+					<tr><th scope="row">Layout mode</th><td>
+						<label><input type="radio" name="<?php echo esc_attr( $k ); ?>[layout_mode]" value="simple" <?php checked( $s['layout_mode'], 'simple' ); ?>> <b>Simple</b> — heading, one sentence, and two buttons (I Agree / Under 21)</label><br>
+						<label><input type="radio" name="<?php echo esc_attr( $k ); ?>[layout_mode]" value="advanced" <?php checked( $s['layout_mode'], 'advanced' ); ?>> <b>Advanced</b> — full researcher-type dropdown, checkboxes, and collapsible attestation</label>
+						<p class="description">Simple mode uses the confirmation sentence and I Agree / Under 21 buttons below. The researcher-type, checkbox, and attestation settings are preserved and used only in Advanced mode.</p>
+					</td></tr>
+					<tr><th scope="row">Confirmation sentence (Simple)</th><td>
+						<textarea class="large-text" rows="2" name="<?php echo esc_attr( $k ); ?>[confirm_sentence]"><?php echo esc_textarea( $s['confirm_sentence'] ); ?></textarea>
+						<p class="description">One short sentence under the heading. Basic HTML allowed: &lt;b&gt;, &lt;a&gt;.</p>
+					</td></tr>
+					<tr><th scope="row">Button labels (Simple)</th><td>
+						Agree: <input type="text" name="<?php echo esc_attr( $k ); ?>[agree_label]" value="<?php echo esc_attr( $s['agree_label'] ); ?>">
+						&nbsp; Exit: <input type="text" name="<?php echo esc_attr( $k ); ?>[under21_label]" value="<?php echo esc_attr( $s['under21_label'] ); ?>">
+						<p class="description">The exit button sends visitors to the Exit URL configured below.</p>
+					</td></tr>
+					<tr><th scope="row">Gate logo</th><td>
+						<label><input type="checkbox" name="<?php echo esc_attr( $k ); ?>[logo_use_bundled]" value="1" <?php checked( $s['logo_use_bundled'], 1 ); ?>> Use the current bundled PepSelect logo in the age gate (recommended)</label>
+						<p class="description">When on, the gate always shows the logo shipped with this plugin. Turn off to use the custom logo selected under General above.</p>
+					</td></tr>
+					<tr><th scope="row">Backdrop opacity</th><td>
+						<input type="number" min="0" max="100" step="1" class="small-text" name="<?php echo esc_attr( $k ); ?>[backdrop_opacity]" value="<?php echo esc_attr( $s['backdrop_opacity'] ); ?>"> %
+						<p class="description">Opacity of the dark area behind the card. 100 = solid (default); lower values let the page show through. Uses the Background color set under Colors below.</p>
 					</td></tr>
 
 					<tr><th colspan="2"><h2 style="margin-bottom:0;">Researcher Type</h2></th></tr>
@@ -539,6 +578,13 @@ JS;
 		$legal_paras = array_values( array_filter( array_map( 'trim', preg_split( '/\n\s*\n/', $s['legal_box'] ) ) ) );
 		$logo_id     = ! empty( $s['logo_url'] ) ? attachment_url_to_postid( $s['logo_url'] ) : 0;
 
+		// Age-gate logo: use the plugin-bundled brand mark so the current logo always shows,
+		// regardless of any older media-library logo saved in settings.
+		if ( ! empty( $s['logo_use_bundled'] ) ) {
+			$s['logo_url'] = plugins_url( 'assets/pep-select-logo.png', __FILE__ );
+			$logo_id       = 0;
+		}
+
 		$cookie      = $s['cookie_name'];
 		$days        = (int) $s['remember_days'];
 		$cookie_val  = preg_replace( '/[^a-zA-Z0-9._\-]/', '', $s['form_version'] );
@@ -563,9 +609,23 @@ JS;
 		}
 
 		$show_type = ! empty( $s['show_type'] ) && ! empty( $types );
+		$is_simple = ( 'simple' === $s['layout_mode'] );
+
+		// Backdrop color with adjustable opacity (applied to the container background only,
+		// so the card itself stays fully opaque).
+		$bg_hex = ltrim( $s['bg_color'], '#' );
+		if ( 3 === strlen( $bg_hex ) ) { $bg_hex = $bg_hex[0] . $bg_hex[0] . $bg_hex[1] . $bg_hex[1] . $bg_hex[2] . $bg_hex[2]; }
+		if ( ! ctype_xdigit( $bg_hex ) || 6 !== strlen( $bg_hex ) ) { $bg_hex = '001D3A'; }
+		$bg_r = hexdec( substr( $bg_hex, 0, 2 ) );
+		$bg_g = hexdec( substr( $bg_hex, 2, 2 ) );
+		$bg_b = hexdec( substr( $bg_hex, 4, 2 ) );
+		$backdrop_alpha = max( 0, min( 100, (int) $s['backdrop_opacity'] ) ) / 100;
+		$backdrop_alpha = rtrim( rtrim( number_format( $backdrop_alpha, 2, '.', '' ), '0' ), '.' );
+		if ( '' === $backdrop_alpha ) { $backdrop_alpha = '0'; }
+		$backdrop_bg = sprintf( 'rgba(%d,%d,%d,%s)', $bg_r, $bg_g, $bg_b, $backdrop_alpha );
 		?>
 		<style>
-		#psag-gate{position:fixed;inset:0;z-index:9999999;display:flex;align-items:flex-start;justify-content:center;padding:28px 18px;background:<?php echo esc_attr( $s['bg_color'] ); ?>;overflow-y:auto;font-family:<?php echo esc_attr( $body_stack ); ?>;}
+		#psag-gate{position:fixed;inset:0;z-index:9999999;display:flex;align-items:flex-start;justify-content:center;padding:28px 18px;background:<?php echo esc_attr( $backdrop_bg ); ?>;overflow-y:auto;font-family:<?php echo esc_attr( $body_stack ); ?>;}
 		html.psag-open,body.psag-open{overflow:hidden!important;}
 		#psag-gate .psag-bubbles{position:fixed;inset:0;overflow:hidden;z-index:0;pointer-events:none;}
 		#psag-gate .psag-bubble{position:absolute;bottom:-120px;border-radius:50%;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.14);animation:psagRise linear infinite;}
@@ -618,12 +678,62 @@ JS;
 		.psag-legal a{color:<?php echo esc_attr( $s['link_color'] ); ?>;font-weight:600;}
 		.psag-address{margin:16px 0 0;font-size:12px;color:#5E6F80;}
 		.psag-copy{margin:4px 0 0;font-size:12px;color:#5E6F80;}
-		@media(max-width:480px){.psag-card{padding:28px 20px 22px;border-radius:20px;}.psag-title{font-size:22px;}}
+		/* --- Simple two-button layout --- */
+		#psag-gate.psag-simple .psag-card{max-width:620px;padding:40px 40px 30px;}
+		.psag-confirm{margin:0 0 4px;font-size:15px;line-height:1.65;color:#13283D;}
+		.psag-actions{display:flex;align-items:stretch;gap:16px;margin:24px 0 0;}
+		.psag-actions .psag-sep{flex:0 0 1px;background:#D7E1E9;align-self:stretch;}
+		#psag-gate .psag-btn.psag-btn--agree{width:auto;flex:1;margin:0;min-height:52px;padding:16px 18px;border:none;border-radius:12px;background:#002A53;color:#fff;font-family:inherit;font-weight:700;font-size:13.5px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:transform 180ms ease,background 180ms ease,box-shadow 180ms ease;}
+		#psag-gate .psag-btn.psag-btn--agree:hover{transform:translateY(-2px);background:#001D3A;box-shadow:0 12px 26px rgb(0 42 83 / 16%);}
+		#psag-gate .psag-btn2{flex:1;display:flex;align-items:center;justify-content:center;min-height:52px;padding:16px 18px;border:1px solid #D7E1E9;border-radius:12px;background:#fff;color:#002A53;font-family:inherit;font-weight:700;font-size:13.5px;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;cursor:pointer;transition:border-color 180ms ease,background 180ms ease;}
+		#psag-gate .psag-btn2:hover{border-color:#002A53;background:#F3F8FC;}
+		#psag-gate.psag-simple .psag-remember{margin:16px 0 0;}
+		@media(max-width:480px){.psag-card{padding:28px 20px 22px;border-radius:20px;}.psag-title{font-size:22px;}#psag-gate.psag-simple .psag-card{padding:26px 18px 20px;}#psag-gate.psag-simple .psag-legal{max-height:140px;}}
+		@media(max-width:360px){.psag-actions{flex-wrap:wrap;gap:12px;}.psag-actions .psag-sep{display:none;}#psag-gate .psag-btn.psag-btn--agree,#psag-gate .psag-btn2{flex:1 1 100%;}}
 		</style>
 
-		<div id="psag-gate" role="dialog" aria-modal="true" aria-labelledby="psag-title" aria-describedby="psag-intro">
+		<div id="psag-gate" class="<?php echo $is_simple ? 'psag-simple' : 'psag-advanced'; ?>" role="dialog" aria-modal="true" aria-labelledby="psag-title" aria-describedby="psag-intro">
 			<?php if ( ! empty( $s['bubbles'] ) ) : ?><div class="psag-bubbles" id="psagBubbles"></div><?php endif; ?>
 			<div class="psag-card">
+				<?php if ( $is_simple ) : ?>
+				<?php if ( ! empty( $s['logo_url'] ) ) : ?>
+				<div class="psag-logo">
+					<?php if ( $logo_id ) : ?>
+						<?php echo wp_get_attachment_image( $logo_id, 'medium', false, array( 'alt' => get_bloginfo( 'name' ), 'loading' => 'eager', 'fetchpriority' => 'high', 'sizes' => '(max-width: 480px) 160px, 220px' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Core returns escaped attachment markup. ?>
+					<?php else : ?>
+						<img src="<?php echo esc_url( $s['logo_url'] ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>" loading="eager" fetchpriority="high">
+					<?php endif; ?>
+				</div>
+				<?php endif; ?>
+
+				<h2 class="psag-title" id="psag-title"><?php echo $heading; // escaped above ?></h2>
+				<p class="psag-confirm" id="psag-intro"><?php echo wp_kses_post( $s['confirm_sentence'] ); ?></p>
+
+				<div class="psag-actions">
+					<button type="button" class="psag-btn psag-btn--agree ready" id="psagEnter"><?php echo esc_html( $s['agree_label'] ); ?></button>
+					<span class="psag-sep" aria-hidden="true"></span>
+					<a class="psag-btn2" id="psagUnder21" href="<?php echo esc_url( $s['exit_url'] ); ?>"><?php echo esc_html( $s['under21_label'] ); ?></a>
+				</div>
+
+				<?php if ( ! empty( $s['show_remember'] ) ) : ?>
+				<label class="psag-remember"><input type="checkbox" id="psagRemember" checked> <?php echo esc_html( $s['remember_label'] ); ?></label>
+				<?php endif; ?>
+
+				<?php if ( ! empty( $legal_paras ) ) : ?>
+				<div class="psag-legal">
+					<?php foreach ( $legal_paras as $p ) : ?>
+					<p><?php echo wp_kses_post( $p ); ?></p>
+					<?php endforeach; ?>
+				</div>
+				<?php endif; ?>
+
+				<?php if ( '' !== trim( $s['address_line'] ) ) : ?>
+				<p class="psag-address"><?php echo esc_html( $s['address_line'] ); ?></p>
+				<?php endif; ?>
+				<?php if ( '' !== trim( $s['copyright_line'] ) ) : ?>
+				<p class="psag-copy"><?php echo esc_html( $s['copyright_line'] ); ?></p>
+				<?php endif; ?>
+				<?php else : ?>
 				<?php if ( ! empty( $s['logo_url'] ) ) : ?>
 				<div class="psag-logo">
 					<?php if ( $logo_id ) : ?>
@@ -705,6 +815,7 @@ JS;
 				<?php if ( '' !== trim( $s['copyright_line'] ) ) : ?>
 				<p class="psag-copy"><?php echo esc_html( $s['copyright_line'] ); ?></p>
 				<?php endif; ?>
+				<?php endif; /* $is_simple */ ?>
 			</div>
 		</div>
 
@@ -751,7 +862,9 @@ JS;
 				if (main) {
 					var priorTabindex = main.getAttribute('tabindex');
 					main.setAttribute('tabindex', '-1');
-					main.focus();
+					// Preserve the accessibility focus handoff without moving the viewport
+					// below the global header on remembered-cookie and acceptance paths.
+					main.focus({ preventScroll: true });
 					if (priorTabindex === null) main.removeAttribute('tabindex');
 					else main.setAttribute('tabindex', priorTabindex);
 				}
@@ -836,6 +949,7 @@ JS;
 			}
 			Array.prototype.forEach.call(cbs, function(cb){ cb.addEventListener('change', sync); });
 			if (typeSel) typeSel.addEventListener('change', sync);
+			sync();
 
 			enter.addEventListener('click', function(){
 				if (enter.disabled) return;

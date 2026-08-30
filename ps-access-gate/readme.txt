@@ -1,8 +1,42 @@
 === PS Access Gate ===
-Version: 2.1.3
+Version: 2.2.2
 License: GPL-2.0+
 
 Compliance-grade access verification gate for research-use-only sites.
+
+== What's new in 2.2.2 ==
+* Keep the page at its true top when the gate closes or a remembered consent
+  cookie is detected. Focus still moves to the main content for accessibility,
+  but no longer scrolls the global header out of view.
+
+== What's new in 2.2.1 ==
+* New "Backdrop opacity" setting (0-100%): controls the opacity of the dark
+  area behind the card, so the page can show through. Applied to the container
+  background only (rendered as rgba from the Background color) — the card
+  itself stays fully opaque. Defaults to 100% (unchanged solid look).
+
+== What's new in 2.2.0 ==
+* New default "Simple" two-button layout: "Welcome" heading, one editable
+  confirmation sentence, and side-by-side "I Agree" (solid navy) / "Under 21"
+  (outline, exits to the configured Exit URL) buttons, a checked-by-default
+  "Remember me" control, the scrollable legal/FDA box, and address/copyright.
+* "I Agree" is immediately actionable — no disabled state, no required
+  dropdown or checklist in Simple mode.
+* Layout mode toggle in settings: switch to "Advanced" to restore the full
+  researcher-type dropdown, checkbox list, and collapsible attestation. Those
+  settings and code paths are fully preserved and used only in Advanced mode.
+* Bundled brand logo: the gate now ships with the current PepSelect logo and
+  shows it by default (settings toggle "Use the current bundled logo"), so the
+  gate mark stays correct regardless of any older media-library logo.
+* Engine unchanged: version-stamped cookie on I Agree (session vs remember
+  days), consent recording via admin-ajax keepalive, form-version re-gating,
+  automatic cache purge on save, logged-in-user skip, dialog/focus-trap/inert
+  accessibility, and crawler-safe overlay (content stays in the DOM; the gate
+  never redirects or cloaks). Simple mode records consent with an empty
+  researcher type.
+* Responsive: ~620px desktop card; fits 390x844 mobile without cutoff; legal
+  box scrolls internally (~140px on mobile); buttons stack at <=360px with
+  >=44px tap targets.
 
 == What's new in 2.1.3 ==
 * Reissue the verified accessibility build under a new version so production
