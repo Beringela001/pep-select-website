@@ -35,7 +35,7 @@ $pep_logo_url = 'https://pepselect.com/wp-content/uploads/2026/06/Logo_Pepselect
 		.pep-email-order-content h2{color:<?php echo esc_attr( $pep['navy'] ); ?>!important;font-family:<?php echo esc_attr( $pep['font'] ); ?>!important;font-size:20px!important;line-height:1.35!important;margin:24px 0 12px!important}
 		.pep-email-order-content p,.pep-email-order-content address{color:<?php echo esc_attr( $pep['slate'] ); ?>;font-family:<?php echo esc_attr( $pep['font'] ); ?>;font-size:14px;line-height:1.55}
 		@media only screen and (max-width:520px){
-			.pep-email-outer-pad{padding:8px!important}.pep-email-card{border-radius:18px!important}
+			.pep-email-outer-pad{box-sizing:border-box!important;padding:8px!important}.pep-email-card{border-radius:18px!important}
 			.pep-email-header{padding:28px 22px 22px!important}.pep-email-main{padding:0 22px 28px!important}.pep-email-footer{padding:0!important}
 			.pep-email-heading{font-size:27px!important;letter-spacing:-.6px!important;line-height:1.18!important}
 			.pep-email-panel{padding:18px!important}.pep-email-button-table{width:100%!important}.pep-email-button{box-sizing:border-box!important;display:block!important;width:100%!important}

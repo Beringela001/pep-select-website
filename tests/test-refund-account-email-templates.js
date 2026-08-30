@@ -15,6 +15,7 @@ const plainVerify = read('pepselect-child/woocommerce/emails/plain/customer-veri
 
 assert.match(shared, /max-width:680px/);
 assert.match(shared, /@media only screen and \(max-width:520px\)/);
+assert.match(shared, /pep-email-outer-pad\{box-sizing:border-box!important/);
 assert.match(shared, /pepselect_child_email_company_footer_row_html/);
 assert.match(shared, /pep-email-order-content/);
 assert.match(shared, /th:nth-child\(3\).*white-space:nowrap/);
