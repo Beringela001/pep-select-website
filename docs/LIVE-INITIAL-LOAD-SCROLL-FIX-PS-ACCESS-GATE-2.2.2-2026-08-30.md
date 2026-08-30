@@ -2,7 +2,7 @@
 
 Date: 2026-08-30  
 Environments: staging and live  
-Status: complete
+Status: superseded by the beta75 homepage reload correction
 
 ## Finding
 
@@ -28,7 +28,11 @@ PS Access Gate 2.2.2 retains the accessibility focus handoff but calls `main.foc
 
 The Live Kinsta manual-backup list was verified at 5/5 before deployment. This patch changes no database records or settings, and the exact prior 2.2.1 plugin package remains available for immediate rollback.
 
-## Verification
+## Verification caveat
+
+The staging and Live checks below used cache-busting query strings. A later exact canonical reload proved that Chrome could separately restore the prior `181px` page offset after the corrected access-gate focus handoff. PS Access Gate 2.2.2 correctly removed the focus-induced jump, but it did not cover a pre-existing scroll position restored by the browser on reload. The follow-up theme release records and corrects that remaining case.
+
+## Original verification
 
 - Access-gate accessibility contract test passed.
 - PHP syntax check passed.

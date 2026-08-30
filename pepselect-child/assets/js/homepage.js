@@ -1,6 +1,34 @@
 ( function () {
 	'use strict';
 
+	/**
+	 * Start direct homepage visits and reloads at the global header.
+	 *
+	 * Chrome restores the previous scroll offset on reload after the page's
+	 * scripts begin running. Reset again on pageshow so an old header-height
+	 * offset cannot strand the visitor below navigation. Preserve explicit
+	 * fragment links and Back/Forward history restoration.
+	 */
+	const navigationEntry = window.performance && 'function' === typeof window.performance.getEntriesByType
+		? window.performance.getEntriesByType( 'navigation' )[ 0 ]
+		: null;
+	const isHistoryTraversal = navigationEntry && 'back_forward' === navigationEntry.type;
+	const shouldResetInitialScroll = ! window.location.hash && ! isHistoryTraversal;
+
+	if ( shouldResetInitialScroll ) {
+		const resetInitialScroll = () => window.scrollTo( 0, 0 );
+
+		resetInitialScroll();
+		window.addEventListener( 'pageshow', ( event ) => {
+			if ( event.persisted ) {
+				return;
+			}
+
+			resetInitialScroll();
+			window.requestAnimationFrame( () => window.requestAnimationFrame( resetInitialScroll ) );
+		}, { once: true } );
+	}
+
 	const accordion = document.querySelector( '[data-pepselect-faq]' );
 
 	if ( ! accordion ) {

@@ -1,6 +1,21 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.73** - Make American ownership prominent across the site and transactional email footers.
+**Release candidate: 0.25.0-beta.75** - Keep normal homepage loads anchored at the global header without overriding history restoration.
+
+## 0.25.0-beta.75 - 2026-08-30
+
+- Keep the beta74 direct/reload top reset, but leave the browser's native scroll-restoration mode unchanged.
+- Preserve Back/Forward position as well as explicit `#fragment` navigation and bfcache restoration.
+
+**Previous release candidate: 0.25.0-beta.74** - Keep normal homepage loads anchored at the global header.
+
+## 0.25.0-beta.74 - 2026-08-30
+
+- Reset direct and reload homepage visits to the top after Chrome applies remembered scroll restoration.
+- Preserve explicit `#fragment` navigation and bfcache restoration; beta75 completes Back/Forward position preservation.
+- Keep the correction in homepage presentation code without changing access-gate or commerce behavior.
+
+**Previous release candidate: 0.25.0-beta.73** - Make American ownership prominent across the site and transactional email footers.
 
 ## 0.25.0-beta.73 - 2026-08-30
 
