@@ -36,6 +36,14 @@
 .pepselect-discount-settings .select2-container {
 	width: 100% !important;
 	min-width: 0;
+	max-width: 100%;
+	box-sizing: border-box;
+}
+
+.pepselect-discount-settings .wc-product-search.select2-hidden-accessible,
+.pepselect-discount-settings .wc-customer-search.select2-hidden-accessible {
+	width: 1px !important;
+	max-width: 1px;
 }
 
 .pepselect-discount-overview {
