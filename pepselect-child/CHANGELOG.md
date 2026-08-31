@@ -1,6 +1,12 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.84** - Standardize customer email reply support.
+**Release candidate: 0.25.0-beta.85** - Tighten the logged-out account page.
+
+## 0.25.0-beta.85 - 2026-08-30
+
+- Remove the tinted account-page band and reduce its vertical padding so the login card sits closer to the site menu with less scrolling.
+
+**Previous release candidate: 0.25.0-beta.84** - Standardize customer email reply support.
 
 ## 0.25.0-beta.84 - 2026-08-30
 

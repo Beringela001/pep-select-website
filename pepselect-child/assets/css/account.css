@@ -806,8 +806,8 @@
 .pepselect-login {
 	width: 100%;
 	margin: 0;
-	padding-block: clamp(48px, 7vw, 80px) clamp(64px, 8vw, 96px);
-	background: var(--pep-color-surface);
+	padding-block: clamp(24px, 3.5vw, 40px) clamp(40px, 5vw, 64px);
+	background: var(--pep-color-white);
 	font-family: var(--pep-font-interface);
 }
 
@@ -1030,7 +1030,7 @@
 
 @media (max-width: 480px) {
 	.pepselect-login {
-		padding-block: 32px 56px;
+		padding-block: 20px 36px;
 	}
 
 	.pepselect-login__inner {
