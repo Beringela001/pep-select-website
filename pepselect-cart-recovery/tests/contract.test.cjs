@@ -81,6 +81,8 @@ assert(php.includes("const VERSION                     = '0.4.10'"), 'Plugin ver
 assert(php.includes("const RECOVERY_COPY_VERSION       = '1'"), 'Saved-cart database copy migration must be versioned');
 assert(php.includes("'email_subject' => 'Want another look?'"), 'The 90-minute subject must use the approved copy');
 assert(php.includes("'email_subject' => 'Need a hand?'"), 'The 24-hour subject must use the approved copy');
+assert(php.includes("'saved cart | 90 minutes' === $template_name"), 'The migration must identify the named 90-minute CartFlows template');
+assert(php.includes("'saved cart | 24 hours' === $template_name"), 'The migration must identify the named 24-hour CartFlows template');
 assert(php.includes('The compounds you selected are still in your cart if you would like to take another look.'), 'The 90-minute body must use the approved copy');
 assert(php.includes('Just a quick note to let you know your cart is still available if you would like another look.'), 'The 24-hour body must use the approved copy');
 assert(php.includes('{{cart.product.table}}'), 'Saved-cart templates must include the cart contents token');

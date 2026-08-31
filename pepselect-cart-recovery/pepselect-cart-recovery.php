@@ -169,12 +169,15 @@ final class PepSelect_Cart_Recovery {
 			return;
 		}
 
-		$templates = $wpdb->get_results( "SELECT id, frequency, frequency_unit FROM {$table} ORDER BY id ASC" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$templates = $wpdb->get_results( "SELECT id, template_name, frequency, frequency_unit FROM {$table} ORDER BY id ASC" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$updated   = array();
 
 		foreach ( (array) $templates as $template ) {
-			$minutes = $this->recovery_delay_minutes( $template->frequency ?? 0, $template->frequency_unit ?? '' );
-			if ( 90 === $minutes && empty( $updated['90'] ) ) {
+			$minutes       = $this->recovery_delay_minutes( $template->frequency ?? 0, $template->frequency_unit ?? '' );
+			$template_name = strtolower( trim( (string) ( $template->template_name ?? '' ) ) );
+			$is_90_minute  = 'saved cart | 90 minutes' === $template_name || 90 === $minutes;
+			$is_24_hour    = 'saved cart | 24 hours' === $template_name || 1440 === $minutes;
+			if ( $is_90_minute && empty( $updated['90'] ) ) {
 				$wpdb->update(
 					$table,
 					array(
@@ -188,7 +191,7 @@ final class PepSelect_Cart_Recovery {
 				$updated['90'] = true;
 			}
 
-			if ( 1440 === $minutes && empty( $updated['24'] ) ) {
+			if ( $is_24_hour && empty( $updated['24'] ) ) {
 				$wpdb->update(
 					$table,
 					array(
