@@ -2,7 +2,7 @@
 Contributors: pepselect
 Requires at least: 6.5
 Requires PHP: 7.4
-Stable tag: 0.4.7
+Stable tag: 0.4.8
 License: Proprietary
 
 Native Pep Select exit offer and Cart Abandonment Recovery integration.
