@@ -20,7 +20,7 @@ Update this file whenever a custom plugin adds, removes, or changes a setting, R
 | Surface | Version | Status | Existing Ops path | Main gap |
 |---|---:|---|---|---|
 | Pep Select Cart Discounts | 2.0.0 | READY | Versioned authenticated REST settings | Ops UI/client not yet connected |
-| Pep Select Cart Recovery | 0.4.4 | READY | Authenticated popup-settings REST endpoint | Add revision conflicts and stronger audit metadata |
+| Pep Select Cart Recovery | 0.4.5 | READY | Authenticated popup-settings REST endpoint | Add revision conflicts and stronger audit metadata |
 | Pep Select Order Experience | 0.3.3 | PARTIAL | Authenticated order snapshot and revoke endpoints | Feature settings are WordPress-only |
 | Pep Select Shipping Restrictions | 0.2.6 | NONE | None | Build a versioned policy API before remote control |
 | PS Access Gate | 2.2.2 | NONE | None | Build a settings API; keep consent data separately protected |
@@ -116,7 +116,7 @@ Subscriber targeting detects FluentCRM membership when available and remains ove
 - Add preview output that names eligible products/customers and projected rule priority before activation.
 - Keep sitewide rules inactive by default and show a high-impact Live confirmation.
 
-## 2. Pep Select Cart Recovery 0.4.4 — READY WITH CONTRACT GAP
+## 2. Pep Select Cart Recovery 0.4.5 — READY WITH CONTRACT GAP
 
 Source: `pepselect-cart-recovery/`
 

@@ -1,6 +1,13 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.83** - Resolve the account form surface cascade.
+**Release candidate: 0.25.0-beta.84** - Standardize customer email reply support.
+
+## 0.25.0-beta.84 - 2026-08-30
+
+- Use the approved reply-first support sentence across every treated account, order, shipment, refund, and stock-notification email.
+- Preserve account-security instructions while removing duplicate support-address prompts from email bodies.
+
+**Previous release candidate: 0.25.0-beta.83** - Resolve the account form surface cascade.
 
 ## 0.25.0-beta.83 - 2026-08-30
 

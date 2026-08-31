@@ -36,5 +36,5 @@ if ( $pep_bis_is_available ) {
 echo "\n\n" . wp_strip_all_tags( __( 'Product:', 'pepselect-child' ) ) . ' ' . $pep_product_label;
 echo "\n" . wp_strip_all_tags( $pep_bis_is_available ? __( 'Available now', 'pepselect-child' ) : __( 'Waiting for restock', 'pepselect-child' ) );
 echo "\n" . wp_strip_all_tags( $pep_bis_is_available ? __( 'View product:', 'pepselect-child' ) : __( 'Review product details:', 'pepselect-child' ) ) . ' ' . $pep_product_url;
-echo "\n\n" . wp_strip_all_tags( __( 'Questions?', 'pepselect-child' ) ) . ' ' . $pep_support_email;
+echo "\n\n" . wp_strip_all_tags( __( 'Have a question? Reply to this email, and one of our team members will be in touch shortly.', 'pepselect-child' ) );
 echo "\n\n---\nPep Select\npepselect.com\n2090 Baker Rd, Ste 304 #A85\nKennesaw, GA 30144\nsupport@pepselect.com\n1 (833) 737-7528\n🇺🇸 " . wp_strip_all_tags( function_exists( 'pepselect_child_company_ownership_line' ) ? pepselect_child_company_ownership_line() : __( 'Pep Select is an American-owned and operated company.', 'pepselect-child' ) ) . "\n" . wp_strip_all_tags( __( 'For laboratory research use only.', 'pepselect-child' ) ) . "\n";

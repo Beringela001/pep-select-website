@@ -36,7 +36,7 @@ Coupon note:
 
 Button: `Explore compounds`
 
-Support note: `Questions before you order? Reply to this email and one of our team members will be happy to help.`
+Support note: `Have a question? Reply to this email, and one of our team members will be in touch shortly.`
 
 ## Email 1: About 90 minutes
 
@@ -56,7 +56,7 @@ Body:
 
 Button: `View my cart`
 
-Support note: `Need an answer first? Reply to this email and one of our team members will be happy to help.`
+Support note: `Have a question? Reply to this email, and one of our team members will be in touch shortly.`
 
 ## Email 2: 24 hours
 
@@ -74,7 +74,7 @@ Body:
 
 `Just a quick note to let you know your cart is still available if you would like another look.`
 
-`If something is not clear, reply to this email and one of our team members will be happy to help.`
+`Have a question? Reply to this email, and one of our team members will be in touch shortly.`
 
 Button: `View my cart`
 
@@ -106,7 +106,7 @@ Coupon note:
 
 Button: `Return to my cart`
 
-Support note: `Have a question first? Reply here or write to support@pepselect.com. Ordering is optional. Our humans will answer your questions.`
+Support note: `Have a question? Reply to this email, and one of our team members will be in touch shortly.`
 
 ## Coupon behavior
 

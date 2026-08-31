@@ -302,10 +302,10 @@ $pep_logo_url = 'https://pepselect.com/wp-content/uploads/2026/06/Logo_Pepselect
 							</table>
 
 							<p class="pep-email-desktop-copy" style="color:<?php echo esc_attr( $pep['slate'] ); ?>; display:block; font-family:<?php echo esc_attr( $pep['font'] ); ?>; font-size:13px; line-height:1.55; margin:0;">
-								<?php esc_html_e( 'If you did not create this account, contact ', 'pepselect-child' ); ?><a href="mailto:<?php echo esc_attr( $pep_support_email ); ?>" style="color:#0D708E; font-weight:700; text-decoration:underline;"><?php echo esc_html( $pep_support_email ); ?></a>.
+								<?php esc_html_e( 'If you did not create this account, reply to this email.', 'pepselect-child' ); ?><br><?php esc_html_e( 'Have a question? Reply to this email, and one of our team members will be in touch shortly.', 'pepselect-child' ); ?>
 							</p>
 							<p class="pep-email-mobile-copy pep-email-mobile-only" style="color:<?php echo esc_attr( $pep['slate'] ); ?>; font-family:<?php echo esc_attr( $pep['font'] ); ?>; font-size:13px; line-height:1.55; margin:0; max-height:0; overflow:hidden; mso-hide:all;">
-								<?php esc_html_e( 'Didn’t create this account? Contact ', 'pepselect-child' ); ?><a href="mailto:<?php echo esc_attr( $pep_support_email ); ?>" style="color:#0D708E; font-weight:700; text-decoration:underline;"><?php echo esc_html( $pep_support_email ); ?></a>.
+								<?php esc_html_e( 'If you did not create this account, reply to this email.', 'pepselect-child' ); ?><br><?php esc_html_e( 'Have a question? Reply to this email, and one of our team members will be in touch shortly.', 'pepselect-child' ); ?>
 							</p>
 						</td>
 					</tr>

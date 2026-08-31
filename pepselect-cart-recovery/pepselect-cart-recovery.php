@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Pep Select Cart Recovery
  * Description: Lightweight exit offer, unique coupons, and Cart Abandonment Recovery integration for Pep Select.
- * Version: 0.4.4
+ * Version: 0.4.5
  * Author: Pep Select
  * Text Domain: pepselect-cart-recovery
  */
@@ -10,8 +10,9 @@
 defined( 'ABSPATH' ) || exit;
 
 final class PepSelect_Cart_Recovery {
-	const VERSION                     = '0.4.4';
+	const VERSION                     = '0.4.5';
 	const OPTION                      = 'pepselect_cart_recovery_settings';
+	const VERSION_OPTION              = 'pepselect_cart_recovery_version';
 	const NONCE                       = 'pepselect_exit_offer_capture';
 	const MARKETING_EMAILS_PER_SECOND = 1;
 
@@ -25,6 +26,7 @@ final class PepSelect_Cart_Recovery {
 	}
 
 	private function __construct() {
+		add_action( 'init', array( $this, 'maybe_upgrade_settings' ), 5 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 		add_action( 'wp_footer', array( $this, 'render_dialog' ), 40 );
 		add_action( 'wp_ajax_pepselect_capture_exit_offer', array( $this, 'capture_offer' ) );
@@ -103,7 +105,7 @@ final class PepSelect_Cart_Recovery {
 			'email_code_note'           => 'Use it at checkout with the same email address. The code expires in {days} days.',
 			'email_extra'               => 'The code can combine with eligible offers. Product details and available batch documentation are ready whenever you want to take another look.',
 			'email_button'              => 'Explore compounds',
-			'email_support'             => 'Have a question before ordering? Reply to this email or contact {support_email}.',
+			'email_support'             => 'Have a question? Reply to this email, and one of our team members will be in touch shortly.',
 			'promo_enabled'             => 0,
 			'promo_start'               => '',
 			'promo_end'                 => '',
@@ -130,6 +132,20 @@ final class PepSelect_Cart_Recovery {
 			'promo_button_color'        => '#17A1CF',
 			'promo_button_text_color'   => '#FFFFFF',
 		);
+	}
+
+	/**
+	 * Apply release-level setting changes without disturbing customized popup copy.
+	 */
+	public function maybe_upgrade_settings() {
+		if ( self::VERSION === get_option( self::VERSION_OPTION ) ) {
+			return;
+		}
+
+		$settings                  = (array) get_option( self::OPTION, array() );
+		$settings['email_support'] = self::defaults()['email_support'];
+		update_option( self::OPTION, $settings );
+		update_option( self::VERSION_OPTION, self::VERSION );
 	}
 
 	private function settings() {
@@ -578,10 +594,14 @@ final class PepSelect_Cart_Recovery {
 		$body = (string) $body;
 		$body = str_replace(
 			array(
-				'Our humans will answer your questions.',
-				'A real person from Pep Select will help.',
+				'Questions before you order? Reply to this email and one of our team members will be happy to help.',
+				'Need an answer first? Reply to this email and one of our team members will be happy to help.',
+				'If something is not clear, reply to this email and one of our team members will be happy to help.',
+				'Have a question first? Reply here or write to support@pepselect.com. Ordering is optional. Our humans will answer your questions.',
+				'Need an answer first? Reply to this email. One of our team members will help.',
+				'Have a question first? Reply here or write to support@pepselect.com. Ordering is optional. One of our team members will help.',
 			),
-			'One of our team members will help.',
+			'Have a question? Reply to this email, and one of our team members will be in touch shortly.',
 			$body
 		);
 

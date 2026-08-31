@@ -35,7 +35,7 @@ assert.match(recovery, /email_body\s*\.=/);
 assert.match(recovery, /normalize_recovery_email_body/);
 assert.match(recovery, /data-pepselect-mobile-email/);
 assert.match(recovery, /table\.shop_table/);
-assert.match(recovery, /One of our team members will help\./);
+assert.match(recovery, /Have a question\? Reply to this email, and one of our team members will be in touch shortly\./);
 assert.match(recoveryCoupon, /pep_company_footer_html/);
 
 for (const template of [
