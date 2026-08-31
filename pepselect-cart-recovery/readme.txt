@@ -2,7 +2,7 @@
 Contributors: pepselect
 Requires at least: 6.5
 Requires PHP: 7.4
-Stable tag: 0.4.10
+Stable tag: 0.4.11
 License: Proprietary
 
 Native Pep Select exit offer and Cart Abandonment Recovery integration.
@@ -30,6 +30,7 @@ Native Pep Select exit offer and Cart Abandonment Recovery integration.
 * Blocks a recovery send when CartFlows supplies a genuinely empty email template.
 * Standardizes the approved reply-first support sentence across signup-code and saved-cart emails, including previously saved recovery templates.
 * Migrates the stored 90-minute and 24-hour CartFlows templates to the approved subjects, preheaders, copy, cart contents, and recovery button.
+* Matches the approved Pep Select email presentation with the real brand header, saved-items card, mobile-safe CTA, support treatment, and company footer.
 * Coupons can combine with eligible offers.
 * Uses a 7-day expiry by default.
 * Shows no popup or assets until explicitly enabled.

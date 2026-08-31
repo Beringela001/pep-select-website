@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Pep Select Cart Recovery
  * Description: Lightweight exit offer, unique coupons, and Cart Abandonment Recovery integration for Pep Select.
- * Version: 0.4.10
+ * Version: 0.4.11
  * Author: Pep Select
  * Text Domain: pepselect-cart-recovery
  */
@@ -10,11 +10,11 @@
 defined( 'ABSPATH' ) || exit;
 
 final class PepSelect_Cart_Recovery {
-	const VERSION                     = '0.4.10';
+	const VERSION                     = '0.4.11';
 	const OPTION                      = 'pepselect_cart_recovery_settings';
 	const VERSION_OPTION              = 'pepselect_cart_recovery_version';
 	const RECOVERY_COPY_OPTION        = 'pepselect_cart_recovery_copy_version';
-	const RECOVERY_COPY_VERSION       = '1';
+	const RECOVERY_COPY_VERSION       = '2';
 	const NONCE                       = 'pepselect_exit_offer_capture';
 	const MARKETING_EMAILS_PER_SECOND = 1;
 
@@ -228,16 +228,43 @@ final class PepSelect_Cart_Recovery {
 		$preheader = $is_first ? 'Your Pep Select cart is ready when you are.' : 'Questions before ordering? Just reply to this email.';
 		$eyebrow   = $is_first ? 'YOUR SAVED CART' : 'A QUICK NOTE';
 		$heading   = $is_first ? 'Pick up where you left off.' : 'Any questions?';
+		$reference = $is_first ? 'SAVED CART' : 'A NOTE FROM SUPPORT';
 		$message   = $is_first
 			? 'The compounds you selected are still in your cart if you would like to take another look.'
 			: 'Just a quick note to let you know your cart is still available if you would like another look.';
+		$support   = 'Have a question? Reply to this email, and one of our team members will be in touch shortly.';
+		$logo_url  = plugin_dir_url( __FILE__ ) . 'assets/pep-select-logo-header.png';
+		$footer    = $this->company_footer_html( 'For laboratory research use only. &middot; {{cart.unsubscribe}}' );
+		$support_before = $is_first ? '' : '<p class="pep-email-support-copy" style="color:#5e6f80;font-family:Arial,sans-serif;font-size:15px;line-height:1.62;margin:0 0 22px;">' . esc_html( $support ) . '</p>';
+		$support_after  = $is_first ? '<div class="pep-email-support-card" style="background:#f3f6f8;border-radius:6px;color:#425b70;font-family:Arial,sans-serif;font-size:12px;line-height:1.6;margin-top:22px;padding:12px 14px;">' . esc_html( $support ) . '</div>' : '';
 
-		return sprintf(
-			'<span style="display:none!important;font-size:1px;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden">%1$s</span><table role="presentation" cellpadding="0" cellspacing="0" width="100%%" style="background:#f6f8fa;border-collapse:collapse;margin:0;padding:0;width:100%%"><tr><td align="center" style="padding:24px 12px"><table role="presentation" cellpadding="0" cellspacing="0" width="680" style="background:#ffffff;border-collapse:collapse;max-width:680px;width:100%%"><tr><td style="background:#00345f;padding:24px 36px"><div style="color:#ffffff;font-family:Arial,sans-serif;font-size:22px;font-weight:700;letter-spacing:.02em">PEP <span style="color:#39b7e7;font-weight:400">SELECT</span></div></td></tr><tr><td style="padding:30px 36px 22px"><div style="color:#0d708e;font-family:Arial,sans-serif;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase">%2$s</div><h1 style="color:#001d3a;font-family:Arial,sans-serif;font-size:30px;line-height:1.2;margin:10px 0 18px">%3$s</h1><p style="color:#001d3a;font-family:Arial,sans-serif;font-size:16px;line-height:1.65;margin:0 0 10px">Hi {{customer.firstname}},</p><p style="color:#425b70;font-family:Arial,sans-serif;font-size:16px;line-height:1.65;margin:0">%4$s</p></td></tr><tr><td style="padding:0 36px 20px">{{cart.product.table}}</td></tr><tr><td style="padding:0 36px 32px"><a href="{{cart.checkout_url}}" style="background:#00345f;border-radius:999px;color:#ffffff;display:block;font-family:Arial,sans-serif;font-size:15px;font-weight:700;padding:15px 22px;text-align:center;text-decoration:none">VIEW MY CART</a><p style="color:#425b70;font-family:Arial,sans-serif;font-size:15px;line-height:1.6;margin:22px 0 0">Have a question? Reply to this email, and one of our team members will be in touch shortly.</p><div style="color:#748596;font-family:Arial,sans-serif;font-size:12px;line-height:1.5;margin-top:18px">{{cart.unsubscribe}}</div></td></tr></table></td></tr></table>',
-			esc_html( $preheader ),
-			esc_html( $eyebrow ),
-			esc_html( $heading ),
-			esc_html( $message )
+		$template_html = <<<'HTML'
+<span style="display:none!important;font-size:1px;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden">{PREHEADER}</span>
+<table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background:#e9eef4;border-collapse:collapse;margin:0;padding:0;width:100%;">
+<tr><td align="center" style="padding:34px 12px;">
+<table class="pep-email-shell" role="presentation" cellpadding="0" cellspacing="0" width="680" style="background:#ffffff;border-collapse:separate;border-radius:18px;box-shadow:0 18px 46px rgba(0,42,83,.14);max-width:680px;overflow:hidden;width:100%;">
+<tr><td style="padding:0;"><table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;width:100%;"><tr><td width="75%" style="background:#002a53;font-size:0;height:6px;line-height:6px;">&nbsp;</td><td width="25%" style="background:#17a1cf;font-size:0;height:6px;line-height:6px;">&nbsp;</td></tr></table></td></tr>
+<tr><td class="pep-email-header" style="padding:36px 44px 27px;"><table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;width:100%;"><tr><td align="left"><img src="{LOGO_URL}" alt="Pep Select" width="132" style="border:0;display:block;height:auto;max-width:132px;width:132px;"></td><td class="pep-email-reference" align="right" style="color:#5e6f80;font-family:Consolas,'Courier New',monospace;font-size:10px;font-weight:600;letter-spacing:1.3px;text-transform:uppercase;">{REFERENCE}</td></tr><tr><td colspan="2" style="border-bottom:1px solid #d7e1e9;font-size:0;height:27px;line-height:27px;">&nbsp;</td></tr></table></td></tr>
+<tr><td class="pep-email-main" style="padding:0 44px 34px;"><div style="color:#0d708e;font-family:Consolas,'Courier New',monospace;font-size:10px;font-weight:700;letter-spacing:1.35px;margin:0 0 12px;text-transform:uppercase;">{EYEBROW}</div><h1 style="color:#001d3a;font-family:Arial,sans-serif;font-size:32px;letter-spacing:-.8px;line-height:1.18;margin:0 0 18px;">{HEADING}</h1><p style="color:#001d3a;font-family:Arial,sans-serif;font-size:15px;font-weight:700;line-height:1.62;margin:0 0 4px;">Hi {{customer.firstname}},</p><p style="color:#5e6f80;font-family:Arial,sans-serif;font-size:15px;line-height:1.62;margin:0 0 22px;">{MESSAGE}</p>{SUPPORT_BEFORE}{{pepselect.cart.card}}<a class="pep-email-button" href="{{cart.checkout_url}}" style="background:#17a1cf;border:1px solid #17a1cf;border-radius:999px;color:#ffffff;display:block;font-family:Arial,sans-serif;font-size:14px;font-weight:700;padding:13px 22px;text-align:center;text-decoration:none;">View my cart</a>{SUPPORT_AFTER}</td></tr>
+<tr><td style="padding:0;">{FOOTER}</td></tr>
+</table>
+</td></tr>
+</table>
+HTML;
+
+		return strtr(
+			$template_html,
+			array(
+				'{PREHEADER}'      => esc_html( $preheader ),
+				'{LOGO_URL}'       => esc_url( $logo_url ),
+				'{REFERENCE}'      => esc_html( $reference ),
+				'{EYEBROW}'        => esc_html( $eyebrow ),
+				'{HEADING}'        => esc_html( $heading ),
+				'{MESSAGE}'        => esc_html( $message ),
+				'{SUPPORT_BEFORE}' => $support_before,
+				'{SUPPORT_AFTER}'  => $support_after,
+				'{FOOTER}'         => $footer,
+			)
 		);
 	}
 
@@ -659,6 +686,35 @@ final class PepSelect_Cart_Recovery {
 			&& absint( $email_data->email_template_id ?? 0 ) === absint( $settings['final_template_id'] );
 	}
 
+	private function recovery_cart_card_html( $email_data ) {
+		$cart_items = maybe_unserialize( $email_data->cart_contents ?? array() );
+		if ( ! is_array( $cart_items ) || ! $cart_items ) {
+			return '{{cart.product.table}}';
+		}
+
+		$item_count = 0;
+		$rows       = '';
+		foreach ( $cart_items as $cart_item ) {
+			$quantity = max( 1, absint( $cart_item['quantity'] ?? 1 ) );
+			$item_count += $quantity;
+			$product_id = ! empty( $cart_item['variation_id'] ) ? absint( $cart_item['variation_id'] ) : absint( $cart_item['product_id'] ?? 0 );
+			$product    = $product_id ? wc_get_product( $product_id ) : false;
+			$name       = $product ? $product->get_name() : __( 'Saved item', 'pepselect-cart-recovery' );
+			$line_total = isset( $cart_item['line_total'] ) ? (float) $cart_item['line_total'] : 0;
+			$quantity_label = $quantity > 1 ? ' &times; ' . $quantity : '';
+
+			$rows .= '<tr><td class="pep-email-cart-thumb-cell" width="66" style="padding:14px 0 14px 18px;vertical-align:middle;"><span style="background:#eef3f6;border-radius:6px;color:#0d708e;display:inline-block;font-family:Consolas,\'Courier New\',monospace;font-size:12px;font-weight:700;line-height:44px;text-align:center;width:44px;">PS</span></td><td class="pep-email-cart-name" style="color:#002a53;font-family:Arial,sans-serif;font-size:13px;font-weight:700;line-height:1.45;padding:14px 10px;vertical-align:middle;">' . esc_html( $name ) . '<span style="color:#748596;font-family:Consolas,\'Courier New\',monospace;font-size:10px;font-weight:400;">' . wp_kses_post( $quantity_label ) . '</span></td><td class="pep-email-cart-price" align="right" style="color:#001d3a;font-family:Consolas,\'Courier New\',monospace;font-size:11px;padding:14px 18px 14px 8px;vertical-align:middle;white-space:nowrap;">' . wp_kses_post( wc_price( $line_total ) ) . '</td></tr>';
+		}
+
+		$count_label = sprintf(
+			/* translators: %d: number of items in the saved cart. */
+			_n( '%d item', '%d items', $item_count, 'pepselect-cart-recovery' ),
+			$item_count
+		);
+
+		return '<table class="pep-email-cart" role="presentation" cellpadding="0" cellspacing="0" width="100%" style="border:1px solid #d7e1e9;border-collapse:separate;border-radius:8px;margin:0 0 22px;overflow:hidden;width:100%;"><tr><td colspan="3" style="background:#f8fafc;border-bottom:1px solid #d7e1e9;padding:14px 18px;"><table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;width:100%;"><tr><td style="color:#002a53;font-family:Georgia,\'Times New Roman\',serif;font-size:18px;font-weight:700;">Your saved items</td><td align="right" style="color:#5e6f80;font-family:Consolas,\'Courier New\',monospace;font-size:9px;text-transform:uppercase;">' . esc_html( $count_label ) . '</td></tr></table></td></tr>' . $rows . '</table>';
+	}
+
 	public function attach_coupon_to_recovery_email( $email_data, $preview_email ) {
 		if ( $preview_email && $this->is_final_template( $email_data ) && ! empty( $email_data->email_body ) ) {
 			$email_data->email_body = str_replace( '{{pepselect.bonus_coupon_code}}', 'PEP5-PREVIEW', $email_data->email_body );
@@ -676,6 +732,9 @@ final class PepSelect_Cart_Recovery {
 		}
 
 		if ( is_object( $email_data ) && ! empty( $email_data->email_body ) ) {
+			if ( false !== strpos( $email_data->email_body, '{{pepselect.cart.card}}' ) ) {
+				$email_data->email_body = str_replace( '{{pepselect.cart.card}}', $this->recovery_cart_card_html( $email_data ), $email_data->email_body );
+			}
 			$email_data->email_body = $this->normalize_recovery_email_body( $email_data->email_body );
 			if ( ! $this->has_company_footer( $email_data->email_body ) ) {
 				$email_data->email_body .= $this->company_footer_html();
@@ -712,6 +771,16 @@ final class PepSelect_Cart_Recovery {
 @media only screen and (max-width:520px){
 .pep-recovery-email{box-sizing:border-box!important;max-width:100%!important;width:100%!important}
 .pep-recovery-email>table{box-sizing:border-box!important;margin:0!important;max-width:100%!important;padding:8px!important;width:100%!important}
+.pep-email-shell{border-radius:14px!important;box-sizing:border-box!important;max-width:100%!important;width:100%!important}
+.pep-email-header{padding:28px 22px 22px!important}
+.pep-email-reference{display:none!important}
+.pep-email-main{padding:0 22px 28px!important}
+.pep-email-main h1{font-size:27px!important;letter-spacing:-.5px!important}
+.pep-email-button{box-sizing:border-box!important;width:100%!important}
+.pep-email-cart{box-sizing:border-box!important;max-width:100%!important;table-layout:fixed!important;width:100%!important}
+.pep-email-cart-thumb-cell{width:62px!important}
+.pep-email-cart-name{overflow-wrap:anywhere!important;padding-left:4px!important;padding-right:4px!important;word-break:break-word!important}
+.pep-email-cart-price{padding-left:4px!important;padding-right:14px!important;width:72px!important}
 .pep-recovery-email td[style*="padding: 30px 36px 22px"]{padding:26px 18px 20px!important}
 .pep-recovery-email td[style*="padding: 0 36px 32px"]{padding:0 18px 26px!important}
 .pep-recovery-email table.shop_table,.pep-recovery-email table.woocommerce-table,.pep-recovery-email table.wcf-ca-cart-products,.pep-recovery-email table.cartflows-ca-cart-products{box-sizing:border-box!important;max-width:100%!important;table-layout:fixed!important;width:100%!important}
