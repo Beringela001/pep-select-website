@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Pep Select Cart Recovery
  * Description: Lightweight exit offer, unique coupons, and Cart Abandonment Recovery integration for Pep Select.
- * Version: 0.4.6
+ * Version: 0.4.7
  * Author: Pep Select
  * Text Domain: pepselect-cart-recovery
  */
@@ -10,7 +10,7 @@
 defined( 'ABSPATH' ) || exit;
 
 final class PepSelect_Cart_Recovery {
-	const VERSION                     = '0.4.6';
+	const VERSION                     = '0.4.7';
 	const OPTION                      = 'pepselect_cart_recovery_settings';
 	const VERSION_OPTION              = 'pepselect_cart_recovery_version';
 	const NONCE                       = 'pepselect_exit_offer_capture';
@@ -150,6 +150,7 @@ final class PepSelect_Cart_Recovery {
 
 	private function settings() {
 		$settings = wp_parse_args( (array) get_option( self::OPTION, array() ), self::defaults() );
+		$settings = apply_filters( 'pepselect_popup_settings', $settings );
 		$legacy_support = array(
 			'',
 			'Have a question before ordering? Reply to this email or contact {support_email}.',
@@ -158,7 +159,7 @@ final class PepSelect_Cart_Recovery {
 		if ( in_array( trim( (string) $settings['email_support'] ), $legacy_support, true ) ) {
 			$settings['email_support'] = self::defaults()['email_support'];
 		}
-		return apply_filters( 'pepselect_popup_settings', $settings );
+		return $settings;
 	}
 
 	private function is_eligible_page() {
