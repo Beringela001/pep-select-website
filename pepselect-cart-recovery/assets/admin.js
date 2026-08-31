@@ -74,11 +74,39 @@
     }
   }
 
+  function updateCoverPreview() {
+    var preview = document.querySelector('[data-pep-preview="cover_banner"]');
+    if (!preview) return;
+
+    preview.querySelectorAll('[data-pep-preview-bind]').forEach(function (element) {
+      element.textContent = value(element.getAttribute('data-pep-preview-bind'));
+    });
+
+    var mobile = preview.classList.contains('is-mobile');
+    var desktopImage = String(value('cover_banner_desktop_image') || '');
+    var mobileImage = String(value('cover_banner_mobile_image') || '');
+    var imageUrl = mobile && mobileImage ? mobileImage : desktopImage || mobileImage;
+    var image = preview.querySelector('[data-pep-cover-preview-image]');
+    if (image) {
+      image.hidden = !imageUrl;
+      image.src = imageUrl;
+    }
+
+    preview.style.setProperty('--pep-cover-preview-bg', value('cover_banner_background'));
+    preview.style.setProperty('--pep-cover-preview-overlay', value('cover_banner_overlay'));
+    preview.style.setProperty('--pep-cover-preview-opacity', value('cover_banner_overlay_opacity'));
+    preview.style.setProperty('--pep-cover-preview-text', value('cover_banner_text_color'));
+    preview.style.setProperty('--pep-cover-preview-x', String(value('cover_banner_focal_x') || 50) + '%');
+    preview.style.setProperty('--pep-cover-preview-y', String(value('cover_banner_focal_y') || 50) + '%');
+  }
+
   function updateAll() {
     updatePreview('exit');
     updatePreview('promo');
+    updateCoverPreview();
     updateStatus('enabled');
     updateStatus('promo_enabled');
+    updateStatus('cover_banner_enabled');
   }
 
   function activateTab(name) {
@@ -113,6 +141,7 @@
         button.classList.toggle('is-active', active);
         button.setAttribute('aria-pressed', active ? 'true' : 'false');
       });
+		updateCoverPreview();
 		return;
 	}
 
@@ -137,7 +166,7 @@
     event.preventDefault();
     var target = document.getElementById(mediaButton.getAttribute('data-pep-media-target'));
     if (!target) return;
-    var frame = wp.media({ title: 'Choose popup background', button: { text: 'Use this image' }, library: { type: 'image' }, multiple: false });
+    var frame = wp.media({ title: target.id.indexOf('cover_banner') !== -1 ? 'Choose campaign banner image' : 'Choose popup background', button: { text: 'Use this image' }, library: { type: 'image' }, multiple: false });
     frame.on('select', function () {
       var attachment = frame.state().get('selection').first().toJSON();
       target.value = attachment.url || '';
@@ -155,6 +184,6 @@
 
   var initialTab = 'exit';
   try { initialTab = window.localStorage.getItem('pep_popup_admin_tab') || initialTab; } catch (error) { /* Optional. */ }
-  activateTab(initialTab === 'promo' ? 'promo' : 'exit');
+  activateTab(['exit', 'promo', 'cover_banner'].indexOf(initialTab) !== -1 ? initialTab : 'exit');
   updateAll();
 }());

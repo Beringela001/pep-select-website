@@ -9,6 +9,8 @@ const css = fs.readFileSync(path.join(root, 'assets', 'cart-recovery.css'), 'utf
 const adminJs = fs.readFileSync(path.join(root, 'assets', 'admin.js'), 'utf8');
 const adminCss = fs.readFileSync(path.join(root, 'assets', 'admin.css'), 'utf8');
 const adminEmailCss = fs.readFileSync(path.join(root, 'assets', 'admin-email-preview.css'), 'utf8');
+const coverCss = fs.readFileSync(path.join(root, 'assets', 'campaign-cover-banner.css'), 'utf8');
+const adminCoverCss = fs.readFileSync(path.join(root, 'assets', 'admin-cover-preview.css'), 'utf8');
 const couponEmail = fs.readFileSync(path.join(root, 'templates', 'coupon-email.php'), 'utf8');
 const mockup = fs.readFileSync(path.join(root, '..', 'mockups', 'cart-recovery', 'index.html'), 'utf8');
 
@@ -38,6 +40,9 @@ const mockup = fs.readFileSync(path.join(root, '..', 'mockups', 'cart-recovery',
   "'promo_start'               => ''",
   "'promo_end'                 => ''",
   "'promo_delay_seconds'       => 8",
+  "'cover_banner_enabled'       => 0",
+  "'cover_banner_desktop_image' => ''",
+  "'cover_banner_mobile_image'  => ''",
   'require_recovery_code_for_final_email',
   "'_pepselect_exit_offer_signature'",
   "'{{pepselect.recovery_coupon_code}}'",
@@ -81,7 +86,7 @@ const mockup = fs.readFileSync(path.join(root, '..', 'mockups', 'cart-recovery',
   'max-height:calc(100vh - 36px)'
 ].forEach((needle) => assert(css.includes(needle), `Missing centered modal contract: ${needle}`));
 
-assert(php.includes("const VERSION                     = '0.4.14'"), 'Plugin version must be 0.4.14');
+assert(php.includes("const VERSION                     = '0.5.0'"), 'Plugin version must be 0.5.0');
 assert(php.includes("const RECOVERY_COPY_VERSION       = '3'"), 'Saved-cart database copy migration must be versioned');
 assert(php.includes("'email_subject' => 'Want another look?'"), 'The 90-minute subject must use the approved copy');
 assert(php.includes("'email_subject' => 'Need a hand?'"), 'The 24-hour subject must use the approved copy');
@@ -135,14 +140,22 @@ assert(adminJs.includes("updatePreview('promo')"), 'The admin must live-preview 
 assert(adminJs.includes("campaignButton.hidden = !String(value('promo_button')"), 'The campaign preview button must disappear when its label is blank');
 assert(adminJs.includes("campaignButton.style.display = campaignButton.hidden ? 'none' : ''"), 'The preview must override WordPress button display styles');
 assert(adminJs.includes("event.target.closest('[data-pep-view]')"), 'The Exit Popup preview must switch between popup and email views');
+assert(adminJs.includes('updateCoverPreview()'), 'The admin must live-preview the Campaign Cover Banner');
 assert(adminCss.includes('.pep-recovery-grid'), 'The admin campaign form must remain responsive');
 assert(adminCss.includes('.pep-recovery-preview__stage'), 'The admin must include a visual popup preview');
 assert(adminEmailCss.includes('.pep-recovery-email-preview__card'), 'The admin must include a visual coupon-email preview');
+assert(adminCoverCss.includes('.pep-cover-preview__banner'), 'The admin must include a visual landing-page banner preview');
+assert(coverCss.includes('.pep-campaign-cover'), 'The public banner must have isolated responsive styles');
 assert(php.includes('data-pep-preview-screen="email"'), 'The Exit Popup editor must render the email preview');
 assert(php.includes('data-pep-preview-bind="email_subject"'), 'The email preview must live-update its subject');
 assert(php.includes('data-pep-preview-bind="email_code_note"'), 'The email preview must live-update coupon instructions');
 assert(php.includes("data-pep-tab=\"exit\""), 'The admin must expose a clear Exit Popup tab');
 assert(php.includes("data-pep-tab=\"promo\""), 'The admin must expose a clear Campaign Popup tab');
+assert(php.includes("data-pep-tab=\"cover_banner\""), 'The Popups app must expose a Campaign Cover Banner menu');
+assert(php.includes("add_action( 'wp_body_open', array( $this, 'render_campaign_cover_banner' ), 6 )"), 'The banner must render immediately after the coded site header');
+assert(php.includes('is_front_page()'), 'The Campaign Cover Banner must be limited to the landing page');
+assert(php.includes('wp_get_attachment_image_srcset'), 'Uploaded banner images must use WordPress responsive image sizes');
+assert(php.includes('cover_banner_start') && php.includes('cover_banner_end'), 'The Campaign Cover Banner must have a start and end schedule');
 assert(php.includes("if ( $settings['promo_button'] )"), 'The public campaign button must remain optional');
 assert(Buffer.byteLength(js) < 12000, 'JavaScript performance budget exceeded');
 assert(Buffer.byteLength(css) < 8000, 'CSS performance budget exceeded');

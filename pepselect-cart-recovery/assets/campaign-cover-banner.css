@@ -1,0 +1,86 @@
+.pep-campaign-cover {
+	background: var(--pep-cover-bg, #002a53);
+	color: var(--pep-cover-text, #fff);
+	display: grid;
+	isolation: isolate;
+	min-height: clamp(210px, 18.75vw, 360px);
+	overflow: hidden;
+	place-items: center;
+	position: relative;
+	width: 100%;
+}
+
+.pep-campaign-cover__media,
+.pep-campaign-cover__media img,
+.pep-campaign-cover__overlay {
+	inset: 0;
+	position: absolute;
+}
+
+.pep-campaign-cover__media img {
+	height: 100%;
+	object-fit: cover;
+	object-position: var(--pep-cover-focus-x, 50%) var(--pep-cover-focus-y, 50%);
+	width: 100%;
+}
+
+.pep-campaign-cover__overlay {
+	background: var(--pep-cover-overlay, #001d3a);
+	opacity: var(--pep-cover-overlay-opacity, .18);
+	z-index: 1;
+}
+
+.pep-campaign-cover__inner {
+	margin-inline: auto;
+	max-width: 1280px;
+	padding: clamp(38px, 5vw, 72px) clamp(20px, 5vw, 72px);
+	position: relative;
+	text-align: center;
+	width: 100%;
+	z-index: 2;
+}
+
+.pep-campaign-cover__eyebrow {
+	font: 700 11px/1.3 "IBM Plex Mono", monospace;
+	letter-spacing: .14em;
+	margin: 0 0 12px;
+	text-transform: uppercase;
+}
+
+.pep-campaign-cover h2 {
+	color: inherit;
+	font: 700 clamp(30px, 4vw, 56px)/1.05 "Plus Jakarta Sans", sans-serif;
+	letter-spacing: -.035em;
+	margin: 0 auto;
+	max-width: 18ch;
+}
+
+.pep-campaign-cover__body {
+	font: 500 clamp(15px, 1.4vw, 19px)/1.55 "Plus Jakarta Sans", sans-serif;
+	margin: 14px auto 0;
+	max-width: 58ch;
+}
+
+@media (max-width: 767px) {
+	.pep-campaign-cover {
+		min-height: 42vw;
+	}
+
+	.pep-campaign-cover.has-copy {
+		min-height: clamp(220px, 56vw, 300px);
+	}
+
+	.pep-campaign-cover__inner {
+		padding: 34px 20px;
+	}
+
+	.pep-campaign-cover h2 {
+		font-size: clamp(27px, 8vw, 38px);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.pep-campaign-cover * {
+		scroll-behavior: auto;
+	}
+}

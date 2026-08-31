@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Pep Select Cart Recovery
  * Description: Lightweight exit offer, unique coupons, and Cart Abandonment Recovery integration for Pep Select.
- * Version: 0.4.14
+ * Version: 0.5.0
  * Author: Pep Select
  * Text Domain: pepselect-cart-recovery
  */
@@ -10,7 +10,7 @@
 defined( 'ABSPATH' ) || exit;
 
 final class PepSelect_Cart_Recovery {
-	const VERSION                     = '0.4.14';
+	const VERSION                     = '0.5.0';
 	const OPTION                      = 'pepselect_cart_recovery_settings';
 	const VERSION_OPTION              = 'pepselect_cart_recovery_version';
 	const RECOVERY_COPY_OPTION        = 'pepselect_cart_recovery_copy_version';
@@ -30,6 +30,7 @@ final class PepSelect_Cart_Recovery {
 	private function __construct() {
 		add_action( 'init', array( $this, 'maybe_upgrade_settings' ), 5 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
+		add_action( 'wp_body_open', array( $this, 'render_campaign_cover_banner' ), 6 );
 		add_action( 'wp_footer', array( $this, 'render_dialog' ), 40 );
 		add_action( 'wp_ajax_pepselect_capture_exit_offer', array( $this, 'capture_offer' ) );
 		add_action( 'wp_ajax_nopriv_pepselect_capture_exit_offer', array( $this, 'capture_offer' ) );
@@ -147,6 +148,21 @@ final class PepSelect_Cart_Recovery {
 			'promo_accent_color'        => '#0D708E',
 			'promo_button_color'        => '#17A1CF',
 			'promo_button_text_color'   => '#FFFFFF',
+			'cover_banner_enabled'       => 0,
+			'cover_banner_start'         => '',
+			'cover_banner_end'           => '',
+			'cover_banner_desktop_image' => '',
+			'cover_banner_mobile_image'  => '',
+			'cover_banner_alt'           => '',
+			'cover_banner_eyebrow'       => 'Current campaign',
+			'cover_banner_heading'       => '',
+			'cover_banner_body'          => '',
+			'cover_banner_background'    => '#002A53',
+			'cover_banner_overlay'       => '#001D3A',
+			'cover_banner_overlay_opacity' => '0.18',
+			'cover_banner_text_color'    => '#FFFFFF',
+			'cover_banner_focal_x'       => 50,
+			'cover_banner_focal_y'       => 50,
 		);
 	}
 
@@ -414,6 +430,9 @@ HTML;
 
 	public function enqueue_assets() {
 		$settings = $this->settings();
+		if ( $this->campaign_cover_banner_is_visible( $settings ) ) {
+			wp_enqueue_style( 'pepselect-campaign-cover-banner', plugin_dir_url( __FILE__ ) . 'assets/campaign-cover-banner.css', array(), self::VERSION );
+		}
 		if ( ( empty( $settings['enabled'] ) && empty( $settings['promo_enabled'] ) ) || ! $this->is_eligible_page() ) {
 			return;
 		}
@@ -447,6 +466,66 @@ HTML;
 				),
 			)
 		);
+	}
+
+	private function campaign_cover_banner_is_visible( $settings = null ) {
+		$settings = is_array( $settings ) ? $settings : $this->settings();
+		if ( is_admin() || ! is_front_page() || empty( $settings['cover_banner_enabled'] ) ) {
+			return false;
+		}
+
+		$start = $this->setting_timestamp( $settings['cover_banner_start'] );
+		$end   = $this->setting_timestamp( $settings['cover_banner_end'] );
+		$now   = current_datetime()->getTimestamp();
+		return $start && $end && $now >= $start && $now < $end;
+	}
+
+	private function campaign_cover_image_srcset( $url ) {
+		$attachment_id = attachment_url_to_postid( $url );
+		return $attachment_id ? (string) wp_get_attachment_image_srcset( $attachment_id, 'full' ) : '';
+	}
+
+	public function render_campaign_cover_banner() {
+		$settings = $this->settings();
+		if ( ! $this->campaign_cover_banner_is_visible( $settings ) ) {
+			return;
+		}
+
+		$desktop_image = esc_url( $settings['cover_banner_desktop_image'] );
+		$mobile_image  = esc_url( $settings['cover_banner_mobile_image'] );
+		$primary_image = $desktop_image ? $desktop_image : $mobile_image;
+		$has_copy      = trim( $settings['cover_banner_eyebrow'] . $settings['cover_banner_heading'] . $settings['cover_banner_body'] );
+		if ( ! $primary_image && ! $has_copy ) {
+			return;
+		}
+
+		$desktop_srcset = $desktop_image ? $this->campaign_cover_image_srcset( $desktop_image ) : '';
+		$mobile_srcset  = $mobile_image ? $this->campaign_cover_image_srcset( $mobile_image ) : '';
+		$style          = sprintf(
+			'--pep-cover-bg:%1$s;--pep-cover-overlay:%2$s;--pep-cover-overlay-opacity:%3$s;--pep-cover-text:%4$s;--pep-cover-focus-x:%5$d%%;--pep-cover-focus-y:%6$d%%',
+			esc_attr( $settings['cover_banner_background'] ),
+			esc_attr( $settings['cover_banner_overlay'] ),
+			esc_attr( $settings['cover_banner_overlay_opacity'] ),
+			esc_attr( $settings['cover_banner_text_color'] ),
+			absint( $settings['cover_banner_focal_x'] ),
+			absint( $settings['cover_banner_focal_y'] )
+		);
+		?>
+		<section class="pep-campaign-cover<?php echo $has_copy ? ' has-copy' : ' is-image-only'; ?>" style="<?php echo esc_attr( $style ); ?>" aria-label="<?php echo esc_attr( $settings['cover_banner_alt'] ?: __( 'Current Pep Select campaign', 'pepselect-cart-recovery' ) ); ?>">
+			<?php if ( $primary_image ) : ?>
+			<picture class="pep-campaign-cover__media" aria-hidden="true">
+				<?php if ( $mobile_image ) : ?><source media="(max-width: 767px)" srcset="<?php echo esc_attr( $mobile_srcset ?: $mobile_image ); ?>" sizes="100vw"><?php endif; ?>
+				<img src="<?php echo esc_url( $primary_image ); ?>" <?php if ( $desktop_srcset ) : ?>srcset="<?php echo esc_attr( $desktop_srcset ); ?>" sizes="100vw"<?php endif; ?> alt="" loading="eager" decoding="async">
+			</picture>
+			<div class="pep-campaign-cover__overlay" aria-hidden="true"></div>
+			<?php endif; ?>
+			<?php if ( $has_copy ) : ?><div class="pep-campaign-cover__inner">
+				<?php if ( $settings['cover_banner_eyebrow'] ) : ?><p class="pep-campaign-cover__eyebrow"><?php echo esc_html( $settings['cover_banner_eyebrow'] ); ?></p><?php endif; ?>
+				<?php if ( $settings['cover_banner_heading'] ) : ?><h2><?php echo esc_html( $settings['cover_banner_heading'] ); ?></h2><?php endif; ?>
+				<?php if ( $settings['cover_banner_body'] ) : ?><p class="pep-campaign-cover__body"><?php echo esc_html( $settings['cover_banner_body'] ); ?></p><?php endif; ?>
+			</div><?php endif; ?>
+		</section>
+		<?php
 	}
 
 	public function render_dialog() {
@@ -1071,7 +1150,7 @@ HTML;
 		$input    = is_array( $input ) ? $input : array();
 		$output   = $defaults;
 
-		foreach ( array( 'enabled', 'promo_enabled', 'promo_suppress_exit', 'allow_coupon_stacking', 'free_shipping', 'exclude_sale_items' ) as $key ) {
+		foreach ( array( 'enabled', 'promo_enabled', 'promo_suppress_exit', 'cover_banner_enabled', 'allow_coupon_stacking', 'free_shipping', 'exclude_sale_items' ) as $key ) {
 			$output[ $key ] = empty( $input[ $key ] ) ? 0 : 1;
 		}
 
@@ -1104,35 +1183,41 @@ HTML;
 			'email_subject', 'email_preheader', 'email_label', 'email_eyebrow', 'email_heading', 'email_greeting', 'email_intro',
 			'email_code_label', 'email_code_note', 'email_extra', 'email_button', 'email_support',
 			'promo_eyebrow', 'promo_heading', 'promo_code_label', 'promo_code', 'promo_button', 'promo_fineprint',
+			'cover_banner_alt', 'cover_banner_eyebrow', 'cover_banner_heading',
 		);
 		foreach ( $text_fields as $key ) {
 			$output[ $key ] = sanitize_text_field( $input[ $key ] ?? $defaults[ $key ] );
 		}
 
-		foreach ( array( 'exit_body', 'promo_body' ) as $key ) {
+		foreach ( array( 'exit_body', 'promo_body', 'cover_banner_body' ) as $key ) {
 			$output[ $key ] = sanitize_textarea_field( $input[ $key ] ?? $defaults[ $key ] );
 		}
 
-		foreach ( array( 'promo_start', 'promo_end' ) as $key ) {
+		foreach ( array( 'promo_start', 'promo_end', 'cover_banner_start', 'cover_banner_end' ) as $key ) {
 			$value          = sanitize_text_field( $input[ $key ] ?? '' );
 			$output[ $key ] = preg_match( '/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/', $value ) ? $value : '';
 		}
 
 		$output['promo_url'] = esc_url_raw( $input['promo_url'] ?? $defaults['promo_url'] );
-		foreach ( array( 'exit_card_image', 'promo_card_image' ) as $key ) {
+		foreach ( array( 'exit_card_image', 'promo_card_image', 'cover_banner_desktop_image', 'cover_banner_mobile_image' ) as $key ) {
 			$output[ $key ] = esc_url_raw( $input[ $key ] ?? '' );
 		}
 
 		$color_fields = array(
 			'exit_overlay_color', 'exit_card_color', 'exit_card_tint_color', 'exit_text_color', 'exit_muted_color', 'exit_accent_color', 'exit_button_color', 'exit_button_text_color',
 			'promo_overlay_color', 'promo_card_color', 'promo_card_tint_color', 'promo_text_color', 'promo_muted_color', 'promo_accent_color', 'promo_button_color', 'promo_button_text_color',
+			'cover_banner_background', 'cover_banner_overlay', 'cover_banner_text_color',
 		);
 		foreach ( $color_fields as $key ) {
 			$output[ $key ] = sanitize_hex_color( $input[ $key ] ?? '' ) ?: $defaults[ $key ];
 		}
 
-		foreach ( array( 'exit_overlay_opacity', 'exit_card_tint_opacity', 'promo_overlay_opacity', 'promo_card_tint_opacity' ) as $key ) {
+		foreach ( array( 'exit_overlay_opacity', 'exit_card_tint_opacity', 'promo_overlay_opacity', 'promo_card_tint_opacity', 'cover_banner_overlay_opacity' ) as $key ) {
 			$output[ $key ] = (string) min( 1, max( 0, (float) ( $input[ $key ] ?? $defaults[ $key ] ) ) );
+		}
+
+		foreach ( array( 'cover_banner_focal_x', 'cover_banner_focal_y' ) as $key ) {
+			$output[ $key ] = min( 100, max( 0, absint( $input[ $key ] ?? $defaults[ $key ] ) ) );
 		}
 
 		if ( $output['promo_enabled'] && ( ! $output['promo_start'] || ! $output['promo_end'] ) ) {
@@ -1141,6 +1226,14 @@ HTML;
 		} elseif ( $output['promo_start'] && $output['promo_end'] && $this->setting_timestamp( $output['promo_end'] ) <= $this->setting_timestamp( $output['promo_start'] ) ) {
 			add_settings_error( self::OPTION, 'promo_dates', __( 'The promotion end must be later than its start.', 'pepselect-cart-recovery' ) );
 			$output['promo_enabled'] = 0;
+		}
+
+		if ( $output['cover_banner_enabled'] && ( ! $output['cover_banner_start'] || ! $output['cover_banner_end'] ) ) {
+			add_settings_error( self::OPTION, 'cover_banner_dates_required', __( 'Add both a start and end time before enabling the Campaign Cover Banner.', 'pepselect-cart-recovery' ) );
+			$output['cover_banner_enabled'] = 0;
+		} elseif ( $output['cover_banner_start'] && $output['cover_banner_end'] && $this->setting_timestamp( $output['cover_banner_end'] ) <= $this->setting_timestamp( $output['cover_banner_start'] ) ) {
+			add_settings_error( self::OPTION, 'cover_banner_dates', __( 'The Campaign Cover Banner end must be later than its start.', 'pepselect-cart-recovery' ) );
+			$output['cover_banner_enabled'] = 0;
 		}
 
 		return $output;
@@ -1166,6 +1259,7 @@ HTML;
 		wp_enqueue_script( 'wc-enhanced-select' );
 		wp_enqueue_style( 'pepselect-cart-recovery-admin', plugin_dir_url( __FILE__ ) . 'assets/admin.css', array(), self::VERSION );
 		wp_enqueue_style( 'pepselect-cart-recovery-email-preview', plugin_dir_url( __FILE__ ) . 'assets/admin-email-preview.css', array( 'pepselect-cart-recovery-admin' ), self::VERSION );
+		wp_enqueue_style( 'pepselect-cart-recovery-cover-preview', plugin_dir_url( __FILE__ ) . 'assets/admin-cover-preview.css', array( 'pepselect-cart-recovery-admin' ), self::VERSION );
 		wp_enqueue_script( 'pepselect-cart-recovery-admin', plugin_dir_url( __FILE__ ) . 'assets/admin.js', array(), self::VERSION, true );
 		wp_localize_script(
 			'pepselect-cart-recovery-admin',
@@ -1332,15 +1426,43 @@ HTML;
 		<?php
 	}
 
+	private function admin_cover_banner_preview( $settings ) {
+		?>
+		<aside class="pep-recovery-preview pep-cover-preview" data-pep-preview="cover_banner">
+			<div class="pep-recovery-preview__toolbar">
+				<div><strong><?php esc_html_e( 'Landing page preview', 'pepselect-cart-recovery' ); ?></strong><span><?php esc_html_e( 'Menu, campaign banner, then cover image.', 'pepselect-cart-recovery' ); ?></span></div>
+				<div class="pep-recovery-device" role="group" aria-label="<?php esc_attr_e( 'Preview size', 'pepselect-cart-recovery' ); ?>">
+					<button type="button" class="is-active" data-pep-device="desktop" aria-pressed="true"><?php esc_html_e( 'Desktop', 'pepselect-cart-recovery' ); ?></button>
+					<button type="button" data-pep-device="mobile" aria-pressed="false"><?php esc_html_e( 'Mobile', 'pepselect-cart-recovery' ); ?></button>
+				</div>
+			</div>
+			<div class="pep-cover-preview__viewport">
+				<div class="pep-cover-preview__menu"><b>PEP SELECT</b><span></span><span></span><span></span></div>
+				<section class="pep-cover-preview__banner">
+					<img data-pep-cover-preview-image alt="" <?php if ( ! $settings['cover_banner_desktop_image'] ) : ?>hidden<?php endif; ?> src="<?php echo esc_url( $settings['cover_banner_desktop_image'] ); ?>">
+					<div class="pep-cover-preview__overlay"></div>
+					<div class="pep-cover-preview__copy">
+						<small data-pep-preview-bind="cover_banner_eyebrow"><?php echo esc_html( $settings['cover_banner_eyebrow'] ); ?></small>
+						<h3 data-pep-preview-bind="cover_banner_heading"><?php echo esc_html( $settings['cover_banner_heading'] ); ?></h3>
+						<p data-pep-preview-bind="cover_banner_body"><?php echo esc_html( $settings['cover_banner_body'] ); ?></p>
+					</div>
+				</section>
+				<div class="pep-cover-preview__hero"><div><small><?php esc_html_e( 'Homepage cover image', 'pepselect-cart-recovery' ); ?></small><b><?php esc_html_e( 'Existing landing-page content begins here', 'pepselect-cart-recovery' ); ?></b></div></div>
+			</div>
+		</aside>
+		<?php
+	}
+
 	public function settings_page() {
 		$settings = $this->settings();
 		?>
 		<div class="wrap pep-recovery-admin">
-			<div class="pep-recovery-heading"><div><h1><?php esc_html_e( 'Pep Select Popups', 'pepselect-cart-recovery' ); ?></h1><p><?php esc_html_e( 'Choose a popup below. The preview shows exactly which words, colors, image, and button each setting controls.', 'pepselect-cart-recovery' ); ?></p></div><span class="pep-recovery-version"><?php echo esc_html( 'v' . self::VERSION ); ?></span></div>
+			<div class="pep-recovery-heading"><div><h1><?php esc_html_e( 'Pep Select Popups', 'pepselect-cart-recovery' ); ?></h1><p><?php esc_html_e( 'Manage popups and the scheduled landing-page campaign banner from one place.', 'pepselect-cart-recovery' ); ?></p></div><span class="pep-recovery-version"><?php echo esc_html( 'v' . self::VERSION ); ?></span></div>
 			<?php settings_errors( self::OPTION ); ?>
 			<nav class="pep-recovery-tabs" role="tablist" aria-label="<?php esc_attr_e( 'Popup type', 'pepselect-cart-recovery' ); ?>">
 				<button type="button" role="tab" id="pep-tab-exit" aria-controls="pep-panel-exit" aria-selected="true" data-pep-tab="exit"><span><?php esc_html_e( 'Exit Popup', 'pepselect-cart-recovery' ); ?></span><small><?php esc_html_e( 'Email signup + automatic discount', 'pepselect-cart-recovery' ); ?></small><strong data-pep-status="enabled"><?php echo $settings['enabled'] ? esc_html__( 'On', 'pepselect-cart-recovery' ) : esc_html__( 'Off', 'pepselect-cart-recovery' ); ?></strong></button>
 				<button type="button" role="tab" id="pep-tab-promo" aria-controls="pep-panel-promo" aria-selected="false" data-pep-tab="promo"><span><?php esc_html_e( 'Campaign Popup', 'pepselect-cart-recovery' ); ?></span><small><?php esc_html_e( 'Scheduled sale or announcement', 'pepselect-cart-recovery' ); ?></small><strong data-pep-status="promo_enabled"><?php echo $settings['promo_enabled'] ? esc_html__( 'On', 'pepselect-cart-recovery' ) : esc_html__( 'Off', 'pepselect-cart-recovery' ); ?></strong></button>
+				<button type="button" role="tab" id="pep-tab-cover-banner" aria-controls="pep-panel-cover-banner" aria-selected="false" data-pep-tab="cover_banner"><span><?php esc_html_e( 'Campaign Cover Banner', 'pepselect-cart-recovery' ); ?></span><small><?php esc_html_e( 'Between the menu and homepage cover', 'pepselect-cart-recovery' ); ?></small><strong data-pep-status="cover_banner_enabled"><?php echo $settings['cover_banner_enabled'] ? esc_html__( 'On', 'pepselect-cart-recovery' ) : esc_html__( 'Off', 'pepselect-cart-recovery' ); ?></strong></button>
 			</nav>
 			<form method="post" action="options.php"><?php settings_fields( 'pepselect_cart_recovery' ); ?>
 				<div class="pep-recovery-panel is-active" id="pep-panel-exit" role="tabpanel" aria-labelledby="pep-tab-exit" data-pep-panel="exit">
@@ -1415,9 +1537,37 @@ HTML;
 						<details class="pep-recovery-card" open><summary><?php esc_html_e( 'Popup colors and background', 'pepselect-cart-recovery' ); ?></summary><p class="description"><?php esc_html_e( 'Every change below is visible in the preview before you save it.', 'pepselect-cart-recovery' ); ?></p><div class="pep-recovery-grid"><?php $this->admin_colors( $settings, 'promo' ); ?></div></details>
 					</div><?php $this->admin_preview( $settings, 'promo' ); ?></div>
 				</div>
-				<div class="pep-recovery-save"><div><strong><?php esc_html_e( 'Preview first. Save when it looks right.', 'pepselect-cart-recovery' ); ?></strong><span><?php esc_html_e( 'Nothing changes on the website until you save.', 'pepselect-cart-recovery' ); ?></span></div><?php submit_button( __( 'Save popup settings', 'pepselect-cart-recovery' ), 'primary', 'submit', false ); ?></div>
+
+				<div class="pep-recovery-panel" id="pep-panel-cover-banner" role="tabpanel" aria-labelledby="pep-tab-cover-banner" data-pep-panel="cover_banner" hidden>
+					<div class="pep-recovery-layout"><div class="pep-recovery-editor">
+						<section class="pep-recovery-card pep-recovery-intro"><div><span class="pep-recovery-kicker"><?php esc_html_e( 'Campaign Cover Banner', 'pepselect-cart-recovery' ); ?></span><h2><?php esc_html_e( 'Place a scheduled promotion between the menu and homepage cover.', 'pepselect-cart-recovery' ); ?></h2><p><?php esc_html_e( 'Use an image, editable text, or both. There are no buttons and the banner appears only on the landing page during its schedule.', 'pepselect-cart-recovery' ); ?></p></div><label class="pep-recovery-switch"><input name="<?php echo esc_attr( self::OPTION ); ?>[cover_banner_enabled]" data-pep-setting="cover_banner_enabled" type="checkbox" value="1" <?php checked( $settings['cover_banner_enabled'], 1 ); ?>><span></span><b><?php esc_html_e( 'Campaign cover banner enabled', 'pepselect-cart-recovery' ); ?></b></label></section>
+						<section class="pep-recovery-card"><h2><?php esc_html_e( 'Schedule', 'pepselect-cart-recovery' ); ?></h2><p class="description"><?php printf( esc_html__( 'Times use the website timezone: %s. The banner switches itself on and off.', 'pepselect-cart-recovery' ), esc_html( wp_timezone_string() ) ); ?></p><div class="pep-recovery-grid">
+							<?php $this->admin_field( $settings, 'cover_banner_start', __( 'Start showing', 'pepselect-cart-recovery' ), __( 'The first date and time the banner can appear.', 'pepselect-cart-recovery' ), 'datetime-local' ); ?>
+							<?php $this->admin_field( $settings, 'cover_banner_end', __( 'Stop showing', 'pepselect-cart-recovery' ), __( 'The banner disappears automatically at this date and time.', 'pepselect-cart-recovery' ), 'datetime-local' ); ?>
+						</div></section>
+						<section class="pep-recovery-card"><h2><?php esc_html_e( 'Desktop and mobile images', 'pepselect-cart-recovery' ); ?></h2><div class="pep-recovery-image-guidance"><div><b><?php esc_html_e( 'Desktop master', 'pepselect-cart-recovery' ); ?></b><span>1920 × 360 px</span></div><div><b><?php esc_html_e( 'Mobile master', 'pepselect-cart-recovery' ); ?></b><span>1080 × 480 px</span></div><div><b><?php esc_html_e( 'Responsive files', 'pepselect-cart-recovery' ); ?></b><span><?php esc_html_e( 'WordPress creates and serves the smaller screen sizes automatically.', 'pepselect-cart-recovery' ); ?></span></div></div><div class="pep-recovery-grid">
+							<?php $this->admin_field( $settings, 'cover_banner_desktop_image', __( 'Desktop banner image', 'pepselect-cart-recovery' ), __( 'Recommended size: 1920 × 360 px. Upload the largest clean version.', 'pepselect-cart-recovery' ), 'image' ); ?>
+							<?php $this->admin_field( $settings, 'cover_banner_mobile_image', __( 'Mobile banner image', 'pepselect-cart-recovery' ), __( 'Recommended size: 1080 × 480 px. Optional; without it, the desktop image is cropped around the focal point.', 'pepselect-cart-recovery' ), 'image' ); ?>
+							<?php $this->admin_field( $settings, 'cover_banner_alt', __( 'Image description', 'pepselect-cart-recovery' ), __( 'Describe meaningful artwork. Leave blank when the image is decorative and the editable text conveys the promotion.', 'pepselect-cart-recovery' ) ); ?>
+							<?php $this->admin_field( $settings, 'cover_banner_focal_x', __( 'Horizontal focal point', 'pepselect-cart-recovery' ), __( '0 keeps the left edge; 50 centers; 100 keeps the right edge when cropping.', 'pepselect-cart-recovery' ), 'number', array( 'min' => '0', 'max' => '100' ) ); ?>
+							<?php $this->admin_field( $settings, 'cover_banner_focal_y', __( 'Vertical focal point', 'pepselect-cart-recovery' ), __( '0 keeps the top; 50 centers; 100 keeps the bottom when cropping.', 'pepselect-cart-recovery' ), 'number', array( 'min' => '0', 'max' => '100' ) ); ?>
+						</div></section>
+						<section class="pep-recovery-card"><h2><?php esc_html_e( 'Optional editable text', 'pepselect-cart-recovery' ); ?></h2><p class="description"><?php esc_html_e( 'Leave all three fields blank for an image-only banner. Editable text stays sharp and readable on every screen.', 'pepselect-cart-recovery' ); ?></p><div class="pep-recovery-grid">
+							<?php $this->admin_field( $settings, 'cover_banner_eyebrow', __( 'Small label', 'pepselect-cart-recovery' ), __( 'Short campaign label above the headline.', 'pepselect-cart-recovery' ) ); ?>
+							<?php $this->admin_field( $settings, 'cover_banner_heading', __( 'Campaign headline', 'pepselect-cart-recovery' ), __( 'Main message shown over the image or background.', 'pepselect-cart-recovery' ) ); ?>
+							<?php $this->admin_field( $settings, 'cover_banner_body', __( 'Supporting text', 'pepselect-cart-recovery' ), __( 'Optional short explanation. Keep it to one concise sentence.', 'pepselect-cart-recovery' ), 'textarea' ); ?>
+						</div></section>
+						<section class="pep-recovery-card"><h2><?php esc_html_e( 'Colors and readability', 'pepselect-cart-recovery' ); ?></h2><div class="pep-recovery-grid">
+							<?php $this->admin_field( $settings, 'cover_banner_background', __( 'Background color', 'pepselect-cart-recovery' ), __( 'Used behind the image and for a text-only banner.', 'pepselect-cart-recovery' ), 'color' ); ?>
+							<?php $this->admin_field( $settings, 'cover_banner_overlay', __( 'Image overlay color', 'pepselect-cart-recovery' ), __( 'A color layer that keeps optional text readable over artwork.', 'pepselect-cart-recovery' ), 'color' ); ?>
+							<?php $this->admin_field( $settings, 'cover_banner_overlay_opacity', __( 'Image overlay strength', 'pepselect-cart-recovery' ), __( '0 is clear; 1 completely covers the image.', 'pepselect-cart-recovery' ), 'number', array( 'min' => '0', 'max' => '1', 'step' => '0.01' ) ); ?>
+							<?php $this->admin_field( $settings, 'cover_banner_text_color', __( 'Text color', 'pepselect-cart-recovery' ), __( 'Applies to the label, headline, and supporting text.', 'pepselect-cart-recovery' ), 'color' ); ?>
+						</div></section>
+					</div><?php $this->admin_cover_banner_preview( $settings ); ?></div>
+				</div>
+				<div class="pep-recovery-save"><div><strong><?php esc_html_e( 'Preview first. Save when it looks right.', 'pepselect-cart-recovery' ); ?></strong><span><?php esc_html_e( 'Nothing changes on the website until you save.', 'pepselect-cart-recovery' ); ?></span></div><?php submit_button( __( 'Save settings', 'pepselect-cart-recovery' ), 'primary', 'submit', false ); ?></div>
 			</form>
-			<div class="pep-recovery-ops-note"><span aria-hidden="true">↔</span><div><strong><?php esc_html_e( 'Ready for Ops control', 'pepselect-cart-recovery' ); ?></strong><p><?php esc_html_e( 'Both popup tabs use one protected WordPress settings API. Control Ops can read and update these same options later without creating a second popup system.', 'pepselect-cart-recovery' ); ?></p></div></div>
+			<div class="pep-recovery-ops-note"><span aria-hidden="true">↔</span><div><strong><?php esc_html_e( 'Ready for Ops control', 'pepselect-cart-recovery' ); ?></strong><p><?php esc_html_e( 'All campaign controls use one protected WordPress settings API. Control Ops can read and update these same options without creating a second campaign system.', 'pepselect-cart-recovery' ); ?></p></div></div>
 		</div>
 		<?php
 	}
