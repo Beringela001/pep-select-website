@@ -42,6 +42,7 @@ assert.match( css, /max-width: 520px/ );
 assert.match( css, /--pep-radius-card-inner/ );
 assert.match( css, /\.woocommerce \.pepselect-login__forms form\.pepselect-login__form\s*\{[^}]*border:\s*0/s );
 assert.match( css, /\.pepselect-login \.pepselect-login__tab\[aria-selected="true"\]/ );
+assert.match( css, /\.pepselect-login \.nsl-container \.nsl-container-buttons\s*\{[^}]*justify-content:\s*center/s );
 assert.doesNotMatch( css, /grid-template-columns: 1fr 1fr;\s*gap: 40px/ );
 
 console.log( 'Account login experience checks passed.' );

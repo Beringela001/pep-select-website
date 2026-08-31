@@ -5,6 +5,7 @@
 ## 0.25.0-beta.86 - 2026-08-30
 
 - Remove WooCommerce's logged-out wrapper padding and cap the intentional menu-to-card gap at 24px on desktop and 16px on mobile.
+- Center the Google sign-in control consistently in both the login and registration panels.
 
 **Previous release candidate: 0.25.0-beta.85** - Tighten the logged-out account page.
 

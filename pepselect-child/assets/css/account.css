@@ -1093,6 +1093,9 @@ body.woocommerce-account:not(.logged-in) h1.entry-title {
 }
 
 .pepselect-login .nsl-container .nsl-container-buttons {
+	display: flex !important;
+	justify-content: center;
+	width: 100%;
 	margin: 0 !important;
 }
 
