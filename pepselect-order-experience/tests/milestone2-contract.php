@@ -34,6 +34,9 @@ pepselect_oe_expect( str_contains( $relationships, "wp_get_attachment_image_url(
 pepselect_oe_expect( str_contains( $renderer, 'Match the vial. Match the batch.' ), 'Approved order-page mission copy is required.' );
 pepselect_oe_expect( str_contains( $renderer, '>Restocking</span>' ), 'Unavailable related products need an explicit restocking state.' );
 pepselect_oe_expect( str_contains( $renderer, 'Review full report' ), 'Each available batch must link to its report.' );
+pepselect_oe_expect( str_contains( $renderer, "! empty( \$item['is_bacteriostatic_water'] )" ), 'Bacteriostatic water must use its dedicated product-details card.' );
+pepselect_oe_expect( str_contains( $renderer, '>HOSPIRA</dd>' ) && str_contains( $renderer, '>USP</dd>' ), 'The accessory card must match the Hospira USP vial label.' );
+pepselect_oe_expect( str_contains( $renderer, 'View product information' ), 'The accessory card must link to product information instead of a COA.' );
 pepselect_oe_expect( str_contains( $css, '@media(max-width:767px)' ) && str_contains( $css, 'repeat(2,minmax(0,1fr))' ), 'Mobile must retain compact two-column grids.' );
 
 echo "Milestone 2 contract: OK\n";

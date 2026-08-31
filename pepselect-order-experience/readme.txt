@@ -4,7 +4,7 @@ Tags: woocommerce, orders, batch, coa
 Requires at least: 6.5
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 0.3.3
+Stable tag: 0.4.1
 License: GPLv2 or later
 
 Secure, batch-specific customer order records connected to Pep Select Ops.
@@ -17,6 +17,12 @@ Secure, batch-specific customer order records connected to Pep Select Ops.
 4. Leave the feature disabled until staging verification is complete.
 
 == Changelog ==
+
+= 0.4.1 =
+* Gives Hospira Bacteriostatic Water, USP a product-details card without peptide testing, purity, laboratory, or unavailable-COA messaging.
+
+= 0.4.0 =
+* Links compact My Account order rows to their secure order pages and keeps older orders behind an accessible disclosure control.
 
 = 0.3.3 =
 * Shows complete, higher-resolution related-product vial images and fills open recommendation slots with relevant restocking compounds.

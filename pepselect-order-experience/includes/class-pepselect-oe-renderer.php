@@ -23,20 +23,30 @@ final class PepSelect_OE_Renderer {
 				<section class="pepselect-oe__section" aria-labelledby="pepselect-oe-compounds">
 					<div class="pepselect-oe__section-head"><div><p class="pepselect-oe__kicker">Your compounds</p><h2 id="pepselect-oe-compounds">Match the vial. Match the batch.</h2></div><p>The label and batch number on each vial should match the record shown here. Open the full report whenever you want to review the laboratory results.</p></div>
 					<div class="pepselect-oe__ordered-grid">
-						<?php foreach ( $model['items'] as $index => $item ) : $primary = $item['allocations'][0] ?? array(); ?>
+						<?php foreach ( $model['items'] as $index => $item ) : $primary = $item['allocations'][0] ?? array(); $item_image = $primary['image'] ?? $item['image'] ?? ''; ?>
 							<article class="pepselect-oe__ordered-card">
 								<div class="pepselect-oe__media">
-									<?php if ( ! empty( $primary['image'] ) ) : ?><img src="<?php echo esc_url( $primary['image'] ); ?>" <?php if ( ! empty( $primary['image_srcset'] ) ) : ?>srcset="<?php echo esc_attr( $primary['image_srcset'] ); ?>" sizes="(max-width: 767px) 50vw, 33vw"<?php endif; ?> alt="<?php echo esc_attr( sprintf( '%s vial for batch %s', $item['name'], $primary['batch'] ?? '' ) ); ?>"><?php endif; ?>
+									<?php if ( $item_image ) : ?><img src="<?php echo esc_url( $item_image ); ?>" <?php if ( ! empty( $primary['image_srcset'] ) ) : ?>srcset="<?php echo esc_attr( $primary['image_srcset'] ); ?>" sizes="(max-width: 767px) 50vw, 33vw"<?php endif; ?> alt="<?php echo esc_attr( ! empty( $item['is_bacteriostatic_water'] ) ? 'Hospira Bacteriostatic Water, USP 30 mL vial' : sprintf( '%s vial for batch %s', $item['name'], $primary['batch'] ?? '' ) ); ?>"><?php endif; ?>
 									<span class="pepselect-oe__count"><?php echo esc_html( str_pad( (string) ( $index + 1 ), 2, '0', STR_PAD_LEFT ) ); ?></span>
-									<?php if ( empty( $primary['image_exact'] ) ) : ?><span class="pepselect-oe__image-note">Product image</span><?php endif; ?>
+									<?php if ( empty( $item['is_bacteriostatic_water'] ) && empty( $primary['image_exact'] ) ) : ?><span class="pepselect-oe__image-note">Product image</span><?php endif; ?>
 								</div>
 								<div class="pepselect-oe__ordered-content">
 								<div class="pepselect-oe__ordered-info">
-									<div class="pepselect-oe__ordered-title"><h3><?php echo esc_html( $item['name'] ); ?></h3><?php if ( $item['strength'] ) : ?><span><?php echo esc_html( strtoupper( $item['strength'] ) ); ?></span><?php endif; ?></div>
-									<p class="pepselect-oe__context-label">Studied for</p>
+									<div class="pepselect-oe__ordered-title"><h3><?php echo esc_html( $item['display_name'] ); ?></h3><?php if ( $item['strength'] ) : ?><span><?php echo esc_html( strtoupper( $item['strength'] ) ); ?></span><?php endif; ?></div>
+									<?php if ( empty( $item['is_bacteriostatic_water'] ) ) : ?><p class="pepselect-oe__context-label">Studied for</p><?php endif; ?>
 									<ul class="pepselect-oe__context-list"><?php foreach ( $item['bullets'] as $bullet ) : ?><li><?php echo esc_html( $bullet ); ?></li><?php endforeach; ?></ul>
 								</div>
-								<?php foreach ( $item['allocations'] as $allocation_index => $allocation ) : ?>
+								<?php if ( ! empty( $item['is_bacteriostatic_water'] ) ) : ?>
+									<div class="pepselect-oe__batch pepselect-oe__product-details">
+										<p class="pepselect-oe__batch-heading"><svg><use href="#pepselect-oe-file"/></svg>Product details</p>
+										<dl class="pepselect-oe__batch-rows">
+											<div><dt>Brand</dt><dd>HOSPIRA</dd></div>
+											<div><dt>Label standard</dt><dd>USP</dd></div>
+											<div><dt>Volume</dt><dd>30 ML</dd></div>
+										</dl>
+										<?php if ( $item['product_url'] ) : ?><a class="pepselect-oe__button pepselect-oe__button--full" href="<?php echo esc_url( $item['product_url'] ); ?>">View product information<svg><use href="#pepselect-oe-arrow"/></svg></a><?php endif; ?>
+									</div>
+								<?php else : foreach ( $item['allocations'] as $allocation_index => $allocation ) : ?>
 									<div class="pepselect-oe__batch<?php echo $allocation_index ? ' pepselect-oe__batch--additional' : ''; ?>">
 										<p class="pepselect-oe__batch-heading"><svg><use href="#pepselect-oe-file"/></svg><?php echo $allocation_index ? 'Additional batch' : 'Batch summary'; ?></p>
 										<dl class="pepselect-oe__batch-rows">
@@ -48,7 +58,7 @@ final class PepSelect_OE_Renderer {
 										<div class="pepselect-oe__test-result pepselect-oe__test-result--<?php echo esc_attr( $allocation['status']['tone'] ); ?>"><svg><use href="#pepselect-oe-check"/></svg><?php echo esc_html( $allocation['status']['label'] ); ?></div>
 										<?php if ( $allocation['coa_url'] ) : ?><a class="pepselect-oe__button pepselect-oe__button--full" href="<?php echo esc_url( $allocation['coa_url'] ); ?>">Review full report<svg><use href="#pepselect-oe-arrow"/></svg></a><?php else : ?><p class="pepselect-oe__unavailable">The full report is not available from this record.</p><?php endif; ?>
 									</div>
-								<?php endforeach; ?>
+								<?php endforeach; endif; ?>
 								</div>
 							</article>
 						<?php endforeach; ?>

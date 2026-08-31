@@ -26,6 +26,8 @@ final class PepSelect_OE_View_Model {
 			$ordered_quantity = max( 1, absint( $snapshot_item['quantity'] ?? ( $order_item ? $order_item->get_quantity() : 1 ) ) );
 			$name       = (string) ( $snapshot_item['product_name'] ?? ( $order_item ? $order_item->get_name() : 'Compound' ) );
 			$registry   = PepSelect_OE_Content_Registry::for_name( $name );
+			$is_bacteriostatic_water = str_contains( PepSelect_OE_Content_Registry::normalize_name( $name ), 'bacteriostatic water' );
+			$product_image = $product instanceof WC_Product ? ( wp_get_attachment_image_url( $product->get_image_id(), 'large' ) ?: wc_placeholder_img_src( 'woocommerce_thumbnail' ) ) : '';
 			$allocations = array();
 			foreach ( (array) ( $snapshot_item['allocations'] ?? array() ) as $allocation ) {
 				if ( is_array( $allocation ) ) {
@@ -34,12 +36,15 @@ final class PepSelect_OE_View_Model {
 			}
 			$items[] = array(
 				'name'         => $name,
-				'display_name' => $name,
-				'strength'     => trim( (string) ( $snapshot_item['strength'] ?? '' ) ),
+				'display_name' => $is_bacteriostatic_water ? 'Bacteriostatic Water' : $name,
+				'strength'     => $is_bacteriostatic_water ? '30 mL' : trim( (string) ( $snapshot_item['strength'] ?? '' ) ),
 				'quantity'     => $ordered_quantity,
 				'refunded'     => $refunded,
-				'bullets'      => $registry['bullets'] ?? array( 'Review the product page for its documented research context.' ),
+				'bullets'      => $is_bacteriostatic_water ? array( 'Hospira Bacteriostatic Water, USP', '30 mL multiple-dose vial' ) : ( $registry['bullets'] ?? array( 'Review the product page for its documented research context.' ) ),
 				'allocations'  => $allocations,
+				'image'        => esc_url_raw( $product_image ),
+				'product_url'  => $product instanceof WC_Product ? esc_url_raw( get_permalink( $product->get_id() ) ) : '',
+				'is_bacteriostatic_water' => $is_bacteriostatic_water,
 				'line_total'   => $order_item ? $order->get_formatted_line_subtotal( $order_item ) : '',
 				'product_id'   => $product ? $product->get_id() : 0,
 				'available'    => $product instanceof WC_Product && $product->is_purchasable() && $product->is_in_stock() && $refunded < $ordered_quantity,

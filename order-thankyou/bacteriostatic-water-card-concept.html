@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Bacteriostatic Water Order Card Concept</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--navy:#002a53;--cyan:#009fda;--cyan-soft:#eaf7fc;--slate:#536a7d;--ink:#09233d;--border:#d5e0e8;--surface:#f3f8fb}
+    *{box-sizing:border-box}
+    body{margin:0;color:var(--ink);background:#edf4f8;font-family:"Plus Jakarta Sans",sans-serif}
+    .page{width:min(1180px,calc(100% - 40px));margin:0 auto;padding:52px 0 68px}
+    .intro{max-width:740px;margin-bottom:28px}
+    .eyebrow{margin:0 0 9px;color:var(--cyan);font:600 11px/1.3 "IBM Plex Mono",monospace;letter-spacing:.11em;text-transform:uppercase}
+    h1{margin:0 0 10px;color:var(--navy);font-size:38px;line-height:1.08;letter-spacing:-.038em}
+    .intro>p:last-child{margin:0;color:var(--slate);font-size:16px;line-height:1.65}
+    .previews{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:28px;align-items:start}
+    .preview{padding:18px;border:1px solid var(--border);border-radius:14px;background:white;box-shadow:0 18px 45px rgb(0 42 83 / 8%)}
+    .preview-label{display:flex;align-items:center;justify-content:space-between;margin:0 0 12px;color:var(--slate);font:600 10px/1.3 "IBM Plex Mono",monospace;letter-spacing:.1em;text-transform:uppercase}
+    .preview-label span:last-child{color:var(--cyan)}
+    .ordered-card{display:flex;min-width:0;overflow:hidden;border:1px solid var(--border);border-radius:6px;background:#fff}
+    .media{position:relative;display:flex;align-items:center;flex:0 0 clamp(148px,32%,182px);min-height:410px;padding:14px;overflow:hidden;border-right:1px solid var(--border);background:linear-gradient(180deg,#f7fafc,#eef4f7)}
+    .media img{display:block;width:100%;height:100%;max-height:325px;object-fit:contain;object-position:center;transform:scale(1.13)}
+    .count{position:absolute;top:10px;left:10px;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;color:#fff;background:rgb(0 42 83 / 92%);font:600 11px/1 "IBM Plex Mono",monospace}
+    .content{display:flex;min-width:0;flex:1;flex-direction:column}
+    .info{padding:16px 16px 14px}
+    .title{display:flex;align-items:start;justify-content:space-between;gap:12px;margin-bottom:12px}
+    .title h2{margin:0;color:var(--navy);font-size:22px;line-height:1.18;letter-spacing:-.025em}
+    .strength{flex:0 0 auto;padding:5px 8px;border-radius:999px;color:var(--navy);background:var(--cyan-soft);font:600 10px/1.3 "IBM Plex Mono",monospace}
+    .context-label{margin:0 0 7px;color:var(--cyan);font:600 10px/1.3 "IBM Plex Mono",monospace;letter-spacing:.09em;text-transform:uppercase}
+    .context{display:grid;gap:6px;margin:0;padding:0;list-style:none;color:var(--slate);font-size:13px;line-height:1.5}
+    .context li{position:relative;padding-left:13px}
+    .context li:before{position:absolute;top:.62em;left:0;width:5px;height:5px;border-radius:50%;background:var(--cyan);content:""}
+    .details{margin-top:auto;padding:14px 16px 16px;border-top:1px solid var(--border)}
+    .details-heading{display:flex;align-items:center;gap:7px;margin:0 0 8px;color:var(--navy);font-size:12px;font-weight:700;line-height:1.4;letter-spacing:.055em;text-transform:uppercase}
+    svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;color:var(--cyan)}
+    dl{margin:0}
+    dl>div{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:10px;align-items:center;min-height:34px;border-bottom:1px solid var(--border)}
+    dl>div:last-child{border-bottom:0}
+    dt{color:var(--slate);font-size:12px;font-weight:500}
+    dd{min-width:0;margin:0;color:var(--ink);font-size:12px;font-weight:700;text-align:right}
+    .source{display:flex;align-items:center;gap:7px;margin-top:10px;padding:9px 10px;border-radius:6px;color:var(--navy);background:var(--cyan-soft);font-size:11.5px;font-weight:700}
+    .source svg{flex:0 0 auto;color:var(--navy)}
+    .button{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:44px;margin-top:10px;padding:9px 16px;border-radius:999px;color:#fff;background:var(--navy);font-size:12.5px;font-weight:700;text-decoration:none}
+    .button svg{width:16px;height:16px;color:#fff}
+    .mobile-shell{width:100%;max-width:344px;margin:0 auto;padding:8px;border-radius:12px;background:var(--surface)}
+    .mobile-shell .ordered-card{flex-direction:column}
+    .mobile-shell .media{display:block;width:100%;height:142px;min-height:0;padding:8px;border-right:0;border-bottom:1px solid var(--border)}
+    .mobile-shell .media img{height:100%;max-height:none;transform:scale(1.08)}
+    .mobile-shell .info{padding:12px 11px 10px}
+    .mobile-shell .title{display:block;margin-bottom:9px}
+    .mobile-shell .title h2{font-size:17px}
+    .mobile-shell .strength{display:inline-block;margin-top:6px;font-size:9.5px}
+    .mobile-shell .context{font-size:12.5px}
+    .mobile-shell .details{padding:11px}
+    .mobile-shell .details-heading{font-size:11px}
+    .mobile-shell dt,.mobile-shell dd{font-size:11.5px}
+    .mobile-shell .source{font-size:11px}
+    @media(max-width:850px){.previews{grid-template-columns:1fr}.desktop-preview{display:none}.page{width:min(100% - 24px,560px);padding-top:30px}.intro{margin-bottom:18px}h1{font-size:30px}.preview{padding:12px}}
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="intro">
+      <p class="eyebrow">Proposed order-page treatment</p>
+      <h1>Bacteriostatic water as a product item, not a COA exception.</h1>
+      <p>The card keeps the same visual system as the compounds while showing only the information printed on the Hospira product.</p>
+    </header>
+    <div class="previews">
+      <section class="preview desktop-preview" aria-label="Desktop card preview">
+        <p class="preview-label"><span>Desktop</span><span>Same card footprint</span></p>
+        <article class="ordered-card">
+          <div class="media">
+            <img src="https://pepselect.com/wp-content/uploads/2026/08/bacwater30-2-600x745.jpg" alt="Bacteriostatic Water 30mL">
+            <span class="count">02</span>
+          </div>
+          <div class="content">
+            <div class="info">
+              <div class="title"><h2>Bacteriostatic Water</h2><span class="strength">30 ML</span></div>
+              <ul class="context"><li>Hospira Bacteriostatic Water, USP</li><li>30 mL multiple-dose vial</li></ul>
+            </div>
+            <div class="details">
+              <p class="details-heading"><svg viewBox="0 0 24 24"><path d="M7 3h10v4l2 3v10H5V10l2-3z"/><path d="M8 8h8M9 13h6M9 17h6"/></svg>Product details</p>
+              <dl><div><dt>Brand</dt><dd>HOSPIRA</dd></div><div><dt>Label standard</dt><dd>USP</dd></div><div><dt>Volume</dt><dd>30 ML</dd></div></dl>
+              <a class="button" href="#">View product information <svg viewBox="0 0 24 24"><path d="M5 12h14M14 7l5 5-5 5"/></svg></a>
+            </div>
+          </div>
+        </article>
+      </section>
+      <section class="preview" aria-label="Mobile card preview">
+        <p class="preview-label"><span>Mobile</span><span>Natural card width</span></p>
+        <div class="mobile-shell">
+          <article class="ordered-card">
+            <div class="media">
+              <img src="https://pepselect.com/wp-content/uploads/2026/08/bacwater30-2-600x745.jpg" alt="Bacteriostatic Water 30mL">
+              <span class="count">02</span>
+            </div>
+            <div class="content">
+              <div class="info">
+                <div class="title"><h2>Bacteriostatic Water</h2><span class="strength">30 ML</span></div>
+                <ul class="context"><li>Hospira Bacteriostatic Water, USP</li><li>30 mL multiple-dose vial</li></ul>
+              </div>
+              <div class="details">
+                <p class="details-heading"><svg viewBox="0 0 24 24"><path d="M7 3h10v4l2 3v10H5V10l2-3z"/><path d="M8 8h8M9 13h6M9 17h6"/></svg>Product details</p>
+                <dl><div><dt>Brand</dt><dd>HOSPIRA</dd></div><div><dt>Label standard</dt><dd>USP</dd></div><div><dt>Volume</dt><dd>30 ML</dd></div></dl>
+                <a class="button" href="#">View product information <svg viewBox="0 0 24 24"><path d="M5 12h14M14 7l5 5-5 5"/></svg></a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>
