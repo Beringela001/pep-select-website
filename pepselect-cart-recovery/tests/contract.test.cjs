@@ -77,7 +77,7 @@ const mockup = fs.readFileSync(path.join(root, '..', 'mockups', 'cart-recovery',
   'max-height:calc(100vh - 36px)'
 ].forEach((needle) => assert(css.includes(needle), `Missing centered modal contract: ${needle}`));
 
-assert(php.includes("const VERSION                     = '0.4.8'"), 'Plugin version must be 0.4.8');
+assert(php.includes("const VERSION                     = '0.4.9'"), 'Plugin version must be 0.4.9');
 
 assert(!/dataLayer\.push\([^)]*email/i.test(js), 'Email must not be pushed to the dataLayer');
 assert(!/https?:\/\//.test(js + css), 'Public assets must not call third-party URLs');

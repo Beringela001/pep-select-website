@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Pep Select Cart Recovery
  * Description: Lightweight exit offer, unique coupons, and Cart Abandonment Recovery integration for Pep Select.
- * Version: 0.4.8
+ * Version: 0.4.9
  * Author: Pep Select
  * Text Domain: pepselect-cart-recovery
  */
@@ -10,7 +10,7 @@
 defined( 'ABSPATH' ) || exit;
 
 final class PepSelect_Cart_Recovery {
-	const VERSION                     = '0.4.8';
+	const VERSION                     = '0.4.9';
 	const OPTION                      = 'pepselect_cart_recovery_settings';
 	const VERSION_OPTION              = 'pepselect_cart_recovery_version';
 	const NONCE                       = 'pepselect_exit_offer_capture';
@@ -767,7 +767,7 @@ HTML;
 			'code_note'  => $this->replace_tokens( $settings['email_code_note'], $settings ),
 			'extra'      => $this->replace_tokens( $settings['email_extra'], $settings ),
 			'button'     => $this->replace_tokens( $settings['email_button'], $settings ),
-			'support'    => $this->replace_tokens( '' !== trim( (string) $settings['email_support'] ) ? $settings['email_support'] : self::defaults()['email_support'], $settings ),
+			'support'    => self::defaults()['email_support'],
 		);
 
 		ob_start();
@@ -945,7 +945,7 @@ HTML;
 	private function admin_field( $settings, $key, $label, $description = '', $type = 'text', $attributes = array() ) {
 		$name  = self::OPTION . '[' . $key . ']';
 		$value = $settings[ $key ] ?? '';
-		if ( 'email_support' === $key && '' === trim( (string) $value ) ) {
+		if ( 'email_support' === $key ) {
 			$value = self::defaults()['email_support'];
 		}
 		?>

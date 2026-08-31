@@ -32,5 +32,6 @@ assert.match(recovery, approved);
 assert.match(recovery, /maybe_upgrade_settings/);
 assert.match(recovery, /VERSION_OPTION/);
 assert.match(recovery, /in_array\( trim\( \(string\) \$settings\['email_support'\] \), \$legacy_support, true \)/);
-assert.match(recovery, /'email_support' === \$key && '' === trim/);
+assert.match(recovery, /'email_support' === \$key/);
+assert.match(recovery, /'support'\s*=>\s*self::defaults\(\)\['email_support'\]/);
 console.log('Treated customer email reply-copy checks passed.');
