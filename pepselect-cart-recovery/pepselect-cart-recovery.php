@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Pep Select Cart Recovery
  * Description: Lightweight exit offer, unique coupons, and Cart Abandonment Recovery integration for Pep Select.
- * Version: 0.4.11
+ * Version: 0.4.12
  * Author: Pep Select
  * Text Domain: pepselect-cart-recovery
  */
@@ -10,11 +10,11 @@
 defined( 'ABSPATH' ) || exit;
 
 final class PepSelect_Cart_Recovery {
-	const VERSION                     = '0.4.11';
+	const VERSION                     = '0.4.12';
 	const OPTION                      = 'pepselect_cart_recovery_settings';
 	const VERSION_OPTION              = 'pepselect_cart_recovery_version';
 	const RECOVERY_COPY_OPTION        = 'pepselect_cart_recovery_copy_version';
-	const RECOVERY_COPY_VERSION       = '2';
+	const RECOVERY_COPY_VERSION       = '3';
 	const NONCE                       = 'pepselect_exit_offer_capture';
 	const MARKETING_EMAILS_PER_SECOND = 1;
 
@@ -35,10 +35,11 @@ final class PepSelect_Cart_Recovery {
 		add_action( 'wp_ajax_nopriv_pepselect_capture_exit_offer', array( $this, 'capture_offer' ) );
 		add_filter( 'woo_ca_recovery_email_data', array( $this, 'attach_coupon_to_recovery_email' ), 20, 2 );
 		add_filter( 'wcar_add_token_data', array( $this, 'attach_coupon_to_recovery_link' ), 20, 2 );
-		add_filter( 'wcf_ca_should_send_email', array( $this, 'require_signup_code_for_final_email' ), 20, 2 );
+		add_filter( 'wcf_ca_should_send_email', array( $this, 'require_recovery_code_for_final_email' ), 20, 2 );
 		add_filter( 'cartflows_ca_email_headers', array( $this, 'recovery_headers' ), 20 );
 		add_filter( 'fluent_crm/global_email_limit_per_second', array( $this, 'limit_marketing_delivery_rate' ), 100, 2 );
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
+		add_action( 'update_option_' . self::OPTION, array( $this, 'sync_coupon_stackability_on_settings_update' ), 10, 3 );
 		add_action( 'admin_menu', array( $this, 'register_settings_page' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
 		add_action( 'rest_api_init', array( $this, 'register_rest_routes' ) );
@@ -71,8 +72,22 @@ final class PepSelect_Cart_Recovery {
 			'enabled'                   => 0,
 			'discount_type'             => 'percent',
 			'discount_amount'           => '20',
+			'allow_coupon_stacking'     => 0,
 			'coupon_prefix'             => 'PEP',
 			'coupon_expiry_days'        => 7,
+			'usage_limit'               => 1,
+			'usage_limit_per_user'      => 1,
+			'limit_usage_to_x_items'    => 0,
+			'minimum_amount'            => '',
+			'maximum_amount'            => '',
+			'free_shipping'             => 0,
+			'exclude_sale_items'        => 0,
+			'product_ids'               => array(),
+			'excluded_product_ids'      => array(),
+			'product_category_ids'      => array(),
+			'excluded_product_category_ids' => array(),
+			'product_brand_ids'         => array(),
+			'excluded_product_brand_ids' => array(),
 			'dismiss_days'              => 30,
 			'fluentcrm_list_id'         => 0,
 			'final_template_id'         => 0,
@@ -105,7 +120,7 @@ final class PepSelect_Cart_Recovery {
 			'email_intro'               => 'You gave us your email. We promised {discount} off. Fair trade.',
 			'email_code_label'          => 'Your private {discount} code',
 			'email_code_note'           => 'Use it at checkout with the same email address. The code expires in {days} days.',
-			'email_extra'               => 'The code can combine with eligible offers. Product details and available batch documentation are ready whenever you want to take another look.',
+			'email_extra'               => 'The code is tied to your email and can be applied to eligible products at checkout. Product details and available batch documentation are ready whenever you want to take another look.',
 			'email_button'              => 'Explore compounds',
 			'email_support'             => 'Have a question? Reply to this email, and one of our team members will be in touch shortly.',
 			'promo_enabled'             => 0,
@@ -146,14 +161,58 @@ final class PepSelect_Cart_Recovery {
 			return;
 		}
 
+		if ( ! $this->sync_generated_coupon_stackability( false ) ) {
+			return;
+		}
+
 		$settings                  = (array) get_option( self::OPTION, array() );
+		$legacy_email_extra        = 'The code can combine with eligible offers. Product details and available batch documentation are ready whenever you want to take another look.';
+		$settings['allow_coupon_stacking'] = 0;
 		$settings['email_support'] = self::defaults()['email_support'];
+		if ( $legacy_email_extra === (string) ( $settings['email_extra'] ?? '' ) ) {
+			$settings['email_extra'] = self::defaults()['email_extra'];
+		}
 		update_option( self::OPTION, $settings );
 		update_option( self::VERSION_OPTION, self::VERSION );
 	}
 
+	/** Keep previously generated recovery coupons aligned with the stacking control. */
+	public function sync_coupon_stackability_on_settings_update( $old_value, $value, $option ) {
+		unset( $option );
+		if ( empty( $old_value['allow_coupon_stacking'] ) === empty( $value['allow_coupon_stacking'] ) ) {
+			return;
+		}
+		$this->sync_generated_coupon_stackability( ! empty( $value['allow_coupon_stacking'] ) );
+	}
+
+	/** Update only coupons created by this plugin. */
+	private function sync_generated_coupon_stackability( $allow_stacking ) {
+		if ( ! class_exists( 'WC_Coupon' ) ) {
+			return false;
+		}
+		$ids = get_posts(
+			array(
+				'post_type'      => 'shop_coupon',
+				'post_status'    => array( 'publish', 'draft', 'pending', 'private' ),
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+				'meta_query'     => array(
+					'relation' => 'OR',
+					array( 'key' => '_pepselect_exit_offer', 'compare' => 'EXISTS' ),
+					array( 'key' => '_pepselect_exit_bonus_offer', 'compare' => 'EXISTS' ),
+				),
+			)
+		);
+		foreach ( $ids as $id ) {
+			$coupon = new WC_Coupon( $id );
+			$coupon->set_individual_use( ! $allow_stacking );
+			$coupon->save();
+		}
+		return true;
+	}
+
 	/**
-	 * Replace the first two saved-cart database templates with the approved copy.
+	 * Replace the saved-cart database templates with the approved copy.
 	 *
 	 * CartFlows stores these messages outside the plugin, so changing the send-time
 	 * wrapper alone cannot correct an older subject or body already in the database.
@@ -177,6 +236,7 @@ final class PepSelect_Cart_Recovery {
 			$template_name = strtolower( trim( (string) ( $template->template_name ?? '' ) ) );
 			$is_90_minute  = 'saved cart | 90 minutes' === $template_name || 90 === $minutes;
 			$is_24_hour    = 'saved cart | 24 hours' === $template_name || 1440 === $minutes;
+			$is_48_hour    = 'saved cart | 48 hours' === $template_name || in_array( $minutes, array( 2820, 2880 ), true );
 			if ( $is_90_minute && empty( $updated['90'] ) ) {
 				$wpdb->update(
 					$table,
@@ -204,9 +264,23 @@ final class PepSelect_Cart_Recovery {
 				);
 				$updated['24'] = true;
 			}
+
+			if ( $is_48_hour && empty( $updated['48'] ) ) {
+				$wpdb->update(
+					$table,
+					array(
+						'email_subject' => "Don't forget your code",
+						'email_body'    => $this->recovery_template_body( '48' ),
+					),
+					array( 'id' => absint( $template->id ) ),
+					array( '%s', '%s' ),
+					array( '%d' )
+				);
+				$updated['48'] = true;
+			}
 		}
 
-		if ( ! empty( $updated['90'] ) && ! empty( $updated['24'] ) ) {
+		if ( ! empty( $updated['90'] ) && ! empty( $updated['24'] ) && ! empty( $updated['48'] ) ) {
 			update_option( self::RECOVERY_COPY_OPTION, self::RECOVERY_COPY_VERSION );
 		}
 	}
@@ -225,18 +299,22 @@ final class PepSelect_Cart_Recovery {
 
 	private function recovery_template_body( $template ) {
 		$is_first  = '90' === $template;
-		$preheader = $is_first ? 'Your Pep Select cart is ready when you are.' : 'Questions before ordering? Just reply to this email.';
-		$eyebrow   = $is_first ? 'YOUR SAVED CART' : 'A QUICK NOTE';
-		$heading   = $is_first ? 'Pick up where you left off.' : 'Any questions?';
-		$reference = $is_first ? 'SAVED CART' : 'A NOTE FROM SUPPORT';
-		$message   = $is_first
+		$is_final  = '48' === $template;
+		$preheader = $is_final ? 'Your private Pep Select code is inside.' : ( $is_first ? 'Your Pep Select cart is ready when you are.' : 'Questions before ordering? Just reply to this email.' );
+		$eyebrow   = $is_final ? 'YOUR PRIVATE CODE' : ( $is_first ? 'YOUR SAVED CART' : 'A QUICK NOTE' );
+		$heading   = $is_final ? "Don't forget your code." : ( $is_first ? 'Pick up where you left off.' : 'Any questions?' );
+		$reference = $is_final ? 'SAVED CART' : ( $is_first ? 'SAVED CART' : 'A NOTE FROM SUPPORT' );
+		$message   = $is_final
+			? 'Your cart is still available. Use the private code below if you decide to complete your order.'
+			: ( $is_first
 			? 'The compounds you selected are still in your cart if you would like to take another look.'
-			: 'Just a quick note to let you know your cart is still available if you would like another look.';
+			: 'Just a quick note to let you know your cart is still available if you would like another look.' );
 		$support   = 'Have a question? Reply to this email, and one of our team members will be in touch shortly.';
 		$logo_url  = plugin_dir_url( __FILE__ ) . 'assets/pep-select-logo-header.png';
 		$footer    = $this->company_footer_html( 'For laboratory research use only. &middot; {{cart.unsubscribe}}' );
-		$support_before = $is_first ? '' : '<p class="pep-email-support-copy" style="color:#5e6f80;font-family:Arial,sans-serif;font-size:15px;line-height:1.62;margin:0 0 22px;">' . esc_html( $support ) . '</p>';
-		$support_after  = $is_first ? '<div class="pep-email-support-card" style="background:#f3f6f8;border-radius:6px;color:#425b70;font-family:Arial,sans-serif;font-size:12px;line-height:1.6;margin-top:22px;padding:12px 14px;">' . esc_html( $support ) . '</div>' : '';
+		$support_before = ( $is_first || $is_final ) ? '' : '<p class="pep-email-support-copy" style="color:#5e6f80;font-family:Arial,sans-serif;font-size:15px;line-height:1.62;margin:0 0 22px;">' . esc_html( $support ) . '</p>';
+		$support_after  = ( $is_first || $is_final ) ? '<div class="pep-email-support-card" style="background:#f3f6f8;border-radius:6px;color:#425b70;font-family:Arial,sans-serif;font-size:12px;line-height:1.6;margin-top:22px;padding:12px 14px;">' . esc_html( $support ) . '</div>' : '';
+		$code_block     = $is_final ? '<div class="pep-email-code-card" style="background:#f3f6f8;border:1px solid #d7e1e9;border-radius:6px;margin:0 0 22px;padding:17px 18px;text-align:center;"><div style="color:#0d708e;font-family:Consolas,\'Courier New\',monospace;font-size:9px;font-weight:700;letter-spacing:1.2px;margin-bottom:7px;text-transform:uppercase;">Your private code</div><strong style="color:#002a53;display:block;font-family:Consolas,\'Courier New\',monospace;font-size:22px;letter-spacing:1px;overflow-wrap:anywhere;">{{pepselect.recovery_coupon_code}}</strong><div style="color:#5e6f80;font-family:Arial,sans-serif;font-size:12px;line-height:1.5;margin-top:7px;">Use it at checkout with the same email address.</div></div>' : '';
 
 		$template_html = <<<'HTML'
 <span style="display:none!important;font-size:1px;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden">{PREHEADER}</span>
@@ -245,7 +323,7 @@ final class PepSelect_Cart_Recovery {
 <table class="pep-email-shell" role="presentation" cellpadding="0" cellspacing="0" width="680" style="background:#ffffff;border-collapse:separate;border-radius:18px;box-shadow:0 18px 46px rgba(0,42,83,.14);max-width:680px;overflow:hidden;width:100%;">
 <tr><td style="padding:0;"><table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;width:100%;"><tr><td width="75%" style="background:#002a53;font-size:0;height:6px;line-height:6px;">&nbsp;</td><td width="25%" style="background:#17a1cf;font-size:0;height:6px;line-height:6px;">&nbsp;</td></tr></table></td></tr>
 <tr><td class="pep-email-header" style="padding:36px 44px 27px;"><table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;width:100%;"><tr><td align="left"><img src="{LOGO_URL}" alt="Pep Select" width="132" style="border:0;display:block;height:auto;max-width:132px;width:132px;"></td><td class="pep-email-reference" align="right" style="color:#5e6f80;font-family:Consolas,'Courier New',monospace;font-size:10px;font-weight:600;letter-spacing:1.3px;text-transform:uppercase;">{REFERENCE}</td></tr><tr><td colspan="2" style="border-bottom:1px solid #d7e1e9;font-size:0;height:27px;line-height:27px;">&nbsp;</td></tr></table></td></tr>
-<tr><td class="pep-email-main" style="padding:0 44px 34px;"><div style="color:#0d708e;font-family:Consolas,'Courier New',monospace;font-size:10px;font-weight:700;letter-spacing:1.35px;margin:0 0 12px;text-transform:uppercase;">{EYEBROW}</div><h1 style="color:#001d3a;font-family:Arial,sans-serif;font-size:32px;letter-spacing:-.8px;line-height:1.18;margin:0 0 18px;">{HEADING}</h1><p style="color:#001d3a;font-family:Arial,sans-serif;font-size:15px;font-weight:700;line-height:1.62;margin:0 0 4px;">Hi {{customer.firstname}},</p><p style="color:#5e6f80;font-family:Arial,sans-serif;font-size:15px;line-height:1.62;margin:0 0 22px;">{MESSAGE}</p>{SUPPORT_BEFORE}{{pepselect.cart.card}}<a class="pep-email-button" href="{{cart.checkout_url}}" style="background:#17a1cf;border:1px solid #17a1cf;border-radius:999px;color:#ffffff;display:block;font-family:Arial,sans-serif;font-size:14px;font-weight:700;padding:13px 22px;text-align:center;text-decoration:none;">View my cart</a>{SUPPORT_AFTER}</td></tr>
+<tr><td class="pep-email-main" style="padding:0 44px 34px;"><div style="color:#0d708e;font-family:Consolas,'Courier New',monospace;font-size:10px;font-weight:700;letter-spacing:1.35px;margin:0 0 12px;text-transform:uppercase;">{EYEBROW}</div><h1 style="color:#001d3a;font-family:Arial,sans-serif;font-size:32px;letter-spacing:-.8px;line-height:1.18;margin:0 0 18px;">{HEADING}</h1><p style="color:#001d3a;font-family:Arial,sans-serif;font-size:15px;font-weight:700;line-height:1.62;margin:0 0 4px;">Hi {{customer.firstname}},</p><p style="color:#5e6f80;font-family:Arial,sans-serif;font-size:15px;line-height:1.62;margin:0 0 22px;">{MESSAGE}</p>{SUPPORT_BEFORE}{CODE_BLOCK}{{pepselect.cart.card}}<a class="pep-email-button" href="{{cart.checkout_url}}" style="background:#17a1cf;border:1px solid #17a1cf;border-radius:999px;color:#ffffff;display:block;font-family:Arial,sans-serif;font-size:14px;font-weight:700;padding:13px 22px;text-align:center;text-decoration:none;">View my cart</a>{SUPPORT_AFTER}</td></tr>
 <tr><td style="padding:0;">{FOOTER}</td></tr>
 </table>
 </td></tr>
@@ -262,6 +340,7 @@ HTML;
 				'{HEADING}'        => esc_html( $heading ),
 				'{MESSAGE}'        => esc_html( $message ),
 				'{SUPPORT_BEFORE}' => $support_before,
+				'{CODE_BLOCK}'     => $code_block,
 				'{SUPPORT_AFTER}'  => $support_after,
 				'{FOOTER}'         => $footer,
 			)
@@ -318,7 +397,7 @@ HTML;
 		$settings = is_array( $settings ) ? $settings : $this->settings();
 		$amount   = (float) $settings['discount_amount'];
 		$number   = rtrim( rtrim( number_format( $amount, 2, '.', '' ), '0' ), '.' );
-		if ( 'fixed_cart' === $settings['discount_type'] ) {
+		if ( in_array( $settings['discount_type'], array( 'fixed_cart', 'fixed_product' ), true ) ) {
 			return html_entity_decode( get_woocommerce_currency_symbol() . $number, ENT_QUOTES, get_bloginfo( 'charset' ) );
 		}
 		return $number . '%';
@@ -544,14 +623,24 @@ HTML;
 		try {
 			$coupon = new WC_Coupon();
 			$coupon->set_code( $code );
-			$coupon->set_description( sprintf( 'Pep Select %s email signup offer. Generated automatically.', $this->discount_label( $settings ) ) );
+			$coupon->set_description( sprintf( 'Pep Select %s private recovery offer. Generated automatically.', $this->discount_label( $settings ) ) );
 			$coupon->set_discount_type( $settings['discount_type'] );
 			$coupon->set_amount( (float) $settings['discount_amount'] );
-			$coupon->set_individual_use( false );
-			$coupon->set_usage_limit( 1 );
-			$coupon->set_usage_limit_per_user( 1 );
+			$coupon->set_individual_use( empty( $settings['allow_coupon_stacking'] ) );
+			$coupon->set_usage_limit( absint( $settings['usage_limit'] ) );
+			$coupon->set_usage_limit_per_user( absint( $settings['usage_limit_per_user'] ) );
+			$coupon->set_limit_usage_to_x_items( absint( $settings['limit_usage_to_x_items'] ) );
 			$coupon->set_email_restrictions( array( $email ) );
-			$coupon->set_free_shipping( false );
+			$coupon->set_minimum_amount( (string) $settings['minimum_amount'] );
+			$coupon->set_maximum_amount( (string) $settings['maximum_amount'] );
+			$coupon->set_free_shipping( ! empty( $settings['free_shipping'] ) );
+			$coupon->set_exclude_sale_items( ! empty( $settings['exclude_sale_items'] ) );
+			$coupon->set_product_ids( array_map( 'absint', (array) $settings['product_ids'] ) );
+			$coupon->set_excluded_product_ids( array_map( 'absint', (array) $settings['excluded_product_ids'] ) );
+			$coupon->set_product_categories( array_map( 'absint', (array) $settings['product_category_ids'] ) );
+			$coupon->set_excluded_product_categories( array_map( 'absint', (array) $settings['excluded_product_category_ids'] ) );
+			$coupon->add_meta_data( 'product_brands', array_map( 'absint', (array) $settings['product_brand_ids'] ), true );
+			$coupon->add_meta_data( 'exclude_product_brands', array_map( 'absint', (array) $settings['excluded_product_brand_ids'] ), true );
 			$coupon->set_date_expires( time() + max( 1, absint( $settings['coupon_expiry_days'] ) ) * DAY_IN_SECONDS );
 			$coupon->add_meta_data( '_pepselect_exit_offer', 1, true );
 			$coupon->add_meta_data( '_pepselect_exit_email_hash', hash_hmac( 'sha256', strtolower( $email ), wp_salt( 'auth' ) ), true );
@@ -570,14 +659,24 @@ HTML;
 
 	private function coupon_signature( $settings = null ) {
 		$settings = is_array( $settings ) ? $settings : $this->settings();
-		return substr( hash( 'sha256', $settings['discount_type'] . '|' . $settings['discount_amount'] . '|' . $settings['coupon_prefix'] ), 0, 20 );
+		$keys = array(
+			'discount_type', 'discount_amount', 'coupon_prefix', 'coupon_expiry_days', 'allow_coupon_stacking',
+			'usage_limit', 'usage_limit_per_user', 'limit_usage_to_x_items', 'minimum_amount', 'maximum_amount',
+			'free_shipping', 'exclude_sale_items', 'product_ids', 'excluded_product_ids', 'product_category_ids', 'excluded_product_category_ids',
+			'product_brand_ids', 'excluded_product_brand_ids',
+		);
+		$signature = array();
+		foreach ( $keys as $key ) {
+			$value = $settings[ $key ] ?? '';
+			if ( is_array( $value ) ) {
+				sort( $value );
+			}
+			$signature[ $key ] = $value;
+		}
+		return substr( hash( 'sha256', wp_json_encode( $signature ) ), 0, 20 );
 	}
 
-	private function bonus_coupon_key( $email ) {
-		return 'pep_exit_bonus_coupon_' . hash_hmac( 'sha256', strtolower( $email ), wp_salt( 'auth' ) );
-	}
-
-	private function coupon_for_email( $email ) {
+	private function coupon_for_email( $email, $require_current_signature = true ) {
 		$signature = $this->coupon_signature();
 		$code = get_transient( $this->email_coupon_key( $email ) );
 		if ( ! $code ) {
@@ -602,81 +701,10 @@ HTML;
 			return '';
 		}
 		$coupon = new WC_Coupon( $code );
-		if ( $signature !== (string) $coupon->get_meta( '_pepselect_exit_offer_signature', true ) ) {
+		if ( $require_current_signature && $signature !== (string) $coupon->get_meta( '_pepselect_exit_offer_signature', true ) ) {
 			return '';
 		}
 		return $coupon->get_date_expires() && $coupon->get_date_expires()->getTimestamp() < time() ? '' : $code;
-	}
-
-	private function bonus_coupon_for_email( $email ) {
-		$code = get_transient( $this->bonus_coupon_key( $email ) );
-		if ( ! $code ) {
-			$coupon_ids = get_posts(
-				array(
-					'post_type'      => 'shop_coupon',
-					'post_status'    => 'publish',
-					'posts_per_page' => 1,
-					'fields'         => 'ids',
-					'orderby'        => 'date',
-					'order'          => 'DESC',
-					'meta_key'       => '_pepselect_exit_bonus_email_hash',
-					'meta_value'     => hash_hmac( 'sha256', strtolower( $email ), wp_salt( 'auth' ) ),
-				)
-			);
-			if ( $coupon_ids ) {
-				$stored_coupon = new WC_Coupon( $coupon_ids[0] );
-				$code          = $stored_coupon->get_code();
-			}
-		}
-
-		if ( ! $code || ! wc_get_coupon_id_by_code( $code ) ) {
-			return '';
-		}
-
-		$coupon = new WC_Coupon( $code );
-		return $coupon->get_date_expires() && $coupon->get_date_expires()->getTimestamp() < time() ? '' : $code;
-	}
-
-	private function create_bonus_coupon( $email, $parent_code ) {
-		$settings = $this->settings();
-		$code     = '';
-		for ( $attempt = 0; $attempt < 4; $attempt++ ) {
-			$candidate = 'PEP5-' . strtoupper( wp_generate_password( 8, false, false ) );
-			if ( ! wc_get_coupon_id_by_code( $candidate ) ) {
-				$code = $candidate;
-				break;
-			}
-		}
-		if ( ! $code ) {
-			return '';
-		}
-
-		try {
-			$coupon = new WC_Coupon();
-			$coupon->set_code( $code );
-			$coupon->set_description( 'Pep Select 5% 48-hour cart recovery offer. Generated automatically.' );
-			$coupon->set_discount_type( 'percent' );
-			$coupon->set_amount( 5 );
-			$coupon->set_individual_use( false );
-			$coupon->set_usage_limit( 1 );
-			$coupon->set_usage_limit_per_user( 1 );
-			$coupon->set_email_restrictions( array( $email ) );
-			$coupon->set_free_shipping( false );
-			$coupon->set_date_expires( time() + max( 1, absint( $settings['coupon_expiry_days'] ) ) * DAY_IN_SECONDS );
-			$coupon->add_meta_data( '_pepselect_exit_bonus_offer', 1, true );
-			$coupon->add_meta_data( '_pepselect_exit_bonus_email_hash', hash_hmac( 'sha256', strtolower( $email ), wp_salt( 'auth' ) ), true );
-			$coupon->add_meta_data( '_pepselect_exit_parent_code', sanitize_text_field( $parent_code ), true );
-			$coupon->save();
-			set_transient( $this->bonus_coupon_key( $email ), $code, max( 1, absint( $settings['coupon_expiry_days'] ) ) * DAY_IN_SECONDS );
-			return $code;
-		} catch ( Exception $exception ) {
-			return '';
-		}
-	}
-
-	private function ensure_bonus_coupon( $email, $parent_code ) {
-		$code = $this->bonus_coupon_for_email( $email );
-		return $code ? $code : $this->create_bonus_coupon( $email, $parent_code );
 	}
 
 	private function is_final_template( $email_data ) {
@@ -717,16 +745,20 @@ HTML;
 
 	public function attach_coupon_to_recovery_email( $email_data, $preview_email ) {
 		if ( $preview_email && $this->is_final_template( $email_data ) && ! empty( $email_data->email_body ) ) {
-			$email_data->email_body = str_replace( '{{pepselect.bonus_coupon_code}}', 'PEP5-PREVIEW', $email_data->email_body );
+			$email_data->email_body = str_replace( array( '{{pepselect.bonus_coupon_code}}', '{{pepselect.recovery_coupon_code}}' ), 'PEP-PREVIEW', $email_data->email_body );
 		}
 
 		if ( ! $preview_email && is_object( $email_data ) && ! empty( $email_data->email ) ) {
-			$code = $this->coupon_for_email( sanitize_email( $email_data->email ) );
+			$email    = sanitize_email( $email_data->email );
+			$is_final = $this->is_final_template( $email_data );
+			$code     = $this->coupon_for_email( $email, ! $is_final );
+			if ( ! $code && $is_final ) {
+				$code = $this->create_coupon( $email );
+			}
 			if ( $code ) {
 				$email_data->coupon_code = $code;
-				if ( $this->is_final_template( $email_data ) && ! empty( $email_data->email_body ) ) {
-					$bonus_code             = $this->ensure_bonus_coupon( sanitize_email( $email_data->email ), $code );
-					$email_data->email_body = str_replace( '{{pepselect.bonus_coupon_code}}', $bonus_code, $email_data->email_body );
+				if ( $is_final && ! empty( $email_data->email_body ) ) {
+					$email_data->email_body = str_replace( array( '{{pepselect.bonus_coupon_code}}', '{{pepselect.recovery_coupon_code}}' ), esc_html( $code ), $email_data->email_body );
 				}
 			}
 		}
@@ -820,7 +852,7 @@ HTML;
 			&& false !== stripos( $body, '1 (833) 737-7528' );
 	}
 
-	public function require_signup_code_for_final_email( $should_send, $email_data ) {
+	public function require_recovery_code_for_final_email( $should_send, $email_data ) {
 		if ( ! $should_send ) {
 			return false;
 		}
@@ -838,13 +870,18 @@ HTML;
 		}
 
 		$email = sanitize_email( $email_data->email );
-		$code  = $this->coupon_for_email( $email );
-		return $code && (bool) $this->ensure_bonus_coupon( $email, $code );
+		$code  = $this->coupon_for_email( $email, false );
+		return (bool) ( $code ? $code : $this->create_coupon( $email ) );
 	}
 
 	public function attach_coupon_to_recovery_link( $token_data, $email_data ) {
 		if ( is_object( $email_data ) && ! empty( $email_data->email ) ) {
-			$code = $this->coupon_for_email( sanitize_email( $email_data->email ) );
+			$email    = sanitize_email( $email_data->email );
+			$is_final = $this->is_final_template( $email_data );
+			$code     = $this->coupon_for_email( $email, ! $is_final );
+			if ( ! $code && $is_final ) {
+				$code = $this->create_coupon( $email );
+			}
 			if ( $code ) {
 				$token_data['wcf_coupon_code'] = $code;
 			}
@@ -1032,11 +1069,11 @@ HTML;
 		$input    = is_array( $input ) ? $input : array();
 		$output   = $defaults;
 
-		foreach ( array( 'enabled', 'promo_enabled', 'promo_suppress_exit' ) as $key ) {
+		foreach ( array( 'enabled', 'promo_enabled', 'promo_suppress_exit', 'allow_coupon_stacking', 'free_shipping', 'exclude_sale_items' ) as $key ) {
 			$output[ $key ] = empty( $input[ $key ] ) ? 0 : 1;
 		}
 
-		$output['discount_type'] = in_array( $input['discount_type'] ?? '', array( 'percent', 'fixed_cart' ), true ) ? $input['discount_type'] : 'percent';
+		$output['discount_type'] = in_array( $input['discount_type'] ?? '', array( 'percent', 'fixed_cart', 'fixed_product' ), true ) ? $input['discount_type'] : 'percent';
 		$raw_amount              = $input['discount_amount'] ?? $defaults['discount_amount'];
 		$amount                  = (float) ( function_exists( 'wc_format_decimal' ) ? wc_format_decimal( $raw_amount ) : $raw_amount );
 		$output['discount_amount'] = (string) min( 'percent' === $output['discount_type'] ? 100 : 10000, max( 0.01, $amount ) );
@@ -1047,6 +1084,16 @@ HTML;
 		$output['dismiss_days']       = min( 365, max( 1, absint( $input['dismiss_days'] ?? 30 ) ) );
 		$output['fluentcrm_list_id']  = absint( $input['fluentcrm_list_id'] ?? 0 );
 		$output['final_template_id']  = absint( $input['final_template_id'] ?? 0 );
+		$output['usage_limit']        = max( 0, absint( $input['usage_limit'] ?? $defaults['usage_limit'] ) );
+		$output['usage_limit_per_user'] = max( 0, absint( $input['usage_limit_per_user'] ?? $defaults['usage_limit_per_user'] ) );
+		$output['limit_usage_to_x_items'] = max( 0, absint( $input['limit_usage_to_x_items'] ?? $defaults['limit_usage_to_x_items'] ) );
+		foreach ( array( 'minimum_amount', 'maximum_amount' ) as $key ) {
+			$value          = $input[ $key ] ?? '';
+			$output[ $key ] = '' === trim( (string) $value ) ? '' : (string) max( 0, (float) ( function_exists( 'wc_format_decimal' ) ? wc_format_decimal( $value ) : $value ) );
+		}
+		foreach ( array( 'product_ids', 'excluded_product_ids', 'product_category_ids', 'excluded_product_category_ids', 'product_brand_ids', 'excluded_product_brand_ids' ) as $key ) {
+			$output[ $key ] = array_values( array_unique( array_filter( array_map( 'absint', (array) ( $input[ $key ] ?? array() ) ) ) ) );
+		}
 		$output['promo_delay_seconds'] = min( 86400, max( 0, absint( $input['promo_delay_seconds'] ?? 8 ) ) );
 		$output['promo_dismiss_days']  = min( 365, max( 1, absint( $input['promo_dismiss_days'] ?? 7 ) ) );
 
@@ -1113,6 +1160,8 @@ HTML;
 			return;
 		}
 		wp_enqueue_media();
+		wp_enqueue_style( 'woocommerce_admin_styles' );
+		wp_enqueue_script( 'wc-enhanced-select' );
 		wp_enqueue_style( 'pepselect-cart-recovery-admin', plugin_dir_url( __FILE__ ) . 'assets/admin.css', array(), self::VERSION );
 		wp_enqueue_script( 'pepselect-cart-recovery-admin', plugin_dir_url( __FILE__ ) . 'assets/admin.js', array(), self::VERSION, true );
 		wp_localize_script(
@@ -1166,11 +1215,52 @@ HTML;
 			if ( 'card_image' === $suffix ) {
 				$this->admin_field( $settings, $key, $field[0], $field[1], 'image' );
 			} elseif ( false !== strpos( $suffix, 'opacity' ) ) {
-				$this->admin_field( $settings, $key, $field[0], $field[1], 'number', array( 'min' => '0', 'max' => '1', 'step' => '0.05' ) );
+				$this->admin_field( $settings, $key, $field[0], $field[1], 'number', array( 'min' => '0', 'max' => '1', 'step' => '0.01' ) );
 			} else {
 				$this->admin_field( $settings, $key, $field[0], $field[1], 'color' );
 			}
 		}
+	}
+
+	private function admin_checkbox( $settings, $key, $label, $description ) {
+		?>
+		<label class="pep-recovery-check"><input name="<?php echo esc_attr( self::OPTION ); ?>[<?php echo esc_attr( $key ); ?>]" data-pep-setting="<?php echo esc_attr( $key ); ?>" type="checkbox" value="1" <?php checked( ! empty( $settings[ $key ] ) ); ?>><span><b><?php echo esc_html( $label ); ?></b><small><?php echo esc_html( $description ); ?></small></span></label>
+		<?php
+	}
+
+	private function admin_product_selector( $settings, $key, $label, $description ) {
+		$ids = array_map( 'absint', (array) ( $settings[ $key ] ?? array() ) );
+		?>
+		<div class="pep-recovery-field pep-recovery-field--wide">
+			<label for="pep-<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $label ); ?></label>
+			<select id="pep-<?php echo esc_attr( $key ); ?>" class="wc-product-search" multiple="multiple" style="width:100%" name="<?php echo esc_attr( self::OPTION ); ?>[<?php echo esc_attr( $key ); ?>][]" data-placeholder="<?php esc_attr_e( 'Search for a product…', 'pepselect-cart-recovery' ); ?>" data-action="woocommerce_json_search_products_and_variations">
+				<?php foreach ( $ids as $product_id ) : $product = wc_get_product( $product_id ); if ( $product ) : ?>
+					<option value="<?php echo esc_attr( $product_id ); ?>" selected><?php echo esc_html( wp_strip_all_tags( $product->get_formatted_name() ) ); ?></option>
+				<?php endif; endforeach; ?>
+			</select>
+			<p class="description"><?php echo esc_html( $description ); ?></p>
+		</div>
+		<?php
+	}
+
+	private function admin_term_selector( $settings, $key, $taxonomy, $label, $description ) {
+		if ( ! taxonomy_exists( $taxonomy ) ) {
+			return;
+		}
+		$selected = array_map( 'absint', (array) ( $settings[ $key ] ?? array() ) );
+		$terms    = get_terms( array( 'taxonomy' => $taxonomy, 'hide_empty' => false ) );
+		$terms    = is_wp_error( $terms ) ? array() : $terms;
+		?>
+		<div class="pep-recovery-field pep-recovery-field--wide">
+			<label for="pep-<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $label ); ?></label>
+			<select id="pep-<?php echo esc_attr( $key ); ?>" class="wc-enhanced-select" multiple="multiple" style="width:100%" name="<?php echo esc_attr( self::OPTION ); ?>[<?php echo esc_attr( $key ); ?>][]" data-placeholder="<?php esc_attr_e( 'Any', 'pepselect-cart-recovery' ); ?>">
+				<?php foreach ( $terms as $term ) : ?>
+					<option value="<?php echo esc_attr( $term->term_id ); ?>" <?php selected( in_array( (int) $term->term_id, $selected, true ) ); ?>><?php echo esc_html( $term->name ); ?></option>
+				<?php endforeach; ?>
+			</select>
+			<p class="description"><?php echo esc_html( $description ); ?></p>
+		</div>
+		<?php
 	}
 
 	private function admin_preview( $settings, $prefix ) {
@@ -1224,13 +1314,35 @@ HTML;
 					<div class="pep-recovery-layout"><div class="pep-recovery-editor">
 						<section class="pep-recovery-card pep-recovery-intro"><div><span class="pep-recovery-kicker"><?php esc_html_e( 'Exit Popup', 'pepselect-cart-recovery' ); ?></span><h2><?php esc_html_e( 'Turn a visitor who is leaving into an email subscriber.', 'pepselect-cart-recovery' ); ?></h2><p><?php esc_html_e( 'The visitor enters only an email address. WooCommerce creates a private discount code, emails it, and restricts it to that address. No account is created.', 'pepselect-cart-recovery' ); ?></p></div><label class="pep-recovery-switch"><input name="<?php echo esc_attr( self::OPTION ); ?>[enabled]" data-pep-setting="enabled" type="checkbox" value="1" <?php checked( $settings['enabled'], 1 ); ?>><span></span><b><?php esc_html_e( 'Exit popup enabled', 'pepselect-cart-recovery' ); ?></b></label></section>
 						<section class="pep-recovery-card"><h2><?php esc_html_e( 'When does this appear?', 'pepselect-cart-recovery' ); ?></h2><div class="pep-recovery-explainer"><div><b><?php esc_html_e( 'Desktop', 'pepselect-cart-recovery' ); ?></b><p><?php esc_html_e( 'After 15 seconds, when the visitor moves toward the top of the browser to leave.', 'pepselect-cart-recovery' ); ?></p></div><div><b><?php esc_html_e( 'Mobile', 'pepselect-cart-recovery' ); ?></b><p><?php esc_html_e( 'After 45 seconds and after the visitor has scrolled beyond 55% of the page.', 'pepselect-cart-recovery' ); ?></p></div><div><b><?php esc_html_e( 'It stays out of the way', 'pepselect-cart-recovery' ); ?></b><p><?php esc_html_e( 'It never appears at checkout or inside My Account, and waits after a visitor dismisses it.', 'pepselect-cart-recovery' ); ?></p></div></div></section>
-						<section class="pep-recovery-card"><h2><?php esc_html_e( 'Discount and frequency', 'pepselect-cart-recovery' ); ?></h2><p class="description"><?php esc_html_e( 'These settings control the private WooCommerce coupon created after someone submits an email.', 'pepselect-cart-recovery' ); ?></p><div class="pep-recovery-grid">
-							<div class="pep-recovery-field"><label for="pep-discount-type"><?php esc_html_e( 'Discount type', 'pepselect-cart-recovery' ); ?></label><select id="pep-discount-type" name="<?php echo esc_attr( self::OPTION ); ?>[discount_type]" data-pep-setting="discount_type"><option value="percent" <?php selected( $settings['discount_type'], 'percent' ); ?>><?php esc_html_e( 'Percentage', 'pepselect-cart-recovery' ); ?></option><option value="fixed_cart" <?php selected( $settings['discount_type'], 'fixed_cart' ); ?>><?php esc_html_e( 'Fixed cart amount', 'pepselect-cart-recovery' ); ?></option></select><p class="description"><?php esc_html_e( 'Choose percent off or a fixed dollar amount.', 'pepselect-cart-recovery' ); ?></p></div>
-							<?php $this->admin_field( $settings, 'discount_amount', __( 'Discount amount', 'pepselect-cart-recovery' ), __( 'Used for every new code. Codes already issued do not change.', 'pepselect-cart-recovery' ), 'number', array( 'min' => '0.01', 'max' => '10000', 'step' => '0.01' ) ); ?>
-							<?php $this->admin_field( $settings, 'coupon_prefix', __( 'Coupon prefix', 'pepselect-cart-recovery' ), __( 'The readable beginning of every code. A private random ending is added automatically.', 'pepselect-cart-recovery' ) ); ?>
-							<?php $this->admin_field( $settings, 'coupon_expiry_days', __( 'Code expires after', 'pepselect-cart-recovery' ), __( 'Number of days the emailed code remains valid.', 'pepselect-cart-recovery' ), 'number', array( 'min' => '1', 'max' => '365' ) ); ?>
+						<section class="pep-recovery-card"><h2><?php esc_html_e( 'Exit popup timing', 'pepselect-cart-recovery' ); ?></h2><div class="pep-recovery-grid">
 							<?php $this->admin_field( $settings, 'dismiss_days', __( 'Wait after dismissal', 'pepselect-cart-recovery' ), __( 'Number of days before a visitor who closed the popup can see it again.', 'pepselect-cart-recovery' ), 'number', array( 'min' => '1', 'max' => '365' ) ); ?>
 						</div></section>
+						<details class="pep-recovery-card" open><summary><?php esc_html_e( 'Generated coupon options', 'pepselect-cart-recovery' ); ?></summary><p class="description"><?php esc_html_e( 'These rules apply to every private coupon generated by the Exit Popup and the final saved-cart email.', 'pepselect-cart-recovery' ); ?></p>
+							<div class="pep-recovery-grid">
+								<div class="pep-recovery-field"><label for="pep-discount-type"><?php esc_html_e( 'Discount type', 'pepselect-cart-recovery' ); ?></label><select id="pep-discount-type" name="<?php echo esc_attr( self::OPTION ); ?>[discount_type]" data-pep-setting="discount_type"><option value="percent" <?php selected( $settings['discount_type'], 'percent' ); ?>><?php esc_html_e( 'Percentage discount', 'pepselect-cart-recovery' ); ?></option><option value="fixed_cart" <?php selected( $settings['discount_type'], 'fixed_cart' ); ?>><?php esc_html_e( 'Fixed cart discount', 'pepselect-cart-recovery' ); ?></option><option value="fixed_product" <?php selected( $settings['discount_type'], 'fixed_product' ); ?>><?php esc_html_e( 'Fixed product discount', 'pepselect-cart-recovery' ); ?></option></select><p class="description"><?php esc_html_e( 'Matches WooCommerce coupon discount types.', 'pepselect-cart-recovery' ); ?></p></div>
+								<?php $this->admin_field( $settings, 'discount_amount', __( 'Coupon amount', 'pepselect-cart-recovery' ), __( 'Percentage or currency amount used for each new code.', 'pepselect-cart-recovery' ), 'number', array( 'min' => '0.01', 'max' => '10000', 'step' => '0.01' ) ); ?>
+								<?php $this->admin_field( $settings, 'coupon_prefix', __( 'Code prefix', 'pepselect-cart-recovery' ), __( 'A private random ending is added automatically.', 'pepselect-cart-recovery' ), 'text', array( 'maxlength' => '16' ) ); ?>
+								<?php $this->admin_field( $settings, 'coupon_expiry_days', __( 'Expires after', 'pepselect-cart-recovery' ), __( 'Days after each code is generated.', 'pepselect-cart-recovery' ), 'number', array( 'min' => '1', 'max' => '365' ) ); ?>
+								<?php $this->admin_field( $settings, 'usage_limit', __( 'Usage limit per coupon', 'pepselect-cart-recovery' ), __( 'Total redemptions allowed for each generated code. Use 0 for unlimited.', 'pepselect-cart-recovery' ), 'number', array( 'min' => '0' ) ); ?>
+								<?php $this->admin_field( $settings, 'usage_limit_per_user', __( 'Uses per email', 'pepselect-cart-recovery' ), __( 'Redemptions allowed for the email tied to the code. Use 0 for unlimited.', 'pepselect-cart-recovery' ), 'number', array( 'min' => '0' ) ); ?>
+								<?php $this->admin_field( $settings, 'limit_usage_to_x_items', __( 'Limit usage to X items', 'pepselect-cart-recovery' ), __( 'For product discounts, limit how many qualifying items receive the discount. Use 0 for all qualifying items.', 'pepselect-cart-recovery' ), 'number', array( 'min' => '0' ) ); ?>
+								<?php $this->admin_field( $settings, 'minimum_amount', __( 'Minimum spend', 'pepselect-cart-recovery' ), __( 'Cart subtotal required before the coupon can apply. Leave blank for none.', 'pepselect-cart-recovery' ), 'number', array( 'min' => '0', 'step' => '0.01' ) ); ?>
+								<?php $this->admin_field( $settings, 'maximum_amount', __( 'Maximum spend', 'pepselect-cart-recovery' ), __( 'Largest cart subtotal allowed for the coupon. Leave blank for none.', 'pepselect-cart-recovery' ), 'number', array( 'min' => '0', 'step' => '0.01' ) ); ?>
+							</div>
+							<div class="pep-recovery-coupon-toggles">
+								<?php $this->admin_checkbox( $settings, 'allow_coupon_stacking', __( 'Allow combining with other coupons', 'pepselect-cart-recovery' ), __( 'When off, generated codes are individual-use coupons. This setting also aligns existing Pep Select recovery codes.', 'pepselect-cart-recovery' ) ); ?>
+								<?php $this->admin_checkbox( $settings, 'free_shipping', __( 'Allow free shipping', 'pepselect-cart-recovery' ), __( 'The store must have a free-shipping method configured to require a valid coupon.', 'pepselect-cart-recovery' ) ); ?>
+								<?php $this->admin_checkbox( $settings, 'exclude_sale_items', __( 'Exclude sale items', 'pepselect-cart-recovery' ), __( 'Sale-priced products will not receive the generated coupon discount.', 'pepselect-cart-recovery' ) ); ?>
+							</div>
+							<h3><?php esc_html_e( 'Product restrictions', 'pepselect-cart-recovery' ); ?></h3><p class="description"><?php esc_html_e( 'Leave these selectors empty to allow every product. Included and excluded restrictions match the fields on a standard WooCommerce coupon.', 'pepselect-cart-recovery' ); ?></p><div class="pep-recovery-grid">
+								<?php $this->admin_product_selector( $settings, 'product_ids', __( 'Products', 'pepselect-cart-recovery' ), __( 'Products the coupon applies to or that must be in the cart for a fixed cart discount.', 'pepselect-cart-recovery' ) ); ?>
+								<?php $this->admin_product_selector( $settings, 'excluded_product_ids', __( 'Exclude products', 'pepselect-cart-recovery' ), __( 'Products that cannot receive or qualify for this coupon.', 'pepselect-cart-recovery' ) ); ?>
+								<?php $this->admin_term_selector( $settings, 'product_category_ids', 'product_cat', __( 'Product categories', 'pepselect-cart-recovery' ), __( 'Only products in these categories qualify.', 'pepselect-cart-recovery' ) ); ?>
+								<?php $this->admin_term_selector( $settings, 'excluded_product_category_ids', 'product_cat', __( 'Exclude categories', 'pepselect-cart-recovery' ), __( 'Products in these categories do not qualify.', 'pepselect-cart-recovery' ) ); ?>
+								<?php $this->admin_term_selector( $settings, 'product_brand_ids', 'product_brand', __( 'Product brands', 'pepselect-cart-recovery' ), __( 'Only products assigned to these WooCommerce brands qualify.', 'pepselect-cart-recovery' ) ); ?>
+								<?php $this->admin_term_selector( $settings, 'excluded_product_brand_ids', 'product_brand', __( 'Exclude brands', 'pepselect-cart-recovery' ), __( 'Products assigned to these brands do not qualify.', 'pepselect-cart-recovery' ) ); ?>
+							</div>
+						</details>
 						<section class="pep-recovery-card"><h2><?php esc_html_e( 'Words inside the popup', 'pepselect-cart-recovery' ); ?></h2><p class="pep-recovery-token-note"><strong><?php esc_html_e( 'Automatic words:', 'pepselect-cart-recovery' ); ?></strong> <code>{discount}</code> <?php esc_html_e( 'shows the current offer amount.', 'pepselect-cart-recovery' ); ?></p><div class="pep-recovery-grid">
 							<?php $this->admin_field( $settings, 'exit_eyebrow', __( 'Small label', 'pepselect-cart-recovery' ), __( 'The short all-caps line above the headline.', 'pepselect-cart-recovery' ) ); ?>
 							<?php $this->admin_field( $settings, 'exit_heading', __( 'Main headline', 'pepselect-cart-recovery' ), __( 'The largest text in the popup.', 'pepselect-cart-recovery' ) ); ?>
@@ -1244,7 +1356,7 @@ HTML;
 						</div></section>
 						<details class="pep-recovery-card" open><summary><?php esc_html_e( 'Popup colors and background', 'pepselect-cart-recovery' ); ?></summary><p class="description"><?php esc_html_e( 'Every change below is visible in the preview before you save it.', 'pepselect-cart-recovery' ); ?></p><div class="pep-recovery-grid"><?php $this->admin_colors( $settings, 'exit' ); ?></div></details>
 						<details class="pep-recovery-card"><summary><?php esc_html_e( 'Discount email wording', 'pepselect-cart-recovery' ); ?></summary><p class="description"><?php esc_html_e( 'This is the email sent immediately with the private coupon. The established Pep Select email layout does not change.', 'pepselect-cart-recovery' ); ?></p><p class="pep-recovery-token-note"><code>{discount}</code> <code>{days}</code> <code>{support_email}</code> <?php esc_html_e( 'are filled automatically.', 'pepselect-cart-recovery' ); ?></p><div class="pep-recovery-grid"><?php foreach ( array( 'email_subject' => 'Email subject', 'email_preheader' => 'Inbox preview text', 'email_label' => 'Header label', 'email_eyebrow' => 'Small label', 'email_heading' => 'Email headline', 'email_greeting' => 'Greeting', 'email_intro' => 'Opening paragraph', 'email_code_label' => 'Code label', 'email_code_note' => 'Instructions below code', 'email_extra' => 'Additional paragraph', 'email_button' => 'Email button text', 'email_support' => 'Support line' ) as $key => $label ) { $this->admin_field( $settings, $key, __( $label, 'pepselect-cart-recovery' ) ); } ?></div></details>
-						<details class="pep-recovery-card"><summary><?php esc_html_e( 'Connections for email and cart recovery', 'pepselect-cart-recovery' ); ?></summary><p class="description"><?php esc_html_e( 'These IDs connect the popup to existing Pep Select systems. Leave them alone unless the matching list or email template changes.', 'pepselect-cart-recovery' ); ?></p><div class="pep-recovery-grid"><?php $this->admin_field( $settings, 'fluentcrm_list_id', __( 'FluentCRM list ID', 'pepselect-cart-recovery' ), __( 'Adds submitted emails to this list. Use 0 to skip list syncing.', 'pepselect-cart-recovery' ), 'number', array( 'min' => '0' ) ); ?><?php $this->admin_field( $settings, 'final_template_id', __( '48-hour recovery email ID', 'pepselect-cart-recovery' ), __( 'Adds the separate 5% code to this Cart Abandonment Recovery email.', 'pepselect-cart-recovery' ), 'number', array( 'min' => '0' ) ); ?></div></details>
+						<details class="pep-recovery-card"><summary><?php esc_html_e( 'Connections for email and cart recovery', 'pepselect-cart-recovery' ); ?></summary><p class="description"><?php esc_html_e( 'These IDs connect the popup to existing Pep Select systems. Leave them alone unless the matching list or email template changes.', 'pepselect-cart-recovery' ); ?></p><div class="pep-recovery-grid"><?php $this->admin_field( $settings, 'fluentcrm_list_id', __( 'FluentCRM list ID', 'pepselect-cart-recovery' ), __( 'Adds submitted emails to this list. Use 0 to skip list syncing.', 'pepselect-cart-recovery' ), 'number', array( 'min' => '0' ) ); ?><?php $this->admin_field( $settings, 'final_template_id', __( '48-hour recovery email ID', 'pepselect-cart-recovery' ), __( 'Reminds the customer to use their existing private code or creates one when the tracked cart has no code.', 'pepselect-cart-recovery' ), 'number', array( 'min' => '0' ) ); ?></div></details>
 					</div><?php $this->admin_preview( $settings, 'exit' ); ?></div>
 				</div>
 
@@ -1264,7 +1376,7 @@ HTML;
 							<?php $this->admin_field( $settings, 'promo_code_label', __( 'Code label', 'pepselect-cart-recovery' ), __( 'The small words above the optional promotion code.', 'pepselect-cart-recovery' ) ); ?>
 							<?php $this->admin_field( $settings, 'promo_code', __( 'Promotion code to display', 'pepselect-cart-recovery' ), __( 'Optional. This displays a code but does not create it. Create the coupon in WooCommerce first.', 'pepselect-cart-recovery' ) ); ?>
 							<?php $this->admin_field( $settings, 'promo_button', __( 'Button text (optional)', 'pepselect-cart-recovery' ), __( 'Leave this blank to remove the button. Visitors can close the popup and continue browsing the website.', 'pepselect-cart-recovery' ) ); ?>
-							<?php $this->admin_field( $settings, 'promo_url', __( 'Button destination', 'pepselect-cart-recovery' ), __( 'The page opened after the button is pressed, such as a sale or shop page.', 'pepselect-cart-recovery' ), 'url' ); ?>
+							<?php $this->admin_field( $settings, 'promo_url', __( 'Button destination', 'pepselect-cart-recovery' ), __( 'Use a website path such as /shop/ or a full URL.', 'pepselect-cart-recovery' ), 'text' ); ?>
 							<?php $this->admin_field( $settings, 'promo_fineprint', __( 'Small print below the button', 'pepselect-cart-recovery' ), __( 'Optional short terms or timing note.', 'pepselect-cart-recovery' ) ); ?>
 						</div></section>
 						<details class="pep-recovery-card" open><summary><?php esc_html_e( 'Popup colors and background', 'pepselect-cart-recovery' ); ?></summary><p class="description"><?php esc_html_e( 'Every change below is visible in the preview before you save it.', 'pepselect-cart-recovery' ); ?></p><div class="pep-recovery-grid"><?php $this->admin_colors( $settings, 'promo' ); ?></div></details>

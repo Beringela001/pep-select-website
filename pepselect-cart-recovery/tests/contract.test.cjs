@@ -14,10 +14,16 @@ const mockup = fs.readFileSync(path.join(root, '..', 'mockups', 'cart-recovery',
 [
   "set_discount_type( $settings['discount_type'] )",
   "set_amount( (float) $settings['discount_amount'] )",
-  'set_amount( 5 )',
-  'set_individual_use( false )',
-  'set_usage_limit( 1 )',
-  'set_usage_limit_per_user( 1 )',
+  "set_individual_use( empty( $settings['allow_coupon_stacking'] ) )",
+  "set_usage_limit( absint( $settings['usage_limit'] ) )",
+  "set_usage_limit_per_user( absint( $settings['usage_limit_per_user'] ) )",
+  "set_limit_usage_to_x_items( absint( $settings['limit_usage_to_x_items'] ) )",
+  "set_minimum_amount( (string) $settings['minimum_amount'] )",
+  "set_maximum_amount( (string) $settings['maximum_amount'] )",
+  "set_exclude_sale_items( ! empty( $settings['exclude_sale_items'] ) )",
+  "set_product_ids( array_map( 'absint', (array) $settings['product_ids'] ) )",
+  "set_product_categories( array_map( 'absint', (array) $settings['product_category_ids'] ) )",
+  "add_meta_data( 'product_brands', array_map( 'absint', (array) $settings['product_brand_ids'] )",
   'set_email_restrictions',
   "add_filter( 'woo_ca_recovery_email_data'",
   "add_filter( 'wcar_add_token_data'",
@@ -31,12 +37,9 @@ const mockup = fs.readFileSync(path.join(root, '..', 'mockups', 'cart-recovery',
   "'promo_start'               => ''",
   "'promo_end'                 => ''",
   "'promo_delay_seconds'       => 8",
-  'ensure_bonus_coupon',
-  'require_signup_code_for_final_email',
-  "'_pepselect_exit_bonus_email_hash'",
-  "'_pepselect_exit_parent_code'",
+  'require_recovery_code_for_final_email',
   "'_pepselect_exit_offer_signature'",
-  "'{{pepselect.bonus_coupon_code}}'",
+  "'{{pepselect.recovery_coupon_code}}'",
   'setting_timestamp',
   'popup_style',
   'sanitize_settings',
@@ -77,12 +80,14 @@ const mockup = fs.readFileSync(path.join(root, '..', 'mockups', 'cart-recovery',
   'max-height:calc(100vh - 36px)'
 ].forEach((needle) => assert(css.includes(needle), `Missing centered modal contract: ${needle}`));
 
-assert(php.includes("const VERSION                     = '0.4.11'"), 'Plugin version must be 0.4.11');
-assert(php.includes("const RECOVERY_COPY_VERSION       = '2'"), 'Saved-cart database copy migration must be versioned');
+assert(php.includes("const VERSION                     = '0.4.12'"), 'Plugin version must be 0.4.12');
+assert(php.includes("const RECOVERY_COPY_VERSION       = '3'"), 'Saved-cart database copy migration must be versioned');
 assert(php.includes("'email_subject' => 'Want another look?'"), 'The 90-minute subject must use the approved copy');
 assert(php.includes("'email_subject' => 'Need a hand?'"), 'The 24-hour subject must use the approved copy');
 assert(php.includes("'saved cart | 90 minutes' === $template_name"), 'The migration must identify the named 90-minute CartFlows template');
 assert(php.includes("'saved cart | 24 hours' === $template_name"), 'The migration must identify the named 24-hour CartFlows template');
+assert(php.includes("'saved cart | 48 hours' === $template_name"), 'The migration must identify the named 48-hour CartFlows template');
+assert(php.includes('Don\'t forget your code.'), 'The 48-hour body must remind the customer about the private code');
 assert(php.includes('The compounds you selected are still in your cart if you would like to take another look.'), 'The 90-minute body must use the approved copy');
 assert(php.includes('Just a quick note to let you know your cart is still available if you would like another look.'), 'The 24-hour body must use the approved copy');
 assert(php.includes('{{cart.product.table}}'), 'Saved-cart templates must include the cart contents token');
@@ -102,10 +107,15 @@ assert(!mockup.includes('—'), 'Reviewed customer copy must not contain em dash
 assert(!php.includes('marketing_consent'), 'Stay in the Loop must not include a second consent checkbox');
 assert(!php.includes('wp_create_user'), 'Email signup must not create a WordPress account');
 assert(!js.includes('response.data.code'), 'The private coupon must not be returned to the browser');
-assert((php.match(/set_individual_use\( false \)/g) || []).length === 2, 'Both coupons must be stackable');
-assert((php.match(/set_usage_limit\( 1 \)/g) || []).length === 2, 'Both coupons must be single-use');
-assert((php.match(/set_usage_limit_per_user\( 1 \)/g) || []).length === 2, 'Both coupons must be limited per customer');
-assert(php.includes("return $code && (bool) $this->ensure_bonus_coupon( $email, $code );"), 'The 48-hour email must require a generated 5% code');
+assert(php.includes("'usage_limit'               => 1"), 'Recovery coupons must default to one total use');
+assert(php.includes("'usage_limit_per_user'      => 1"), 'Recovery coupons must default to one use per email');
+assert(php.includes("'Generated coupon options'"), 'Exit Popup must expose the generated coupon rules in its editor');
+assert(!php.includes("'Open Cart Discounts → Recovery Codes'"), 'Popup coupon rules must not be overridden by a second editor');
+assert(php.includes("'step' => '0.01'"), 'Popup opacity fields must accept saved 0.92 values');
+assert(php.includes("'promo_url'"), 'Campaign destination must remain configurable');
+assert(!php.includes("'promo_url', __( 'Button destination', 'pepselect-cart-recovery' ), __( 'The page opened after the button is pressed, such as a sale or shop page.', 'pepselect-cart-recovery' ), 'url'"), 'Relative campaign paths must not use invalid HTML URL validation');
+assert(!php.includes('ensure_bonus_coupon'), 'The final email must not create a separate bonus coupon');
+assert(php.includes("$code ? $code : $this->create_coupon( $email )"), 'The final email must reuse an existing code or create one for a tracked cart');
 assert(couponEmail.includes("$pep_email_copy['heading']"), 'Immediate offer email heading must be configurable');
 assert(couponEmail.includes("$pep_email_copy['code_note']"), 'Immediate offer email code note must be configurable');
 assert(php.includes("'email_code_note'"), 'The configurable email must retain an email-restriction default');
