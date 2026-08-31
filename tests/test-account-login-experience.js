@@ -37,7 +37,7 @@ assert.match( script, /aria-selected/ );
 assert.doesNotMatch( css, /\.pepselect-login\s*\{[^}]*width:\s*100vw/s );
 assert.match( css, /max-width: 520px/ );
 assert.match( css, /--pep-radius-card-inner/ );
-assert.match( css, /\.woocommerce \.pepselect-login__form\s*\{[^}]*border:\s*0/s );
+assert.match( css, /\.woocommerce \.pepselect-login__forms form\.pepselect-login__form\s*\{[^}]*border:\s*0/s );
 assert.match( css, /\.pepselect-login \.pepselect-login__tab\[aria-selected="true"\]/ );
 assert.doesNotMatch( css, /grid-template-columns: 1fr 1fr;\s*gap: 40px/ );
 

@@ -923,7 +923,7 @@
 }
 
 /* WooCommerce adds its own form card; this screen has one intentional surface. */
-.woocommerce .pepselect-login__form {
+.woocommerce .pepselect-login__forms form.pepselect-login__form {
 	margin: 0;
 	padding: 0;
 	border: 0;
