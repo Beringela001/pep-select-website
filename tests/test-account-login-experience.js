@@ -34,9 +34,11 @@ assert.match( script, /popupWidth/ );
 assert.match( script, /Math\.min\( 820/ );
 assert.match( script, /aria-selected/ );
 
-assert.match( css, /overflow-x: clip/ );
+assert.doesNotMatch( css, /\.pepselect-login\s*\{[^}]*width:\s*100vw/s );
 assert.match( css, /max-width: 520px/ );
 assert.match( css, /--pep-radius-card-inner/ );
+assert.match( css, /\.woocommerce \.pepselect-login__form\s*\{[^}]*border:\s*0/s );
+assert.match( css, /\.pepselect-login \.pepselect-login__tab\[aria-selected="true"\]/ );
 assert.doesNotMatch( css, /grid-template-columns: 1fr 1fr;\s*gap: 40px/ );
 
 console.log( 'Account login experience checks passed.' );

@@ -1,6 +1,13 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.80** - Focus the logged-out account experience.
+**Release candidate: 0.25.0-beta.81** - Finish the logged-out account surface.
+
+## 0.25.0-beta.81 - 2026-08-30
+
+- Remove WooCommerce's nested form card so login and registration use one intentional white surface.
+- Keep account tabs on-brand in every interaction state and eliminate the remaining viewport-width overflow.
+
+**Previous release candidate: 0.25.0-beta.80** - Focus the logged-out account experience.
 
 ## 0.25.0-beta.80 - 2026-08-30
 

@@ -804,9 +804,8 @@
 
 /* Login / Register page: one focused account-access card. */
 .pepselect-login {
-	width: 100vw;
-	margin-right: calc(50% - 50vw);
-	margin-left: calc(50% - 50vw);
+	width: 100%;
+	margin: 0;
 	padding-block: clamp(48px, 7vw, 80px) clamp(64px, 8vw, 96px);
 	background: var(--pep-color-surface);
 	font-family: var(--pep-font-interface);
@@ -866,7 +865,10 @@
 	display: grid;
 }
 
-.pepselect-login__tab {
+.pepselect-login .pepselect-login__tab,
+.pepselect-login .pepselect-login__tab:hover,
+.pepselect-login .pepselect-login__tab:focus,
+.pepselect-login .pepselect-login__tab:active {
 	position: relative;
 	min-height: 46px;
 	padding: 10px 12px;
@@ -875,6 +877,8 @@
 	color: var(--pep-color-slate);
 	font: 700 14px/1.2 var(--pep-font-interface);
 	cursor: pointer;
+	box-shadow: none;
+	transform: none;
 }
 
 .pepselect-login__tab::after {
@@ -887,7 +891,7 @@
 	content: "";
 }
 
-.pepselect-login__tab[aria-selected="true"] {
+.pepselect-login .pepselect-login__tab[aria-selected="true"] {
 	color: var(--pep-color-navy);
 }
 
@@ -895,7 +899,7 @@
 	background: var(--pep-color-cyan);
 }
 
-.pepselect-login__tab:focus-visible {
+.pepselect-login .pepselect-login__tab:focus-visible {
 	outline: 3px solid rgb(23 161 207 / 25%);
 	outline-offset: 2px;
 }
@@ -916,6 +920,16 @@
 	margin-top: 0;
 	padding-top: 0;
 	border-top: 0;
+}
+
+/* WooCommerce adds its own form card; this screen has one intentional surface. */
+.woocommerce .pepselect-login__form {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	border-radius: 0;
+	background: transparent;
+	box-shadow: none;
 }
 
 .pepselect-login__form .form-row {
