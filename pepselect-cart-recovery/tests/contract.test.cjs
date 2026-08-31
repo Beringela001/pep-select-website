@@ -80,7 +80,7 @@ const mockup = fs.readFileSync(path.join(root, '..', 'mockups', 'cart-recovery',
   'max-height:calc(100vh - 36px)'
 ].forEach((needle) => assert(css.includes(needle), `Missing centered modal contract: ${needle}`));
 
-assert(php.includes("const VERSION                     = '0.4.12'"), 'Plugin version must be 0.4.12');
+assert(php.includes("const VERSION                     = '0.4.13'"), 'Plugin version must be 0.4.13');
 assert(php.includes("const RECOVERY_COPY_VERSION       = '3'"), 'Saved-cart database copy migration must be versioned');
 assert(php.includes("'email_subject' => 'Want another look?'"), 'The 90-minute subject must use the approved copy');
 assert(php.includes("'email_subject' => 'Need a hand?'"), 'The 24-hour subject must use the approved copy');
@@ -116,6 +116,14 @@ assert(php.includes("'promo_url'"), 'Campaign destination must remain configurab
 assert(!php.includes("'promo_url', __( 'Button destination', 'pepselect-cart-recovery' ), __( 'The page opened after the button is pressed, such as a sale or shop page.', 'pepselect-cart-recovery' ), 'url'"), 'Relative campaign paths must not use invalid HTML URL validation');
 assert(!php.includes('ensure_bonus_coupon'), 'The final email must not create a separate bonus coupon');
 assert(php.includes("$code ? $code : $this->create_coupon( $email )"), 'The final email must reuse an existing code or create one for a tracked cart');
+assert(php.includes('posts_per_page\' => -1'), 'Coupon lookup must inspect every recipient coupon until it finds a valid one');
+assert(php.includes('coupon_can_be_reused'), 'Existing recipient coupons must be checked without mutation');
+assert(!php.includes('sync_generated_coupon_stackability'), 'Settings changes must never rewrite existing generated coupons');
+assert(!php.includes('sync_coupon_stackability_on_settings_update'), 'Existing coupon properties must remain immutable');
+assert(php.includes("version_compare( $installed_version, '0.4.12', '<' )"), 'Later upgrades must preserve customized recovery-code settings');
+const immutableLookup = php.slice(php.indexOf('private function coupon_for_email'), php.indexOf('private function is_final_template'));
+assert(!immutableLookup.includes('->save('), 'Finding and validating an existing coupon must never save or rewrite it');
+assert(php.includes("$this->coupon_for_email( $email, false )"), 'The final email must accept a valid recipient coupon created under earlier settings');
 assert(couponEmail.includes("$pep_email_copy['heading']"), 'Immediate offer email heading must be configurable');
 assert(couponEmail.includes("$pep_email_copy['code_note']"), 'Immediate offer email code note must be configurable');
 assert(php.includes("'email_code_note'"), 'The configurable email must retain an email-restriction default');

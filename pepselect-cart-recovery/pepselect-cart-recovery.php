@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Pep Select Cart Recovery
  * Description: Lightweight exit offer, unique coupons, and Cart Abandonment Recovery integration for Pep Select.
- * Version: 0.4.12
+ * Version: 0.4.13
  * Author: Pep Select
  * Text Domain: pepselect-cart-recovery
  */
@@ -10,7 +10,7 @@
 defined( 'ABSPATH' ) || exit;
 
 final class PepSelect_Cart_Recovery {
-	const VERSION                     = '0.4.12';
+	const VERSION                     = '0.4.13';
 	const OPTION                      = 'pepselect_cart_recovery_settings';
 	const VERSION_OPTION              = 'pepselect_cart_recovery_version';
 	const RECOVERY_COPY_OPTION        = 'pepselect_cart_recovery_copy_version';
@@ -39,7 +39,6 @@ final class PepSelect_Cart_Recovery {
 		add_filter( 'cartflows_ca_email_headers', array( $this, 'recovery_headers' ), 20 );
 		add_filter( 'fluent_crm/global_email_limit_per_second', array( $this, 'limit_marketing_delivery_rate' ), 100, 2 );
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
-		add_action( 'update_option_' . self::OPTION, array( $this, 'sync_coupon_stackability_on_settings_update' ), 10, 3 );
 		add_action( 'admin_menu', array( $this, 'register_settings_page' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
 		add_action( 'rest_api_init', array( $this, 'register_rest_routes' ) );
@@ -157,58 +156,22 @@ final class PepSelect_Cart_Recovery {
 	public function maybe_upgrade_settings() {
 		$this->maybe_migrate_recovery_templates();
 
-		if ( self::VERSION === get_option( self::VERSION_OPTION ) ) {
+		$installed_version = (string) get_option( self::VERSION_OPTION, '0' );
+		if ( self::VERSION === $installed_version ) {
 			return;
 		}
 
-		if ( ! $this->sync_generated_coupon_stackability( false ) ) {
-			return;
+		if ( version_compare( $installed_version, '0.4.12', '<' ) ) {
+			$settings                         = (array) get_option( self::OPTION, array() );
+			$legacy_email_extra               = 'The code can combine with eligible offers. Product details and available batch documentation are ready whenever you want to take another look.';
+			$settings['allow_coupon_stacking'] = 0;
+			$settings['email_support']         = self::defaults()['email_support'];
+			if ( $legacy_email_extra === (string) ( $settings['email_extra'] ?? '' ) ) {
+				$settings['email_extra'] = self::defaults()['email_extra'];
+			}
+			update_option( self::OPTION, $settings );
 		}
-
-		$settings                  = (array) get_option( self::OPTION, array() );
-		$legacy_email_extra        = 'The code can combine with eligible offers. Product details and available batch documentation are ready whenever you want to take another look.';
-		$settings['allow_coupon_stacking'] = 0;
-		$settings['email_support'] = self::defaults()['email_support'];
-		if ( $legacy_email_extra === (string) ( $settings['email_extra'] ?? '' ) ) {
-			$settings['email_extra'] = self::defaults()['email_extra'];
-		}
-		update_option( self::OPTION, $settings );
 		update_option( self::VERSION_OPTION, self::VERSION );
-	}
-
-	/** Keep previously generated recovery coupons aligned with the stacking control. */
-	public function sync_coupon_stackability_on_settings_update( $old_value, $value, $option ) {
-		unset( $option );
-		if ( empty( $old_value['allow_coupon_stacking'] ) === empty( $value['allow_coupon_stacking'] ) ) {
-			return;
-		}
-		$this->sync_generated_coupon_stackability( ! empty( $value['allow_coupon_stacking'] ) );
-	}
-
-	/** Update only coupons created by this plugin. */
-	private function sync_generated_coupon_stackability( $allow_stacking ) {
-		if ( ! class_exists( 'WC_Coupon' ) ) {
-			return false;
-		}
-		$ids = get_posts(
-			array(
-				'post_type'      => 'shop_coupon',
-				'post_status'    => array( 'publish', 'draft', 'pending', 'private' ),
-				'posts_per_page' => -1,
-				'fields'         => 'ids',
-				'meta_query'     => array(
-					'relation' => 'OR',
-					array( 'key' => '_pepselect_exit_offer', 'compare' => 'EXISTS' ),
-					array( 'key' => '_pepselect_exit_bonus_offer', 'compare' => 'EXISTS' ),
-				),
-			)
-		);
-		foreach ( $ids as $id ) {
-			$coupon = new WC_Coupon( $id );
-			$coupon->set_individual_use( ! $allow_stacking );
-			$coupon->save();
-		}
-		return true;
 	}
 
 	/**
@@ -678,33 +641,71 @@ HTML;
 
 	private function coupon_for_email( $email, $require_current_signature = true ) {
 		$signature = $this->coupon_signature();
-		$code = get_transient( $this->email_coupon_key( $email ) );
-		if ( ! $code ) {
-			$coupon_ids = get_posts(
-				array(
-					'post_type'      => 'shop_coupon',
-					'post_status'    => 'publish',
-					'posts_per_page' => 1,
-					'fields'         => 'ids',
-					'orderby'        => 'date',
-					'order'          => 'DESC',
-					'meta_key'       => '_pepselect_exit_email_hash',
-					'meta_value'     => hash_hmac( 'sha256', strtolower( $email ), wp_salt( 'auth' ) ),
-				)
-			);
-			if ( $coupon_ids ) {
-				$stored_coupon = new WC_Coupon( $coupon_ids[0] );
-				$code          = $stored_coupon->get_code();
+		if ( $require_current_signature ) {
+			$transient_code = get_transient( $this->email_coupon_key( $email ) );
+			if ( $transient_code && wc_get_coupon_id_by_code( $transient_code ) ) {
+				$transient_coupon = new WC_Coupon( $transient_code );
+				if ( $signature === (string) $transient_coupon->get_meta( '_pepselect_exit_offer_signature', true ) && $this->coupon_can_be_reused( $transient_coupon, $email ) ) {
+					return $transient_coupon->get_code();
+				}
 			}
 		}
-		if ( ! $code || ! wc_get_coupon_id_by_code( $code ) ) {
-			return '';
+
+		$coupon_ids = get_posts(
+			array(
+				'post_type'      => 'shop_coupon',
+				'post_status'    => 'publish',
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+				'orderby'        => 'date',
+				'order'          => 'DESC',
+				'meta_key'       => '_pepselect_exit_email_hash',
+				'meta_value'     => hash_hmac( 'sha256', strtolower( $email ), wp_salt( 'auth' ) ),
+			)
+		);
+		foreach ( $coupon_ids as $coupon_id ) {
+			$coupon = new WC_Coupon( $coupon_id );
+			if ( $require_current_signature && $signature !== (string) $coupon->get_meta( '_pepselect_exit_offer_signature', true ) ) {
+				continue;
+			}
+			if ( $this->coupon_can_be_reused( $coupon, $email ) ) {
+				return $coupon->get_code();
+			}
 		}
-		$coupon = new WC_Coupon( $code );
-		if ( $require_current_signature && $signature !== (string) $coupon->get_meta( '_pepselect_exit_offer_signature', true ) ) {
-			return '';
+		return '';
+	}
+
+	/** Determine availability without saving or mutating the stored coupon. */
+	private function coupon_can_be_reused( $coupon, $email ) {
+		if ( ! $coupon instanceof WC_Coupon || ! $coupon->get_id() || 'publish' !== get_post_status( $coupon->get_id() ) ) {
+			return false;
 		}
-		return $coupon->get_date_expires() && $coupon->get_date_expires()->getTimestamp() < time() ? '' : $code;
+		$expires = $coupon->get_date_expires();
+		if ( $expires && $expires->getTimestamp() < time() ) {
+			return false;
+		}
+		$usage_limit = absint( $coupon->get_usage_limit() );
+		if ( $usage_limit && absint( $coupon->get_usage_count() ) >= $usage_limit ) {
+			return false;
+		}
+		$per_user_limit = absint( $coupon->get_usage_limit_per_user() );
+		if ( $per_user_limit ) {
+			$identity_values = array( strtolower( $email ) );
+			$user            = get_user_by( 'email', $email );
+			if ( $user ) {
+				$identity_values[] = (string) $user->ID;
+			}
+			$used_count = 0;
+			foreach ( (array) $coupon->get_used_by() as $used_by ) {
+				if ( in_array( strtolower( (string) $used_by ), $identity_values, true ) ) {
+					$used_count++;
+				}
+			}
+			if ( $used_count >= $per_user_limit ) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private function is_final_template( $email_data ) {

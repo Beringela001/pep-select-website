@@ -2,7 +2,7 @@
 Contributors: pepselect
 Requires at least: 6.5
 Requires PHP: 7.4
-Stable tag: 0.4.12
+Stable tag: 0.4.13
 License: Proprietary
 
 Native Pep Select exit offer and Cart Abandonment Recovery integration.
@@ -52,3 +52,5 @@ Native Pep Select exit offer and Cart Abandonment Recovery integration.
 * Removes the Campaign Popup button when its button-text setting is blank.
 
 0.4.12 adds the complete generated-coupon controls to the Exit Popup editor, makes generated codes non-stackable by default, removes the separate 5% bonus, and makes the final saved-cart email reuse or create one private recovery code.
+
+0.4.13 makes every generated recovery coupon immutable. Final saved-cart emails reuse the newest valid recipient coupon without rewriting any stored coupon property, and apply current settings only when a new coupon must be created.
