@@ -19,4 +19,4 @@ do_action( 'woocommerce_email_order_details', $order, $sent_to_admin, true, $ema
 do_action( 'woocommerce_email_order_meta', $order, $sent_to_admin, true, $email );
 do_action( 'woocommerce_email_customer_details', $order, $sent_to_admin, true, $email );
 echo "\n" . esc_html__( 'The time it takes for the credit to appear depends on your payment provider.', 'pepselect-child' ) . "\n";
-if ( ! empty( $additional_content ) ) { echo "\n" . wp_strip_all_tags( wptexturize( $additional_content ) ) . "\n"; }
+echo "\n" . esc_html__( 'Have a question? Reply to this email, and one of our team members will be in touch shortly.', 'pepselect-child' ) . "\n";

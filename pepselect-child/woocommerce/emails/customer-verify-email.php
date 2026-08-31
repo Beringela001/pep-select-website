@@ -22,11 +22,7 @@ $pep_panel_html         = '<p style="color:#0D708E;font-family:monospace;font-si
 $pep_order_content_html = '';
 $pep_button_url         = $verify_url;
 $pep_button_label       = __( 'Confirm email address', 'pepselect-child' );
-$pep_note_html          = '<p style="margin:0;">' . esc_html__( 'If you did not create this account, you can ignore this email.', 'pepselect-child' ) . '</p>';
+$pep_note_html          = '<p style="margin:0 0 12px;">' . esc_html__( 'If you did not create this account, you can ignore this email.', 'pepselect-child' ) . '</p><p style="margin:0;">' . esc_html__( 'Have a question? Reply to this email, and one of our team members will be in touch shortly.', 'pepselect-child' ) . '</p>';
 $pep_footer_context     = esc_html__( 'This confirmation link is intended only for the email address shown above.', 'pepselect-child' );
-
-if ( ! empty( $additional_content ) ) {
-	$pep_note_html .= wpautop( wp_kses_post( wptexturize( $additional_content ) ) );
-}
 
 require __DIR__ . '/pepselect-simple-message.php';

@@ -10,4 +10,4 @@ echo "\n\n" . esc_html__( 'Confirm this email address to finish setting up your 
 printf( esc_html__( 'Email address: %s', 'pepselect-child' ), esc_html( $user_email ) );
 echo "\n\n" . esc_html__( 'Confirm email address:', 'pepselect-child' ) . "\n" . esc_url( $verify_url ) . "\n\n";
 echo esc_html__( 'If you did not create this account, you can ignore this email.', 'pepselect-child' ) . "\n";
-if ( ! empty( $additional_content ) ) { echo "\n" . wp_strip_all_tags( wptexturize( $additional_content ) ) . "\n"; }
+echo "\n" . esc_html__( 'Have a question? Reply to this email, and one of our team members will be in touch shortly.', 'pepselect-child' ) . "\n";

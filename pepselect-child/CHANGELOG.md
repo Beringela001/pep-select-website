@@ -1,6 +1,14 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.81** - Finish the logged-out account surface.
+**Release candidate: 0.25.0-beta.82** - Make transactional email support reply-first.
+
+## 0.25.0-beta.82 - 2026-08-30
+
+- Replace redundant refund, password-reset, and email-confirmation support copy with one direct reply instruction.
+- Remove the refund email's duplicate contact button and suppress generic WooCommerce additional content from these three custom messages.
+- Keep the account-security instructions and signed account actions unchanged.
+
+**Previous release candidate: 0.25.0-beta.81** - Finish the logged-out account surface.
 
 ## 0.25.0-beta.81 - 2026-08-30
 

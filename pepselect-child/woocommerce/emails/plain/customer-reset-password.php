@@ -15,4 +15,4 @@ echo "\n\n" . esc_html__( 'We received a request to reset the password for your 
 printf( esc_html__( 'Account: %s', 'pepselect-child' ), esc_html( $user_login ) );
 echo "\n\n" . esc_html__( 'Choose a new password:', 'pepselect-child' ) . "\n" . esc_url( $pep_reset_url ) . "\n\n";
 echo esc_html__( 'If you did not request this, you can ignore this email. Your password will not change unless the link above is used.', 'pepselect-child' ) . "\n";
-if ( ! empty( $additional_content ) ) { echo "\n" . wp_strip_all_tags( wptexturize( $additional_content ) ) . "\n"; }
+echo "\n" . esc_html__( 'Have a question? Reply to this email, and one of our team members will be in touch shortly.', 'pepselect-child' ) . "\n";

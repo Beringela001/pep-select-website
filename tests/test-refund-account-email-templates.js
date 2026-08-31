@@ -24,7 +24,8 @@ assert.match(shared, /td:first-child img\{display:none/);
 
 for (const template of [refund, reset, verify]) {
   assert.match(template, /pepselect-simple-message\.php/);
-  assert.match(template, /\$additional_content/);
+  assert.match(template, /Have a question\? Reply to this email, and one of our team members will be in touch shortly\./);
+  assert.doesNotMatch(template, /\$additional_content/);
 }
 
 assert.match(refund, /\$partial_refund/);
@@ -34,6 +35,10 @@ assert.match(refund, /woocommerce_email_order_details/);
 assert.match(refund, /woocommerce_email_order_meta/);
 assert.match(refund, /woocommerce_email_customer_details/);
 assert.match(refund, /payment provider/);
+assert.match(refund, /\$pep_button_url\s*=\s*''/);
+assert.match(refund, /\$pep_button_label\s*=\s*''/);
+assert.doesNotMatch(refund, /Include your order number/);
+assert.doesNotMatch(refund, /support@pepselect\.com/);
 
 assert.match(reset, /'key'\s*=>\s*\$reset_key/);
 assert.match(reset, /'id'\s*=>\s*\$user_id/);
@@ -50,5 +55,10 @@ assert.match(plainRefund, /woocommerce_email_order_details/);
 assert.match(plainReset, /\$reset_key/);
 assert.match(plainReset, /wc_get_endpoint_url\( 'lost-password'/);
 assert.match(plainVerify, /\$verify_url/);
+
+for (const template of [plainRefund, plainReset, plainVerify]) {
+  assert.match(template, /Have a question\? Reply to this email, and one of our team members will be in touch shortly\./);
+  assert.doesNotMatch(template, /\$additional_content/);
+}
 
 console.log('Refund and account email template checks passed.');
