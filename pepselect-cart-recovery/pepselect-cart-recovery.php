@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Pep Select Cart Recovery
  * Description: Lightweight exit offer, unique coupons, and Cart Abandonment Recovery integration for Pep Select.
- * Version: 0.4.13
+ * Version: 0.4.14
  * Author: Pep Select
  * Text Domain: pepselect-cart-recovery
  */
@@ -10,7 +10,7 @@
 defined( 'ABSPATH' ) || exit;
 
 final class PepSelect_Cart_Recovery {
-	const VERSION                     = '0.4.13';
+	const VERSION                     = '0.4.14';
 	const OPTION                      = 'pepselect_cart_recovery_settings';
 	const VERSION_OPTION              = 'pepselect_cart_recovery_version';
 	const RECOVERY_COPY_OPTION        = 'pepselect_cart_recovery_copy_version';
@@ -569,9 +569,10 @@ HTML;
 		return true;
 	}
 
-	private function create_coupon( $email ) {
-		$settings = $this->settings();
-		$code     = '';
+	private function create_coupon( $email, $source = 'popup' ) {
+		$settings            = $this->settings();
+		$is_cart_abandonment = 'cart_abandonment' === $source;
+		$code                = '';
 		for ( $attempt = 0; $attempt < 4; $attempt++ ) {
 			$candidate = $settings['coupon_prefix'] . '-' . strtoupper( wp_generate_password( 8, false, false ) );
 			if ( ! wc_get_coupon_id_by_code( $candidate ) ) {
@@ -586,12 +587,12 @@ HTML;
 		try {
 			$coupon = new WC_Coupon();
 			$coupon->set_code( $code );
-			$coupon->set_description( sprintf( 'Pep Select %s private recovery offer. Generated automatically.', $this->discount_label( $settings ) ) );
+			$coupon->set_description( sprintf( 'Pep Select %s private %s offer. Generated automatically.', $this->discount_label( $settings ), $is_cart_abandonment ? 'cart-abandonment recovery' : 'exit-popup recovery' ) );
 			$coupon->set_discount_type( $settings['discount_type'] );
 			$coupon->set_amount( (float) $settings['discount_amount'] );
-			$coupon->set_individual_use( empty( $settings['allow_coupon_stacking'] ) );
+			$coupon->set_individual_use( $is_cart_abandonment ? true : empty( $settings['allow_coupon_stacking'] ) );
 			$coupon->set_usage_limit( absint( $settings['usage_limit'] ) );
-			$coupon->set_usage_limit_per_user( absint( $settings['usage_limit_per_user'] ) );
+			$coupon->set_usage_limit_per_user( $is_cart_abandonment ? 1 : absint( $settings['usage_limit_per_user'] ) );
 			$coupon->set_limit_usage_to_x_items( absint( $settings['limit_usage_to_x_items'] ) );
 			$coupon->set_email_restrictions( array( $email ) );
 			$coupon->set_minimum_amount( (string) $settings['minimum_amount'] );
@@ -754,7 +755,7 @@ HTML;
 			$is_final = $this->is_final_template( $email_data );
 			$code     = $this->coupon_for_email( $email, ! $is_final );
 			if ( ! $code && $is_final ) {
-				$code = $this->create_coupon( $email );
+				$code = $this->create_coupon( $email, 'cart_abandonment' );
 			}
 			if ( $code ) {
 				$email_data->coupon_code = $code;
@@ -872,7 +873,7 @@ HTML;
 
 		$email = sanitize_email( $email_data->email );
 		$code  = $this->coupon_for_email( $email, false );
-		return (bool) ( $code ? $code : $this->create_coupon( $email ) );
+		return (bool) ( $code ? $code : $this->create_coupon( $email, 'cart_abandonment' ) );
 	}
 
 	public function attach_coupon_to_recovery_link( $token_data, $email_data ) {
@@ -881,7 +882,7 @@ HTML;
 			$is_final = $this->is_final_template( $email_data );
 			$code     = $this->coupon_for_email( $email, ! $is_final );
 			if ( ! $code && $is_final ) {
-				$code = $this->create_coupon( $email );
+				$code = $this->create_coupon( $email, 'cart_abandonment' );
 			}
 			if ( $code ) {
 				$token_data['wcf_coupon_code'] = $code;
@@ -1164,6 +1165,7 @@ HTML;
 		wp_enqueue_style( 'woocommerce_admin_styles' );
 		wp_enqueue_script( 'wc-enhanced-select' );
 		wp_enqueue_style( 'pepselect-cart-recovery-admin', plugin_dir_url( __FILE__ ) . 'assets/admin.css', array(), self::VERSION );
+		wp_enqueue_style( 'pepselect-cart-recovery-email-preview', plugin_dir_url( __FILE__ ) . 'assets/admin-email-preview.css', array( 'pepselect-cart-recovery-admin' ), self::VERSION );
 		wp_enqueue_script( 'pepselect-cart-recovery-admin', plugin_dir_url( __FILE__ ) . 'assets/admin.js', array(), self::VERSION, true );
 		wp_localize_script(
 			'pepselect-cart-recovery-admin',
@@ -1270,12 +1272,19 @@ HTML;
 		<aside class="pep-recovery-preview" data-pep-preview="<?php echo esc_attr( $prefix ); ?>" style="<?php echo esc_attr( $this->popup_style( $prefix, $settings ) ); ?>">
 			<div class="pep-recovery-preview__toolbar">
 				<div><strong><?php esc_html_e( 'Live preview', 'pepselect-cart-recovery' ); ?></strong><span><?php esc_html_e( 'Updates while you type. Save to publish.', 'pepselect-cart-recovery' ); ?></span></div>
+				<div class="pep-recovery-preview__controls">
+				<?php if ( $is_exit ) : ?><div class="pep-recovery-device" role="group" aria-label="<?php esc_attr_e( 'Preview content', 'pepselect-cart-recovery' ); ?>">
+					<button type="button" class="is-active" data-pep-view="popup" aria-pressed="true"><?php esc_html_e( 'Popup', 'pepselect-cart-recovery' ); ?></button>
+					<button type="button" data-pep-view="email" aria-pressed="false"><?php esc_html_e( 'Email', 'pepselect-cart-recovery' ); ?></button>
+				</div><?php endif; ?>
 				<div class="pep-recovery-device" role="group" aria-label="<?php esc_attr_e( 'Preview size', 'pepselect-cart-recovery' ); ?>">
 					<button type="button" class="is-active" data-pep-device="desktop" aria-pressed="true"><?php esc_html_e( 'Desktop', 'pepselect-cart-recovery' ); ?></button>
 					<button type="button" data-pep-device="mobile" aria-pressed="false"><?php esc_html_e( 'Mobile', 'pepselect-cart-recovery' ); ?></button>
 				</div>
+				</div>
 			</div>
 			<div class="pep-recovery-preview__stage">
+				<div class="pep-recovery-preview__screen" data-pep-preview-screen="popup">
 				<div class="pep-recovery-preview__site"><span></span><span></span><span></span></div>
 				<div class="pep-recovery-preview__overlay"></div>
 				<div class="pep-recovery-preview__popup">
@@ -1295,6 +1304,29 @@ HTML;
 						<p class="pep-recovery-preview__fineprint" data-pep-preview-bind="<?php echo esc_attr( $prefix ); ?>_fineprint"><?php echo esc_html( $this->replace_tokens( $settings[ $prefix . '_fineprint' ], $settings ) ); ?></p>
 					</div>
 				</div>
+				</div>
+				<?php if ( $is_exit ) : ?>
+				<div class="pep-recovery-preview__screen pep-recovery-email-preview" data-pep-preview-screen="email" hidden>
+					<div class="pep-recovery-email-preview__scroll">
+						<div class="pep-recovery-email-preview__inbox"><small><?php esc_html_e( 'Inbox preview', 'pepselect-cart-recovery' ); ?></small><strong data-pep-preview-bind="email_subject"><?php echo esc_html( $this->replace_tokens( $settings['email_subject'], $settings ) ); ?></strong><span data-pep-preview-bind="email_preheader"><?php echo esc_html( $this->replace_tokens( $settings['email_preheader'], $settings ) ); ?></span></div>
+						<article class="pep-recovery-email-preview__card">
+							<div class="pep-recovery-email-preview__bar"><i></i><i></i></div>
+							<header><img src="<?php echo esc_url( plugin_dir_url( __FILE__ ) . 'assets/pep-select-logo-header.png' ); ?>" alt="Pep Select"><span data-pep-preview-bind="email_label"><?php echo esc_html( $this->replace_tokens( $settings['email_label'], $settings ) ); ?></span></header>
+							<div class="pep-recovery-email-preview__body">
+								<small data-pep-preview-bind="email_eyebrow"><?php echo esc_html( $this->replace_tokens( $settings['email_eyebrow'], $settings ) ); ?></small>
+								<h3 data-pep-preview-bind="email_heading"><?php echo esc_html( $this->replace_tokens( $settings['email_heading'], $settings ) ); ?></h3>
+								<strong data-pep-preview-bind="email_greeting"><?php echo esc_html( $this->replace_tokens( $settings['email_greeting'], $settings ) ); ?></strong>
+								<p data-pep-preview-bind="email_intro"><?php echo esc_html( $this->replace_tokens( $settings['email_intro'], $settings ) ); ?></p>
+								<div class="pep-recovery-email-preview__code"><small data-pep-preview-bind="email_code_label"><?php echo esc_html( $this->replace_tokens( $settings['email_code_label'], $settings ) ); ?></small><b><?php esc_html_e( 'PEP-EXAMPLE', 'pepselect-cart-recovery' ); ?></b><p data-pep-preview-bind="email_code_note"><?php echo esc_html( $this->replace_tokens( $settings['email_code_note'], $settings ) ); ?></p></div>
+								<p data-pep-preview-bind="email_extra"><?php echo esc_html( $this->replace_tokens( $settings['email_extra'], $settings ) ); ?></p>
+								<a data-pep-preview-bind="email_button"><?php echo esc_html( $this->replace_tokens( $settings['email_button'], $settings ) ); ?></a>
+								<p class="pep-recovery-email-preview__support" data-pep-preview-bind="email_support"><?php echo esc_html( self::defaults()['email_support'] ); ?></p>
+							</div>
+							<footer><?php esc_html_e( 'Pep Select · American-owned and operated · For laboratory research use only.', 'pepselect-cart-recovery' ); ?></footer>
+						</article>
+					</div>
+				</div>
+				<?php endif; ?>
 			</div>
 		</aside>
 		<?php

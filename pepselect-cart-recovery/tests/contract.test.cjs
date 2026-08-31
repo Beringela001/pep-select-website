@@ -8,15 +8,16 @@ const js = fs.readFileSync(path.join(root, 'assets', 'cart-recovery.js'), 'utf8'
 const css = fs.readFileSync(path.join(root, 'assets', 'cart-recovery.css'), 'utf8');
 const adminJs = fs.readFileSync(path.join(root, 'assets', 'admin.js'), 'utf8');
 const adminCss = fs.readFileSync(path.join(root, 'assets', 'admin.css'), 'utf8');
+const adminEmailCss = fs.readFileSync(path.join(root, 'assets', 'admin-email-preview.css'), 'utf8');
 const couponEmail = fs.readFileSync(path.join(root, 'templates', 'coupon-email.php'), 'utf8');
 const mockup = fs.readFileSync(path.join(root, '..', 'mockups', 'cart-recovery', 'index.html'), 'utf8');
 
 [
   "set_discount_type( $settings['discount_type'] )",
   "set_amount( (float) $settings['discount_amount'] )",
-  "set_individual_use( empty( $settings['allow_coupon_stacking'] ) )",
+  "set_individual_use( $is_cart_abandonment ? true : empty( $settings['allow_coupon_stacking'] ) )",
   "set_usage_limit( absint( $settings['usage_limit'] ) )",
-  "set_usage_limit_per_user( absint( $settings['usage_limit_per_user'] ) )",
+  "set_usage_limit_per_user( $is_cart_abandonment ? 1 : absint( $settings['usage_limit_per_user'] ) )",
   "set_limit_usage_to_x_items( absint( $settings['limit_usage_to_x_items'] ) )",
   "set_minimum_amount( (string) $settings['minimum_amount'] )",
   "set_maximum_amount( (string) $settings['maximum_amount'] )",
@@ -80,7 +81,7 @@ const mockup = fs.readFileSync(path.join(root, '..', 'mockups', 'cart-recovery',
   'max-height:calc(100vh - 36px)'
 ].forEach((needle) => assert(css.includes(needle), `Missing centered modal contract: ${needle}`));
 
-assert(php.includes("const VERSION                     = '0.4.13'"), 'Plugin version must be 0.4.13');
+assert(php.includes("const VERSION                     = '0.4.14'"), 'Plugin version must be 0.4.14');
 assert(php.includes("const RECOVERY_COPY_VERSION       = '3'"), 'Saved-cart database copy migration must be versioned');
 assert(php.includes("'email_subject' => 'Want another look?'"), 'The 90-minute subject must use the approved copy');
 assert(php.includes("'email_subject' => 'Need a hand?'"), 'The 24-hour subject must use the approved copy');
@@ -115,7 +116,8 @@ assert(php.includes("'step' => '0.01'"), 'Popup opacity fields must accept saved
 assert(php.includes("'promo_url'"), 'Campaign destination must remain configurable');
 assert(!php.includes("'promo_url', __( 'Button destination', 'pepselect-cart-recovery' ), __( 'The page opened after the button is pressed, such as a sale or shop page.', 'pepselect-cart-recovery' ), 'url'"), 'Relative campaign paths must not use invalid HTML URL validation');
 assert(!php.includes('ensure_bonus_coupon'), 'The final email must not create a separate bonus coupon');
-assert(php.includes("$code ? $code : $this->create_coupon( $email )"), 'The final email must reuse an existing code or create one for a tracked cart');
+assert(php.includes("$code ? $code : $this->create_coupon( $email, 'cart_abandonment' )"), 'The final email must reuse an existing code or create a guarded cart-abandonment coupon');
+assert((php.match(/create_coupon\( \$email, 'cart_abandonment' \)/g) || []).length === 3, 'Every final-email coupon creation path must enforce cart-abandonment safeguards');
 assert(php.includes('posts_per_page\' => -1'), 'Coupon lookup must inspect every recipient coupon until it finds a valid one');
 assert(php.includes('coupon_can_be_reused'), 'Existing recipient coupons must be checked without mutation');
 assert(!php.includes('sync_generated_coupon_stackability'), 'Settings changes must never rewrite existing generated coupons');
@@ -132,8 +134,13 @@ assert(adminJs.includes("updatePreview('exit')"), 'The admin must live-preview t
 assert(adminJs.includes("updatePreview('promo')"), 'The admin must live-preview the campaign popup');
 assert(adminJs.includes("campaignButton.hidden = !String(value('promo_button')"), 'The campaign preview button must disappear when its label is blank');
 assert(adminJs.includes("campaignButton.style.display = campaignButton.hidden ? 'none' : ''"), 'The preview must override WordPress button display styles');
+assert(adminJs.includes("event.target.closest('[data-pep-view]')"), 'The Exit Popup preview must switch between popup and email views');
 assert(adminCss.includes('.pep-recovery-grid'), 'The admin campaign form must remain responsive');
 assert(adminCss.includes('.pep-recovery-preview__stage'), 'The admin must include a visual popup preview');
+assert(adminEmailCss.includes('.pep-recovery-email-preview__card'), 'The admin must include a visual coupon-email preview');
+assert(php.includes('data-pep-preview-screen="email"'), 'The Exit Popup editor must render the email preview');
+assert(php.includes('data-pep-preview-bind="email_subject"'), 'The email preview must live-update its subject');
+assert(php.includes('data-pep-preview-bind="email_code_note"'), 'The email preview must live-update coupon instructions');
 assert(php.includes("data-pep-tab=\"exit\""), 'The admin must expose a clear Exit Popup tab');
 assert(php.includes("data-pep-tab=\"promo\""), 'The admin must expose a clear Campaign Popup tab');
 assert(php.includes("if ( $settings['promo_button'] )"), 'The public campaign button must remain optional');

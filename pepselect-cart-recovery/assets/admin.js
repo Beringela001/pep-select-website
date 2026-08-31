@@ -102,7 +102,7 @@
       return;
     }
 
-    var device = event.target.closest('[data-pep-device]');
+	var device = event.target.closest('[data-pep-device]');
     if (device) {
       event.preventDefault();
       var preview = device.closest('[data-pep-preview]');
@@ -113,8 +113,24 @@
         button.classList.toggle('is-active', active);
         button.setAttribute('aria-pressed', active ? 'true' : 'false');
       });
-      return;
-    }
+		return;
+	}
+
+	var view = event.target.closest('[data-pep-view]');
+	if (view) {
+		event.preventDefault();
+		var viewPreview = view.closest('[data-pep-preview]');
+		var viewName = view.getAttribute('data-pep-view');
+		viewPreview.querySelectorAll('[data-pep-preview-screen]').forEach(function (screen) {
+			screen.hidden = screen.getAttribute('data-pep-preview-screen') !== viewName;
+		});
+		viewPreview.querySelectorAll('[data-pep-view]').forEach(function (button) {
+			var active = button === view;
+			button.classList.toggle('is-active', active);
+			button.setAttribute('aria-pressed', active ? 'true' : 'false');
+		});
+		return;
+	}
 
     var mediaButton = event.target.closest('[data-pep-media-target]');
     if (!mediaButton || !window.wp || !wp.media) return;
