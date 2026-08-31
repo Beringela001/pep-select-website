@@ -19,7 +19,7 @@ Update this file whenever a custom plugin adds, removes, or changes a setting, R
 
 | Surface | Version | Status | Existing Ops path | Main gap |
 |---|---:|---|---|---|
-| Pep Select Cart Discounts | 2.0.0 | READY | Versioned authenticated REST settings | Ops UI/client not yet connected |
+| Pep Select Cart Discounts | 2.0.1 | READY | Versioned authenticated REST settings | Ops UI/client not yet connected |
 | Pep Select Cart Recovery | 0.4.7 | READY | Authenticated popup-settings REST endpoint | Add revision conflicts and stronger audit metadata |
 | Pep Select Order Experience | 0.3.3 | PARTIAL | Authenticated order snapshot and revoke endpoints | Feature settings are WordPress-only |
 | Pep Select Shipping Restrictions | 0.2.6 | NONE | None | Build a versioned policy API before remote control |
@@ -39,7 +39,7 @@ Update this file whenever a custom plugin adds, removes, or changes a setting, R
 8. Preserve the WordPress admin as the emergency fallback. Ops must consume the same stored state and must not maintain a second source of truth.
 9. Validate on Staging before Live and retain an environment backup/rollback point for releases that change execution logic.
 
-## 1. Pep Select Cart Discounts 2.0.0 — READY
+## 1. Pep Select Cart Discounts 2.0.1 — READY
 
 Source: `pepselect-bogo-quantity/` (the directory name is retained for upgrade compatibility; the plugin name is **Pep Select Cart Discounts**).
 
@@ -108,6 +108,7 @@ Subscriber targeting detects FluentCRM membership when available and remains ove
 - Removed the removable “x” from automatic discount pills.
 - Added sitewide rules, audience targeting, customer search, minimums, and stackable/exclusive coordination.
 - Consolidated all automatic discounts into one menu with separate submenus.
+- Contained WooCommerce customer/product search controls on narrow admin screens and cache-busted the corrected stylesheet in 2.0.1.
 
 ### Ops milestone work
 
