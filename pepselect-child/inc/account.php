@@ -554,6 +554,41 @@ function pepselect_child_enqueue_account_assets() {
 add_action( 'wp_enqueue_scripts', 'pepselect_child_enqueue_account_assets', 40 );
 
 /**
+ * Resolve a clickable carrier page for an already validated tracking number.
+ * The integration-provided URL always wins; common carrier fallbacks preserve
+ * the one-click account experience when Easyship stores only a number.
+ *
+ * @param array $tracking Normalized tracking result.
+ * @return string
+ */
+function pepselect_child_account_tracking_url( $tracking ) {
+	$tracking = is_array( $tracking ) ? $tracking : array();
+	$url      = isset( $tracking['url'] ) ? esc_url_raw( (string) $tracking['url'] ) : '';
+	$number   = isset( $tracking['number'] ) ? trim( (string) $tracking['number'] ) : '';
+	$carrier  = strtolower( isset( $tracking['carrier'] ) ? (string) $tracking['carrier'] : '' );
+
+	if ( '' !== $url || '' === $number ) {
+		return $url;
+	}
+
+	$encoded = rawurlencode( $number );
+	if ( false !== strpos( $carrier, 'fedex' ) ) {
+		return 'https://www.fedex.com/fedextrack/?trknbr=' . $encoded;
+	}
+	if ( false !== strpos( $carrier, 'ups' ) ) {
+		return 'https://www.ups.com/track?loc=en_US&tracknum=' . $encoded;
+	}
+	if ( false !== strpos( $carrier, 'usps' ) || false !== strpos( $carrier, 'postal' ) ) {
+		return 'https://tools.usps.com/go/TrackConfirmAction?tLabels=' . $encoded;
+	}
+	if ( false !== strpos( $carrier, 'dhl' ) ) {
+		return 'https://www.dhl.com/us-en/home/tracking/tracking-parcel.html?submit=1&tracking-id=' . $encoded;
+	}
+
+	return 'https://www.17track.net/en/track#nums=' . $encoded;
+}
+
+/**
  * Total cash back earned and applied, derived from YITH's own points log.
  *
  * Nothing is invented here: the log entries are YITH's, and positive entries are

@@ -1,6 +1,12 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.87** - Clarify account registration purpose.
+**Release candidate: 0.25.0-beta.88** - Add compact, private-order-linked My Account history.
+
+## 0.25.0-beta.88 - 2026-08-31
+
+- Replaced oversized inline order cards with compact single-line desktop rows and a purpose-built mobile layout.
+- Kept the newest five orders visible and placed older orders behind an accessible disclosure control.
+- Added clickable tracking numbers and full-row order links with safe WooCommerce fallback behavior.
 
 ## 0.25.0-beta.87 - 2026-08-30
 

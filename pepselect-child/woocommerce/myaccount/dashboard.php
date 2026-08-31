@@ -4,10 +4,9 @@
  *
  * Replaces WooCommerce's dashboard intro and the four link rows with one
  * scrolling page of six cards: welcome + sign out, saved information, cash-back
- * summary in dollars, text-message preferences, the referral link, and the customer's orders inline
- * (status, total, cash back earned, shipment tracking when a shipped order has
- * an Easyship note, and every line item with quantity and price - no click-through
- * needed).
+ * summary in dollars, text-message preferences, the referral link, and the
+ * customer's compact order history. The newest five orders remain visible;
+ * older orders use native progressive disclosure.
  *
  * The left account navigation is hidden by CSS (see account.css); this is a
  * presentation change only. All seven account endpoints still resolve directly
@@ -271,88 +270,78 @@ $pepselect_earned_by_order = function_exists( 'pepselect_child_get_cashback_earn
 
 		<?php else : ?>
 
-			<ul class="pepselect-orders">
+			<?php
+			$pepselect_render_order_row = static function ( $pepselect_order ) {
+				if ( ! is_a( $pepselect_order, 'WC_Order' ) ) {
+					return;
+				}
+
+				$pepselect_tracking = function_exists( 'pepselect_child_get_order_tracking' )
+					? pepselect_child_get_order_tracking( $pepselect_order )
+					: array( 'number' => '', 'carrier' => '', 'url' => '' );
+				$pepselect_summary = function_exists( 'pepselect_oe_account_order_summary' )
+					? pepselect_oe_account_order_summary( $pepselect_order, $pepselect_tracking )
+					: array(
+						'url'          => $pepselect_order->get_view_order_url(),
+						'status_key'   => sanitize_html_class( $pepselect_order->get_status() ),
+						'status_label' => wc_get_order_status_name( $pepselect_order->get_status() ),
+					);
+				$pepselect_date      = $pepselect_order->get_date_created();
+				$pepselect_track_num = trim( (string) ( $pepselect_tracking['number'] ?? '' ) );
+				$pepselect_track_url = function_exists( 'pepselect_child_account_tracking_url' )
+					? pepselect_child_account_tracking_url( $pepselect_tracking )
+					: (string) ( $pepselect_tracking['url'] ?? '' );
+				?>
+				<li class="pepselect-order-row">
+					<a class="pepselect-order-row__target" href="<?php echo esc_url( $pepselect_summary['url'] ); ?>" aria-label="<?php echo esc_attr( sprintf( 'Review order %s', $pepselect_order->get_order_number() ) ); ?>"></a>
+					<div class="pepselect-order-row__field pepselect-order-row__field--order">
+						<span class="pepselect-order-row__label"><?php esc_html_e( 'Order', 'pepselect-child' ); ?></span>
+						<span class="pepselect-order-row__value">#<?php echo esc_html( $pepselect_order->get_order_number() ); ?></span>
+					</div>
+					<div class="pepselect-order-row__field pepselect-order-row__field--placed">
+						<span class="pepselect-order-row__label"><?php esc_html_e( 'Placed', 'pepselect-child' ); ?></span>
+						<?php if ( $pepselect_date ) : ?>
+							<time class="pepselect-order-row__value" datetime="<?php echo esc_attr( $pepselect_date->date( 'c' ) ); ?>"><?php echo esc_html( strtoupper( $pepselect_date->date_i18n( 'M j, Y' ) ) ); ?></time>
+						<?php endif; ?>
+					</div>
+					<div class="pepselect-order-row__field pepselect-order-row__field--tracking">
+						<span class="pepselect-order-row__label"><?php esc_html_e( 'Tracking', 'pepselect-child' ); ?></span>
+						<?php if ( '' !== $pepselect_track_num && '' !== $pepselect_track_url ) : ?>
+							<a class="pepselect-order-row__tracking-link" href="<?php echo esc_url( $pepselect_track_url ); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html( $pepselect_track_num ); ?><span aria-hidden="true">↗</span><span class="screen-reader-text"><?php esc_html_e( 'Open carrier tracking', 'pepselect-child' ); ?></span></a>
+						<?php elseif ( '' !== $pepselect_track_num ) : ?>
+							<span class="pepselect-order-row__value"><?php echo esc_html( $pepselect_track_num ); ?></span>
+						<?php else : ?>
+							<span class="pepselect-order-row__empty">—</span>
+						<?php endif; ?>
+					</div>
+					<div class="pepselect-order-row__field pepselect-order-row__field--status">
+						<span class="pepselect-order-row__label"><?php esc_html_e( 'Status', 'pepselect-child' ); ?></span>
+						<span class="pepselect-order-row__status pepselect-order-row__status--<?php echo esc_attr( $pepselect_summary['status_key'] ); ?>"><span aria-hidden="true"></span><?php echo esc_html( $pepselect_summary['status_label'] ); ?></span>
+					</div>
+					<div class="pepselect-order-row__field pepselect-order-row__field--total">
+						<span class="pepselect-order-row__label"><?php esc_html_e( 'Total', 'pepselect-child' ); ?></span>
+						<span class="pepselect-order-row__value"><?php echo wp_kses_post( $pepselect_order->get_formatted_order_total() ); ?></span>
+					</div>
+					<span class="pepselect-order-row__arrow" aria-hidden="true">→</span>
+				</li>
 				<?php
-				foreach ( $pepselect_orders as $pepselect_order ) :
-					if ( ! is_a( $pepselect_order, 'WC_Order' ) ) {
-						continue;
-					}
+			};
+			$pepselect_recent_orders = array_slice( $pepselect_orders, 0, 5 );
+			$pepselect_older_orders  = array_slice( $pepselect_orders, 5 );
+			?>
 
-					$pepselect_status      = $pepselect_order->get_status();
-					$pepselect_status_name = wc_get_order_status_name( $pepselect_status );
-					$pepselect_date        = $pepselect_order->get_date_created();
-					$pepselect_order_id    = $pepselect_order->get_id();
-
-					// Tracking: reuse the existing resolver. Show the number only when
-					// one is resolved; render nothing otherwise (absence is correct).
-					// The Easyship note's tracking link is a bare domain, so the number
-					// is shown as plain text, never linked.
-					$pepselect_tracking = function_exists( 'pepselect_child_get_order_tracking' )
-						? pepselect_child_get_order_tracking( $pepselect_order )
-						: array( 'number' => '', 'carrier' => '' );
-					$pepselect_track_num     = isset( $pepselect_tracking['number'] ) ? $pepselect_tracking['number'] : '';
-					$pepselect_track_carrier = isset( $pepselect_tracking['carrier'] ) ? $pepselect_tracking['carrier'] : '';
-
-					// Cash back earned on this order, in dollars, from YITH's log.
-					$pepselect_earned = isset( $pepselect_earned_by_order[ $pepselect_order_id ] ) ? (float) $pepselect_earned_by_order[ $pepselect_order_id ] : 0.0;
-					?>
-					<li class="pepselect-order">
-						<div class="pepselect-order__head">
-							<div class="pepselect-order__id">
-								<span class="pepselect-order__number">#<?php echo esc_html( $pepselect_order->get_order_number() ); ?></span>
-								<?php if ( $pepselect_date ) : ?>
-									<time class="pepselect-order__date" datetime="<?php echo esc_attr( $pepselect_date->date( 'c' ) ); ?>"><?php echo esc_html( wc_format_datetime( $pepselect_date ) ); ?></time>
-								<?php endif; ?>
-							</div>
-							<span class="pepselect-order__status pepselect-order__status--<?php echo esc_attr( $pepselect_status ); ?>"><?php echo esc_html( $pepselect_status_name ); ?></span>
-						</div>
-
-						<div class="pepselect-order__meta">
-							<span class="pepselect-order__total"><?php echo wp_kses_post( $pepselect_order->get_formatted_order_total() ); ?></span>
-							<?php if ( $pepselect_earned > 0 ) : ?>
-								<span class="pepselect-order__earned">
-									<?php
-									/* translators: %s: cash back earned on this order, in dollars. */
-									printf( esc_html__( '%s cash back', 'pepselect-child' ), esc_html( pepselect_child_format_dollars( $pepselect_earned ) ) );
-									?>
-								</span>
-							<?php endif; ?>
-						</div>
-
-						<?php if ( '' !== $pepselect_track_num ) : ?>
-							<p class="pepselect-order__tracking">
-								<span class="pepselect-order__tracking-label">
-									<?php
-									if ( '' !== $pepselect_track_carrier ) {
-										/* translators: %s: shipping carrier name. */
-										printf( esc_html__( 'Tracking (%s)', 'pepselect-child' ), esc_html( $pepselect_track_carrier ) );
-									} else {
-										esc_html_e( 'Tracking', 'pepselect-child' );
-									}
-									?>
-								</span>
-								<span class="pepselect-order__tracking-num"><?php echo esc_html( $pepselect_track_num ); ?></span>
-							</p>
-						<?php endif; ?>
-
-						<?php
-						$pepselect_items = $pepselect_order->get_items();
-
-						if ( ! empty( $pepselect_items ) ) :
-							?>
-							<ul class="pepselect-order__items">
-								<?php foreach ( $pepselect_items as $pepselect_item ) : ?>
-									<li class="pepselect-order__item">
-										<span class="pepselect-order__item-name"><?php echo esc_html( $pepselect_item->get_name() ); ?></span>
-										<span class="pepselect-order__item-qty">&times;<?php echo esc_html( $pepselect_item->get_quantity() ); ?></span>
-										<span class="pepselect-order__item-price"><?php echo wp_kses_post( $pepselect_order->get_formatted_line_subtotal( $pepselect_item ) ); ?></span>
-									</li>
-								<?php endforeach; ?>
-							</ul>
-						<?php endif; ?>
-					</li>
-				<?php endforeach; ?>
+			<ul class="pepselect-orders">
+				<?php foreach ( $pepselect_recent_orders as $pepselect_order ) { $pepselect_render_order_row( $pepselect_order ); } ?>
 			</ul>
+
+			<?php if ( ! empty( $pepselect_older_orders ) ) : ?>
+				<details class="pepselect-orders-archive">
+					<summary><?php printf( esc_html( _n( 'Show %d older order', 'Show %d older orders', count( $pepselect_older_orders ), 'pepselect-child' ) ), esc_html( count( $pepselect_older_orders ) ) ); ?><span aria-hidden="true">⌄</span></summary>
+					<ul class="pepselect-orders pepselect-orders--older">
+						<?php foreach ( $pepselect_older_orders as $pepselect_order ) { $pepselect_render_order_row( $pepselect_order ); } ?>
+					</ul>
+				</details>
+			<?php endif; ?>
 
 		<?php endif; ?>
 	</section>

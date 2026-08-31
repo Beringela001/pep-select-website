@@ -58,6 +58,80 @@ final class PepSelect_OE_Plugin {
 		return $url ?: home_url( '/order/' );
 	}
 
+	/**
+	 * Build the customer-facing URL and status for a My Account order row.
+	 *
+	 * @param mixed $order    Expected WC_Order instance.
+	 * @param array $tracking Normalized tracking data.
+	 * @return array{url:string,status_key:string,status_label:string}
+	 */
+	public function account_order_summary( $order, array $tracking = array() ): array {
+		$fallback = is_object( $order ) && method_exists( $order, 'get_view_order_url' )
+			? $order->get_view_order_url()
+			: home_url( '/my-account/orders/' );
+		$result = array(
+			'url'          => $fallback,
+			'status_key'   => 'order-status',
+			'status_label' => is_object( $order ) && method_exists( $order, 'get_status' ) && function_exists( 'wc_get_order_status_name' )
+				? wc_get_order_status_name( $order->get_status() )
+				: 'Order status',
+		);
+
+		if ( ! is_a( $order, 'WC_Order' ) ) {
+			return $result;
+		}
+
+		$status = (string) $order->get_status();
+		$number = trim( (string) ( $tracking['number'] ?? '' ) );
+		$delivered = $this->order_is_delivered( $order );
+
+		if ( in_array( $status, array( 'on-hold', 'pending' ), true ) ) {
+			$result['status_key'] = 'waiting-payment';
+			$result['status_label'] = 'Waiting for payment';
+		} elseif ( 'processing' === $status ) {
+			$result['status_key'] = 'being-prepared';
+			$result['status_label'] = 'Being prepared';
+		} elseif ( 'completed' === $status && '' !== $number && ! $delivered ) {
+			$result['status_key'] = 'in-transit';
+			$result['status_label'] = 'In transit';
+		} elseif ( 'completed' === $status || $delivered ) {
+			$result['status_key'] = 'completed';
+			$result['status_label'] = 'Completed';
+		} else {
+			$result['status_key'] = sanitize_html_class( $status );
+			$result['status_label'] = wc_get_order_status_name( $status );
+		}
+
+		$record = '1' === get_option( 'pepselect_oe_enabled', '0' ) ? $this->store->find_by_order( (int) $order->get_id() ) : null;
+		if ( $record && empty( $record['revoked_at'] ) ) {
+			$result['url'] = add_query_arg( 'order_key', $order->get_order_key(), self::order_page_url() );
+		}
+
+		return (array) apply_filters( 'pepselect_oe_account_order_summary', $result, $order, $tracking );
+	}
+
+	private function order_is_delivered( WC_Order $order ): bool {
+		$keys = array(
+			'_easyship_shipment_status', 'easyship_shipment_status', '_shipment_status',
+			'shipment_status', '_delivery_status', 'delivery_status', '_tracking_status',
+		);
+		foreach ( $keys as $key ) {
+			$value = $order->get_meta( $key );
+			if ( is_scalar( $value ) && preg_match( '/\bdelivered\b/i', (string) $value ) ) {
+				return true;
+			}
+		}
+
+		$items = $order->get_meta( '_wc_shipment_tracking_items' );
+		foreach ( is_array( $items ) ? $items : array() as $item ) {
+			if ( is_array( $item ) && preg_match( '/\bdelivered\b/i', (string) ( $item['status'] ?? $item['shipment_status'] ?? '' ) ) ) {
+				return true;
+			}
+		}
+
+		return (bool) apply_filters( 'pepselect_oe_order_is_delivered', false, $order );
+	}
+
 	public function boot(): void {
 		add_action( 'rest_api_init', array( new PepSelect_OE_REST_Controller( $this->store ), 'register_routes' ) );
 		add_action( 'admin_init', array( $this, 'ensure_runtime_page' ), 1 );

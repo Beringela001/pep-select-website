@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Pep Select Order Experience
  * Description: Secure, batch-specific order records for Pep Select customers and Ops.
- * Version: 0.3.3
+ * Version: 0.4.0
  * Author: Pep Select
  * Text Domain: pepselect-order-experience
  * Requires at least: 6.5
@@ -12,7 +12,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'PEPSELECT_OE_VERSION', '0.3.3' );
+define( 'PEPSELECT_OE_VERSION', '0.4.0' );
 define( 'PEPSELECT_OE_FILE', __FILE__ );
 define( 'PEPSELECT_OE_DIR', plugin_dir_path( __FILE__ ) );
 
@@ -34,3 +34,18 @@ add_action(
 		PepSelect_OE_Plugin::instance()->boot();
 	}
 );
+
+/**
+ * Return customer-safe display data for an order in My Account.
+ *
+ * The theme owns presentation; this plugin owns the private-page capability and
+ * the public status vocabulary. When no secure snapshot exists, the URL remains
+ * WooCommerce's native order URL.
+ *
+ * @param WC_Order $order    Order owned by the logged-in customer.
+ * @param array    $tracking Normalized tracking data from the site resolver.
+ * @return array{url:string,status_key:string,status_label:string}
+ */
+function pepselect_oe_account_order_summary( $order, array $tracking = array() ): array {
+	return PepSelect_OE_Plugin::instance()->account_order_summary( $order, $tracking );
+}
