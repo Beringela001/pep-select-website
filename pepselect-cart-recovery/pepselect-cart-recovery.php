@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Pep Select Cart Recovery
  * Description: Lightweight exit offer, unique coupons, and Cart Abandonment Recovery integration for Pep Select.
- * Version: 0.4.9
+ * Version: 0.4.10
  * Author: Pep Select
  * Text Domain: pepselect-cart-recovery
  */
@@ -10,7 +10,7 @@
 defined( 'ABSPATH' ) || exit;
 
 final class PepSelect_Cart_Recovery {
-	const VERSION                     = '0.4.9';
+	const VERSION                     = '0.4.10';
 	const OPTION                      = 'pepselect_cart_recovery_settings';
 	const VERSION_OPTION              = 'pepselect_cart_recovery_version';
 	const NONCE                       = 'pepselect_exit_offer_capture';
@@ -584,7 +584,7 @@ final class PepSelect_Cart_Recovery {
 
 		if ( is_object( $email_data ) && ! empty( $email_data->email_body ) ) {
 			$email_data->email_body = $this->normalize_recovery_email_body( $email_data->email_body );
-			if ( false === strpos( $email_data->email_body, 'data-pepselect-company-footer' ) ) {
+			if ( ! $this->has_company_footer( $email_data->email_body ) ) {
 				$email_data->email_body .= $this->company_footer_html();
 			}
 		}
@@ -614,13 +614,6 @@ final class PepSelect_Cart_Recovery {
 			$body
 		);
 
-		// Remove the superseded light footer embedded in the three saved templates.
-		$body = preg_replace(
-			'#<tr><td\s+colspan=["\']2["\'][^>]*background:\s*#f6f8fa[^>]*>.*?American-owned and operated\..*?</td></tr>#is',
-			'',
-			$body
-		);
-
 		$mobile_css = <<<'HTML'
 <style type="text/css" data-pepselect-mobile-email="1">
 @media only screen and (max-width:520px){
@@ -644,7 +637,36 @@ HTML;
 		return $mobile_css . '<div class="pep-recovery-email">' . $body . '</div>';
 	}
 
+	/**
+	 * Detect either the current footer or the complete legacy company footer.
+	 *
+	 * Saved CartFlows templates may already contain the company block. Detecting
+	 * it is safer than deleting a broad table row from database-authored HTML.
+	 *
+	 * @param string $body Recovery email HTML.
+	 * @return bool
+	 */
+	private function has_company_footer( $body ) {
+		$body = (string) $body;
+		if ( false !== strpos( $body, 'data-pepselect-company-footer="1"' ) ) {
+			return true;
+		}
+
+		return false !== stripos( $body, 'Pep Select is an American-owned and operated company.' )
+			&& false !== stripos( $body, '2090 Baker Rd, Ste 304 #A85' )
+			&& false !== stripos( $body, 'support@pepselect.com' )
+			&& false !== stripos( $body, '1 (833) 737-7528' );
+	}
+
 	public function require_signup_code_for_final_email( $should_send, $email_data ) {
+		if ( ! $should_send ) {
+			return false;
+		}
+
+		if ( ! is_object( $email_data ) || empty( trim( wp_strip_all_tags( (string) ( $email_data->email_body ?? '' ) ) ) ) ) {
+			return false;
+		}
+
 		if ( ! $this->is_final_template( $email_data ) ) {
 			return $should_send;
 		}

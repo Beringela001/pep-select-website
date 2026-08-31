@@ -2,7 +2,7 @@
 Contributors: pepselect
 Requires at least: 6.5
 Requires PHP: 7.4
-Stable tag: 0.4.9
+Stable tag: 0.4.10
 License: Proprietary
 
 Native Pep Select exit offer and Cart Abandonment Recovery integration.
@@ -25,7 +25,9 @@ Native Pep Select exit offer and Cart Abandonment Recovery integration.
 * Makes all customer-facing exit-popup and immediate coupon-email wording editable.
 * Keeps the approved popup frame and responsive layout fixed while allowing background images, colors, tint, overlay opacity, text colors, and button colors.
 * Identifies Pep Select as an American-owned and operated company in the customer email footer.
-* Keeps saved-cart product tables inside the mobile email canvas and removes the superseded embedded footer at send time.
+* Keeps saved-cart product tables inside the mobile email canvas and preserves database-authored message content.
+* Detects a complete existing company footer before appending the shared footer, preventing duplicates without deleting surrounding email markup.
+* Blocks a recovery send when CartFlows supplies a genuinely empty email template.
 * Standardizes the approved reply-first support sentence across signup-code and saved-cart emails, including previously saved recovery templates.
 * Coupons can combine with eligible offers.
 * Uses a 7-day expiry by default.

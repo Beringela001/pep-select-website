@@ -77,7 +77,10 @@ const mockup = fs.readFileSync(path.join(root, '..', 'mockups', 'cart-recovery',
   'max-height:calc(100vh - 36px)'
 ].forEach((needle) => assert(css.includes(needle), `Missing centered modal contract: ${needle}`));
 
-assert(php.includes("const VERSION                     = '0.4.9'"), 'Plugin version must be 0.4.9');
+assert(php.includes("const VERSION                     = '0.4.10'"), 'Plugin version must be 0.4.10');
+assert(php.includes('has_company_footer'), 'Recovery emails must detect existing company footers without deleting body markup');
+assert(!php.includes('background:\\s*#f6f8fa'), 'Recovery normalization must not strip broad light-background table rows');
+assert(php.includes("empty( trim( wp_strip_all_tags( (string) ( $email_data->email_body ?? '' ) ) ) )"), 'Bodyless recovery templates must be blocked before sending');
 
 assert(!/dataLayer\.push\([^)]*email/i.test(js), 'Email must not be pushed to the dataLayer');
 assert(!/https?:\/\//.test(js + css), 'Public assets must not call third-party URLs');
