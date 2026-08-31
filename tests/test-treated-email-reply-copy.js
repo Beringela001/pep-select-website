@@ -31,6 +31,5 @@ const recovery = read('pepselect-cart-recovery/pepselect-cart-recovery.php');
 assert.match(recovery, approved);
 assert.match(recovery, /maybe_upgrade_settings/);
 assert.match(recovery, /VERSION_OPTION/);
-assert.doesNotMatch(recovery, /Have a question before ordering\? Reply to this email or contact \{support_email\}\./);
-
+assert.match(recovery, /in_array\( trim\( \(string\) \$settings\['email_support'\] \), \$legacy_support, true \)/);
 console.log('Treated customer email reply-copy checks passed.');
