@@ -9,6 +9,7 @@
 - `concept-03.html`: compact refinement using the standard site header and footer, two-column mobile order cards, lined batch summaries, improved customer copy, and private-page indexing directives.
 - `concept-03-desktop.png`: desktop review image for Concept 03.
 - `concept-03-mobile.png`: 390px mobile review image for Concept 03.
+- `order-list-concept.html`: interactive My Account order-history concept with three compact row treatments; Variant A is selected and demonstrates five recent orders with older orders behind an expandable control.
 - `assets/`: current Pep Select product imagery used by Concepts 02 and 03.
 - `IMPLEMENTATION-MILESTONES.md`: phased Website and Ops implementation plan.
 - `IMG_5289.jpeg`, `IMG_5290.jpeg`, and `idea_brainstorming.png`: source references supplied by Paulo.
