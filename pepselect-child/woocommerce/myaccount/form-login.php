@@ -36,8 +36,8 @@ $pepselect_initial_tab    = isset( $_POST['register'] ) ? 'register' : 'login'; 
 				<p
 					class="pepselect-login__lead"
 					data-login-text="<?php esc_attr_e( 'Sign in to view your orders, cash back, and account details.', 'pepselect-child' ); ?>"
-					data-register-text="<?php esc_attr_e( 'Create an account for faster checkout and easy order tracking.', 'pepselect-child' ); ?>"
-				><?php echo esc_html( 'register' === $pepselect_initial_tab ? __( 'Create an account for faster checkout and easy order tracking.', 'pepselect-child' ) : __( 'Sign in to view your orders, cash back, and account details.', 'pepselect-child' ) ); ?></p>
+					data-register-text="<?php esc_attr_e( 'Create an account to track your orders.', 'pepselect-child' ); ?>"
+				><?php echo esc_html( 'register' === $pepselect_initial_tab ? __( 'Create an account to track your orders.', 'pepselect-child' ) : __( 'Sign in to view your orders, cash back, and account details.', 'pepselect-child' ) ); ?></p>
 			</header>
 
 			<?php

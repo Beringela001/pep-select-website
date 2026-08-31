@@ -1,6 +1,12 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.86** - Remove the inherited account wrapper gap.
+**Release candidate: 0.25.0-beta.87** - Clarify account registration purpose.
+
+## 0.25.0-beta.87 - 2026-08-30
+
+- Replace the checkout-focused registration subtitle with the shorter, accurate line: “Create an account to track your orders.”
+
+**Previous release candidate: 0.25.0-beta.86** - Remove the inherited account wrapper gap.
 
 ## 0.25.0-beta.86 - 2026-08-30
 

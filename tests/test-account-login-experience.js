@@ -26,6 +26,8 @@ assert.match( template, /role="tablist"/ );
 assert.match( template, /data-account-panel="login"/ );
 assert.match( template, /data-account-panel="register"/ );
 assert.match( template, /pepselect_child_render_registration_fields_without_birthday/ );
+assert.match( template, /Create an account to track your orders\./ );
+assert.doesNotMatch( template, /faster checkout/ );
 assert.doesNotMatch( template, /name=["']yith_birthday/ );
 
 assert.match( accountPhp, /name=\(\["\\'\]\)yith_birthday/ );
