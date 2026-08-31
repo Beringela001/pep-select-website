@@ -35,7 +35,8 @@ assert.match( script, /Math\.min\( 820/ );
 assert.match( script, /aria-selected/ );
 
 assert.doesNotMatch( css, /\.pepselect-login\s*\{[^}]*width:\s*100vw/s );
-assert.match( css, /\.pepselect-login\s*\{[^}]*padding-block:\s*clamp\(24px,[^;]+clamp\(40px,/s );
+assert.match( css, /\.woocommerce-account:not\(\.logged-in\) \.woocommerce\s*\{[^}]*padding:\s*0/s );
+assert.match( css, /\.pepselect-login\s*\{[^}]*padding-block:\s*clamp\(16px,[^;]+clamp\(32px,/s );
 assert.match( css, /\.pepselect-login\s*\{[^}]*background:\s*var\(--pep-color-white\)/s );
 assert.match( css, /max-width: 520px/ );
 assert.match( css, /--pep-radius-card-inner/ );

@@ -1,6 +1,12 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.85** - Tighten the logged-out account page.
+**Release candidate: 0.25.0-beta.86** - Remove the inherited account wrapper gap.
+
+## 0.25.0-beta.86 - 2026-08-30
+
+- Remove WooCommerce's logged-out wrapper padding and cap the intentional menu-to-card gap at 24px on desktop and 16px on mobile.
+
+**Previous release candidate: 0.25.0-beta.85** - Tighten the logged-out account page.
 
 ## 0.25.0-beta.85 - 2026-08-30
 

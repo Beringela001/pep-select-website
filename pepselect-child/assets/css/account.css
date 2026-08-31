@@ -803,10 +803,14 @@
 }
 
 /* Login / Register page: one focused account-access card. */
+.woocommerce-account:not(.logged-in) .woocommerce {
+	padding: 0;
+}
+
 .pepselect-login {
 	width: 100%;
 	margin: 0;
-	padding-block: clamp(24px, 3.5vw, 40px) clamp(40px, 5vw, 64px);
+	padding-block: clamp(16px, 2vw, 24px) clamp(32px, 4vw, 48px);
 	background: var(--pep-color-white);
 	font-family: var(--pep-font-interface);
 }
@@ -1030,7 +1034,7 @@
 
 @media (max-width: 480px) {
 	.pepselect-login {
-		padding-block: 20px 36px;
+		padding-block: 16px 28px;
 	}
 
 	.pepselect-login__inner {
