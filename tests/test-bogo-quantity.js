@@ -40,8 +40,8 @@ const discountFrontend = fs.readFileSync(
 );
 
 assert.match(plugin, /Plugin Name: Pep Select Cart Discounts/);
-assert.match(plugin, /Version:\s+2\.0\.0/);
-assert.match(plugin, /PEPSELECT_BOGO_VERSION', '2\.0\.0'/);
+assert.match(plugin, /Version:\s+2\.0\.1/);
+assert.match(plugin, /PEPSELECT_BOGO_VERSION', '2\.0\.1'/);
 assert.match(plugin, /class-pepselect-compound-discount\.php/);
 assert.match(plugin, /class-pepselect-bogo-rule\.php/);
 assert.match(plugin, /class-pepselect-sitewide-discount\.php/);
