@@ -1,6 +1,12 @@
 # Changelog
 
-**Release candidate: 0.25.0-beta.82** - Make transactional email support reply-first.
+**Release candidate: 0.25.0-beta.83** - Resolve the account form surface cascade.
+
+## 0.25.0-beta.83 - 2026-08-30
+
+- Raise the scoped account-form reset above WooCommerce's built-in login card rule so the page reliably renders one surface.
+
+**Previous release candidate: 0.25.0-beta.82** - Make transactional email support reply-first.
 
 ## 0.25.0-beta.82 - 2026-08-30
 
