@@ -13,6 +13,8 @@ final class PepSelect_Cart_Recovery {
 	const VERSION                     = '0.4.10';
 	const OPTION                      = 'pepselect_cart_recovery_settings';
 	const VERSION_OPTION              = 'pepselect_cart_recovery_version';
+	const RECOVERY_COPY_OPTION        = 'pepselect_cart_recovery_copy_version';
+	const RECOVERY_COPY_VERSION       = '1';
 	const NONCE                       = 'pepselect_exit_offer_capture';
 	const MARKETING_EMAILS_PER_SECOND = 1;
 
@@ -138,6 +140,8 @@ final class PepSelect_Cart_Recovery {
 	 * Apply release-level setting changes without disturbing customized popup copy.
 	 */
 	public function maybe_upgrade_settings() {
+		$this->maybe_migrate_recovery_templates();
+
 		if ( self::VERSION === get_option( self::VERSION_OPTION ) ) {
 			return;
 		}
@@ -146,6 +150,92 @@ final class PepSelect_Cart_Recovery {
 		$settings['email_support'] = self::defaults()['email_support'];
 		update_option( self::OPTION, $settings );
 		update_option( self::VERSION_OPTION, self::VERSION );
+	}
+
+	/**
+	 * Replace the first two saved-cart database templates with the approved copy.
+	 *
+	 * CartFlows stores these messages outside the plugin, so changing the send-time
+	 * wrapper alone cannot correct an older subject or body already in the database.
+	 */
+	private function maybe_migrate_recovery_templates() {
+		if ( self::RECOVERY_COPY_VERSION === get_option( self::RECOVERY_COPY_OPTION ) || ! defined( 'CARTFLOWS_CA_EMAIL_TEMPLATE_TABLE' ) ) {
+			return;
+		}
+
+		global $wpdb;
+		$table = $wpdb->prefix . CARTFLOWS_CA_EMAIL_TEMPLATE_TABLE;
+		if ( $table !== $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) ) {
+			return;
+		}
+
+		$templates = $wpdb->get_results( "SELECT id, frequency, frequency_unit FROM {$table} ORDER BY id ASC" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$updated   = array();
+
+		foreach ( (array) $templates as $template ) {
+			$minutes = $this->recovery_delay_minutes( $template->frequency ?? 0, $template->frequency_unit ?? '' );
+			if ( 90 === $minutes && empty( $updated['90'] ) ) {
+				$wpdb->update(
+					$table,
+					array(
+						'email_subject' => 'Want another look?',
+						'email_body'    => $this->recovery_template_body( '90' ),
+					),
+					array( 'id' => absint( $template->id ) ),
+					array( '%s', '%s' ),
+					array( '%d' )
+				);
+				$updated['90'] = true;
+			}
+
+			if ( 1440 === $minutes && empty( $updated['24'] ) ) {
+				$wpdb->update(
+					$table,
+					array(
+						'email_subject' => 'Need a hand?',
+						'email_body'    => $this->recovery_template_body( '24' ),
+					),
+					array( 'id' => absint( $template->id ) ),
+					array( '%s', '%s' ),
+					array( '%d' )
+				);
+				$updated['24'] = true;
+			}
+		}
+
+		if ( ! empty( $updated['90'] ) && ! empty( $updated['24'] ) ) {
+			update_option( self::RECOVERY_COPY_OPTION, self::RECOVERY_COPY_VERSION );
+		}
+	}
+
+	private function recovery_delay_minutes( $frequency, $unit ) {
+		$frequency = absint( $frequency );
+		switch ( strtoupper( (string) $unit ) ) {
+			case 'DAY':
+				return $frequency * 1440;
+			case 'HOUR':
+				return $frequency * 60;
+			default:
+				return $frequency;
+		}
+	}
+
+	private function recovery_template_body( $template ) {
+		$is_first  = '90' === $template;
+		$preheader = $is_first ? 'Your Pep Select cart is ready when you are.' : 'Questions before ordering? Just reply to this email.';
+		$eyebrow   = $is_first ? 'YOUR SAVED CART' : 'A QUICK NOTE';
+		$heading   = $is_first ? 'Pick up where you left off.' : 'Any questions?';
+		$message   = $is_first
+			? 'The compounds you selected are still in your cart if you would like to take another look.'
+			: 'Just a quick note to let you know your cart is still available if you would like another look.';
+
+		return sprintf(
+			'<span style="display:none!important;font-size:1px;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden">%1$s</span><table role="presentation" cellpadding="0" cellspacing="0" width="100%%" style="background:#f6f8fa;border-collapse:collapse;margin:0;padding:0;width:100%%"><tr><td align="center" style="padding:24px 12px"><table role="presentation" cellpadding="0" cellspacing="0" width="680" style="background:#ffffff;border-collapse:collapse;max-width:680px;width:100%%"><tr><td style="background:#00345f;padding:24px 36px"><div style="color:#ffffff;font-family:Arial,sans-serif;font-size:22px;font-weight:700;letter-spacing:.02em">PEP <span style="color:#39b7e7;font-weight:400">SELECT</span></div></td></tr><tr><td style="padding:30px 36px 22px"><div style="color:#0d708e;font-family:Arial,sans-serif;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase">%2$s</div><h1 style="color:#001d3a;font-family:Arial,sans-serif;font-size:30px;line-height:1.2;margin:10px 0 18px">%3$s</h1><p style="color:#001d3a;font-family:Arial,sans-serif;font-size:16px;line-height:1.65;margin:0 0 10px">Hi {{customer.firstname}},</p><p style="color:#425b70;font-family:Arial,sans-serif;font-size:16px;line-height:1.65;margin:0">%4$s</p></td></tr><tr><td style="padding:0 36px 20px">{{cart.product.table}}</td></tr><tr><td style="padding:0 36px 32px"><a href="{{cart.checkout_url}}" style="background:#00345f;border-radius:999px;color:#ffffff;display:block;font-family:Arial,sans-serif;font-size:15px;font-weight:700;padding:15px 22px;text-align:center;text-decoration:none">VIEW MY CART</a><p style="color:#425b70;font-family:Arial,sans-serif;font-size:15px;line-height:1.6;margin:22px 0 0">Have a question? Reply to this email, and one of our team members will be in touch shortly.</p><div style="color:#748596;font-family:Arial,sans-serif;font-size:12px;line-height:1.5;margin-top:18px">{{cart.unsubscribe}}</div></td></tr></table></td></tr></table>',
+			esc_html( $preheader ),
+			esc_html( $eyebrow ),
+			esc_html( $heading ),
+			esc_html( $message )
+		);
 	}
 
 	private function settings() {

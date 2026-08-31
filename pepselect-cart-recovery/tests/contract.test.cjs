@@ -78,6 +78,14 @@ const mockup = fs.readFileSync(path.join(root, '..', 'mockups', 'cart-recovery',
 ].forEach((needle) => assert(css.includes(needle), `Missing centered modal contract: ${needle}`));
 
 assert(php.includes("const VERSION                     = '0.4.10'"), 'Plugin version must be 0.4.10');
+assert(php.includes("const RECOVERY_COPY_VERSION       = '1'"), 'Saved-cart database copy migration must be versioned');
+assert(php.includes("'email_subject' => 'Want another look?'"), 'The 90-minute subject must use the approved copy');
+assert(php.includes("'email_subject' => 'Need a hand?'"), 'The 24-hour subject must use the approved copy');
+assert(php.includes('The compounds you selected are still in your cart if you would like to take another look.'), 'The 90-minute body must use the approved copy');
+assert(php.includes('Just a quick note to let you know your cart is still available if you would like another look.'), 'The 24-hour body must use the approved copy');
+assert(php.includes('{{cart.product.table}}'), 'Saved-cart templates must include the cart contents token');
+assert(php.includes('{{cart.checkout_url}}'), 'Saved-cart templates must include the recovery link token');
+assert(php.includes('{{cart.unsubscribe}}'), 'Saved-cart templates must include the unsubscribe token');
 assert(php.includes('has_company_footer'), 'Recovery emails must detect existing company footers without deleting body markup');
 assert(!php.includes('background:\\s*#f6f8fa'), 'Recovery normalization must not strip broad light-background table rows');
 assert(php.includes("empty( trim( wp_strip_all_tags( (string) ( $email_data->email_body ?? '' ) ) ) )"), 'Bodyless recovery templates must be blocked before sending');

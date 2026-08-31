@@ -29,6 +29,7 @@ Native Pep Select exit offer and Cart Abandonment Recovery integration.
 * Detects a complete existing company footer before appending the shared footer, preventing duplicates without deleting surrounding email markup.
 * Blocks a recovery send when CartFlows supplies a genuinely empty email template.
 * Standardizes the approved reply-first support sentence across signup-code and saved-cart emails, including previously saved recovery templates.
+* Migrates the stored 90-minute and 24-hour CartFlows templates to the approved subjects, preheaders, copy, cart contents, and recovery button.
 * Coupons can combine with eligible offers.
 * Uses a 7-day expiry by default.
 * Shows no popup or assets until explicitly enabled.
