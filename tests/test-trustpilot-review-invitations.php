@@ -127,6 +127,17 @@ assert( PepSelect_Trustpilot_Review_Invitations::remove_exclusion( $family_hash 
 assert( ! PepSelect_Trustpilot_Review_Invitations::is_email_excluded( 'family@example.com' ), 'A removed email must no longer pass the block test.' );
 assert( empty( $GLOBALS['pep_options']['pepselect_trustpilot_review_exclusions'] ), 'Removing the exclusion must update the stored list.' );
 
+$timed = new WC_Order( 126, 'timing@example.com' );
+$GLOBALS['pep_orders'][126] = $timed;
+PepSelect_Trustpilot_Review_Invitations::schedule_for_order( 126 );
+$timed_key = 'pepselect_send_trustpilot_review_invitation:126';
+assert( isset( $GLOBALS['pep_scheduled'][ $timed_key ] ), 'A timing-test invitation must initially schedule.' );
+$GLOBALS['pep_options']['pepselect_trustpilot_review_delay_days'] = 14;
+assert( 1 === PepSelect_Trustpilot_Review_Invitations::reschedule_pending_invitations(), 'Changing the delay must reschedule the pending invitation.' );
+assert( $GLOBALS['pep_scheduled'][ $timed_key ]['timestamp'] >= time() + ( 14 * DAY_IN_SECONDS ) - 2, 'The rescheduled invitation must use the selected day delay.' );
+PepSelect_Trustpilot_Review_Invitations::cancel_for_order( 126 );
+$GLOBALS['pep_options']['pepselect_trustpilot_review_delay_days'] = 7;
+
 $GLOBALS['pep_orders']    = array();
 $GLOBALS['pep_scheduled'] = array();
 $GLOBALS['pep_options']['pepselect_trustpilot_review_customer_sent']    = array();

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Pep Select Trustpilot Review Invitations
  * Description: Sends one neutral, branded Trustpilot review request after an eligible WooCommerce order is completed.
- * Version: 0.4.0
+ * Version: 0.5.0
  * Author: Pep Select
  * Requires at least: 6.4
  * Requires PHP: 7.4
@@ -12,7 +12,7 @@
 defined( 'ABSPATH' ) || exit;
 
 final class PepSelect_Trustpilot_Review_Invitations {
-	const VERSION            = '0.4.0';
+	const VERSION            = '0.5.0';
 	const ACTION_HOOK        = 'pepselect_send_trustpilot_review_invitation';
 	const ACTION_GROUP       = 'pepselect-trustpilot-review';
 	const ORDER_SCHEDULED    = '_pepselect_trustpilot_review_scheduled_at';
@@ -22,6 +22,7 @@ final class PepSelect_Trustpilot_Review_Invitations {
 	const OPTOUT_OPTION      = 'pepselect_trustpilot_review_optouts';
 	const EXCLUSIONS_OPTION  = 'pepselect_trustpilot_review_exclusions';
 	const ENABLED_OPTION     = 'pepselect_trustpilot_review_enabled';
+	const DELAY_DAYS_OPTION  = 'pepselect_trustpilot_review_delay_days';
 	const CUSTOMER_SENT_OPTION    = 'pepselect_trustpilot_review_customer_sent';
 	const CUSTOMER_PENDING_OPTION = 'pepselect_trustpilot_review_customer_pending';
 	const CATCHUP_OPTION          = 'pepselect_trustpilot_review_catchup_v2';
@@ -33,6 +34,7 @@ final class PepSelect_Trustpilot_Review_Invitations {
 	public static function init() {
 		add_action( 'admin_menu', array( __CLASS__, 'register_admin_page' ) );
 		add_action( 'admin_post_pepselect_trustpilot_review_settings', array( __CLASS__, 'save_admin_settings' ) );
+		add_action( 'admin_post_pepselect_trustpilot_review_delay', array( __CLASS__, 'save_admin_delay' ) );
 		add_action( 'admin_post_pepselect_trustpilot_review_exclusion', array( __CLASS__, 'save_admin_exclusion' ) );
 		add_action( 'admin_post_pepselect_trustpilot_review_catchup', array( __CLASS__, 'run_admin_catchup' ) );
 		add_action( 'admin_post_pepselect_trustpilot_review_preview', array( __CLASS__, 'render_admin_preview' ) );
@@ -299,7 +301,7 @@ final class PepSelect_Trustpilot_Review_Invitations {
 		$base      = $completed && is_callable( array( $completed, 'getTimestamp' ) ) ? $completed->getTimestamp() : time();
 		$delay     = (int) apply_filters(
 			'pepselect_trustpilot_review_delay',
-			self::DEFAULT_DELAY_DAYS * DAY_IN_SECONDS,
+			self::delay_days() * DAY_IN_SECONDS,
 			$order
 		);
 		return absint( $base ) + max( HOUR_IN_SECONDS, $delay );
@@ -364,11 +366,14 @@ final class PepSelect_Trustpilot_Review_Invitations {
 		}
 
 		$enabled     = self::is_enabled();
+		$delay_days  = self::delay_days();
 		$catchup     = get_option( self::CATCHUP_OPTION, array() );
 		$catchup     = is_array( $catchup ) ? $catchup : array();
 		$exclusions  = self::admin_exclusions();
 		$suggestions = self::customer_email_suggestions();
 		$result      = isset( $_GET['exclusion'] ) ? sanitize_key( wp_unslash( $_GET['exclusion'] ) ) : '';
+		$timing      = isset( $_GET['timing'] ) ? sanitize_key( wp_unslash( $_GET['timing'] ) ) : '';
+		$rescheduled = isset( $_GET['rescheduled'] ) ? absint( wp_unslash( $_GET['rescheduled'] ) ) : 0;
 		$preview_url = wp_nonce_url(
 			admin_url( 'admin-post.php?action=pepselect_trustpilot_review_preview' ),
 			'pepselect_trustpilot_review_preview'
@@ -383,11 +388,14 @@ final class PepSelect_Trustpilot_Review_Invitations {
 			<?php elseif ( 'invalid' === $result ) : ?>
 				<div class="notice notice-error is-dismissible"><p><?php esc_html_e( 'Enter a valid email address and try again.', 'pepselect-trustpilot-review' ); ?></p></div>
 			<?php endif; ?>
-			<p><?php esc_html_e( 'One neutral review request is scheduled seven days after an eligible order reaches Completed status, with a 180-day customer cooldown.', 'pepselect-trustpilot-review' ); ?></p>
+			<?php if ( 'updated' === $timing ) : ?>
+				<div class="notice notice-success is-dismissible"><p><?php echo esc_html( sprintf( _n( 'Timing saved. %d pending invitation was rescheduled.', 'Timing saved. %d pending invitations were rescheduled.', $rescheduled, 'pepselect-trustpilot-review' ), $rescheduled ) ); ?></p></div>
+			<?php endif; ?>
+			<p><?php echo esc_html( sprintf( __( 'One neutral review request is scheduled %d days after an eligible order reaches Completed status, with a 180-day customer cooldown.', 'pepselect-trustpilot-review' ), $delay_days ) ); ?></p>
 			<table class="widefat striped" style="max-width:760px;margin:18px 0;"><tbody>
 				<tr><th><?php esc_html_e( 'Status', 'pepselect-trustpilot-review' ); ?></th><td><strong><?php echo esc_html( $enabled ? __( 'Enabled', 'pepselect-trustpilot-review' ) : __( 'Paused', 'pepselect-trustpilot-review' ) ); ?></strong></td></tr>
 				<tr><th><?php esc_html_e( 'Trigger', 'pepselect-trustpilot-review' ); ?></th><td><?php esc_html_e( 'WooCommerce order completed', 'pepselect-trustpilot-review' ); ?></td></tr>
-				<tr><th><?php esc_html_e( 'Delay', 'pepselect-trustpilot-review' ); ?></th><td><?php esc_html_e( '7 days', 'pepselect-trustpilot-review' ); ?></td></tr>
+				<tr><th><?php esc_html_e( 'Delay', 'pepselect-trustpilot-review' ); ?></th><td><?php echo esc_html( sprintf( _n( '%d day', '%d days', $delay_days, 'pepselect-trustpilot-review' ), $delay_days ) ); ?></td></tr>
 				<tr><th><?php esc_html_e( 'Customer cadence', 'pepselect-trustpilot-review' ); ?></th><td><?php esc_html_e( 'At most once every 180 days per billing email', 'pepselect-trustpilot-review' ); ?></td></tr>
 				<tr><th><?php esc_html_e( 'Existing-customer catch-up', 'pepselect-trustpilot-review' ); ?></th><td>
 					<?php if ( ! empty( $catchup['completed_at'] ) ) : ?>
@@ -395,7 +403,7 @@ final class PepSelect_Trustpilot_Review_Invitations {
 						echo esc_html(
 							sprintf(
 								/* translators: 1: queued now count, 2: scheduled later count, 3: skipped count. */
-								__( 'Complete — %1$d queued promptly, %2$d scheduled for their seven-day mark, %3$d skipped.', 'pepselect-trustpilot-review' ),
+								__( 'Complete — %1$d queued promptly, %2$d scheduled for the configured delay, %3$d skipped.', 'pepselect-trustpilot-review' ),
 								absint( $catchup['queued_now'] ?? 0 ),
 								absint( $catchup['scheduled_later'] ?? 0 ),
 								absint( $catchup['skipped'] ?? 0 )
@@ -414,6 +422,13 @@ final class PepSelect_Trustpilot_Review_Invitations {
 				<input type="hidden" name="enabled" value="<?php echo esc_attr( $enabled ? 'no' : 'yes' ); ?>">
 				<?php submit_button( $enabled ? __( 'Pause invitations', 'pepselect-trustpilot-review' ) : __( 'Enable invitations', 'pepselect-trustpilot-review' ), $enabled ? 'secondary' : 'primary', 'submit', false ); ?>
 			</form>
+			<form action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" method="post" style="align-items:end;display:flex;flex-wrap:wrap;gap:10px;margin:18px 0;max-width:760px;">
+				<input type="hidden" name="action" value="pepselect_trustpilot_review_delay">
+				<?php wp_nonce_field( 'pepselect_trustpilot_review_delay' ); ?>
+				<label><strong><?php esc_html_e( 'Send after', 'pepselect-trustpilot-review' ); ?></strong><br><span style="align-items:center;display:flex;gap:7px;margin-top:6px;"><input name="delay_days" type="number" min="1" max="60" step="1" value="<?php echo esc_attr( $delay_days ); ?>" required style="width:84px;"> <?php esc_html_e( 'days after order completion', 'pepselect-trustpilot-review' ); ?></span></label>
+				<?php submit_button( __( 'Save timing', 'pepselect-trustpilot-review' ), 'secondary', 'submit', false ); ?>
+			</form>
+			<p class="description" style="margin-top:-10px;max-width:760px;"><?php esc_html_e( 'Saving the timing also recalculates invitations that are still pending.', 'pepselect-trustpilot-review' ); ?></p>
 			<h2 style="margin-top:30px;"><?php esc_html_e( 'Excluded customers', 'pepselect-trustpilot-review' ); ?></h2>
 			<p style="max-width:760px;"><?php esc_html_e( 'Choose a known Pep Select user or customer, or enter any valid email address. Adding an address cancels its pending invitation and blocks future invitations.', 'pepselect-trustpilot-review' ); ?></p>
 			<form action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" method="post" style="align-items:end;display:flex;flex-wrap:wrap;gap:10px;margin:14px 0 18px;max-width:760px;">
@@ -481,6 +496,23 @@ final class PepSelect_Trustpilot_Review_Invitations {
 		$enabled = isset( $_POST['enabled'] ) && 'yes' === sanitize_text_field( wp_unslash( $_POST['enabled'] ) );
 		update_option( self::ENABLED_OPTION, $enabled ? 'yes' : 'no', false );
 		wp_safe_redirect( admin_url( 'admin.php?page=pepselect-trustpilot-review&updated=1' ) );
+		exit;
+	}
+
+	/**
+	 * Save the administrator-selected completion-to-invitation delay.
+	 */
+	public static function save_admin_delay() {
+		if ( ! current_user_can( 'manage_woocommerce' ) ) {
+			wp_die( esc_html__( 'You are not allowed to manage review-invitation timing.', 'pepselect-trustpilot-review' ) );
+		}
+
+		check_admin_referer( 'pepselect_trustpilot_review_delay' );
+		$days = isset( $_POST['delay_days'] ) ? absint( wp_unslash( $_POST['delay_days'] ) ) : self::DEFAULT_DELAY_DAYS;
+		$days = max( 1, min( 60, $days ) );
+		update_option( self::DELAY_DAYS_OPTION, $days, false );
+		$rescheduled = self::reschedule_pending_invitations();
+		wp_safe_redirect( admin_url( 'admin.php?page=pepselect-trustpilot-review&timing=updated&rescheduled=' . absint( $rescheduled ) ) );
 		exit;
 	}
 
@@ -680,6 +712,31 @@ final class PepSelect_Trustpilot_Review_Invitations {
 		return true;
 	}
 
+	/**
+	 * Recalculate all currently pending invitations after the delay changes.
+	 *
+	 * @return int Number of invitations rescheduled.
+	 */
+	public static function reschedule_pending_invitations() {
+		if ( ! self::is_enabled() ) {
+			return 0;
+		}
+
+		$pending     = get_option( self::CUSTOMER_PENDING_OPTION, array() );
+		$rescheduled = 0;
+		foreach ( is_array( $pending ) ? $pending : array() as $record ) {
+			$order_id = absint( is_array( $record ) ? ( $record['order_id'] ?? 0 ) : 0 );
+			if ( ! $order_id ) {
+				continue;
+			}
+			self::cancel_for_order( $order_id );
+			if ( self::schedule_for_order( $order_id ) ) {
+				++$rescheduled;
+			}
+		}
+		return $rescheduled;
+	}
+
 	public static function is_email_excluded( $email ) {
 		$exclusions = self::admin_exclusions();
 		return isset( $exclusions[ self::email_hash( $email ) ] );
@@ -848,6 +905,10 @@ final class PepSelect_Trustpilot_Review_Invitations {
 
 	private static function is_enabled() {
 		return 'yes' === get_option( self::ENABLED_OPTION, 'no' );
+	}
+
+	private static function delay_days() {
+		return max( 1, min( 60, absint( get_option( self::DELAY_DAYS_OPTION, self::DEFAULT_DELAY_DAYS ) ) ) );
 	}
 
 	private static function has_scheduled_action( $args ) {

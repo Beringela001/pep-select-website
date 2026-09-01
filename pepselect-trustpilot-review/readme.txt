@@ -2,9 +2,9 @@
 Contributors: pepselect
 Requires at least: 6.4
 Requires PHP: 7.4
-Stable tag: 0.4.0
+Stable tag: 0.5.0
 
-Sends one neutral Pep Select-branded review request seven days after an order reaches WooCommerce Completed status.
+Sends one neutral Pep Select-branded review request after the configured delay from WooCommerce Completed status.
 
 == Behavior ==
 
@@ -17,10 +17,14 @@ Sends one neutral Pep Select-branded review request seven days after an order re
 * Includes an administrator-managed email exclusion list that cancels pending invitations and blocks future invitations.
 * Suggests known WordPress, WooCommerce customer, and recent order billing emails while allowing manual entry.
 * Includes a non-sending block test that runs the same exclusion guard used by scheduled invitations.
+* Allows administrators to choose a 1–60 day delay and recalculates pending invitations when it changes.
 * Links directly to Pep Select's official Trustpilot review form.
 * Does not create, edit, filter, or import Trustpilot reviews.
 
 == Changelog ==
+
+= 0.5.0 =
+* Added an adjustable completion-to-invitation delay with pending-invitation rescheduling.
 
 = 0.4.0 =
 * Added known-customer email suggestions and a non-sending exclusion test.
