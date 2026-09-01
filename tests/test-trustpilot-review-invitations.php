@@ -117,12 +117,14 @@ PepSelect_Trustpilot_Review_Invitations::schedule_for_order( 125 );
 $excluded_key = 'pepselect_send_trustpilot_review_invitation:125';
 assert( isset( $GLOBALS['pep_scheduled'][ $excluded_key ] ), 'An otherwise eligible email must initially schedule.' );
 assert( PepSelect_Trustpilot_Review_Invitations::add_exclusion( ' Family@Example.com ' ), 'Any valid email may be added to the admin exclusion list.' );
+assert( PepSelect_Trustpilot_Review_Invitations::is_email_excluded( 'family@example.com' ), 'The block test must use the same normalized exclusion guard as delivery.' );
 assert( ! isset( $GLOBALS['pep_scheduled'][ $excluded_key ] ), 'Adding an exclusion must cancel its pending invitation.' );
 PepSelect_Trustpilot_Review_Invitations::schedule_for_order( 125 );
 assert( ! isset( $GLOBALS['pep_scheduled'][ $excluded_key ] ), 'An excluded email must not schedule another invitation.' );
 $family_hash = hash_hmac( 'sha256', 'family@example.com', 'test-salt' );
 assert( 'family@example.com' === $GLOBALS['pep_options']['pepselect_trustpilot_review_exclusions'][ $family_hash ]['email'], 'Exclusions must be normalized and stored for admin display.' );
 assert( PepSelect_Trustpilot_Review_Invitations::remove_exclusion( $family_hash ), 'An existing exclusion may be removed.' );
+assert( ! PepSelect_Trustpilot_Review_Invitations::is_email_excluded( 'family@example.com' ), 'A removed email must no longer pass the block test.' );
 assert( empty( $GLOBALS['pep_options']['pepselect_trustpilot_review_exclusions'] ), 'Removing the exclusion must update the stored list.' );
 
 $GLOBALS['pep_orders']    = array();

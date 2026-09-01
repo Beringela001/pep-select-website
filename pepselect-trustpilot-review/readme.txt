@@ -2,7 +2,7 @@
 Contributors: pepselect
 Requires at least: 6.4
 Requires PHP: 7.4
-Stable tag: 0.3.0
+Stable tag: 0.4.0
 
 Sends one neutral Pep Select-branded review request seven days after an order reaches WooCommerce Completed status.
 
@@ -15,10 +15,15 @@ Sends one neutral Pep Select-branded review request seven days after an order re
 * Cancels pending sends for cancelled, failed, or refunded orders.
 * Includes a signed customer opt-out that suppresses future review invitations for the same email address.
 * Includes an administrator-managed email exclusion list that cancels pending invitations and blocks future invitations.
+* Suggests known WordPress, WooCommerce customer, and recent order billing emails while allowing manual entry.
+* Includes a non-sending block test that runs the same exclusion guard used by scheduled invitations.
 * Links directly to Pep Select's official Trustpilot review form.
 * Does not create, edit, filter, or import Trustpilot reviews.
 
 == Changelog ==
+
+= 0.4.0 =
+* Added known-customer email suggestions and a non-sending exclusion test.
 
 = 0.3.0 =
 * Added an admin-managed email exclusion list with pending-invitation cancellation.

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Pep Select Trustpilot Review Invitations
  * Description: Sends one neutral, branded Trustpilot review request after an eligible WooCommerce order is completed.
- * Version: 0.3.0
+ * Version: 0.4.0
  * Author: Pep Select
  * Requires at least: 6.4
  * Requires PHP: 7.4
@@ -12,7 +12,7 @@
 defined( 'ABSPATH' ) || exit;
 
 final class PepSelect_Trustpilot_Review_Invitations {
-	const VERSION            = '0.3.0';
+	const VERSION            = '0.4.0';
 	const ACTION_HOOK        = 'pepselect_send_trustpilot_review_invitation';
 	const ACTION_GROUP       = 'pepselect-trustpilot-review';
 	const ORDER_SCHEDULED    = '_pepselect_trustpilot_review_scheduled_at';
@@ -181,7 +181,7 @@ final class PepSelect_Trustpilot_Review_Invitations {
 		}
 
 		$email = self::normalize_email( $order->get_billing_email() );
-		if ( ! is_email( $email ) || $order->get_meta( self::ORDER_OPTED_OUT ) || self::email_is_opted_out( $email ) || self::email_is_excluded( $email ) ) {
+		if ( ! is_email( $email ) || $order->get_meta( self::ORDER_OPTED_OUT ) || self::email_is_opted_out( $email ) || self::is_email_excluded( $email ) ) {
 			return false;
 		}
 
@@ -367,6 +367,8 @@ final class PepSelect_Trustpilot_Review_Invitations {
 		$catchup     = get_option( self::CATCHUP_OPTION, array() );
 		$catchup     = is_array( $catchup ) ? $catchup : array();
 		$exclusions  = self::admin_exclusions();
+		$suggestions = self::customer_email_suggestions();
+		$result      = isset( $_GET['exclusion'] ) ? sanitize_key( wp_unslash( $_GET['exclusion'] ) ) : '';
 		$preview_url = wp_nonce_url(
 			admin_url( 'admin-post.php?action=pepselect_trustpilot_review_preview' ),
 			'pepselect_trustpilot_review_preview'
@@ -374,6 +376,13 @@ final class PepSelect_Trustpilot_Review_Invitations {
 		?>
 		<div class="wrap">
 			<h1><?php esc_html_e( 'Pep Select Review Invitations', 'pepselect-trustpilot-review' ); ?></h1>
+			<?php if ( 'test-blocked' === $result ) : ?>
+				<div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Block test passed. The address was stopped before email delivery, and no message was sent.', 'pepselect-trustpilot-review' ); ?></p></div>
+			<?php elseif ( 'test-not-blocked' === $result ) : ?>
+				<div class="notice notice-warning is-dismissible"><p><?php esc_html_e( 'This address is not blocked. Add it to the exclusion list before testing again.', 'pepselect-trustpilot-review' ); ?></p></div>
+			<?php elseif ( 'invalid' === $result ) : ?>
+				<div class="notice notice-error is-dismissible"><p><?php esc_html_e( 'Enter a valid email address and try again.', 'pepselect-trustpilot-review' ); ?></p></div>
+			<?php endif; ?>
 			<p><?php esc_html_e( 'One neutral review request is scheduled seven days after an eligible order reaches Completed status, with a 180-day customer cooldown.', 'pepselect-trustpilot-review' ); ?></p>
 			<table class="widefat striped" style="max-width:760px;margin:18px 0;"><tbody>
 				<tr><th><?php esc_html_e( 'Status', 'pepselect-trustpilot-review' ); ?></th><td><strong><?php echo esc_html( $enabled ? __( 'Enabled', 'pepselect-trustpilot-review' ) : __( 'Paused', 'pepselect-trustpilot-review' ) ); ?></strong></td></tr>
@@ -406,14 +415,20 @@ final class PepSelect_Trustpilot_Review_Invitations {
 				<?php submit_button( $enabled ? __( 'Pause invitations', 'pepselect-trustpilot-review' ) : __( 'Enable invitations', 'pepselect-trustpilot-review' ), $enabled ? 'secondary' : 'primary', 'submit', false ); ?>
 			</form>
 			<h2 style="margin-top:30px;"><?php esc_html_e( 'Excluded customers', 'pepselect-trustpilot-review' ); ?></h2>
-			<p style="max-width:760px;"><?php esc_html_e( 'Add any email address that should never receive a review invitation. Adding an address also cancels its pending invitation.', 'pepselect-trustpilot-review' ); ?></p>
+			<p style="max-width:760px;"><?php esc_html_e( 'Choose a known Pep Select user or customer, or enter any valid email address. Adding an address cancels its pending invitation and blocks future invitations.', 'pepselect-trustpilot-review' ); ?></p>
 			<form action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" method="post" style="align-items:end;display:flex;flex-wrap:wrap;gap:10px;margin:14px 0 18px;max-width:760px;">
 				<input type="hidden" name="action" value="pepselect_trustpilot_review_exclusion">
-				<input type="hidden" name="operation" value="add">
 				<?php wp_nonce_field( 'pepselect_trustpilot_review_exclusion' ); ?>
-				<label style="flex:1;min-width:280px;"><strong><?php esc_html_e( 'Email address', 'pepselect-trustpilot-review' ); ?></strong><br><input class="regular-text" name="customer_email" type="email" autocomplete="off" required style="margin-top:6px;width:100%;"></label>
-				<?php submit_button( __( 'Add exclusion', 'pepselect-trustpilot-review' ), 'secondary', 'submit', false ); ?>
+				<label style="flex:1;min-width:280px;"><strong><?php esc_html_e( 'Customer or email address', 'pepselect-trustpilot-review' ); ?></strong><br><input class="regular-text" name="customer_email" type="email" list="pepselect-customer-emails" autocomplete="off" required style="margin-top:6px;width:100%;"></label>
+				<datalist id="pepselect-customer-emails">
+					<?php foreach ( $suggestions as $email => $label ) : ?>
+						<option value="<?php echo esc_attr( $email ); ?>"><?php echo esc_html( $label ); ?></option>
+					<?php endforeach; ?>
+				</datalist>
+				<button class="button button-secondary" type="submit" name="operation" value="add"><?php esc_html_e( 'Add exclusion', 'pepselect-trustpilot-review' ); ?></button>
+				<button class="button" type="submit" name="operation" value="test"><?php esc_html_e( 'Test block', 'pepselect-trustpilot-review' ); ?></button>
 			</form>
+			<p class="description" style="margin-top:-10px;max-width:760px;"><?php esc_html_e( 'Test block uses the same delivery guard as scheduled invitations. A successful test never sends an email.', 'pepselect-trustpilot-review' ); ?></p>
 			<?php if ( $exclusions ) : ?>
 				<table class="widefat striped" style="max-width:760px;margin-bottom:24px;">
 					<thead><tr><th><?php esc_html_e( 'Email', 'pepselect-trustpilot-review' ); ?></th><th><?php esc_html_e( 'Added', 'pepselect-trustpilot-review' ); ?></th><th><span class="screen-reader-text"><?php esc_html_e( 'Actions', 'pepselect-trustpilot-review' ); ?></span></th></tr></thead>
@@ -484,6 +499,9 @@ final class PepSelect_Trustpilot_Review_Invitations {
 		if ( 'add' === $operation ) {
 			$email      = isset( $_POST['customer_email'] ) ? self::normalize_email( wp_unslash( $_POST['customer_email'] ) ) : '';
 			$result     = self::add_exclusion( $email ) ? 'added' : 'invalid';
+		} elseif ( 'test' === $operation ) {
+			$email  = isset( $_POST['customer_email'] ) ? self::normalize_email( wp_unslash( $_POST['customer_email'] ) ) : '';
+			$result = is_email( $email ) ? ( self::is_email_excluded( $email ) ? 'test-blocked' : 'test-not-blocked' ) : 'invalid';
 		} elseif ( 'remove' === $operation ) {
 			$key    = isset( $_POST['exclusion_key'] ) ? sanitize_key( wp_unslash( $_POST['exclusion_key'] ) ) : '';
 			$result = self::remove_exclusion( $key ) ? 'removed' : 'invalid';
@@ -662,9 +680,85 @@ final class PepSelect_Trustpilot_Review_Invitations {
 		return true;
 	}
 
-	private static function email_is_excluded( $email ) {
+	public static function is_email_excluded( $email ) {
 		$exclusions = self::admin_exclusions();
 		return isset( $exclusions[ self::email_hash( $email ) ] );
+	}
+
+	/**
+	 * Collect known Pep Select email addresses for the admin-only suggestion list.
+	 * Manual entry remains available for addresses outside these records.
+	 *
+	 * @return array Email-address keys and human-readable labels.
+	 */
+	private static function customer_email_suggestions() {
+		$suggestions = array();
+
+		if ( function_exists( 'get_users' ) ) {
+			$users = get_users(
+				array(
+					'fields' => array( 'ID', 'display_name', 'user_email' ),
+					'number' => -1,
+				)
+			);
+			foreach ( is_array( $users ) ? $users : array() as $user ) {
+				$email = self::normalize_email( $user->user_email ?? '' );
+				if ( is_email( $email ) ) {
+					$name                  = trim( (string) ( $user->display_name ?? '' ) );
+					$suggestions[ $email ] = '' !== $name ? $name . ' — WordPress user' : __( 'WordPress user', 'pepselect-trustpilot-review' );
+				}
+			}
+		}
+
+		if ( function_exists( 'wc_get_customers' ) ) {
+			$customers = wc_get_customers(
+				array(
+					'limit'   => -1,
+					'orderby' => 'email',
+					'order'   => 'ASC',
+				)
+			);
+			foreach ( is_array( $customers ) ? $customers : array() as $customer ) {
+				if ( ! is_object( $customer ) || ! is_callable( array( $customer, 'get_email' ) ) ) {
+					continue;
+				}
+				$email = self::normalize_email( $customer->get_email() );
+				if ( ! is_email( $email ) ) {
+					continue;
+				}
+				$name = trim( (string) $customer->get_first_name() . ' ' . (string) $customer->get_last_name() );
+				if ( ! isset( $suggestions[ $email ] ) ) {
+					$suggestions[ $email ] = '' !== $name ? $name . ' — WooCommerce customer' : __( 'WooCommerce customer', 'pepselect-trustpilot-review' );
+				}
+			}
+		}
+
+		if ( function_exists( 'wc_get_orders' ) ) {
+			$order_args = array(
+				'limit'   => 1000,
+				'return'  => 'objects',
+				'orderby' => 'date',
+				'order'   => 'DESC',
+			);
+			if ( function_exists( 'wc_get_order_statuses' ) ) {
+				$order_args['status'] = array_keys( wc_get_order_statuses() );
+			}
+			$orders = wc_get_orders( $order_args );
+			foreach ( is_array( $orders ) ? $orders : array() as $order ) {
+				if ( ! $order instanceof WC_Order ) {
+					continue;
+				}
+				$email = self::normalize_email( $order->get_billing_email() );
+				if ( ! is_email( $email ) || isset( $suggestions[ $email ] ) ) {
+					continue;
+				}
+				$name                  = trim( (string) $order->get_billing_first_name() . ' ' . (string) $order->get_billing_last_name() );
+				$suggestions[ $email ] = '' !== $name ? $name . ' — Order billing email' : __( 'Order billing email', 'pepselect-trustpilot-review' );
+			}
+		}
+
+		ksort( $suggestions, SORT_NATURAL | SORT_FLAG_CASE );
+		return $suggestions;
 	}
 
 	private static function admin_exclusions() {
