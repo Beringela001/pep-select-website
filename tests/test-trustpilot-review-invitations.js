@@ -18,6 +18,12 @@ assert.match(plugin, /ENABLED_OPTION/);
 assert.match(plugin, /manage_woocommerce/);
 assert.match(plugin, /check_admin_referer/);
 assert.match(plugin, /render_admin_preview/);
+assert.match(plugin, /CUSTOMER_COOLDOWN_DAYS\s*=\s*180/);
+assert.match(plugin, /CUSTOMER_SENT_OPTION/);
+assert.match(plugin, /CUSTOMER_PENDING_OPTION/);
+assert.match(plugin, /schedule_historical_orders/);
+assert.match(plugin, /get_date_completed/);
+assert.match(plugin, /Schedule existing customers/);
 assert.match(plugin, /https:\/\/www\.trustpilot\.com\/evaluate\/pepselect\.com/);
 
 assert.match(template, /How was your Pep Select experience\?/);

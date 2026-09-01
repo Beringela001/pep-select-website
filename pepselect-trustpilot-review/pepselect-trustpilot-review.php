@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Pep Select Trustpilot Review Invitations
  * Description: Sends one neutral, branded Trustpilot review request after an eligible WooCommerce order is completed.
- * Version: 0.1.0
+ * Version: 0.2.0
  * Author: Pep Select
  * Requires at least: 6.4
  * Requires PHP: 7.4
@@ -12,7 +12,7 @@
 defined( 'ABSPATH' ) || exit;
 
 final class PepSelect_Trustpilot_Review_Invitations {
-	const VERSION            = '0.1.0';
+	const VERSION            = '0.2.0';
 	const ACTION_HOOK        = 'pepselect_send_trustpilot_review_invitation';
 	const ACTION_GROUP       = 'pepselect-trustpilot-review';
 	const ORDER_SCHEDULED    = '_pepselect_trustpilot_review_scheduled_at';
@@ -21,12 +21,18 @@ final class PepSelect_Trustpilot_Review_Invitations {
 	const ORDER_OPTED_OUT    = '_pepselect_trustpilot_review_opted_out';
 	const OPTOUT_OPTION      = 'pepselect_trustpilot_review_optouts';
 	const ENABLED_OPTION     = 'pepselect_trustpilot_review_enabled';
-	const REVIEW_URL         = 'https://www.trustpilot.com/evaluate/pepselect.com';
-	const DEFAULT_DELAY_DAYS = 7;
+	const CUSTOMER_SENT_OPTION    = 'pepselect_trustpilot_review_customer_sent';
+	const CUSTOMER_PENDING_OPTION = 'pepselect_trustpilot_review_customer_pending';
+	const CATCHUP_OPTION          = 'pepselect_trustpilot_review_catchup_v2';
+	const REVIEW_URL              = 'https://www.trustpilot.com/evaluate/pepselect.com';
+	const DEFAULT_DELAY_DAYS      = 7;
+	const CUSTOMER_COOLDOWN_DAYS = 180;
+	const CATCHUP_SPACING_SECONDS = 20;
 
 	public static function init() {
 		add_action( 'admin_menu', array( __CLASS__, 'register_admin_page' ) );
 		add_action( 'admin_post_pepselect_trustpilot_review_settings', array( __CLASS__, 'save_admin_settings' ) );
+		add_action( 'admin_post_pepselect_trustpilot_review_catchup', array( __CLASS__, 'run_admin_catchup' ) );
 		add_action( 'admin_post_pepselect_trustpilot_review_preview', array( __CLASS__, 'render_admin_preview' ) );
 		add_action( 'woocommerce_order_status_completed', array( __CLASS__, 'schedule_for_order' ), 20, 1 );
 		add_action( self::ACTION_HOOK, array( __CLASS__, 'send_for_order' ), 10, 1 );
@@ -43,34 +49,44 @@ final class PepSelect_Trustpilot_Review_Invitations {
 	 *
 	 * @param int $order_id WooCommerce order ID.
 	 */
-	public static function schedule_for_order( $order_id ) {
+	public static function schedule_for_order( $order_id, $requested_timestamp = 0 ) {
 		if ( ! self::is_enabled() ) {
-			return;
+			return false;
 		}
 
 		$order = wc_get_order( $order_id );
 
 		if ( ! self::is_eligible( $order ) || $order->get_meta( self::ORDER_SENT ) ) {
-			return;
+			return false;
 		}
 
 		$args = array( absint( $order_id ) );
+		$email = self::normalize_email( $order->get_billing_email() );
 
 		if ( self::has_scheduled_action( $args ) ) {
-			return;
+			self::record_customer_pending( $email, $order_id, self::order_due_timestamp( $order ) );
+			return false;
 		}
 
-		$delay = (int) apply_filters(
-			'pepselect_trustpilot_review_delay',
-			self::DEFAULT_DELAY_DAYS * DAY_IN_SECONDS,
-			$order
-		);
-		$delay = max( HOUR_IN_SECONDS, $delay );
-		$when  = time() + $delay;
+		$pending = self::customer_pending( $email );
+		if ( $pending && absint( $pending['order_id'] ) !== absint( $order_id ) ) {
+			$pending_args = array( absint( $pending['order_id'] ) );
+			if ( self::has_scheduled_action( $pending_args ) ) {
+				return false;
+			}
+			self::clear_customer_pending( $email, absint( $pending['order_id'] ) );
+		}
 
-		self::schedule_action( $when, $args );
+		$when = $requested_timestamp ? absint( $requested_timestamp ) : self::order_due_timestamp( $order );
+		$when = max( time() + MINUTE_IN_SECONDS, $when );
+
+		if ( ! self::schedule_action( $when, $args ) ) {
+			return false;
+		}
+		self::record_customer_pending( $email, $order_id, $when );
 		$order->update_meta_data( self::ORDER_SCHEDULED, gmdate( 'c', $when ) );
 		$order->save();
+		return true;
 	}
 
 	/**
@@ -86,6 +102,9 @@ final class PepSelect_Trustpilot_Review_Invitations {
 		$order = wc_get_order( $order_id );
 
 		if ( ! self::is_eligible( $order ) || $order->get_meta( self::ORDER_SENT ) ) {
+			if ( $order instanceof WC_Order ) {
+				self::clear_order_pending_state( $order );
+			}
 			return;
 		}
 
@@ -109,13 +128,22 @@ final class PepSelect_Trustpilot_Review_Invitations {
 			$order->update_meta_data( self::ORDER_SENT, gmdate( 'c' ) );
 			$order->delete_meta_data( self::ORDER_SCHEDULED );
 			$order->save();
+			self::record_customer_sent( $recipient, time() );
+			self::clear_customer_pending( $recipient, $order_id );
 			return;
 		}
 
 		$order->save();
 
 		if ( $attempts < 3 ) {
-			self::schedule_action( time() + ( 6 * HOUR_IN_SECONDS ), array( absint( $order_id ) ) );
+			$retry_at = time() + ( 6 * HOUR_IN_SECONDS );
+			if ( self::schedule_action( $retry_at, array( absint( $order_id ) ) ) ) {
+				self::record_customer_pending( $recipient, $order_id, $retry_at );
+			} else {
+				self::clear_order_pending_state( $order );
+			}
+		} else {
+			self::clear_order_pending_state( $order );
 		}
 	}
 
@@ -135,8 +163,7 @@ final class PepSelect_Trustpilot_Review_Invitations {
 
 		$order = wc_get_order( $order_id );
 		if ( $order ) {
-			$order->delete_meta_data( self::ORDER_SCHEDULED );
-			$order->save();
+			self::clear_order_pending_state( $order );
 		}
 	}
 
@@ -151,12 +178,129 @@ final class PepSelect_Trustpilot_Review_Invitations {
 			return false;
 		}
 
-		$email = sanitize_email( $order->get_billing_email() );
+		$email = self::normalize_email( $order->get_billing_email() );
 		if ( ! is_email( $email ) || $order->get_meta( self::ORDER_OPTED_OUT ) || self::email_is_opted_out( $email ) ) {
 			return false;
 		}
 
+		$last_sent = self::customer_last_sent_at( $email );
+		if ( $last_sent && ( time() - $last_sent ) < ( self::CUSTOMER_COOLDOWN_DAYS * DAY_IN_SECONDS ) ) {
+			return false;
+		}
+
 		return (bool) apply_filters( 'pepselect_trustpilot_review_order_is_eligible', true, $order );
+	}
+
+	/**
+	 * Schedule one catch-up invitation per customer from existing completed orders.
+	 * The customer's most recent completed order is used as the experience reference.
+	 *
+	 * @return array Non-sensitive scheduling totals.
+	 */
+	public static function schedule_historical_orders() {
+		$summary = array(
+			'customers'      => 0,
+			'queued_now'     => 0,
+			'scheduled_later' => 0,
+			'skipped'        => 0,
+			'completed_at'   => '',
+		);
+
+		if ( ! self::is_enabled() || ! function_exists( 'wc_get_orders' ) ) {
+			return $summary;
+		}
+
+		$orders = wc_get_orders(
+			array(
+				'status'  => array( 'completed' ),
+				'limit'   => -1,
+				'return'  => 'objects',
+				'orderby' => 'date',
+				'order'   => 'DESC',
+			)
+		);
+		$orders = is_array( $orders ) ? $orders : array();
+
+		// Import any order-level send records created by version 0.1.0 before applying the cooldown.
+		foreach ( $orders as $order ) {
+			if ( ! $order instanceof WC_Order ) {
+				continue;
+			}
+			$email   = self::normalize_email( $order->get_billing_email() );
+			$sent_at = strtotime( (string) $order->get_meta( self::ORDER_SENT ) );
+			if ( is_email( $email ) && $sent_at && $sent_at > self::customer_last_sent_at( $email ) ) {
+				self::record_customer_sent( $email, $sent_at );
+			}
+		}
+
+		$selected = array();
+		foreach ( $orders as $order ) {
+			if ( ! $order instanceof WC_Order ) {
+				continue;
+			}
+			$email = self::normalize_email( $order->get_billing_email() );
+			$key   = is_email( $email ) ? self::email_hash( $email ) : '';
+			if ( '' === $key ) {
+				continue;
+			}
+			if ( isset( $selected[ $key ] ) ) {
+				if ( self::has_scheduled_action( array( absint( $order->get_id() ) ) ) ) {
+					self::cancel_for_order( $order->get_id() );
+				}
+				continue;
+			}
+			$selected[ $key ] = $order;
+		}
+
+		$summary['customers'] = count( $selected );
+		$catchup_index        = 0;
+		$now                  = time();
+
+		foreach ( $selected as $order ) {
+			if ( ! self::is_eligible( $order ) || $order->get_meta( self::ORDER_SENT ) ) {
+				++$summary['skipped'];
+				continue;
+			}
+
+			$due = self::order_due_timestamp( $order );
+			if ( $due <= $now ) {
+				$when = $now + MINUTE_IN_SECONDS + ( $catchup_index * self::CATCHUP_SPACING_SECONDS );
+				++$catchup_index;
+			} else {
+				$when = $due;
+			}
+
+			if ( self::schedule_for_order( $order->get_id(), $when ) ) {
+				if ( $due <= $now ) {
+					++$summary['queued_now'];
+				} else {
+					++$summary['scheduled_later'];
+				}
+			} else {
+				++$summary['skipped'];
+			}
+		}
+
+		$summary['completed_at'] = gmdate( 'c' );
+		update_option( self::CATCHUP_OPTION, $summary, false );
+		return $summary;
+	}
+
+	/**
+	 * Calculate seven days from the actual order completion time.
+	 *
+	 * @param WC_Order $order WooCommerce order.
+	 * @return int Unix timestamp.
+	 */
+	private static function order_due_timestamp( $order ) {
+		$completed = $order->get_date_completed();
+		$base      = $completed && is_callable( array( $completed, 'getTimestamp' ) ) ? $completed->getTimestamp() : time();
+		$delay     = (int) apply_filters(
+			'pepselect_trustpilot_review_delay',
+			self::DEFAULT_DELAY_DAYS * DAY_IN_SECONDS,
+			$order
+		);
+		return absint( $base ) + max( HOUR_IN_SECONDS, $delay );
 	}
 
 	/**
@@ -218,6 +362,8 @@ final class PepSelect_Trustpilot_Review_Invitations {
 		}
 
 		$enabled     = self::is_enabled();
+		$catchup     = get_option( self::CATCHUP_OPTION, array() );
+		$catchup     = is_array( $catchup ) ? $catchup : array();
 		$preview_url = wp_nonce_url(
 			admin_url( 'admin-post.php?action=pepselect_trustpilot_review_preview' ),
 			'pepselect_trustpilot_review_preview'
@@ -225,11 +371,29 @@ final class PepSelect_Trustpilot_Review_Invitations {
 		?>
 		<div class="wrap">
 			<h1><?php esc_html_e( 'Pep Select Review Invitations', 'pepselect-trustpilot-review' ); ?></h1>
-			<p><?php esc_html_e( 'One neutral review request is scheduled seven days after an eligible order reaches Completed status.', 'pepselect-trustpilot-review' ); ?></p>
+			<p><?php esc_html_e( 'One neutral review request is scheduled seven days after an eligible order reaches Completed status, with a 180-day customer cooldown.', 'pepselect-trustpilot-review' ); ?></p>
 			<table class="widefat striped" style="max-width:760px;margin:18px 0;"><tbody>
 				<tr><th><?php esc_html_e( 'Status', 'pepselect-trustpilot-review' ); ?></th><td><strong><?php echo esc_html( $enabled ? __( 'Enabled', 'pepselect-trustpilot-review' ) : __( 'Paused', 'pepselect-trustpilot-review' ) ); ?></strong></td></tr>
 				<tr><th><?php esc_html_e( 'Trigger', 'pepselect-trustpilot-review' ); ?></th><td><?php esc_html_e( 'WooCommerce order completed', 'pepselect-trustpilot-review' ); ?></td></tr>
 				<tr><th><?php esc_html_e( 'Delay', 'pepselect-trustpilot-review' ); ?></th><td><?php esc_html_e( '7 days', 'pepselect-trustpilot-review' ); ?></td></tr>
+				<tr><th><?php esc_html_e( 'Customer cadence', 'pepselect-trustpilot-review' ); ?></th><td><?php esc_html_e( 'At most once every 180 days per billing email', 'pepselect-trustpilot-review' ); ?></td></tr>
+				<tr><th><?php esc_html_e( 'Existing-customer catch-up', 'pepselect-trustpilot-review' ); ?></th><td>
+					<?php if ( ! empty( $catchup['completed_at'] ) ) : ?>
+						<?php
+						echo esc_html(
+							sprintf(
+								/* translators: 1: queued now count, 2: scheduled later count, 3: skipped count. */
+								__( 'Complete — %1$d queued promptly, %2$d scheduled for their seven-day mark, %3$d skipped.', 'pepselect-trustpilot-review' ),
+								absint( $catchup['queued_now'] ?? 0 ),
+								absint( $catchup['scheduled_later'] ?? 0 ),
+								absint( $catchup['skipped'] ?? 0 )
+							)
+						);
+						?>
+					<?php else : ?>
+						<?php esc_html_e( 'Not started', 'pepselect-trustpilot-review' ); ?>
+					<?php endif; ?>
+				</td></tr>
 				<tr><th><?php esc_html_e( 'Destination', 'pepselect-trustpilot-review' ); ?></th><td><code><?php echo esc_html( self::REVIEW_URL ); ?></code></td></tr>
 			</tbody></table>
 			<form action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" method="post">
@@ -238,6 +402,13 @@ final class PepSelect_Trustpilot_Review_Invitations {
 				<input type="hidden" name="enabled" value="<?php echo esc_attr( $enabled ? 'no' : 'yes' ); ?>">
 				<?php submit_button( $enabled ? __( 'Pause invitations', 'pepselect-trustpilot-review' ) : __( 'Enable invitations', 'pepselect-trustpilot-review' ), $enabled ? 'secondary' : 'primary', 'submit', false ); ?>
 			</form>
+			<?php if ( $enabled && empty( $catchup['completed_at'] ) ) : ?>
+				<form action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" method="post" style="margin-top:12px;">
+					<input type="hidden" name="action" value="pepselect_trustpilot_review_catchup">
+					<?php wp_nonce_field( 'pepselect_trustpilot_review_catchup' ); ?>
+					<?php submit_button( __( 'Schedule existing customers', 'pepselect-trustpilot-review' ), 'primary', 'submit', false ); ?>
+				</form>
+			<?php endif; ?>
 			<h2 style="margin-top:30px;"><?php esc_html_e( 'Desktop email preview', 'pepselect-trustpilot-review' ); ?></h2>
 			<iframe src="<?php echo esc_url( $preview_url ); ?>" title="<?php esc_attr_e( 'Desktop review invitation email preview', 'pepselect-trustpilot-review' ); ?>" style="background:#E9EEF4;border:1px solid #CCD7DF;height:940px;max-width:760px;width:100%;"></iframe>
 			<h2 style="margin-top:30px;"><?php esc_html_e( 'Mobile email preview', 'pepselect-trustpilot-review' ); ?></h2>
@@ -259,6 +430,22 @@ final class PepSelect_Trustpilot_Review_Invitations {
 		$enabled = isset( $_POST['enabled'] ) && 'yes' === sanitize_text_field( wp_unslash( $_POST['enabled'] ) );
 		update_option( self::ENABLED_OPTION, $enabled ? 'yes' : 'no', false );
 		wp_safe_redirect( admin_url( 'admin.php?page=pepselect-trustpilot-review&updated=1' ) );
+		exit;
+	}
+
+	/**
+	 * Run the one-time catch-up from an explicit administrator action.
+	 */
+	public static function run_admin_catchup() {
+		if ( ! current_user_can( 'manage_woocommerce' ) ) {
+			wp_die( esc_html__( 'You are not allowed to schedule review invitations.', 'pepselect-trustpilot-review' ) );
+		}
+
+		check_admin_referer( 'pepselect_trustpilot_review_catchup' );
+		if ( ! get_option( self::CATCHUP_OPTION, false ) ) {
+			self::schedule_historical_orders();
+		}
+		wp_safe_redirect( admin_url( 'admin.php?page=pepselect-trustpilot-review&catchup=1' ) );
 		exit;
 	}
 
@@ -340,6 +527,10 @@ final class PepSelect_Trustpilot_Review_Invitations {
 
 		$order->update_meta_data( self::ORDER_OPTED_OUT, gmdate( 'c' ) );
 		$order->save();
+		$pending = self::customer_pending( $email );
+		if ( $pending ) {
+			self::cancel_for_order( absint( $pending['order_id'] ) );
+		}
 		self::cancel_for_order( $order_id );
 		self::render_optout_result( true );
 	}
@@ -367,8 +558,65 @@ final class PepSelect_Trustpilot_Review_Invitations {
 		return is_array( $optouts ) && isset( $optouts[ self::email_hash( $email ) ] );
 	}
 
+	private static function normalize_email( $email ) {
+		return strtolower( sanitize_email( $email ) );
+	}
+
+	private static function customer_last_sent_at( $email ) {
+		$sent = get_option( self::CUSTOMER_SENT_OPTION, array() );
+		$key  = self::email_hash( $email );
+		return is_array( $sent ) && isset( $sent[ $key ] ) ? absint( $sent[ $key ] ) : 0;
+	}
+
+	private static function record_customer_sent( $email, $timestamp ) {
+		$sent   = get_option( self::CUSTOMER_SENT_OPTION, array() );
+		$sent   = is_array( $sent ) ? $sent : array();
+		$cutoff = time() - ( self::CUSTOMER_COOLDOWN_DAYS * DAY_IN_SECONDS );
+
+		foreach ( $sent as $key => $recorded_at ) {
+			if ( absint( $recorded_at ) < $cutoff ) {
+				unset( $sent[ $key ] );
+			}
+		}
+
+		$sent[ self::email_hash( $email ) ] = absint( $timestamp );
+		update_option( self::CUSTOMER_SENT_OPTION, $sent, false );
+	}
+
+	private static function customer_pending( $email ) {
+		$pending = get_option( self::CUSTOMER_PENDING_OPTION, array() );
+		$key     = self::email_hash( $email );
+		return is_array( $pending ) && isset( $pending[ $key ] ) && is_array( $pending[ $key ] ) ? $pending[ $key ] : array();
+	}
+
+	private static function record_customer_pending( $email, $order_id, $timestamp ) {
+		$pending = get_option( self::CUSTOMER_PENDING_OPTION, array() );
+		$pending = is_array( $pending ) ? $pending : array();
+		$pending[ self::email_hash( $email ) ] = array(
+			'order_id'  => absint( $order_id ),
+			'timestamp' => absint( $timestamp ),
+		);
+		update_option( self::CUSTOMER_PENDING_OPTION, $pending, false );
+	}
+
+	private static function clear_customer_pending( $email, $order_id ) {
+		$pending = get_option( self::CUSTOMER_PENDING_OPTION, array() );
+		$key     = self::email_hash( $email );
+		if ( ! is_array( $pending ) || empty( $pending[ $key ] ) || absint( $pending[ $key ]['order_id'] ?? 0 ) !== absint( $order_id ) ) {
+			return;
+		}
+		unset( $pending[ $key ] );
+		update_option( self::CUSTOMER_PENDING_OPTION, $pending, false );
+	}
+
+	private static function clear_order_pending_state( $order ) {
+		self::clear_customer_pending( $order->get_billing_email(), $order->get_id() );
+		$order->delete_meta_data( self::ORDER_SCHEDULED );
+		$order->save();
+	}
+
 	private static function email_hash( $email ) {
-		return hash_hmac( 'sha256', strtolower( sanitize_email( $email ) ), wp_salt( 'auth' ) );
+		return hash_hmac( 'sha256', self::normalize_email( $email ), wp_salt( 'auth' ) );
 	}
 
 	private static function is_enabled() {
@@ -384,10 +632,10 @@ final class PepSelect_Trustpilot_Review_Invitations {
 
 	private static function schedule_action( $timestamp, $args ) {
 		if ( function_exists( 'as_schedule_single_action' ) ) {
-			as_schedule_single_action( $timestamp, self::ACTION_HOOK, $args, self::ACTION_GROUP, true );
-			return;
+			return (bool) as_schedule_single_action( $timestamp, self::ACTION_HOOK, $args, self::ACTION_GROUP, true );
 		}
-		wp_schedule_single_event( $timestamp, self::ACTION_HOOK, $args, true );
+		$result = wp_schedule_single_event( $timestamp, self::ACTION_HOOK, $args, true );
+		return ! is_wp_error( $result ) && false !== $result;
 	}
 }
 
