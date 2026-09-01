@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Pep Select Trustpilot Review Invitations
  * Description: Sends one neutral, branded Trustpilot review request after an eligible WooCommerce order is completed.
- * Version: 0.2.0
+ * Version: 0.3.0
  * Author: Pep Select
  * Requires at least: 6.4
  * Requires PHP: 7.4
@@ -12,7 +12,7 @@
 defined( 'ABSPATH' ) || exit;
 
 final class PepSelect_Trustpilot_Review_Invitations {
-	const VERSION            = '0.2.0';
+	const VERSION            = '0.3.0';
 	const ACTION_HOOK        = 'pepselect_send_trustpilot_review_invitation';
 	const ACTION_GROUP       = 'pepselect-trustpilot-review';
 	const ORDER_SCHEDULED    = '_pepselect_trustpilot_review_scheduled_at';
@@ -20,6 +20,7 @@ final class PepSelect_Trustpilot_Review_Invitations {
 	const ORDER_ATTEMPTS     = '_pepselect_trustpilot_review_attempts';
 	const ORDER_OPTED_OUT    = '_pepselect_trustpilot_review_opted_out';
 	const OPTOUT_OPTION      = 'pepselect_trustpilot_review_optouts';
+	const EXCLUSIONS_OPTION  = 'pepselect_trustpilot_review_exclusions';
 	const ENABLED_OPTION     = 'pepselect_trustpilot_review_enabled';
 	const CUSTOMER_SENT_OPTION    = 'pepselect_trustpilot_review_customer_sent';
 	const CUSTOMER_PENDING_OPTION = 'pepselect_trustpilot_review_customer_pending';
@@ -32,6 +33,7 @@ final class PepSelect_Trustpilot_Review_Invitations {
 	public static function init() {
 		add_action( 'admin_menu', array( __CLASS__, 'register_admin_page' ) );
 		add_action( 'admin_post_pepselect_trustpilot_review_settings', array( __CLASS__, 'save_admin_settings' ) );
+		add_action( 'admin_post_pepselect_trustpilot_review_exclusion', array( __CLASS__, 'save_admin_exclusion' ) );
 		add_action( 'admin_post_pepselect_trustpilot_review_catchup', array( __CLASS__, 'run_admin_catchup' ) );
 		add_action( 'admin_post_pepselect_trustpilot_review_preview', array( __CLASS__, 'render_admin_preview' ) );
 		add_action( 'woocommerce_order_status_completed', array( __CLASS__, 'schedule_for_order' ), 20, 1 );
@@ -179,7 +181,7 @@ final class PepSelect_Trustpilot_Review_Invitations {
 		}
 
 		$email = self::normalize_email( $order->get_billing_email() );
-		if ( ! is_email( $email ) || $order->get_meta( self::ORDER_OPTED_OUT ) || self::email_is_opted_out( $email ) ) {
+		if ( ! is_email( $email ) || $order->get_meta( self::ORDER_OPTED_OUT ) || self::email_is_opted_out( $email ) || self::email_is_excluded( $email ) ) {
 			return false;
 		}
 
@@ -364,6 +366,7 @@ final class PepSelect_Trustpilot_Review_Invitations {
 		$enabled     = self::is_enabled();
 		$catchup     = get_option( self::CATCHUP_OPTION, array() );
 		$catchup     = is_array( $catchup ) ? $catchup : array();
+		$exclusions  = self::admin_exclusions();
 		$preview_url = wp_nonce_url(
 			admin_url( 'admin-post.php?action=pepselect_trustpilot_review_preview' ),
 			'pepselect_trustpilot_review_preview'
@@ -402,6 +405,39 @@ final class PepSelect_Trustpilot_Review_Invitations {
 				<input type="hidden" name="enabled" value="<?php echo esc_attr( $enabled ? 'no' : 'yes' ); ?>">
 				<?php submit_button( $enabled ? __( 'Pause invitations', 'pepselect-trustpilot-review' ) : __( 'Enable invitations', 'pepselect-trustpilot-review' ), $enabled ? 'secondary' : 'primary', 'submit', false ); ?>
 			</form>
+			<h2 style="margin-top:30px;"><?php esc_html_e( 'Excluded customers', 'pepselect-trustpilot-review' ); ?></h2>
+			<p style="max-width:760px;"><?php esc_html_e( 'Add any email address that should never receive a review invitation. Adding an address also cancels its pending invitation.', 'pepselect-trustpilot-review' ); ?></p>
+			<form action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" method="post" style="align-items:end;display:flex;flex-wrap:wrap;gap:10px;margin:14px 0 18px;max-width:760px;">
+				<input type="hidden" name="action" value="pepselect_trustpilot_review_exclusion">
+				<input type="hidden" name="operation" value="add">
+				<?php wp_nonce_field( 'pepselect_trustpilot_review_exclusion' ); ?>
+				<label style="flex:1;min-width:280px;"><strong><?php esc_html_e( 'Email address', 'pepselect-trustpilot-review' ); ?></strong><br><input class="regular-text" name="customer_email" type="email" autocomplete="off" required style="margin-top:6px;width:100%;"></label>
+				<?php submit_button( __( 'Add exclusion', 'pepselect-trustpilot-review' ), 'secondary', 'submit', false ); ?>
+			</form>
+			<?php if ( $exclusions ) : ?>
+				<table class="widefat striped" style="max-width:760px;margin-bottom:24px;">
+					<thead><tr><th><?php esc_html_e( 'Email', 'pepselect-trustpilot-review' ); ?></th><th><?php esc_html_e( 'Added', 'pepselect-trustpilot-review' ); ?></th><th><span class="screen-reader-text"><?php esc_html_e( 'Actions', 'pepselect-trustpilot-review' ); ?></span></th></tr></thead>
+					<tbody>
+					<?php foreach ( $exclusions as $key => $record ) : ?>
+						<tr>
+							<td><code><?php echo esc_html( $record['email'] ); ?></code></td>
+							<td><?php echo esc_html( wp_date( 'M j, Y', absint( $record['added_at'] ) ) ); ?></td>
+							<td style="text-align:right;">
+								<form action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" method="post">
+									<input type="hidden" name="action" value="pepselect_trustpilot_review_exclusion">
+									<input type="hidden" name="operation" value="remove">
+									<input type="hidden" name="exclusion_key" value="<?php echo esc_attr( $key ); ?>">
+									<?php wp_nonce_field( 'pepselect_trustpilot_review_exclusion' ); ?>
+									<?php submit_button( __( 'Remove', 'pepselect-trustpilot-review' ), 'small', 'submit', false ); ?>
+								</form>
+							</td>
+						</tr>
+					<?php endforeach; ?>
+					</tbody>
+				</table>
+			<?php else : ?>
+				<p><em><?php esc_html_e( 'No customers are currently excluded.', 'pepselect-trustpilot-review' ); ?></em></p>
+			<?php endif; ?>
 			<?php if ( $enabled && empty( $catchup['completed_at'] ) ) : ?>
 				<form action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" method="post" style="margin-top:12px;">
 					<input type="hidden" name="action" value="pepselect_trustpilot_review_catchup">
@@ -430,6 +466,30 @@ final class PepSelect_Trustpilot_Review_Invitations {
 		$enabled = isset( $_POST['enabled'] ) && 'yes' === sanitize_text_field( wp_unslash( $_POST['enabled'] ) );
 		update_option( self::ENABLED_OPTION, $enabled ? 'yes' : 'no', false );
 		wp_safe_redirect( admin_url( 'admin.php?page=pepselect-trustpilot-review&updated=1' ) );
+		exit;
+	}
+
+	/**
+	 * Add or remove an administrator-managed customer exclusion.
+	 */
+	public static function save_admin_exclusion() {
+		if ( ! current_user_can( 'manage_woocommerce' ) ) {
+			wp_die( esc_html__( 'You are not allowed to manage review-invitation exclusions.', 'pepselect-trustpilot-review' ) );
+		}
+
+		check_admin_referer( 'pepselect_trustpilot_review_exclusion' );
+		$operation = isset( $_POST['operation'] ) ? sanitize_key( wp_unslash( $_POST['operation'] ) ) : '';
+		$result    = 'invalid';
+
+		if ( 'add' === $operation ) {
+			$email      = isset( $_POST['customer_email'] ) ? self::normalize_email( wp_unslash( $_POST['customer_email'] ) ) : '';
+			$result     = self::add_exclusion( $email ) ? 'added' : 'invalid';
+		} elseif ( 'remove' === $operation ) {
+			$key    = isset( $_POST['exclusion_key'] ) ? sanitize_key( wp_unslash( $_POST['exclusion_key'] ) ) : '';
+			$result = self::remove_exclusion( $key ) ? 'removed' : 'invalid';
+		}
+
+		wp_safe_redirect( admin_url( 'admin.php?page=pepselect-trustpilot-review&exclusion=' . $result ) );
 		exit;
 	}
 
@@ -556,6 +616,79 @@ final class PepSelect_Trustpilot_Review_Invitations {
 	private static function email_is_opted_out( $email ) {
 		$optouts = get_option( self::OPTOUT_OPTION, array() );
 		return is_array( $optouts ) && isset( $optouts[ self::email_hash( $email ) ] );
+	}
+
+	/**
+	 * Add an email to the administrator-managed exclusion list.
+	 *
+	 * @param string $email Email address to exclude.
+	 * @return bool
+	 */
+	public static function add_exclusion( $email ) {
+		$email = self::normalize_email( $email );
+		if ( ! is_email( $email ) ) {
+			return false;
+		}
+
+		$exclusions = self::admin_exclusions();
+		$exclusions[ self::email_hash( $email ) ] = array(
+			'email'    => $email,
+			'added_at' => time(),
+		);
+		update_option( self::EXCLUSIONS_OPTION, $exclusions, false );
+
+		$pending = self::customer_pending( $email );
+		if ( $pending ) {
+			self::cancel_for_order( absint( $pending['order_id'] ) );
+		}
+
+		return true;
+	}
+
+	/**
+	 * Remove one administrator-managed exclusion by its non-reversible email key.
+	 *
+	 * @param string $key Email hash key.
+	 * @return bool
+	 */
+	public static function remove_exclusion( $key ) {
+		$exclusions = self::admin_exclusions();
+		if ( ! isset( $exclusions[ $key ] ) ) {
+			return false;
+		}
+
+		unset( $exclusions[ $key ] );
+		update_option( self::EXCLUSIONS_OPTION, $exclusions, false );
+		return true;
+	}
+
+	private static function email_is_excluded( $email ) {
+		$exclusions = self::admin_exclusions();
+		return isset( $exclusions[ self::email_hash( $email ) ] );
+	}
+
+	private static function admin_exclusions() {
+		$stored     = get_option( self::EXCLUSIONS_OPTION, array() );
+		$normalized = array();
+
+		foreach ( is_array( $stored ) ? $stored : array() as $key => $record ) {
+			$email = is_array( $record ) ? self::normalize_email( $record['email'] ?? '' ) : self::normalize_email( $record );
+			if ( ! is_email( $email ) ) {
+				continue;
+			}
+			$normalized[ self::email_hash( $email ) ] = array(
+				'email'    => $email,
+				'added_at' => is_array( $record ) ? absint( $record['added_at'] ?? 0 ) : 0,
+			);
+		}
+
+		uasort(
+			$normalized,
+			function( $first, $second ) {
+				return strcasecmp( $first['email'], $second['email'] );
+			}
+		);
+		return $normalized;
 	}
 
 	private static function normalize_email( $email ) {

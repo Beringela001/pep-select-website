@@ -2,7 +2,7 @@
 Contributors: pepselect
 Requires at least: 6.4
 Requires PHP: 7.4
-Stable tag: 0.2.0
+Stable tag: 0.3.0
 
 Sends one neutral Pep Select-branded review request seven days after an order reaches WooCommerce Completed status.
 
@@ -14,10 +14,14 @@ Sends one neutral Pep Select-branded review request seven days after an order re
 * Provides a one-time catch-up that selects the latest completed order per customer, queues customers already past seven days, and schedules newer customers for their seven-day mark.
 * Cancels pending sends for cancelled, failed, or refunded orders.
 * Includes a signed customer opt-out that suppresses future review invitations for the same email address.
+* Includes an administrator-managed email exclusion list that cancels pending invitations and blocks future invitations.
 * Links directly to Pep Select's official Trustpilot review form.
 * Does not create, edit, filter, or import Trustpilot reviews.
 
 == Changelog ==
+
+= 0.3.0 =
+* Added an admin-managed email exclusion list with pending-invitation cancellation.
 
 = 0.2.0 =
 * Added a 180-day customer cooldown, repeat-order pending deduplication, and controlled historical-order catch-up.
