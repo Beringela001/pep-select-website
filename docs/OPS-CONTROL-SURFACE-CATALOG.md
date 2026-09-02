@@ -39,7 +39,7 @@ Update this file whenever a custom plugin adds, removes, or changes a setting, R
 8. Preserve the WordPress admin as the emergency fallback. Ops must consume the same stored state and must not maintain a second source of truth.
 9. Validate on Staging before Live and retain an environment backup/rollback point for releases that change execution logic.
 
-## 1. Pep Select Cart Discounts 2.1.0 — READY
+## 1. Pep Select Cart Discounts 2.1.1 — READY
 
 Source: `pepselect-bogo-quantity/` (the directory name is retained for upgrade compatibility; the plugin name is **Pep Select Cart Discounts**).
 
@@ -47,7 +47,7 @@ Source: `pepselect-bogo-quantity/` (the directory name is retained for upgrade c
 
 - Buy 4 Get 1 Free product eligibility and activation.
 - Multiple compound-specific automatic discounts.
-- Multiple sitewide automatic discounts across every WooCommerce catalog item.
+- Multiple sitewide automatic discounts across every WooCommerce catalog item, with a searchable per-rule product exclusion list.
 - Percentage or fixed-cart amounts where supported.
 - Quantity or subtotal minimums, including no minimum for sitewide rules.
 - Audience targeting for everyone, logged-in customers, subscribers, prior purchasers, VIPs, or selected customer accounts.
@@ -110,6 +110,7 @@ Subscriber targeting detects FluentCRM membership when available and remains ove
 - Consolidated all automatic discounts into one menu with separate submenus.
 - Contained WooCommerce customer/product search controls on narrow admin screens and cache-busted the corrected stylesheet in 2.0.1.
 - Expanded sitewide eligibility from the Compounds category to every catalog item and added the approved original-price, percentage-off, and discounted-price presentation in 2.1.0.
+- Added per-rule catalog product exclusions to WordPress and the Ops contract in 2.1.1; excluded products keep their regular price and do not count toward the rule minimum.
 
 ### Ops milestone work
 

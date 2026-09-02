@@ -2,7 +2,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-/** Manage automatic discounts across every product in the Compounds category. */
+/** Manage automatic discounts across the catalog with per-rule product exclusions. */
 final class PepSelect_Sitewide_Discount {
 	const OPTION         = 'pepselect_sitewide_discount_rules_v1';
 	const PAGE_SLUG      = 'pepselect-sitewide-discounts';
@@ -36,6 +36,7 @@ final class PepSelect_Sitewide_Discount {
 			'threshold_amount' => '0',
 			'audience'         => 'everyone',
 			'customer_ids'     => array(),
+			'excluded_product_ids' => array(),
 			'stackable'        => true,
 			'label'            => '',
 		);
@@ -55,6 +56,7 @@ final class PepSelect_Sitewide_Discount {
 		$amount       = max( 0, (float) wc_format_decimal( $input['discount_amount'] ?? 0 ) );
 		$minimum      = max( 0, (float) wc_format_decimal( $input['threshold_amount'] ?? 0 ) );
 		$customer_ids = isset( $input['customer_ids'] ) && is_array( $input['customer_ids'] ) ? array_values( array_unique( array_filter( array_map( 'absint', $input['customer_ids'] ) ) ) ) : array();
+		$excluded_product_ids = isset( $input['excluded_product_ids'] ) && is_array( $input['excluded_product_ids'] ) ? array_values( array_unique( array_filter( array_map( 'absint', $input['excluded_product_ids'] ) ) ) ) : array();
 		$label        = sanitize_text_field( $input['label'] ?? '' );
 		$label        = function_exists( 'mb_substr' ) ? mb_substr( $label, 0, self::LABEL_LIMIT ) : substr( $label, 0, self::LABEL_LIMIT );
 
@@ -77,6 +79,7 @@ final class PepSelect_Sitewide_Discount {
 			'threshold_amount' => wc_format_decimal( $minimum ),
 			'audience'         => $audience,
 			'customer_ids'     => $customer_ids,
+			'excluded_product_ids' => $excluded_product_ids,
 			'stackable'        => ! isset( $input['stackable'] ) || ! empty( $input['stackable'] ),
 			'label'            => $label,
 		);
@@ -127,6 +130,7 @@ final class PepSelect_Sitewide_Discount {
 						<?php wp_nonce_field( 'pepselect_save_sitewide_discount' ); ?>
 						<table class="form-table" role="presentation">
 							<tr><th scope="row"><?php esc_html_e( 'Discount', 'pepselect-bogo-quantity' ); ?></th><td><select name="rule[discount_type]"><option value="percent" <?php selected( $rule['discount_type'], 'percent' ); ?>><?php esc_html_e( 'Percentage', 'pepselect-bogo-quantity' ); ?></option><option value="fixed_cart" <?php selected( $rule['discount_type'], 'fixed_cart' ); ?>><?php esc_html_e( 'Fixed dollar amount', 'pepselect-bogo-quantity' ); ?></option></select> <input type="number" min="0.01" step="0.01" name="rule[discount_amount]" value="<?php echo esc_attr( $rule['discount_amount'] ); ?>" class="small-text" required></td></tr>
+							<tr><th scope="row"><label for="pepselect-sitewide-exclusions"><?php esc_html_e( 'Excluded products', 'pepselect-bogo-quantity' ); ?></label></th><td><select id="pepselect-sitewide-exclusions" class="wc-product-search" multiple="multiple" name="rule[excluded_product_ids][]" data-placeholder="<?php esc_attr_e( 'Search the catalog…', 'pepselect-bogo-quantity' ); ?>" data-action="woocommerce_json_search_products_and_variations"><?php foreach ( $rule['excluded_product_ids'] as $product_id ) : $product = wc_get_product( $product_id ); if ( $product ) : ?><option value="<?php echo esc_attr( $product_id ); ?>" selected><?php echo wp_kses_post( $product->get_formatted_name() ); ?></option><?php endif; endforeach; ?></select><p class="description"><?php esc_html_e( 'These products keep their regular price and do not count toward this discount or its minimum.', 'pepselect-bogo-quantity' ); ?></p></td></tr>
 							<tr><th scope="row"><?php esc_html_e( 'Minimum order', 'pepselect-bogo-quantity' ); ?></th><td><select name="rule[threshold_type]"><option value="none" <?php selected( $rule['threshold_type'], 'none' ); ?>><?php esc_html_e( 'No minimum', 'pepselect-bogo-quantity' ); ?></option><option value="subtotal" <?php selected( $rule['threshold_type'], 'subtotal' ); ?>><?php esc_html_e( 'Order item subtotal', 'pepselect-bogo-quantity' ); ?></option><option value="quantity" <?php selected( $rule['threshold_type'], 'quantity' ); ?>><?php esc_html_e( 'Order item quantity', 'pepselect-bogo-quantity' ); ?></option></select> <input type="number" min="0" step="0.01" name="rule[threshold_amount]" value="<?php echo esc_attr( $rule['threshold_amount'] ); ?>" class="small-text"><p class="description"><?php esc_html_e( 'Measured before discounts. Leave at zero when No minimum is selected.', 'pepselect-bogo-quantity' ); ?></p></td></tr>
 							<tr><th scope="row"><label for="pepselect-sitewide-audience"><?php esc_html_e( 'Audience', 'pepselect-bogo-quantity' ); ?></label></th><td><select id="pepselect-sitewide-audience" name="rule[audience]"><option value="everyone" <?php selected( $rule['audience'], 'everyone' ); ?>><?php esc_html_e( 'Everyone', 'pepselect-bogo-quantity' ); ?></option><option value="logged_in" <?php selected( $rule['audience'], 'logged_in' ); ?>><?php esc_html_e( 'All logged-in customers', 'pepselect-bogo-quantity' ); ?></option><option value="subscribers" <?php selected( $rule['audience'], 'subscribers' ); ?>><?php esc_html_e( 'Active subscribers', 'pepselect-bogo-quantity' ); ?></option><option value="purchasers" <?php selected( $rule['audience'], 'purchasers' ); ?>><?php esc_html_e( 'Customers who purchased', 'pepselect-bogo-quantity' ); ?></option><option value="vip" <?php selected( $rule['audience'], 'vip' ); ?>><?php esc_html_e( 'VIP customers', 'pepselect-bogo-quantity' ); ?></option><option value="specific" <?php selected( $rule['audience'], 'specific' ); ?>><?php esc_html_e( 'Specific customers', 'pepselect-bogo-quantity' ); ?></option></select><p class="description"><?php esc_html_e( 'Customer-only audiences require the customer to log in.', 'pepselect-bogo-quantity' ); ?></p></td></tr>
 							<tr><th scope="row"><label for="pepselect-sitewide-customers"><?php esc_html_e( 'Customer list', 'pepselect-bogo-quantity' ); ?></label></th><td><select id="pepselect-sitewide-customers" class="wc-customer-search" multiple="multiple" name="rule[customer_ids][]" data-placeholder="<?php esc_attr_e( 'Search names or email addresses…', 'pepselect-bogo-quantity' ); ?>" data-action="woocommerce_json_search_customers"><?php foreach ( $rule['customer_ids'] as $customer_id ) : $customer = get_userdata( $customer_id ); if ( $customer ) : ?><option value="<?php echo esc_attr( $customer_id ); ?>" selected><?php echo esc_html( $customer->display_name . ' (' . $customer->user_email . ')' ); ?></option><?php endif; endforeach; ?></select><p class="description"><?php esc_html_e( 'Required for Specific customers. For VIP customers, this list is combined with customers tagged as VIP by Ops.', 'pepselect-bogo-quantity' ); ?></p></td></tr>
@@ -300,7 +304,7 @@ final class PepSelect_Sitewide_Discount {
 		if ( empty( $rule['enabled'] ) || is_wp_error( self::validate_rule( $rule ) ) || ! self::audience_qualifies( $rule ) ) {
 			return false;
 		}
-		$metrics = self::eligible_metrics( $cart );
+		$metrics = self::eligible_metrics( $cart, $rule );
 		if ( $metrics['quantity'] < 1 ) {
 			return false;
 		}
@@ -318,7 +322,7 @@ final class PepSelect_Sitewide_Discount {
 		if ( ! self::cart_qualifies( $cart, $rule ) ) {
 			return 0.0;
 		}
-		$subtotal = self::eligible_metrics( $cart )['subtotal'];
+		$subtotal = self::eligible_metrics( $cart, $rule )['subtotal'];
 		return 'percent' === $rule['discount_type'] ? $subtotal * (float) $rule['discount_amount'] / 100 : min( $subtotal, (float) $rule['discount_amount'] );
 	}
 
@@ -331,7 +335,7 @@ final class PepSelect_Sitewide_Discount {
 		if ( ! $rule || ! function_exists( 'WC' ) || ! WC()->cart || ! self::cart_qualifies( WC()->cart, $rule ) ) {
 			return $data;
 		}
-		$metrics = self::eligible_metrics( WC()->cart );
+		$metrics = self::eligible_metrics( WC()->cart, $rule );
 		return array( 'code' => self::coupon_code_for_rule( $rule ), 'description' => $rule['label'], 'discount_type' => $rule['discount_type'], 'amount' => $rule['discount_amount'], 'product_ids' => $metrics['product_ids'], 'individual_use' => empty( $rule['stackable'] ), 'usage_limit' => 0, 'free_shipping' => false );
 	}
 
@@ -405,17 +409,15 @@ final class PepSelect_Sitewide_Discount {
 
 	/** @return array<string,mixed>|null */
 	private static function display_rule_for_product( $product ) {
-		if ( ! self::is_product_eligible( $product->get_id() ) ) {
-			return null;
-		}
 		$rules = array_values(
 			array_filter(
 				self::get_state()['rules'],
-				static function ( $rule ) {
+				static function ( $rule ) use ( $product ) {
 					return ! empty( $rule['enabled'] )
 						&& 'percent' === $rule['discount_type']
 						&& 'none' === $rule['threshold_type']
-						&& self::audience_qualifies( $rule );
+						&& self::audience_qualifies( $rule )
+						&& self::is_product_eligible( $product->get_id(), $rule, $product->get_parent_id() );
 				}
 			)
 		);
@@ -431,13 +433,14 @@ final class PepSelect_Sitewide_Discount {
 	}
 
 	/** @return array{quantity:int,subtotal:float,product_ids:int[]} */
-	private static function eligible_metrics( $cart ) {
+	private static function eligible_metrics( $cart, $rule ) {
 		$quantity = 0;
 		$subtotal = 0.0;
 		$product_ids = array();
 		foreach ( $cart->get_cart() as $item ) {
 			$product_id = absint( ! empty( $item['variation_id'] ) ? $item['variation_id'] : ( $item['product_id'] ?? 0 ) );
-			if ( ! self::is_product_eligible( $product_id ) ) {
+			$parent_id = absint( $item['product_id'] ?? 0 );
+			if ( ! self::is_product_eligible( $product_id, $rule, $parent_id ) ) {
 				continue;
 			}
 			$quantity += max( 0, absint( $item['quantity'] ?? 0 ) );
@@ -447,10 +450,13 @@ final class PepSelect_Sitewide_Discount {
 		return array( 'quantity' => $quantity, 'subtotal' => $subtotal, 'product_ids' => array_values( array_unique( $product_ids ) ) );
 	}
 
-	/** Every catalog product is eligible by default; Ops integrations may filter the scope. */
-	public static function is_product_eligible( $product_id ) {
-		$eligible = absint( $product_id ) > 0;
-		return (bool) apply_filters( 'pepselect_sitewide_discount_product_eligible', $eligible, $product_id );
+	/** Every catalog product is eligible unless this rule or an Ops integration excludes it. */
+	public static function is_product_eligible( $product_id, $rule = array(), $parent_id = 0 ) {
+		$product_id = absint( $product_id );
+		$parent_id  = absint( $parent_id );
+		$excluded   = array_map( 'absint', $rule['excluded_product_ids'] ?? array() );
+		$eligible   = $product_id > 0 && ! in_array( $product_id, $excluded, true ) && ( ! $parent_id || ! in_array( $parent_id, $excluded, true ) );
+		return (bool) apply_filters( 'pepselect_sitewide_discount_product_eligible', $eligible, $product_id, $rule, $parent_id );
 	}
 
 	/** Resolve dynamic or explicit customer audiences. */
@@ -560,7 +566,9 @@ final class PepSelect_Sitewide_Discount {
 		$discount = 'percent' === $rule['discount_type'] ? $rule['discount_amount'] . '%' : '$' . $rule['discount_amount'];
 		$minimum  = 'none' === $rule['threshold_type'] ? __( 'no minimum', 'pepselect-bogo-quantity' ) : ( 'quantity' === $rule['threshold_type'] ? $rule['threshold_amount'] . ' items' : '$' . $rule['threshold_amount'] . ' subtotal' );
 		$stacking = $rule['stackable'] ? __( 'stackable', 'pepselect-bogo-quantity' ) : __( 'exclusive', 'pepselect-bogo-quantity' );
-		return sprintf( __( '%1$s off · %2$s · %3$s · %4$s', 'pepselect-bogo-quantity' ), $discount, $minimum, ucfirst( str_replace( '_', ' ', $rule['audience'] ) ), $stacking );
+		$excluded = count( $rule['excluded_product_ids'] ?? array() );
+		$scope    = $excluded ? sprintf( _n( '%d product excluded', '%d products excluded', $excluded, 'pepselect-bogo-quantity' ), $excluded ) : __( 'no exclusions', 'pepselect-bogo-quantity' );
+		return sprintf( __( '%1$s off · %2$s · %3$s · %4$s · %5$s', 'pepselect-bogo-quantity' ), $discount, $minimum, ucfirst( str_replace( '_', ' ', $rule['audience'] ) ), $stacking, $scope );
 	}
 
 	private static function page_url() {
@@ -592,7 +600,7 @@ final class PepSelect_Sitewide_Discount {
 	}
 
 	private static function rest_payload( $state ) {
-		return array( 'schema_version' => self::SCHEMA_VERSION, 'revision' => self::revision( $state ), 'rules' => $state['rules'], 'contract' => array( 'max_rules' => self::MAX_RULES, 'customer_label_max_length' => self::LABEL_LIMIT, 'threshold_type' => array( 'none', 'quantity', 'subtotal' ), 'audience' => array( 'everyone', 'logged_in', 'subscribers', 'purchasers', 'vip', 'specific' ), 'stackable' => true ) );
+		return array( 'schema_version' => self::SCHEMA_VERSION, 'revision' => self::revision( $state ), 'rules' => $state['rules'], 'contract' => array( 'max_rules' => self::MAX_RULES, 'customer_label_max_length' => self::LABEL_LIMIT, 'threshold_type' => array( 'none', 'quantity', 'subtotal' ), 'audience' => array( 'everyone', 'logged_in', 'subscribers', 'purchasers', 'vip', 'specific' ), 'excluded_product_ids' => true, 'stackable' => true ) );
 	}
 
 	private static function revision( $state ) {

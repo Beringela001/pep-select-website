@@ -44,8 +44,8 @@ const sitewideFrontend = fs.readFileSync(
 );
 
 assert.match(plugin, /Plugin Name: Pep Select Cart Discounts/);
-assert.match(plugin, /Version:\s+2\.1\.0/);
-assert.match(plugin, /PEPSELECT_BOGO_VERSION', '2\.1\.0'/);
+assert.match(plugin, /Version:\s+2\.1\.1/);
+assert.match(plugin, /PEPSELECT_BOGO_VERSION', '2\.1\.1'/);
 assert.match(plugin, /class-pepselect-compound-discount\.php/);
 assert.match(plugin, /class-pepselect-bogo-rule\.php/);
 assert.match(plugin, /class-pepselect-sitewide-discount\.php/);
@@ -150,6 +150,8 @@ assert.match(sitewideClass, /pepselect_sitewide_discount_rules_v1/);
 assert.match(sitewideClass, /array\( 'none', 'quantity', 'subtotal' \)/);
 assert.match(sitewideClass, /array\( 'everyone', 'logged_in', 'subscribers', 'purchasers', 'vip', 'specific' \)/);
 assert.match(sitewideClass, /woocommerce_json_search_customers/);
+assert.match(sitewideClass, /excluded_product_ids/);
+assert.match(sitewideClass, /woocommerce_json_search_products_and_variations/);
 assert.match(sitewideClass, /pepselect_discount_customer_is_subscriber/);
 assert.match(sitewideClass, /pepselect_discount_customer_is_vip/);
 assert.match(sitewideClass, /individual_use'\s*=>\s*empty/);

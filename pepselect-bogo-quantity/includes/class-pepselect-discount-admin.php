@@ -45,7 +45,7 @@ final class PepSelect_Discount_Admin {
 		$pages = array(
 			array( 'title' => __( 'Buy 4 Get 1', 'pepselect-bogo-quantity' ), 'description' => __( 'Choose eligible compounds and control whether the free-vial offer can stack.', 'pepselect-bogo-quantity' ), 'slug' => PepSelect_BOGO_Rule::PAGE_SLUG ),
 			array( 'title' => __( 'Compound Discounts', 'pepselect-bogo-quantity' ), 'description' => __( 'Create product-combination rules with independent activation and stacking.', 'pepselect-bogo-quantity' ), 'slug' => PepSelect_Compound_Discount::PAGE_SLUG ),
-			array( 'title' => __( 'Sitewide Discounts', 'pepselect-bogo-quantity' ), 'description' => __( 'Discount every compound for everyone or a selected customer audience.', 'pepselect-bogo-quantity' ), 'slug' => PepSelect_Sitewide_Discount::PAGE_SLUG ),
+			array( 'title' => __( 'Sitewide Discounts', 'pepselect-bogo-quantity' ), 'description' => __( 'Discount the catalog for everyone or a selected audience, with optional product exclusions.', 'pepselect-bogo-quantity' ), 'slug' => PepSelect_Sitewide_Discount::PAGE_SLUG ),
 		);
 		?>
 		<div class="wrap pepselect-discount-settings">

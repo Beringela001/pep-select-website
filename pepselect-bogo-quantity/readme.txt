@@ -1,5 +1,5 @@
 === Pep Select Cart Discounts ===
-Version: 2.1.0
+Version: 2.1.1
 
 Single-source BOGO, compound, and sitewide automatic discount management.
 
@@ -100,3 +100,8 @@ the original price with a strike-through, the discount percentage, and the
 discounted price across product pages and product cards. The managed coupon
 remains the source of truth for cart, checkout, order, tax, and reporting
 totals.
+
+2.1.1 adds a searchable product exclusion list to every sitewide rule.
+Excluded products keep their regular storefront price, receive no sitewide
+cart discount, and do not count toward that rule's quantity or subtotal
+minimum. The authenticated Ops contract exposes the same exclusion IDs.
