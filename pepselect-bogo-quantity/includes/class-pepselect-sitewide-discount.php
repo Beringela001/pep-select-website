@@ -11,7 +11,7 @@ final class PepSelect_Sitewide_Discount {
 	const LABEL_LIMIT    = 24;
 	const MAX_RULES      = 50;
 
-	/** Register settings, Ops, and coupon hooks. */
+	/** Register settings, Ops, coupon, and storefront pricing hooks. */
 	public static function boot() {
 		add_action( 'admin_menu', array( __CLASS__, 'register_settings_page' ), 10 );
 		add_action( 'admin_post_pepselect_save_sitewide_discount', array( __CLASS__, 'handle_save_rule' ) );
@@ -21,6 +21,8 @@ final class PepSelect_Sitewide_Discount {
 		add_filter( 'woocommerce_get_shop_coupon_data', array( __CLASS__, 'provide_virtual_coupon' ), 10, 3 );
 		add_filter( 'woocommerce_cart_totals_coupon_label', array( __CLASS__, 'coupon_label' ), 10, 2 );
 		add_filter( 'woocommerce_cart_totals_coupon_html', array( __CLASS__, 'coupon_html' ), 30, 2 );
+		add_filter( 'woocommerce_get_price_html', array( __CLASS__, 'price_html' ), 30, 2 );
+		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_frontend_styles' ) );
 	}
 
 	/** @return array<string,mixed> */
@@ -114,7 +116,7 @@ final class PepSelect_Sitewide_Discount {
 		?>
 		<div class="wrap pepselect-discount-settings">
 			<h1><?php esc_html_e( 'Sitewide Discounts', 'pepselect-bogo-quantity' ); ?></h1>
-			<p><?php esc_html_e( 'Create automatic discounts across every compound. Shipping, taxes, and non-compound accessories are excluded.', 'pepselect-bogo-quantity' ); ?></p>
+			<p><?php esc_html_e( 'Create automatic discounts across every catalog item. Shipping and taxes are excluded.', 'pepselect-bogo-quantity' ); ?></p>
 			<?php self::render_admin_notice(); ?>
 			<div class="pepselect-discount-layout">
 				<section class="pepselect-discount-panel" aria-labelledby="pepselect-sitewide-editor-title">
@@ -125,7 +127,7 @@ final class PepSelect_Sitewide_Discount {
 						<?php wp_nonce_field( 'pepselect_save_sitewide_discount' ); ?>
 						<table class="form-table" role="presentation">
 							<tr><th scope="row"><?php esc_html_e( 'Discount', 'pepselect-bogo-quantity' ); ?></th><td><select name="rule[discount_type]"><option value="percent" <?php selected( $rule['discount_type'], 'percent' ); ?>><?php esc_html_e( 'Percentage', 'pepselect-bogo-quantity' ); ?></option><option value="fixed_cart" <?php selected( $rule['discount_type'], 'fixed_cart' ); ?>><?php esc_html_e( 'Fixed dollar amount', 'pepselect-bogo-quantity' ); ?></option></select> <input type="number" min="0.01" step="0.01" name="rule[discount_amount]" value="<?php echo esc_attr( $rule['discount_amount'] ); ?>" class="small-text" required></td></tr>
-							<tr><th scope="row"><?php esc_html_e( 'Minimum order', 'pepselect-bogo-quantity' ); ?></th><td><select name="rule[threshold_type]"><option value="none" <?php selected( $rule['threshold_type'], 'none' ); ?>><?php esc_html_e( 'No minimum', 'pepselect-bogo-quantity' ); ?></option><option value="subtotal" <?php selected( $rule['threshold_type'], 'subtotal' ); ?>><?php esc_html_e( 'Compound subtotal', 'pepselect-bogo-quantity' ); ?></option><option value="quantity" <?php selected( $rule['threshold_type'], 'quantity' ); ?>><?php esc_html_e( 'Compound item quantity', 'pepselect-bogo-quantity' ); ?></option></select> <input type="number" min="0" step="0.01" name="rule[threshold_amount]" value="<?php echo esc_attr( $rule['threshold_amount'] ); ?>" class="small-text"><p class="description"><?php esc_html_e( 'Measured before discounts. Leave at zero when No minimum is selected.', 'pepselect-bogo-quantity' ); ?></p></td></tr>
+							<tr><th scope="row"><?php esc_html_e( 'Minimum order', 'pepselect-bogo-quantity' ); ?></th><td><select name="rule[threshold_type]"><option value="none" <?php selected( $rule['threshold_type'], 'none' ); ?>><?php esc_html_e( 'No minimum', 'pepselect-bogo-quantity' ); ?></option><option value="subtotal" <?php selected( $rule['threshold_type'], 'subtotal' ); ?>><?php esc_html_e( 'Order item subtotal', 'pepselect-bogo-quantity' ); ?></option><option value="quantity" <?php selected( $rule['threshold_type'], 'quantity' ); ?>><?php esc_html_e( 'Order item quantity', 'pepselect-bogo-quantity' ); ?></option></select> <input type="number" min="0" step="0.01" name="rule[threshold_amount]" value="<?php echo esc_attr( $rule['threshold_amount'] ); ?>" class="small-text"><p class="description"><?php esc_html_e( 'Measured before discounts. Leave at zero when No minimum is selected.', 'pepselect-bogo-quantity' ); ?></p></td></tr>
 							<tr><th scope="row"><label for="pepselect-sitewide-audience"><?php esc_html_e( 'Audience', 'pepselect-bogo-quantity' ); ?></label></th><td><select id="pepselect-sitewide-audience" name="rule[audience]"><option value="everyone" <?php selected( $rule['audience'], 'everyone' ); ?>><?php esc_html_e( 'Everyone', 'pepselect-bogo-quantity' ); ?></option><option value="logged_in" <?php selected( $rule['audience'], 'logged_in' ); ?>><?php esc_html_e( 'All logged-in customers', 'pepselect-bogo-quantity' ); ?></option><option value="subscribers" <?php selected( $rule['audience'], 'subscribers' ); ?>><?php esc_html_e( 'Active subscribers', 'pepselect-bogo-quantity' ); ?></option><option value="purchasers" <?php selected( $rule['audience'], 'purchasers' ); ?>><?php esc_html_e( 'Customers who purchased', 'pepselect-bogo-quantity' ); ?></option><option value="vip" <?php selected( $rule['audience'], 'vip' ); ?>><?php esc_html_e( 'VIP customers', 'pepselect-bogo-quantity' ); ?></option><option value="specific" <?php selected( $rule['audience'], 'specific' ); ?>><?php esc_html_e( 'Specific customers', 'pepselect-bogo-quantity' ); ?></option></select><p class="description"><?php esc_html_e( 'Customer-only audiences require the customer to log in.', 'pepselect-bogo-quantity' ); ?></p></td></tr>
 							<tr><th scope="row"><label for="pepselect-sitewide-customers"><?php esc_html_e( 'Customer list', 'pepselect-bogo-quantity' ); ?></label></th><td><select id="pepselect-sitewide-customers" class="wc-customer-search" multiple="multiple" name="rule[customer_ids][]" data-placeholder="<?php esc_attr_e( 'Search names or email addresses…', 'pepselect-bogo-quantity' ); ?>" data-action="woocommerce_json_search_customers"><?php foreach ( $rule['customer_ids'] as $customer_id ) : $customer = get_userdata( $customer_id ); if ( $customer ) : ?><option value="<?php echo esc_attr( $customer_id ); ?>" selected><?php echo esc_html( $customer->display_name . ' (' . $customer->user_email . ')' ); ?></option><?php endif; endforeach; ?></select><p class="description"><?php esc_html_e( 'Required for Specific customers. For VIP customers, this list is combined with customers tagged as VIP by Ops.', 'pepselect-bogo-quantity' ); ?></p></td></tr>
 							<tr><th scope="row"><?php esc_html_e( 'Stacking', 'pepselect-bogo-quantity' ); ?></th><td><select name="rule[stackable]"><option value="1" <?php selected( $rule['stackable'], true ); ?>><?php esc_html_e( 'Stack with other discounts', 'pepselect-bogo-quantity' ); ?></option><option value="0" <?php selected( $rule['stackable'], false ); ?>><?php esc_html_e( 'Do not stack', 'pepselect-bogo-quantity' ); ?></option></select><p class="description"><?php esc_html_e( 'If multiple exclusive discounts qualify, the customer receives the one with the greatest estimated savings.', 'pepselect-bogo-quantity' ); ?></p></td></tr>
@@ -345,6 +347,85 @@ final class PepSelect_Sitewide_Discount {
 		return $coupon instanceof WC_Coupon && self::find_rule_by_code( self::get_state()['rules'], $coupon->get_code() ) ? preg_replace( '/\s*<a\b[^>]*woocommerce-remove-coupon[^>]*>.*?<\/a>/is', '', $html ) : $html;
 	}
 
+	/**
+	 * Present a no-minimum percentage promotion as a real sale price anywhere
+	 * WooCommerce renders a catalog price. The cart still owns the monetary
+	 * discount through the managed coupon, so tax, order, and reporting totals
+	 * retain WooCommerce's native accounting path.
+	 *
+	 * @param string     $html    Existing price HTML.
+	 * @param WC_Product $product Product being rendered.
+	 * @return string
+	 */
+	public static function price_html( $html, $product ) {
+		if ( ! $product instanceof WC_Product || ( function_exists( 'is_admin' ) && is_admin() && ( ! function_exists( 'wp_doing_ajax' ) || ! wp_doing_ajax() ) ) ) {
+			return $html;
+		}
+
+		$rule = self::display_rule_for_product( $product );
+		$price = (float) $product->get_price();
+		if ( ! $rule || $price <= 0 || ! function_exists( 'wc_price' ) ) {
+			return $html;
+		}
+
+		$discounted = max( 0, $price * ( 1 - (float) $rule['discount_amount'] / 100 ) );
+		if ( function_exists( 'wc_get_price_to_display' ) ) {
+			$display_price      = wc_get_price_to_display( $product, array( 'price' => $price ) );
+			$display_discounted = wc_get_price_to_display( $product, array( 'price' => $discounted ) );
+		} else {
+			$display_price      = $price;
+			$display_discounted = $discounted;
+		}
+
+		$percent = rtrim( rtrim( number_format( (float) $rule['discount_amount'], 2, '.', '' ), '0' ), '.' );
+		$label   = sprintf( __( '%s%% off', 'pepselect-bogo-quantity' ), $percent );
+
+		return sprintf(
+			'<span class="pepselect-sitewide-price" data-pepselect-sitewide-discount="%1$s"><del aria-hidden="true">%2$s</del><span class="pepselect-sitewide-price__label">%3$s</span><ins>%4$s</ins><span class="screen-reader-text">%5$s</span></span>',
+			esc_attr( $rule['id'] ),
+			wc_price( $display_price ),
+			esc_html( $label ),
+			wc_price( $display_discounted ),
+			esc_html( sprintf( __( 'Regular price %1$s. Discounted price %2$s. %3$s.', 'pepselect-bogo-quantity' ), wp_strip_all_tags( wc_price( $display_price ) ), wp_strip_all_tags( wc_price( $display_discounted ) ), $label ) )
+		);
+	}
+
+	/** Load the approved sale-price treatment only when a visible rule exists. */
+	public static function enqueue_frontend_styles() {
+		if ( function_exists( 'is_admin' ) && is_admin() && ( ! function_exists( 'wp_doing_ajax' ) || ! wp_doing_ajax() ) ) {
+			return;
+		}
+		foreach ( self::get_state()['rules'] as $rule ) {
+			if ( ! empty( $rule['enabled'] ) && 'percent' === $rule['discount_type'] && 'none' === $rule['threshold_type'] && self::audience_qualifies( $rule ) ) {
+				wp_enqueue_style( 'pepselect-sitewide-discount', plugin_dir_url( PEPSELECT_BOGO_FILE ) . 'assets/sitewide-discount-frontend.css', array(), PEPSELECT_BOGO_VERSION );
+				return;
+			}
+		}
+	}
+
+	/** @return array<string,mixed>|null */
+	private static function display_rule_for_product( $product ) {
+		if ( ! self::is_product_eligible( $product->get_id() ) ) {
+			return null;
+		}
+		$rules = array_values(
+			array_filter(
+				self::get_state()['rules'],
+				static function ( $rule ) {
+					return ! empty( $rule['enabled'] )
+						&& 'percent' === $rule['discount_type']
+						&& 'none' === $rule['threshold_type']
+						&& self::audience_qualifies( $rule );
+				}
+			)
+		);
+		if ( ! $rules ) {
+			return null;
+		}
+		usort( $rules, static function ( $left, $right ) { return (float) $right['discount_amount'] <=> (float) $left['discount_amount']; } );
+		return $rules[0];
+	}
+
 	public static function coupon_code_for_rule( $rule ) {
 		return wc_format_coupon_code( $rule['label'] ?? '' );
 	}
@@ -356,7 +437,7 @@ final class PepSelect_Sitewide_Discount {
 		$product_ids = array();
 		foreach ( $cart->get_cart() as $item ) {
 			$product_id = absint( ! empty( $item['variation_id'] ) ? $item['variation_id'] : ( $item['product_id'] ?? 0 ) );
-			if ( ! self::is_compound_product( $product_id ) ) {
+			if ( ! self::is_product_eligible( $product_id ) ) {
 				continue;
 			}
 			$quantity += max( 0, absint( $item['quantity'] ?? 0 ) );
@@ -366,15 +447,9 @@ final class PepSelect_Sitewide_Discount {
 		return array( 'quantity' => $quantity, 'subtotal' => $subtotal, 'product_ids' => array_values( array_unique( $product_ids ) ) );
 	}
 
-	/** Compounds are identified by the canonical product category and remain filterable for Ops. */
-	private static function is_compound_product( $product_id ) {
-		$eligible = function_exists( 'has_term' ) && has_term( 'compounds', 'product_cat', $product_id );
-		if ( ! $eligible && function_exists( 'wc_get_product' ) ) {
-			$product = wc_get_product( $product_id );
-			if ( $product && $product->is_type( 'variation' ) ) {
-				$eligible = has_term( 'compounds', 'product_cat', $product->get_parent_id() );
-			}
-		}
+	/** Every catalog product is eligible by default; Ops integrations may filter the scope. */
+	public static function is_product_eligible( $product_id ) {
+		$eligible = absint( $product_id ) > 0;
 		return (bool) apply_filters( 'pepselect_sitewide_discount_product_eligible', $eligible, $product_id );
 	}
 

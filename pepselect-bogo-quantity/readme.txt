@@ -1,5 +1,5 @@
 === Pep Select Cart Discounts ===
-Version: 2.0.1
+Version: 2.1.0
 
 Single-source BOGO, compound, and sitewide automatic discount management.
 
@@ -93,3 +93,10 @@ expose the same rule and stacking fields.
 
 2.0.1 contains WooCommerce's hidden customer/product search controls on narrow
 admin screens and cache-busts the corrected stylesheet.
+
+2.1.0 makes sitewide rules cover every WooCommerce catalog item instead of
+only the Compounds category. Active no-minimum percentage rules now present
+the original price with a strike-through, the discount percentage, and the
+discounted price across product pages and product cards. The managed coupon
+remains the source of truth for cart, checkout, order, tax, and reporting
+totals.

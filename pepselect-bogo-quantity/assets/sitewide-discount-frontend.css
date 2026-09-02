@@ -1,0 +1,94 @@
+/**
+ * Sitewide sale-price presentation.
+ * Mirrors the approved product-page and product-card preview while leaving
+ * WooCommerce's monetary discount in the managed coupon flow.
+ */
+.pepselect-sitewide-price {
+	display: inline-grid;
+	grid-template-columns: auto auto;
+	grid-template-rows: auto auto;
+	align-items: flex-end;
+	column-gap: 10px;
+	max-width: 100%;
+	vertical-align: bottom;
+}
+
+.pepselect-sitewide-price > del {
+	grid-column: 1;
+	grid-row: 2;
+	align-self: center;
+	margin: 0 0 3px;
+	color: var(--pep-color-neutral, #667786);
+	font-size: 0.76em;
+	font-weight: 400;
+	line-height: 1;
+	opacity: 1;
+	text-decoration-color: currentcolor;
+	text-decoration-thickness: 1.5px;
+}
+
+.pepselect-sitewide-price__label {
+	grid-column: 2;
+	grid-row: 1;
+	color: #087da5;
+	font-family: var(--pep-font-technical, "IBM Plex Mono", monospace);
+	font-size: 10px;
+	font-weight: 600;
+	letter-spacing: 0.08em;
+	line-height: 1.2;
+	text-transform: uppercase;
+}
+
+.pepselect-sitewide-price ins {
+	grid-column: 2;
+	grid-row: 2;
+	color: var(--pep-color-navy, #002a53);
+	font-size: 1.08em;
+	font-weight: 700;
+	line-height: 1.05;
+	text-decoration: none;
+}
+
+.pepselect-card__price .pepselect-sitewide-price {
+	font-family: var(--pep-font-technical, "IBM Plex Mono", monospace);
+}
+
+.pepselect-card__price .pepselect-sitewide-price > del {
+	font-family: inherit;
+	font-size: 14px;
+}
+
+.pepselect-card__price .pepselect-sitewide-price ins {
+	font-family: inherit;
+	font-size: 20px;
+	font-weight: 600;
+}
+
+.pepselect-card__price .pepselect-sitewide-price__label {
+	font-size: 9px;
+}
+
+@media (max-width: 760px) {
+	.pepselect-card__price .pepselect-sitewide-price {
+		grid-template-columns: 1fr;
+		grid-template-rows: auto auto auto;
+		row-gap: 3px;
+	}
+
+	.pepselect-card__price .pepselect-sitewide-price > del {
+		grid-column: 1;
+		grid-row: 2;
+		margin: 0;
+	}
+
+	.pepselect-card__price .pepselect-sitewide-price__label {
+		grid-column: 1;
+		grid-row: 1;
+	}
+
+	.pepselect-card__price .pepselect-sitewide-price ins {
+		grid-column: 1;
+		grid-row: 3;
+		font-size: 17px;
+	}
+}

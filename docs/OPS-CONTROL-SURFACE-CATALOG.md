@@ -1,6 +1,6 @@
 # Pep Select Ops Control-Surface Catalog
 
-Last verified: 2026-08-30
+Last verified: 2026-08-31
 
 ## Purpose
 
@@ -20,7 +20,7 @@ Update this file whenever a custom plugin adds, removes, or changes a setting, R
 | Surface | Version | Status | Existing Ops path | Main gap |
 |---|---:|---|---|---|
 | Pep Select Cart Discounts | 2.0.1 | READY | Versioned authenticated REST settings | Ops UI/client not yet connected |
-| Pep Select Cart Recovery | 0.4.9 | READY | Authenticated popup-settings REST endpoint | Add revision conflicts and stronger audit metadata |
+| Pep Select Cart Recovery | 0.4.12 | READY | Authenticated popup-settings REST endpoint | Add revision conflicts and stronger audit metadata |
 | Pep Select Order Experience | 0.3.3 | PARTIAL | Authenticated order snapshot and revoke endpoints | Feature settings are WordPress-only |
 | Pep Select Shipping Restrictions | 0.2.6 | NONE | None | Build a versioned policy API before remote control |
 | PS Access Gate | 2.2.2 | NONE | None | Build a settings API; keep consent data separately protected |
@@ -39,7 +39,7 @@ Update this file whenever a custom plugin adds, removes, or changes a setting, R
 8. Preserve the WordPress admin as the emergency fallback. Ops must consume the same stored state and must not maintain a second source of truth.
 9. Validate on Staging before Live and retain an environment backup/rollback point for releases that change execution logic.
 
-## 1. Pep Select Cart Discounts 2.0.1 — READY
+## 1. Pep Select Cart Discounts 2.1.0 — READY
 
 Source: `pepselect-bogo-quantity/` (the directory name is retained for upgrade compatibility; the plugin name is **Pep Select Cart Discounts**).
 
@@ -47,11 +47,11 @@ Source: `pepselect-bogo-quantity/` (the directory name is retained for upgrade c
 
 - Buy 4 Get 1 Free product eligibility and activation.
 - Multiple compound-specific automatic discounts.
-- Multiple sitewide automatic discounts.
+- Multiple sitewide automatic discounts across every WooCommerce catalog item.
 - Percentage or fixed-cart amounts where supported.
 - Quantity or subtotal minimums, including no minimum for sitewide rules.
 - Audience targeting for everyone, logged-in customers, subscribers, prior purchasers, VIPs, or selected customer accounts.
-- Per-rule stackable/exclusive behavior. The coordinator applies all eligible stackable rules plus the single best eligible exclusive rule.
+- Per-rule stackable/exclusive behavior. The coordinator applies all eligible stackable rules when no exclusive rule qualifies; otherwise it applies the single best eligible exclusive rule.
 - Customer-facing labels with bounded length so cart and checkout pills remain usable.
 
 ### WordPress administration
@@ -109,6 +109,7 @@ Subscriber targeting detects FluentCRM membership when available and remains ove
 - Added sitewide rules, audience targeting, customer search, minimums, and stackable/exclusive coordination.
 - Consolidated all automatic discounts into one menu with separate submenus.
 - Contained WooCommerce customer/product search controls on narrow admin screens and cache-busted the corrected stylesheet in 2.0.1.
+- Expanded sitewide eligibility from the Compounds category to every catalog item and added the approved original-price, percentage-off, and discounted-price presentation in 2.1.0.
 
 ### Ops milestone work
 

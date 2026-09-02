@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pep Select — Sitewide Discount Price Preview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #002a53;
+      --dark-navy: #001d3d;
+      --cyan: #17a1cf;
+      --cyan-soft: #eaf8fd;
+      --border: #d7e1e9;
+      --muted: #667786;
+      --page: #f3f8fc;
+      --white: #fff;
+      --green: #008a43;
+      --interface: "Plus Jakarta Sans", system-ui, sans-serif;
+      --technical: "IBM Plex Mono", monospace;
+      --editorial: Georgia, "Times New Roman", serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: #333;
+      background: var(--page);
+      font-family: var(--interface);
+    }
+    .preview-note {
+      width: min(1180px, calc(100% - 40px));
+      margin: 28px auto 18px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .preview-note strong { color: var(--navy); }
+    .product-shell {
+      display: grid;
+      grid-template-columns: minmax(0, .82fr) minmax(480px, 1.18fr);
+      gap: 24px;
+      width: min(1180px, calc(100% - 40px));
+      margin: 0 auto 46px;
+    }
+    .gallery {
+      display: grid;
+      place-items: center;
+      min-height: 610px;
+      padding: 22px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: #edf8fc;
+    }
+    .gallery img {
+      width: 100%;
+      height: 100%;
+      max-height: 565px;
+      object-fit: cover;
+      border-radius: 14px;
+    }
+    .summary {
+      min-height: 610px;
+      padding: 32px 34px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: var(--white);
+      box-shadow: 0 10px 28px rgb(29 41 39 / 7%);
+    }
+    h1 {
+      margin: 0 0 12px;
+      color: var(--dark-navy);
+      font-family: var(--editorial);
+      font-size: 54px;
+      font-weight: 400;
+      letter-spacing: -.02em;
+      line-height: 1.02;
+    }
+    .pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 7px 14px;
+      border: 1px solid var(--cyan);
+      border-radius: 999px;
+      color: var(--navy);
+      background: #f6fcff;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .price-sale {
+      display: inline-grid;
+      grid-template-columns: auto auto;
+      grid-template-rows: auto auto;
+      align-items: end;
+      column-gap: 12px;
+      margin: 0 0 12px;
+      color: var(--navy);
+      font-family: var(--editorial);
+    }
+    .price-sale del {
+      grid-row: 2;
+      align-self: center;
+      color: var(--muted);
+      font-size: 21px;
+      font-weight: 400;
+      line-height: 1;
+      text-decoration-thickness: 1.5px;
+    }
+    .price-sale__label {
+      grid-column: 2;
+      color: #087da5;
+      font-family: var(--technical);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .08em;
+      line-height: 1.2;
+      text-transform: uppercase;
+    }
+    .price-sale ins {
+      grid-column: 2;
+      grid-row: 2;
+      color: var(--navy);
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1.12;
+      text-decoration: none;
+    }
+    .stock { margin: 0 0 16px; color: var(--green); font-size: 15px; font-weight: 600; }
+    .cart-row { display: flex; gap: 12px; margin-bottom: 14px; }
+    .qty {
+      width: 64px;
+      min-height: 52px;
+      border: 1px solid #8d979f;
+      border-radius: 3px;
+      background: white;
+      font: 16px var(--interface);
+      text-align: center;
+    }
+    .add {
+      flex: 1;
+      min-height: 52px;
+      border: 0;
+      border-radius: 12px;
+      color: white;
+      background: #1da4cf;
+      font: 600 16px var(--interface);
+    }
+    .batch {
+      min-height: 125px;
+      padding: 16px;
+      border: 1px solid #8fcfb3;
+      border-radius: 10px;
+      color: var(--navy);
+      background: #f3fbf7;
+    }
+    .batch__head { color: #08785a; font: 700 11px var(--technical); letter-spacing: .08em; text-transform: uppercase; }
+    .batch__stats { display: flex; gap: 36px; margin-top: 18px; }
+    .batch__stats span { display: block; color: var(--muted); font: 600 9px var(--technical); text-transform: uppercase; }
+    .batch__stats strong { display: block; margin-top: 3px; color: var(--navy); font: 600 12px var(--technical); }
+    .cards-section {
+      width: min(1180px, calc(100% - 40px));
+      margin: 0 auto 48px;
+    }
+    .cards-section h2 { margin: 0 0 16px; color: var(--navy); font: 400 30px var(--editorial); }
+    .card-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
+    .card {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 32px;
+      background: white;
+    }
+    .card__media { display: grid; place-items: center; aspect-ratio: 1; padding: 8px; background: white; }
+    .card__media img { width: 100%; height: 100%; object-fit: cover; border-radius: 24px 24px 0 0; }
+    .card__body { display: flex; flex: 1; flex-direction: column; align-items: flex-start; padding: 14px 16px 16px; }
+    .strength {
+      margin: 0 0 10px;
+      padding: 4px 10px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--navy);
+      background: #f3f8fc;
+      font: 600 11px/1.5 var(--technical);
+    }
+    .card h3 { margin: 0 0 8px; color: var(--navy); font: 700 20px/1.15 var(--editorial); }
+    .card .price-sale {
+      margin: auto 0 14px;
+      font-family: var(--technical);
+      column-gap: 9px;
+    }
+    .card .price-sale del { font: 400 14px/1 var(--technical); }
+    .card .price-sale__label { font-size: 9px; }
+    .card .price-sale ins { font: 600 20px/1.1 var(--technical); }
+    .card__action {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 40px;
+      border: 1px solid var(--cyan);
+      border-radius: 12px;
+      color: var(--navy);
+      background: white;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    @media (max-width: 760px) {
+      .preview-note, .product-shell, .cards-section { width: min(100% - 24px, 520px); }
+      .product-shell { grid-template-columns: 1fr; gap: 14px; margin-bottom: 36px; }
+      .gallery { min-height: 0; aspect-ratio: 1; padding: 14px; }
+      .gallery img { max-height: none; }
+      .summary { min-height: 0; padding: 24px 20px; }
+      h1 { font-size: 40px; }
+      .price-sale ins { font-size: 26px; }
+      .card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+      .card:nth-child(3) { display: none; }
+      .card { border-radius: 20px; }
+      .card__body { padding: 12px; }
+      .card .price-sale { grid-template-columns: 1fr; grid-template-rows: auto auto auto; row-gap: 3px; }
+      .card .price-sale del { grid-column: 1; grid-row: 2; }
+      .card .price-sale__label { grid-column: 1; grid-row: 1; }
+      .card .price-sale ins { grid-column: 1; grid-row: 3; }
+      .batch__stats { gap: 14px; }
+    }
+    .force-mobile { background: var(--page); }
+    .force-mobile body { width: 390px; margin: 0 auto; }
+    .force-mobile .preview-note,
+    .force-mobile .product-shell,
+    .force-mobile .cards-section { width: calc(100% - 24px); }
+    .force-mobile .product-shell { grid-template-columns: 1fr; gap: 14px; margin-bottom: 36px; }
+    .force-mobile .gallery { min-height: 0; aspect-ratio: 1; padding: 14px; }
+    .force-mobile .gallery img { max-height: none; }
+    .force-mobile .summary { min-height: 0; padding: 24px 20px; }
+    .force-mobile h1 { font-size: 40px; }
+    .force-mobile .price-sale ins { font-size: 26px; }
+    .force-mobile .card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .force-mobile .card:nth-child(3) { display: none; }
+    .force-mobile .card { border-radius: 20px; }
+    .force-mobile .card__body { padding: 12px; }
+    .force-mobile .card .price-sale { grid-template-columns: 1fr; grid-template-rows: auto auto auto; row-gap: 3px; }
+    .force-mobile .card .price-sale del { grid-column: 1; grid-row: 2; }
+    .force-mobile .card .price-sale__label { grid-column: 1; grid-row: 1; }
+    .force-mobile .card .price-sale ins { grid-column: 1; grid-row: 3; font-size: 17px; }
+    .force-mobile .batch__stats { gap: 14px; }
+  </style>
+  <script>
+    if (new URLSearchParams(window.location.search).has('mobile')) {
+      document.documentElement.classList.add('force-mobile');
+    }
+  </script>
+</head>
+<body>
+  <p class="preview-note"><strong>Sitewide discount preview · 20% off</strong> — the sale treatment shown inside the current product page and current product cards.</p>
+
+  <main class="product-shell">
+    <section class="gallery" aria-label="GLP-3 RT product image">
+      <img src="https://pepselect.com/wp-content/uploads/2026/08/GLP3-RT10_Chat-600x750.jpg" alt="GLP-3 RT vial">
+    </section>
+    <section class="summary">
+      <h1>GLP-3 RT</h1>
+      <div class="pills">
+        <span class="pill">Buy 4 get 1 free</span>
+        <span class="pill">Earn 3% cash back on every order.</span>
+      </div>
+      <div class="price-sale" aria-label="Regular price 79 dollars and 99 cents, sale price 63 dollars and 99 cents, 20 percent off">
+        <del>$79.99</del>
+        <span class="price-sale__label">20% off</span>
+        <ins>$63.99</ins>
+      </div>
+      <p class="stock">In stock</p>
+      <div class="cart-row"><input class="qty" value="1" aria-label="Quantity"><button class="add">Add to cart</button></div>
+      <div class="batch">
+        <div class="batch__head">✓ &nbsp; Current batch</div>
+        <div class="batch__stats">
+          <div><span>Purity</span><strong>99.63%</strong></div>
+          <div><span>Batch</span><strong>RT2026205JP</strong></div>
+          <div><span>Tested</span><strong>July 30, 2026</strong></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <section class="cards-section">
+    <h2>More from the selection</h2>
+    <div class="card-grid">
+      <article class="card">
+        <div class="card__media"><img src="https://pepselect.com/wp-content/uploads/2026/08/GLP3-RT20_Chat-300x300.jpg" alt="GLP-3 RT"></div>
+        <div class="card__body">
+          <span class="strength">20MG</span>
+          <h3>GLP-3 RT</h3>
+          <div class="price-sale"><del>$101.99</del><span class="price-sale__label">20% off</span><ins>$81.59</ins></div>
+          <div class="card__action">Learn more</div>
+        </div>
+      </article>
+      <article class="card">
+        <div class="card__media"><img src="https://pepselect.com/wp-content/uploads/2026/08/GLP3-RT10_Chat-600x750.jpg" alt="GLP-3 RT"></div>
+        <div class="card__body">
+          <span class="strength">10MG</span>
+          <h3>GLP-3 RT</h3>
+          <div class="price-sale"><del>$79.99</del><span class="price-sale__label">20% off</span><ins>$63.99</ins></div>
+          <div class="card__action">Learn more</div>
+        </div>
+      </article>
+      <article class="card">
+        <div class="card__media"><img src="https://pepselect.com/wp-content/uploads/2026/08/GLP3-RT20_Chat-300x300.jpg" alt="GLP-3 RT"></div>
+        <div class="card__body">
+          <span class="strength">20MG</span>
+          <h3>GLP-3 RT</h3>
+          <div class="price-sale"><del>$101.99</del><span class="price-sale__label">20% off</span><ins>$81.59</ins></div>
+          <div class="card__action">Learn more</div>
+        </div>
+      </article>
+    </div>
+  </section>
+</body>
+</html>

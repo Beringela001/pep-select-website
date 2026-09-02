@@ -2,14 +2,14 @@
 /**
  * Plugin Name: Pep Select Cart Discounts
  * Description: Manages BOGO, compound, and sitewide automatic discounts from one Ops-ready admin area.
- * Version:     2.0.1
+ * Version:     2.1.0
  * Author:      Pep Select
  * Text Domain: pepselect-bogo-quantity
  */
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'PEPSELECT_BOGO_VERSION', '2.0.1' );
+define( 'PEPSELECT_BOGO_VERSION', '2.1.0' );
 define( 'PEPSELECT_BOGO_FILE', __FILE__ );
 
 require_once plugin_dir_path( __FILE__ ) . 'includes/class-pepselect-compound-discount.php';

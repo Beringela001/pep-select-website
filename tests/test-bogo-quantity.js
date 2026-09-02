@@ -38,10 +38,14 @@ const discountFrontend = fs.readFileSync(
   path.join(__dirname, '..', 'pepselect-bogo-quantity', 'assets', 'compound-discount-frontend.js'),
   'utf8'
 );
+const sitewideFrontend = fs.readFileSync(
+  path.join(__dirname, '..', 'pepselect-bogo-quantity', 'assets', 'sitewide-discount-frontend.css'),
+  'utf8'
+);
 
 assert.match(plugin, /Plugin Name: Pep Select Cart Discounts/);
-assert.match(plugin, /Version:\s+2\.0\.1/);
-assert.match(plugin, /PEPSELECT_BOGO_VERSION', '2\.0\.1'/);
+assert.match(plugin, /Version:\s+2\.1\.0/);
+assert.match(plugin, /PEPSELECT_BOGO_VERSION', '2\.1\.0'/);
 assert.match(plugin, /class-pepselect-compound-discount\.php/);
 assert.match(plugin, /class-pepselect-bogo-rule\.php/);
 assert.match(plugin, /class-pepselect-sitewide-discount\.php/);
@@ -149,6 +153,14 @@ assert.match(sitewideClass, /woocommerce_json_search_customers/);
 assert.match(sitewideClass, /pepselect_discount_customer_is_subscriber/);
 assert.match(sitewideClass, /pepselect_discount_customer_is_vip/);
 assert.match(sitewideClass, /individual_use'\s*=>\s*empty/);
+assert.match(sitewideClass, /woocommerce_get_price_html/);
+assert.match(sitewideClass, /sitewide-discount-frontend\.css/);
+assert.match(sitewideClass, /public static function is_product_eligible/);
+assert.match(sitewideClass, /pepselect-sitewide-price__label/);
+assert.doesNotMatch(sitewideClass, /has_term\( 'compounds'/);
+assert.match(sitewideFrontend, /\.pepselect-sitewide-price/);
+assert.match(sitewideFrontend, /grid-template-columns:\s*auto auto/);
+assert.match(sitewideFrontend, /@media \(max-width: 760px\)/);
 assert.match(stackingClass, /woocommerce_before_calculate_totals/);
 assert.match(stackingClass, /estimated_amount/);
 assert.match(stackingClass, /array_merge/);
