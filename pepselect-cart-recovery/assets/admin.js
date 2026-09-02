@@ -98,6 +98,7 @@
     preview.style.setProperty('--pep-cover-preview-text', value('cover_banner_text_color'));
     preview.style.setProperty('--pep-cover-preview-x', String(value('cover_banner_focal_x') || 50) + '%');
     preview.style.setProperty('--pep-cover-preview-y', String(value('cover_banner_focal_y') || 50) + '%');
+	preview.classList.toggle('is-fit-contain', value('cover_banner_display_mode') === 'contain');
   }
 
   function updateAll() {

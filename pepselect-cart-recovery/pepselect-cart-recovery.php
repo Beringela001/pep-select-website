@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Pep Select Cart Recovery
  * Description: Lightweight exit offer, unique coupons, and Cart Abandonment Recovery integration for Pep Select.
- * Version: 0.5.0
+ * Version: 0.5.1
  * Author: Pep Select
  * Text Domain: pepselect-cart-recovery
  */
@@ -10,7 +10,7 @@
 defined( 'ABSPATH' ) || exit;
 
 final class PepSelect_Cart_Recovery {
-	const VERSION                     = '0.5.0';
+	const VERSION                     = '0.5.1';
 	const OPTION                      = 'pepselect_cart_recovery_settings';
 	const VERSION_OPTION              = 'pepselect_cart_recovery_version';
 	const RECOVERY_COPY_OPTION        = 'pepselect_cart_recovery_copy_version';
@@ -153,6 +153,7 @@ final class PepSelect_Cart_Recovery {
 			'cover_banner_end'           => '',
 			'cover_banner_desktop_image' => '',
 			'cover_banner_mobile_image'  => '',
+			'cover_banner_display_mode'  => 'cover',
 			'cover_banner_alt'           => '',
 			'cover_banner_eyebrow'       => 'Current campaign',
 			'cover_banner_heading'       => '',
@@ -432,6 +433,7 @@ HTML;
 		$settings = $this->settings();
 		if ( $this->campaign_cover_banner_is_visible( $settings ) ) {
 			wp_enqueue_style( 'pepselect-campaign-cover-banner', plugin_dir_url( __FILE__ ) . 'assets/campaign-cover-banner.css', array(), self::VERSION );
+			wp_enqueue_script( 'pepselect-campaign-cover-banner', plugin_dir_url( __FILE__ ) . 'assets/campaign-cover-banner.js', array(), self::VERSION, true );
 		}
 		if ( ( empty( $settings['enabled'] ) && empty( $settings['promo_enabled'] ) ) || ! $this->is_eligible_page() ) {
 			return;
@@ -511,7 +513,7 @@ HTML;
 			absint( $settings['cover_banner_focal_y'] )
 		);
 		?>
-		<section class="pep-campaign-cover<?php echo $has_copy ? ' has-copy' : ' is-image-only'; ?>" style="<?php echo esc_attr( $style ); ?>" aria-label="<?php echo esc_attr( $settings['cover_banner_alt'] ?: __( 'Current Pep Select campaign', 'pepselect-cart-recovery' ) ); ?>">
+		<section class="pep-campaign-cover<?php echo $has_copy ? ' has-copy' : ' is-image-only'; ?><?php echo 'contain' === $settings['cover_banner_display_mode'] ? ' is-fit-contain' : ' is-fit-cover'; ?>" data-pep-campaign-cover data-display-mode="<?php echo esc_attr( $settings['cover_banner_display_mode'] ); ?>" style="<?php echo esc_attr( $style ); ?>" aria-label="<?php echo esc_attr( $settings['cover_banner_alt'] ?: __( 'Current Pep Select campaign', 'pepselect-cart-recovery' ) ); ?>">
 			<?php if ( $primary_image ) : ?>
 			<picture class="pep-campaign-cover__media" aria-hidden="true">
 				<?php if ( $mobile_image ) : ?><source media="(max-width: 767px)" srcset="<?php echo esc_attr( $mobile_srcset ?: $mobile_image ); ?>" sizes="100vw"><?php endif; ?>
@@ -1177,6 +1179,7 @@ HTML;
 		}
 		$output['promo_delay_seconds'] = min( 86400, max( 0, absint( $input['promo_delay_seconds'] ?? 8 ) ) );
 		$output['promo_dismiss_days']  = min( 365, max( 1, absint( $input['promo_dismiss_days'] ?? 7 ) ) );
+		$output['cover_banner_display_mode'] = in_array( $input['cover_banner_display_mode'] ?? '', array( 'cover', 'contain' ), true ) ? $input['cover_banner_display_mode'] : $defaults['cover_banner_display_mode'];
 
 		$text_fields = array(
 			'exit_eyebrow', 'exit_heading', 'exit_placeholder', 'exit_button', 'exit_loading', 'exit_fineprint', 'exit_success', 'exit_success_note',
@@ -1447,8 +1450,8 @@ HTML;
 						<p data-pep-preview-bind="cover_banner_body"><?php echo esc_html( $settings['cover_banner_body'] ); ?></p>
 					</div>
 				</section>
-				<div class="pep-cover-preview__hero"><div><small><?php esc_html_e( 'Homepage cover image', 'pepselect-cart-recovery' ); ?></small><b><?php esc_html_e( 'Existing landing-page content begins here', 'pepselect-cart-recovery' ); ?></b></div></div>
 			</div>
+			<div class="pep-cover-preview__hero"><div><small><?php esc_html_e( 'After one scroll', 'pepselect-cart-recovery' ); ?></small><b><?php esc_html_e( 'The existing homepage cover begins here', 'pepselect-cart-recovery' ); ?></b></div></div>
 		</aside>
 		<?php
 	}
@@ -1540,14 +1543,15 @@ HTML;
 
 				<div class="pep-recovery-panel" id="pep-panel-cover-banner" role="tabpanel" aria-labelledby="pep-tab-cover-banner" data-pep-panel="cover_banner" hidden>
 					<div class="pep-recovery-layout"><div class="pep-recovery-editor">
-						<section class="pep-recovery-card pep-recovery-intro"><div><span class="pep-recovery-kicker"><?php esc_html_e( 'Campaign Cover Banner', 'pepselect-cart-recovery' ); ?></span><h2><?php esc_html_e( 'Place a scheduled promotion between the menu and homepage cover.', 'pepselect-cart-recovery' ); ?></h2><p><?php esc_html_e( 'Use an image, editable text, or both. There are no buttons and the banner appears only on the landing page during its schedule.', 'pepselect-cart-recovery' ); ?></p></div><label class="pep-recovery-switch"><input name="<?php echo esc_attr( self::OPTION ); ?>[cover_banner_enabled]" data-pep-setting="cover_banner_enabled" type="checkbox" value="1" <?php checked( $settings['cover_banner_enabled'], 1 ); ?>><span></span><b><?php esc_html_e( 'Campaign cover banner enabled', 'pepselect-cart-recovery' ); ?></b></label></section>
+						<section class="pep-recovery-card pep-recovery-intro"><div><span class="pep-recovery-kicker"><?php esc_html_e( 'Campaign Cover Banner', 'pepselect-cart-recovery' ); ?></span><h2><?php esc_html_e( 'Make the campaign the landing page’s first screen.', 'pepselect-cart-recovery' ); ?></h2><p><?php esc_html_e( 'The menu stays at the top. The campaign fills the rest of the visitor’s first view, and the existing homepage cover begins after they scroll. There are no banner buttons.', 'pepselect-cart-recovery' ); ?></p></div><label class="pep-recovery-switch"><input name="<?php echo esc_attr( self::OPTION ); ?>[cover_banner_enabled]" data-pep-setting="cover_banner_enabled" type="checkbox" value="1" <?php checked( $settings['cover_banner_enabled'], 1 ); ?>><span></span><b><?php esc_html_e( 'Campaign cover banner enabled', 'pepselect-cart-recovery' ); ?></b></label></section>
 						<section class="pep-recovery-card"><h2><?php esc_html_e( 'Schedule', 'pepselect-cart-recovery' ); ?></h2><p class="description"><?php printf( esc_html__( 'Times use the website timezone: %s. The banner switches itself on and off.', 'pepselect-cart-recovery' ), esc_html( wp_timezone_string() ) ); ?></p><div class="pep-recovery-grid">
 							<?php $this->admin_field( $settings, 'cover_banner_start', __( 'Start showing', 'pepselect-cart-recovery' ), __( 'The first date and time the banner can appear.', 'pepselect-cart-recovery' ), 'datetime-local' ); ?>
 							<?php $this->admin_field( $settings, 'cover_banner_end', __( 'Stop showing', 'pepselect-cart-recovery' ), __( 'The banner disappears automatically at this date and time.', 'pepselect-cart-recovery' ), 'datetime-local' ); ?>
 						</div></section>
-						<section class="pep-recovery-card"><h2><?php esc_html_e( 'Desktop and mobile images', 'pepselect-cart-recovery' ); ?></h2><div class="pep-recovery-image-guidance"><div><b><?php esc_html_e( 'Desktop master', 'pepselect-cart-recovery' ); ?></b><span>1920 × 360 px</span></div><div><b><?php esc_html_e( 'Mobile master', 'pepselect-cart-recovery' ); ?></b><span>1080 × 480 px</span></div><div><b><?php esc_html_e( 'Responsive files', 'pepselect-cart-recovery' ); ?></b><span><?php esc_html_e( 'WordPress creates and serves the smaller screen sizes automatically.', 'pepselect-cart-recovery' ); ?></span></div></div><div class="pep-recovery-grid">
-							<?php $this->admin_field( $settings, 'cover_banner_desktop_image', __( 'Desktop banner image', 'pepselect-cart-recovery' ), __( 'Recommended size: 1920 × 360 px. Upload the largest clean version.', 'pepselect-cart-recovery' ), 'image' ); ?>
-							<?php $this->admin_field( $settings, 'cover_banner_mobile_image', __( 'Mobile banner image', 'pepselect-cart-recovery' ), __( 'Recommended size: 1080 × 480 px. Optional; without it, the desktop image is cropped around the focal point.', 'pepselect-cart-recovery' ), 'image' ); ?>
+						<section class="pep-recovery-card"><h2><?php esc_html_e( 'Desktop and mobile images', 'pepselect-cart-recovery' ); ?></h2><div class="pep-recovery-image-guidance"><div><b><?php esc_html_e( 'Desktop master', 'pepselect-cart-recovery' ); ?></b><span>1920 × 1080 px</span></div><div><b><?php esc_html_e( 'Mobile master', 'pepselect-cart-recovery' ); ?></b><span>1080 × 1920 px</span></div><div><b><?php esc_html_e( 'Responsive files', 'pepselect-cart-recovery' ); ?></b><span><?php esc_html_e( 'WordPress creates and serves smaller files automatically.', 'pepselect-cart-recovery' ); ?></span></div></div><div class="pep-recovery-grid">
+							<div class="pep-recovery-field"><label for="pep-cover-banner-display-mode"><?php esc_html_e( 'Display mode', 'pepselect-cart-recovery' ); ?></label><select id="pep-cover-banner-display-mode" name="<?php echo esc_attr( self::OPTION ); ?>[cover_banner_display_mode]" data-pep-setting="cover_banner_display_mode"><option value="cover" <?php selected( $settings['cover_banner_display_mode'], 'cover' ); ?>><?php esc_html_e( 'Fill screen (recommended)', 'pepselect-cart-recovery' ); ?></option><option value="contain" <?php selected( $settings['cover_banner_display_mode'], 'contain' ); ?>><?php esc_html_e( 'Show full image', 'pepselect-cart-recovery' ); ?></option></select><p class="description"><?php esc_html_e( 'Fill screen crops only what cannot fit. Show full image keeps every edge but may leave background space.', 'pepselect-cart-recovery' ); ?></p></div>
+							<?php $this->admin_field( $settings, 'cover_banner_desktop_image', __( 'Desktop banner image', 'pepselect-cart-recovery' ), __( 'Recommended size: 1920 × 1080 px. Upload the largest clean version.', 'pepselect-cart-recovery' ), 'image' ); ?>
+							<?php $this->admin_field( $settings, 'cover_banner_mobile_image', __( 'Mobile banner image', 'pepselect-cart-recovery' ), __( 'Recommended size: 1080 × 1920 px. Without it, the desktop image is fitted around the focal point.', 'pepselect-cart-recovery' ), 'image' ); ?>
 							<?php $this->admin_field( $settings, 'cover_banner_alt', __( 'Image description', 'pepselect-cart-recovery' ), __( 'Describe meaningful artwork. Leave blank when the image is decorative and the editable text conveys the promotion.', 'pepselect-cart-recovery' ) ); ?>
 							<?php $this->admin_field( $settings, 'cover_banner_focal_x', __( 'Horizontal focal point', 'pepselect-cart-recovery' ), __( '0 keeps the left edge; 50 centers; 100 keeps the right edge when cropping.', 'pepselect-cart-recovery' ), 'number', array( 'min' => '0', 'max' => '100' ) ); ?>
 							<?php $this->admin_field( $settings, 'cover_banner_focal_y', __( 'Vertical focal point', 'pepselect-cart-recovery' ), __( '0 keeps the top; 50 centers; 100 keeps the bottom when cropping.', 'pepselect-cart-recovery' ), 'number', array( 'min' => '0', 'max' => '100' ) ); ?>

@@ -3,7 +3,7 @@
 	color: var(--pep-cover-text, #fff);
 	display: grid;
 	isolation: isolate;
-	min-height: clamp(210px, 18.75vw, 360px);
+	height: var(--pep-cover-available-height, calc(100svh - 150px));
 	overflow: hidden;
 	place-items: center;
 	position: relative;
@@ -22,6 +22,10 @@
 	object-fit: cover;
 	object-position: var(--pep-cover-focus-x, 50%) var(--pep-cover-focus-y, 50%);
 	width: 100%;
+}
+
+.pep-campaign-cover.is-fit-contain .pep-campaign-cover__media img {
+	object-fit: contain;
 }
 
 .pep-campaign-cover__overlay {
@@ -62,14 +66,6 @@
 }
 
 @media (max-width: 767px) {
-	.pep-campaign-cover {
-		min-height: 42vw;
-	}
-
-	.pep-campaign-cover.has-copy {
-		min-height: clamp(220px, 56vw, 300px);
-	}
-
 	.pep-campaign-cover__inner {
 		padding: 34px 20px;
 	}
