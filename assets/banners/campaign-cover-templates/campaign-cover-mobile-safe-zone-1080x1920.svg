@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920" role="img" aria-labelledby="title desc">
+  <title id="title">Pep Select mobile campaign cover safe-zone template</title>
+  <desc id="desc">A transparent 1080 by 1920 overlay showing the full bleed edge and a centered 840 by 1200 safe-content area.</desc>
+  <defs>
+    <pattern id="risk-hatch" width="28" height="28" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="28" height="28" fill="#ef4444" fill-opacity="0.10"/>
+      <rect width="7" height="28" fill="#ef4444" fill-opacity="0.18"/>
+    </pattern>
+    <filter id="label-shadow" x="-20%" y="-40%" width="140%" height="180%">
+      <feDropShadow dx="0" dy="3" stdDeviation="5" flood-color="#001d3a" flood-opacity="0.22"/>
+    </filter>
+  </defs>
+
+  <!-- Larger top/bottom crop-risk margins account for short phone screens. -->
+  <path d="M0 0H1080V360H0ZM0 1560H1080V1920H0ZM0 360H120V1560H0ZM960 360H1080V1560H960Z" fill="url(#risk-hatch)"/>
+
+  <!-- Full canvas and safe-content boundaries. -->
+  <rect x="8" y="8" width="1064" height="1904" rx="12" fill="none" stroke="#002a53" stroke-width="16" stroke-dasharray="34 18"/>
+  <rect x="120" y="360" width="840" height="1200" rx="16" fill="#16a1cf" fill-opacity="0.08" stroke="#00a8cc" stroke-width="10"/>
+
+  <!-- Center/focal-point reference. -->
+  <line x1="540" y1="360" x2="540" y2="1560" stroke="#002a53" stroke-opacity="0.45" stroke-width="4" stroke-dasharray="14 14"/>
+  <line x1="120" y1="960" x2="960" y2="960" stroke="#002a53" stroke-opacity="0.45" stroke-width="4" stroke-dasharray="14 14"/>
+  <circle cx="540" cy="960" r="30" fill="none" stroke="#002a53" stroke-width="5"/>
+  <circle cx="540" cy="960" r="6" fill="#002a53"/>
+
+  <!-- Labels use white plates so the overlay remains readable over artwork. -->
+  <g filter="url(#label-shadow)" font-family="Arial, Helvetica, sans-serif">
+    <rect x="52" y="50" width="760" height="126" rx="18" fill="#ffffff" fill-opacity="0.94"/>
+    <text x="84" y="101" font-size="31" font-weight="700" fill="#002a53">MOBILE MASTER · 1080 × 1920</text>
+    <text x="84" y="145" font-size="25" fill="#36566f">Full bleed: extend backgrounds to every edge</text>
+
+    <rect x="152" y="400" width="776" height="152" rx="18" fill="#ffffff" fill-opacity="0.96" stroke="#00a8cc" stroke-width="4"/>
+    <text x="540" y="455" text-anchor="middle" font-size="31" font-weight="700" fill="#002a53">SAFE CONTENT AREA</text>
+    <text x="540" y="496" text-anchor="middle" font-size="27" font-weight="700" fill="#002a53">840 × 1200</text>
+    <text x="540" y="532" text-anchor="middle" font-size="22" fill="#36566f">Keep all essential content inside</text>
+
+    <rect x="130" y="1640" width="820" height="142" rx="18" fill="#ffffff" fill-opacity="0.94"/>
+    <text x="540" y="1692" text-anchor="middle" font-size="27" font-weight="700" fill="#b42318">SHADED MARGINS MAY CROP</text>
+    <text x="540" y="1732" text-anchor="middle" font-size="23" fill="#36566f">Especially on shorter phones in Fill screen</text>
+    <text x="540" y="1766" text-anchor="middle" font-size="21" fill="#36566f">Show full image keeps all edges</text>
+  </g>
+</svg>

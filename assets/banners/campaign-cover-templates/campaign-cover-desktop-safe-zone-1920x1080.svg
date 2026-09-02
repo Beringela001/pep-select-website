@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080" role="img" aria-labelledby="title desc">
+  <title id="title">Pep Select desktop campaign cover safe-zone template</title>
+  <desc id="desc">A transparent 1920 by 1080 overlay showing the full bleed edge and a centered 1440 by 760 safe-content area.</desc>
+  <defs>
+    <pattern id="risk-hatch" width="28" height="28" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="28" height="28" fill="#ef4444" fill-opacity="0.10"/>
+      <rect width="7" height="28" fill="#ef4444" fill-opacity="0.18"/>
+    </pattern>
+    <filter id="label-shadow" x="-20%" y="-40%" width="140%" height="180%">
+      <feDropShadow dx="0" dy="3" stdDeviation="5" flood-color="#001d3a" flood-opacity="0.22"/>
+    </filter>
+  </defs>
+
+  <!-- Crop-risk margins: backgrounds and photography can extend here. -->
+  <path d="M0 0H1920V160H0ZM0 920H1920V1080H0ZM0 160H240V920H0ZM1680 160H1920V920H1680Z" fill="url(#risk-hatch)"/>
+
+  <!-- Full canvas and safe-content boundaries. -->
+  <rect x="8" y="8" width="1904" height="1064" rx="12" fill="none" stroke="#002a53" stroke-width="16" stroke-dasharray="34 18"/>
+  <rect x="240" y="160" width="1440" height="760" rx="16" fill="#16a1cf" fill-opacity="0.08" stroke="#00a8cc" stroke-width="10"/>
+
+  <!-- Center/focal-point reference. -->
+  <line x1="960" y1="160" x2="960" y2="920" stroke="#002a53" stroke-opacity="0.45" stroke-width="4" stroke-dasharray="14 14"/>
+  <line x1="240" y1="540" x2="1680" y2="540" stroke="#002a53" stroke-opacity="0.45" stroke-width="4" stroke-dasharray="14 14"/>
+  <circle cx="960" cy="540" r="30" fill="none" stroke="#002a53" stroke-width="5"/>
+  <circle cx="960" cy="540" r="6" fill="#002a53"/>
+
+  <!-- Labels use white plates so the overlay remains readable over artwork. -->
+  <g filter="url(#label-shadow)" font-family="Arial, Helvetica, sans-serif">
+    <rect x="48" y="44" width="670" height="112" rx="18" fill="#ffffff" fill-opacity="0.94"/>
+    <text x="82" y="91" font-size="30" font-weight="700" fill="#002a53">DESKTOP MASTER · 1920 × 1080</text>
+    <text x="82" y="130" font-size="24" fill="#36566f">Full bleed: extend backgrounds to every edge</text>
+
+    <rect x="515" y="186" width="890" height="116" rx="18" fill="#ffffff" fill-opacity="0.96" stroke="#00a8cc" stroke-width="4"/>
+    <text x="960" y="234" text-anchor="middle" font-size="31" font-weight="700" fill="#002a53">SAFE CONTENT AREA · 1440 × 760</text>
+    <text x="960" y="274" text-anchor="middle" font-size="24" fill="#36566f">Keep offer text, logo, dates and essential products inside</text>
+
+    <rect x="584" y="948" width="752" height="86" rx="18" fill="#ffffff" fill-opacity="0.94"/>
+    <text x="960" y="985" text-anchor="middle" font-size="25" font-weight="700" fill="#b42318">SHADED MARGINS MAY CROP IN FILL SCREEN</text>
+    <text x="960" y="1017" text-anchor="middle" font-size="21" fill="#36566f">Show full image keeps all edges but may show background space</text>
+  </g>
+</svg>
