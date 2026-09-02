@@ -35,6 +35,36 @@ final class PepSelect_Discount_Admin {
 		wp_enqueue_style( 'woocommerce_admin_styles' );
 		wp_enqueue_script( 'wc-enhanced-select' );
 		wp_enqueue_style( 'pepselect-discount-admin', plugin_dir_url( PEPSELECT_BOGO_FILE ) . 'assets/compound-discount-admin.css', array(), PEPSELECT_BOGO_VERSION );
+		wp_enqueue_script( 'pepselect-discount-admin', plugin_dir_url( PEPSELECT_BOGO_FILE ) . 'assets/discount-admin.js', array(), PEPSELECT_BOGO_VERSION, true );
+	}
+
+	/** Render the shared top navigation used by every discount editor. */
+	public static function render_header( $active = '' ) {
+		$bogo     = PepSelect_BOGO_Rule::get_state();
+		$compound = PepSelect_Compound_Discount::get_state();
+		$sitewide = PepSelect_Sitewide_Discount::get_state();
+		$items    = array(
+			PepSelect_BOGO_Rule::PAGE_SLUG => array( 'title' => __( 'Buy 4 Get 1', 'pepselect-bogo-quantity' ), 'description' => __( 'Free-vial promotion', 'pepselect-bogo-quantity' ), 'count' => ! empty( $bogo['enabled'] ) ? 1 : 0 ),
+			PepSelect_Compound_Discount::PAGE_SLUG => array( 'title' => __( 'Compound Discounts', 'pepselect-bogo-quantity' ), 'description' => __( 'Product-combination rules', 'pepselect-bogo-quantity' ), 'count' => self::active_count( $compound['rules'] ?? array() ) ),
+			PepSelect_Sitewide_Discount::PAGE_SLUG => array( 'title' => __( 'Sitewide Discounts', 'pepselect-bogo-quantity' ), 'description' => __( 'Catalog-wide promotions', 'pepselect-bogo-quantity' ), 'count' => self::active_count( $sitewide['rules'] ?? array() ) ),
+		);
+		?>
+		<header class="pepselect-discount-heading">
+			<div><h1><?php esc_html_e( 'Cart Discounts', 'pepselect-bogo-quantity' ); ?></h1><p><?php esc_html_e( 'Manage every automatic cart promotion from one place.', 'pepselect-bogo-quantity' ); ?></p></div>
+			<span class="pepselect-version">v<?php echo esc_html( PEPSELECT_BOGO_VERSION ); ?></span>
+		</header>
+		<nav class="pepselect-discount-tabs" aria-label="<?php esc_attr_e( 'Discount types', 'pepselect-bogo-quantity' ); ?>">
+			<?php foreach ( $items as $slug => $item ) : ?>
+				<a class="pepselect-discount-tab <?php echo $slug === $active ? 'is-active' : ''; ?>" href="<?php echo esc_url( admin_url( 'admin.php?page=' . $slug ) ); ?>" <?php echo $slug === $active ? 'aria-current="page"' : ''; ?>>
+					<strong><?php echo esc_html( $item['title'] ); ?></strong><span><?php echo esc_html( $item['description'] ); ?></span><em class="<?php echo $item['count'] ? 'is-on' : ''; ?>"><?php echo $item['count'] ? esc_html( sprintf( _n( '%d active', '%d active', $item['count'], 'pepselect-bogo-quantity' ), $item['count'] ) ) : esc_html__( 'Off', 'pepselect-bogo-quantity' ); ?></em>
+				</a>
+			<?php endforeach; ?>
+		</nav>
+		<?php
+	}
+
+	private static function active_count( $rules ) {
+		return count( array_filter( (array) $rules, static function ( $rule ) { return ! empty( $rule['enabled'] ); } ) );
 	}
 
 	/** Render a compact launchpad without duplicating rule editors. */
@@ -49,8 +79,8 @@ final class PepSelect_Discount_Admin {
 		);
 		?>
 		<div class="wrap pepselect-discount-settings">
-			<h1><?php esc_html_e( 'Cart Discounts', 'pepselect-bogo-quantity' ); ?></h1>
-			<p><?php esc_html_e( 'Manage every automatic cart promotion from one place. Each discount can be stackable or exclusive.', 'pepselect-bogo-quantity' ); ?></p>
+			<?php self::render_header(); ?>
+			<p class="pepselect-discount-intro"><?php esc_html_e( 'Choose a discount type above. Every promotion can be independently activated and configured as stackable or exclusive.', 'pepselect-bogo-quantity' ); ?></p>
 			<div class="pepselect-discount-layout pepselect-discount-overview">
 				<?php foreach ( $pages as $page ) : ?>
 					<section class="pepselect-discount-panel">

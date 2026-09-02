@@ -39,7 +39,7 @@ Update this file whenever a custom plugin adds, removes, or changes a setting, R
 8. Preserve the WordPress admin as the emergency fallback. Ops must consume the same stored state and must not maintain a second source of truth.
 9. Validate on Staging before Live and retain an environment backup/rollback point for releases that change execution logic.
 
-## 1. Pep Select Cart Discounts 2.1.1 — READY
+## 1. Pep Select Cart Discounts 2.2.0 — READY
 
 Source: `pepselect-bogo-quantity/` (the directory name is retained for upgrade compatibility; the plugin name is **Pep Select Cart Discounts**).
 
@@ -53,6 +53,7 @@ Source: `pepselect-bogo-quantity/` (the directory name is retained for upgrade c
 - Audience targeting for everyone, logged-in customers, subscribers, prior purchasers, VIPs, or selected customer accounts.
 - Per-rule stackable/exclusive behavior. The coordinator applies all eligible stackable rules when no exclusive rule qualifies; otherwise it applies the single best eligible exclusive rule.
 - Customer-facing labels with bounded length so cart and checkout pills remain usable.
+- Per-sitewide-rule colors for the percentage label, crossed-out regular price, and discounted price.
 
 ### WordPress administration
 
@@ -63,7 +64,7 @@ Top-level **Cart Discounts** menu with these submenus:
 - Compound Discounts
 - Sitewide Discounts
 
-Saving a compound or sitewide discount creates a separate rule row. Each row can be independently activated, deactivated, edited, or deleted.
+The three discount families use one shared top-card navigation. Sitewide Discounts includes a live product/card preview with desktop and mobile modes. Saving a compound or sitewide discount creates a separate rule row. Each row can be independently activated, deactivated, edited, or deleted.
 
 ### Stored state
 
@@ -111,6 +112,7 @@ Subscriber targeting detects FluentCRM membership when available and remains ove
 - Contained WooCommerce customer/product search controls on narrow admin screens and cache-busted the corrected stylesheet in 2.0.1.
 - Expanded sitewide eligibility from the Compounds category to every catalog item and added the approved original-price, percentage-off, and discounted-price presentation in 2.1.0.
 - Added per-rule catalog product exclusions to WordPress and the Ops contract in 2.1.1; excluded products keep their regular price and do not count toward the rule minimum.
+- Added `sale_label_color`, `regular_price_color`, and `sale_price_color` to every sitewide rule in 2.2.0. Ops can use the existing revision-protected endpoint to read or write the same colors shown in WordPress and on the storefront.
 
 ### Ops milestone work
 

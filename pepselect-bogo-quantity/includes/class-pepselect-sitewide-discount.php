@@ -39,6 +39,9 @@ final class PepSelect_Sitewide_Discount {
 			'excluded_product_ids' => array(),
 			'stackable'        => true,
 			'label'            => '',
+			'sale_label_color' => '#087DA5',
+			'regular_price_color' => '#667786',
+			'sale_price_color' => '#002A53',
 		);
 	}
 
@@ -59,6 +62,10 @@ final class PepSelect_Sitewide_Discount {
 		$excluded_product_ids = isset( $input['excluded_product_ids'] ) && is_array( $input['excluded_product_ids'] ) ? array_values( array_unique( array_filter( array_map( 'absint', $input['excluded_product_ids'] ) ) ) ) : array();
 		$label        = sanitize_text_field( $input['label'] ?? '' );
 		$label        = function_exists( 'mb_substr' ) ? mb_substr( $label, 0, self::LABEL_LIMIT ) : substr( $label, 0, self::LABEL_LIMIT );
+		$defaults     = self::defaults();
+		$sale_label_color    = sanitize_hex_color( $input['sale_label_color'] ?? '' ) ?: $defaults['sale_label_color'];
+		$regular_price_color = sanitize_hex_color( $input['regular_price_color'] ?? '' ) ?: $defaults['regular_price_color'];
+		$sale_price_color    = sanitize_hex_color( $input['sale_price_color'] ?? '' ) ?: $defaults['sale_price_color'];
 
 		if ( 'percent' === $discount ) {
 			$amount = min( 100, $amount );
@@ -82,6 +89,9 @@ final class PepSelect_Sitewide_Discount {
 			'excluded_product_ids' => $excluded_product_ids,
 			'stackable'        => ! isset( $input['stackable'] ) || ! empty( $input['stackable'] ),
 			'label'            => $label,
+			'sale_label_color' => strtoupper( $sale_label_color ),
+			'regular_price_color' => strtoupper( $regular_price_color ),
+			'sale_price_color' => strtoupper( $sale_price_color ),
 		);
 	}
 
@@ -118,10 +128,11 @@ final class PepSelect_Sitewide_Discount {
 		$rule    = $rule ? $rule : self::defaults();
 		?>
 		<div class="wrap pepselect-discount-settings">
-			<h1><?php esc_html_e( 'Sitewide Discounts', 'pepselect-bogo-quantity' ); ?></h1>
-			<p><?php esc_html_e( 'Create automatic discounts across every catalog item. Shipping and taxes are excluded.', 'pepselect-bogo-quantity' ); ?></p>
+			<?php PepSelect_Discount_Admin::render_header( self::PAGE_SLUG ); ?>
+			<p class="pepselect-discount-intro"><?php esc_html_e( 'Create automatic discounts across every catalog item. Shipping and taxes are excluded.', 'pepselect-bogo-quantity' ); ?></p>
 			<?php self::render_admin_notice(); ?>
-			<div class="pepselect-discount-layout">
+			<div class="pepselect-sitewide-admin-layout">
+				<div class="pepselect-sitewide-editor-column">
 				<section class="pepselect-discount-panel" aria-labelledby="pepselect-sitewide-editor-title">
 					<h2 id="pepselect-sitewide-editor-title"><?php echo $edit_id ? esc_html__( 'Edit discount', 'pepselect-bogo-quantity' ) : esc_html__( 'Add discount', 'pepselect-bogo-quantity' ); ?></h2>
 					<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
@@ -135,6 +146,7 @@ final class PepSelect_Sitewide_Discount {
 							<tr><th scope="row"><label for="pepselect-sitewide-audience"><?php esc_html_e( 'Audience', 'pepselect-bogo-quantity' ); ?></label></th><td><select id="pepselect-sitewide-audience" name="rule[audience]"><option value="everyone" <?php selected( $rule['audience'], 'everyone' ); ?>><?php esc_html_e( 'Everyone', 'pepselect-bogo-quantity' ); ?></option><option value="logged_in" <?php selected( $rule['audience'], 'logged_in' ); ?>><?php esc_html_e( 'All logged-in customers', 'pepselect-bogo-quantity' ); ?></option><option value="subscribers" <?php selected( $rule['audience'], 'subscribers' ); ?>><?php esc_html_e( 'Active subscribers', 'pepselect-bogo-quantity' ); ?></option><option value="purchasers" <?php selected( $rule['audience'], 'purchasers' ); ?>><?php esc_html_e( 'Customers who purchased', 'pepselect-bogo-quantity' ); ?></option><option value="vip" <?php selected( $rule['audience'], 'vip' ); ?>><?php esc_html_e( 'VIP customers', 'pepselect-bogo-quantity' ); ?></option><option value="specific" <?php selected( $rule['audience'], 'specific' ); ?>><?php esc_html_e( 'Specific customers', 'pepselect-bogo-quantity' ); ?></option></select><p class="description"><?php esc_html_e( 'Customer-only audiences require the customer to log in.', 'pepselect-bogo-quantity' ); ?></p></td></tr>
 							<tr><th scope="row"><label for="pepselect-sitewide-customers"><?php esc_html_e( 'Customer list', 'pepselect-bogo-quantity' ); ?></label></th><td><select id="pepselect-sitewide-customers" class="wc-customer-search" multiple="multiple" name="rule[customer_ids][]" data-placeholder="<?php esc_attr_e( 'Search names or email addresses…', 'pepselect-bogo-quantity' ); ?>" data-action="woocommerce_json_search_customers"><?php foreach ( $rule['customer_ids'] as $customer_id ) : $customer = get_userdata( $customer_id ); if ( $customer ) : ?><option value="<?php echo esc_attr( $customer_id ); ?>" selected><?php echo esc_html( $customer->display_name . ' (' . $customer->user_email . ')' ); ?></option><?php endif; endforeach; ?></select><p class="description"><?php esc_html_e( 'Required for Specific customers. For VIP customers, this list is combined with customers tagged as VIP by Ops.', 'pepselect-bogo-quantity' ); ?></p></td></tr>
 							<tr><th scope="row"><?php esc_html_e( 'Stacking', 'pepselect-bogo-quantity' ); ?></th><td><select name="rule[stackable]"><option value="1" <?php selected( $rule['stackable'], true ); ?>><?php esc_html_e( 'Stack with other discounts', 'pepselect-bogo-quantity' ); ?></option><option value="0" <?php selected( $rule['stackable'], false ); ?>><?php esc_html_e( 'Do not stack', 'pepselect-bogo-quantity' ); ?></option></select><p class="description"><?php esc_html_e( 'If multiple exclusive discounts qualify, the customer receives the one with the greatest estimated savings.', 'pepselect-bogo-quantity' ); ?></p></td></tr>
+							<tr><th scope="row"><?php esc_html_e( 'Sale colors', 'pepselect-bogo-quantity' ); ?></th><td><div class="pepselect-color-options"><label><span><?php esc_html_e( '% off label', 'pepselect-bogo-quantity' ); ?></span><input type="color" name="rule[sale_label_color]" value="<?php echo esc_attr( $rule['sale_label_color'] ); ?>"></label><label><span><?php esc_html_e( 'Crossed-out price', 'pepselect-bogo-quantity' ); ?></span><input type="color" name="rule[regular_price_color]" value="<?php echo esc_attr( $rule['regular_price_color'] ); ?>"></label><label><span><?php esc_html_e( 'Sale price', 'pepselect-bogo-quantity' ); ?></span><input type="color" name="rule[sale_price_color]" value="<?php echo esc_attr( $rule['sale_price_color'] ); ?>"></label></div><p class="description"><?php esc_html_e( 'Saved with this discount and shown anywhere its sale price appears.', 'pepselect-bogo-quantity' ); ?></p></td></tr>
 							<tr><th scope="row"><label for="pepselect-sitewide-label"><?php esc_html_e( 'Customer label', 'pepselect-bogo-quantity' ); ?></label></th><td><input id="pepselect-sitewide-label" type="text" class="regular-text" name="rule[label]" value="<?php echo esc_attr( $rule['label'] ); ?>" maxlength="<?php echo esc_attr( self::LABEL_LIMIT ); ?>" required><p class="description"><?php printf( esc_html__( 'Shown in Cart and Checkout. Maximum %d characters.', 'pepselect-bogo-quantity' ), self::LABEL_LIMIT ); ?></p></td></tr>
 						</table>
 						<?php submit_button( $edit_id ? __( 'Update discount', 'pepselect-bogo-quantity' ) : __( 'Save discount', 'pepselect-bogo-quantity' ) ); ?>
@@ -153,10 +165,37 @@ final class PepSelect_Sitewide_Discount {
 					<?php endforeach; ?>
 					</div>
 				</section>
+				</div>
+				<?php self::render_live_preview( $rule ); ?>
 			</div>
 			<p class="pepselect-ops-note"><strong><?php esc_html_e( 'Ops-ready:', 'pepselect-bogo-quantity' ); ?></strong> <?php esc_html_e( 'Ops can manage the same rules, audiences, and stacking controls through the authenticated endpoint.', 'pepselect-bogo-quantity' ); ?></p>
 		</div>
 		<?php
+	}
+
+	/** Render a responsive preview using the current Pep Select product surfaces. */
+	private static function render_live_preview( $rule ) {
+		$amount = max( 0, min( 100, (float) $rule['discount_amount'] ) );
+		$regular = 79.99;
+		$sale = $regular * ( 1 - $amount / 100 );
+		$style = sprintf( '--pep-preview-label:%1$s;--pep-preview-regular:%2$s;--pep-preview-sale:%3$s', $rule['sale_label_color'], $rule['regular_price_color'], $rule['sale_price_color'] );
+		?>
+		<aside class="pepselect-live-preview" data-pep-sitewide-preview style="<?php echo esc_attr( $style ); ?>">
+			<div class="pepselect-preview-heading"><div><h2><?php esc_html_e( 'Live preview', 'pepselect-bogo-quantity' ); ?></h2><p><?php esc_html_e( 'Updates while you edit. Save to publish.', 'pepselect-bogo-quantity' ); ?></p></div><div class="pepselect-preview-controls"><button type="button" class="is-active" data-preview-surface="product"><?php esc_html_e( 'Product', 'pepselect-bogo-quantity' ); ?></button><button type="button" data-preview-surface="card"><?php esc_html_e( 'Card', 'pepselect-bogo-quantity' ); ?></button><button type="button" class="is-active" data-preview-device="desktop"><?php esc_html_e( 'Desktop', 'pepselect-bogo-quantity' ); ?></button><button type="button" data-preview-device="mobile"><?php esc_html_e( 'Mobile', 'pepselect-bogo-quantity' ); ?></button></div></div>
+			<div class="pepselect-preview-stage" data-preview-stage>
+				<div class="pepselect-preview-product" data-preview-panel="product">
+					<div class="pepselect-preview-image"><span>PEP SELECT</span><strong>GHK-CU</strong><small>50MG</small></div>
+					<div class="pepselect-preview-product-copy"><span class="pepselect-preview-crumb"><?php esc_html_e( 'Compounds › GHK-CU', 'pepselect-bogo-quantity' ); ?></span><h3>GHK-CU</h3><?php self::render_preview_price( $regular, $sale, $amount ); ?><span class="pepselect-preview-stock"><?php esc_html_e( 'In stock', 'pepselect-bogo-quantity' ); ?></span><button type="button"><?php esc_html_e( 'Add to cart', 'pepselect-bogo-quantity' ); ?></button></div>
+				</div>
+				<div class="pepselect-preview-card" data-preview-panel="card" hidden><div class="pepselect-preview-image"><span>PEP SELECT</span><strong>GHK-CU</strong><small>50MG</small></div><small>50mg</small><h3>GHK-CU</h3><?php self::render_preview_price( $regular, $sale, $amount ); ?><button type="button"><?php esc_html_e( 'Add to cart', 'pepselect-bogo-quantity' ); ?></button></div>
+			</div>
+			<p class="pepselect-preview-note" data-preview-note><?php esc_html_e( 'Price styling appears for percentage discounts with no minimum.', 'pepselect-bogo-quantity' ); ?></p>
+		</aside>
+		<?php
+	}
+
+	private static function render_preview_price( $regular, $sale, $amount ) {
+		?><span class="pepselect-preview-price"><del>$<span data-preview-regular><?php echo esc_html( number_format( $regular, 2 ) ); ?></span></del><span class="pepselect-preview-off" data-preview-label><?php echo esc_html( rtrim( rtrim( number_format( $amount, 2, '.', '' ), '0' ), '.' ) . '% off' ); ?></span><ins>$<span data-preview-sale><?php echo esc_html( number_format( $sale, 2 ) ); ?></span></ins></span><?php
 	}
 
 	/** Save one rule. */
@@ -384,13 +423,16 @@ final class PepSelect_Sitewide_Discount {
 		$percent = rtrim( rtrim( number_format( (float) $rule['discount_amount'], 2, '.', '' ), '0' ), '.' );
 		$label   = sprintf( __( '%s%% off', 'pepselect-bogo-quantity' ), $percent );
 
+		$style = sprintf( '--pep-sitewide-label:%1$s;--pep-sitewide-regular:%2$s;--pep-sitewide-sale:%3$s', $rule['sale_label_color'], $rule['regular_price_color'], $rule['sale_price_color'] );
+
 		return sprintf(
-			'<span class="pepselect-sitewide-price" data-pepselect-sitewide-discount="%1$s"><del aria-hidden="true">%2$s</del><span class="pepselect-sitewide-price__label">%3$s</span><ins>%4$s</ins><span class="screen-reader-text">%5$s</span></span>',
+			'<span class="pepselect-sitewide-price" data-pepselect-sitewide-discount="%1$s" style="%6$s"><del aria-hidden="true">%2$s</del><span class="pepselect-sitewide-price__label">%3$s</span><ins>%4$s</ins><span class="screen-reader-text">%5$s</span></span>',
 			esc_attr( $rule['id'] ),
 			wc_price( $display_price ),
 			esc_html( $label ),
 			wc_price( $display_discounted ),
-			esc_html( sprintf( __( 'Regular price %1$s. Discounted price %2$s. %3$s.', 'pepselect-bogo-quantity' ), wp_strip_all_tags( wc_price( $display_price ) ), wp_strip_all_tags( wc_price( $display_discounted ) ), $label ) )
+			esc_html( sprintf( __( 'Regular price %1$s. Discounted price %2$s. %3$s.', 'pepselect-bogo-quantity' ), wp_strip_all_tags( wc_price( $display_price ) ), wp_strip_all_tags( wc_price( $display_discounted ) ), $label ) ),
+			esc_attr( $style )
 		);
 	}
 
@@ -600,7 +642,7 @@ final class PepSelect_Sitewide_Discount {
 	}
 
 	private static function rest_payload( $state ) {
-		return array( 'schema_version' => self::SCHEMA_VERSION, 'revision' => self::revision( $state ), 'rules' => $state['rules'], 'contract' => array( 'max_rules' => self::MAX_RULES, 'customer_label_max_length' => self::LABEL_LIMIT, 'threshold_type' => array( 'none', 'quantity', 'subtotal' ), 'audience' => array( 'everyone', 'logged_in', 'subscribers', 'purchasers', 'vip', 'specific' ), 'excluded_product_ids' => true, 'stackable' => true ) );
+		return array( 'schema_version' => self::SCHEMA_VERSION, 'revision' => self::revision( $state ), 'rules' => $state['rules'], 'contract' => array( 'max_rules' => self::MAX_RULES, 'customer_label_max_length' => self::LABEL_LIMIT, 'threshold_type' => array( 'none', 'quantity', 'subtotal' ), 'audience' => array( 'everyone', 'logged_in', 'subscribers', 'purchasers', 'vip', 'specific' ), 'excluded_product_ids' => true, 'sale_colors' => array( 'sale_label_color', 'regular_price_color', 'sale_price_color' ), 'stackable' => true ) );
 	}
 
 	private static function revision( $state ) {

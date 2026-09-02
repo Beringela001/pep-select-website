@@ -163,8 +163,8 @@ final class PepSelect_BOGO_Rule {
 		$notice = sanitize_key( wp_unslash( $_GET['pepselect_notice'] ?? '' ) );
 		?>
 		<div class="wrap pepselect-discount-settings">
-			<h1><?php esc_html_e( 'Buy 4 Get 1 Free', 'pepselect-bogo-quantity' ); ?></h1>
-			<p><?php esc_html_e( 'This plugin is the promotion authority. Keep the matching YITH rule inactive to prevent duplicate discounts.', 'pepselect-bogo-quantity' ); ?></p>
+			<?php PepSelect_Discount_Admin::render_header( self::PAGE_SLUG ); ?>
+			<p class="pepselect-discount-intro"><?php esc_html_e( 'This plugin is the promotion authority. Keep the matching YITH rule inactive to prevent duplicate discounts.', 'pepselect-bogo-quantity' ); ?></p>
 			<?php if ( 'saved' === $notice ) : ?><div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Buy 4 Get 1 settings saved.', 'pepselect-bogo-quantity' ); ?></p></div><?php endif; ?>
 			<section class="pepselect-discount-panel" aria-labelledby="pepselect-bogo-title">
 				<h2 id="pepselect-bogo-title"><?php esc_html_e( 'Promotion settings', 'pepselect-bogo-quantity' ); ?></h2>

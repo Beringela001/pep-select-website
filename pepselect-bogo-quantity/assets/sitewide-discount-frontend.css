@@ -18,7 +18,7 @@
 	grid-row: 2;
 	align-self: center;
 	margin: 0 0 3px;
-	color: var(--pep-color-neutral, #667786);
+	color: var(--pep-sitewide-regular, var(--pep-color-neutral, #667786));
 	font-size: 0.76em;
 	font-weight: 400;
 	line-height: 1;
@@ -30,7 +30,7 @@
 .pepselect-sitewide-price__label {
 	grid-column: 2;
 	grid-row: 1;
-	color: #087da5;
+	color: var(--pep-sitewide-label, #087da5);
 	font-family: var(--pep-font-technical, "IBM Plex Mono", monospace);
 	font-size: 10px;
 	font-weight: 600;
@@ -42,7 +42,7 @@
 .pepselect-sitewide-price ins {
 	grid-column: 2;
 	grid-row: 2;
-	color: var(--pep-color-navy, #002a53);
+	color: var(--pep-sitewide-sale, var(--pep-color-navy, #002a53));
 	font-size: 1.08em;
 	font-weight: 700;
 	line-height: 1.05;

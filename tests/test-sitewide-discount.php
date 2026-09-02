@@ -7,6 +7,7 @@ function wc_format_decimal( $value ) { return rtrim( rtrim( number_format( (floa
 function wc_format_coupon_code( $value ) { return trim( (string) $value ); }
 function sanitize_text_field( $value ) { return trim( strip_tags( (string) $value ) ); }
 function sanitize_key( $value ) { return preg_replace( '/[^a-z0-9_\-]/', '', strtolower( (string) $value ) ); }
+function sanitize_hex_color( $value ) { return preg_match( '/^#[0-9a-f]{6}$/i', (string) $value ) ? $value : null; }
 function __( $value ) { return $value; }
 function wp_json_encode( $value ) { return json_encode( $value ); }
 function is_wp_error( $value ) { return $value instanceof WP_Error; }
@@ -75,6 +76,7 @@ $rule = PepSelect_Sitewide_Discount::sanitize_rule(
 		'id' => 'Launch Sale', 'enabled' => true, 'discount_type' => 'percent', 'discount_amount' => 20,
 		'threshold_type' => 'none', 'threshold_amount' => 999, 'audience' => 'everyone',
 		'excluded_product_ids' => array( '99', '99', '0' ), 'stackable' => '0', 'label' => 'Summer Compound Savings Now',
+		'sale_label_color' => '#aa1100', 'regular_price_color' => 'bad', 'sale_price_color' => '#123ABC',
 	)
 );
 pepselect_assert( 'launchsale' === $rule['id'], 'sitewide rule IDs are normalized' );
@@ -82,6 +84,9 @@ pepselect_assert( '0' === $rule['threshold_amount'], 'no-minimum rules ignore a 
 pepselect_assert( false === $rule['stackable'], 'sitewide rules can be exclusive' );
 pepselect_assert( array( 99 ) === $rule['excluded_product_ids'], 'sitewide exclusions are normalized and deduplicated' );
 pepselect_assert( 24 === strlen( $rule['label'] ), 'sitewide labels are capped at 24 characters' );
+pepselect_assert( '#AA1100' === $rule['sale_label_color'], 'sale label color is normalized' );
+pepselect_assert( '#667786' === $rule['regular_price_color'], 'invalid regular price color uses the safe default' );
+pepselect_assert( '#123ABC' === $rule['sale_price_color'], 'sale price color is normalized' );
 
 $cart = new WC_Cart(
 	array(
@@ -124,6 +129,7 @@ $price_html = PepSelect_Sitewide_Discount::price_html( '$79.99', new WC_Product(
 pepselect_assert( false !== strpos( $price_html, '<del aria-hidden="true">$79.99</del>' ), 'storefront price crosses out the original price' );
 pepselect_assert( false !== strpos( $price_html, '20% off' ), 'storefront price shows the discount percentage' );
 pepselect_assert( false !== strpos( $price_html, '<ins>$63.99</ins>' ), 'storefront price shows the discounted price' );
+pepselect_assert( false !== strpos( $price_html, '--pep-sitewide-label:#087DA5' ), 'storefront price receives the rule label color' );
 
 $display_rule['excluded_product_ids'] = array( 11 );
 $pepselect_test_options[ PepSelect_Sitewide_Discount::OPTION ] = array( 'rules' => array( $display_rule ) );

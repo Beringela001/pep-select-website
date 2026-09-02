@@ -177,8 +177,8 @@ final class PepSelect_Compound_Discount {
 		$rule    = $rule ? $rule : self::defaults();
 		?>
 		<div class="wrap pepselect-discount-settings">
-			<h1><?php esc_html_e( 'Compound Discounts', 'pepselect-bogo-quantity' ); ?></h1>
-			<p><?php esc_html_e( 'Create automatic discounts that can run independently or at the same time.', 'pepselect-bogo-quantity' ); ?></p>
+			<?php PepSelect_Discount_Admin::render_header( self::PAGE_SLUG ); ?>
+			<p class="pepselect-discount-intro"><?php esc_html_e( 'Create automatic discounts that can run independently or at the same time.', 'pepselect-bogo-quantity' ); ?></p>
 			<?php self::render_admin_notice(); ?>
 			<div class="pepselect-discount-layout">
 				<section class="pepselect-discount-panel" aria-labelledby="pepselect-editor-title">

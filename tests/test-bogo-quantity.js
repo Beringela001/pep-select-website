@@ -42,10 +42,14 @@ const sitewideFrontend = fs.readFileSync(
   path.join(__dirname, '..', 'pepselect-bogo-quantity', 'assets', 'sitewide-discount-frontend.css'),
   'utf8'
 );
+const discountAdminJs = fs.readFileSync(
+  path.join(__dirname, '..', 'pepselect-bogo-quantity', 'assets', 'discount-admin.js'),
+  'utf8'
+);
 
 assert.match(plugin, /Plugin Name: Pep Select Cart Discounts/);
-assert.match(plugin, /Version:\s+2\.1\.1/);
-assert.match(plugin, /PEPSELECT_BOGO_VERSION', '2\.1\.1'/);
+assert.match(plugin, /Version:\s+2\.2\.0/);
+assert.match(plugin, /PEPSELECT_BOGO_VERSION', '2\.2\.0'/);
 assert.match(plugin, /class-pepselect-compound-discount\.php/);
 assert.match(plugin, /class-pepselect-bogo-rule\.php/);
 assert.match(plugin, /class-pepselect-sitewide-discount\.php/);
@@ -159,10 +163,15 @@ assert.match(sitewideClass, /woocommerce_get_price_html/);
 assert.match(sitewideClass, /sitewide-discount-frontend\.css/);
 assert.match(sitewideClass, /public static function is_product_eligible/);
 assert.match(sitewideClass, /pepselect-sitewide-price__label/);
+assert.match(sitewideClass, /sale_label_color/);
+assert.match(sitewideClass, /regular_price_color/);
+assert.match(sitewideClass, /sale_price_color/);
+assert.match(sitewideClass, /data-pep-sitewide-preview/);
 assert.doesNotMatch(sitewideClass, /has_term\( 'compounds'/);
 assert.match(sitewideFrontend, /\.pepselect-sitewide-price/);
 assert.match(sitewideFrontend, /grid-template-columns:\s*auto auto/);
 assert.match(sitewideFrontend, /@media \(max-width: 760px\)/);
+assert.match(sitewideFrontend, /--pep-sitewide-label/);
 assert.match(stackingClass, /woocommerce_before_calculate_totals/);
 assert.match(stackingClass, /estimated_amount/);
 assert.match(stackingClass, /array_merge/);
@@ -170,6 +179,10 @@ assert.match(adminCss, /\.pepselect-discount-layout/);
 assert.match(adminCss, /\.pepselect-rule-row/);
 assert.match(adminCss, /\.pepselect-switch-button/);
 assert.match(adminCss, /focus-visible/);
+assert.match(adminCss, /\.pepselect-discount-tabs/);
+assert.match(adminCss, /\.pepselect-live-preview/);
+assert.match(discountAdminJs, /data-preview-surface/);
+assert.match(discountAdminJs, /data-preview-device/);
 assert.match(discountFrontend, /woocommerce-remove-coupon/);
 assert.match(discountFrontend, /wc-block-components-chip/);
 assert.match(discountFrontend, /MutationObserver/);

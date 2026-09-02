@@ -1,5 +1,5 @@
 === Pep Select Cart Discounts ===
-Version: 2.1.1
+Version: 2.2.0
 
 Single-source BOGO, compound, and sitewide automatic discount management.
 
@@ -105,3 +105,9 @@ totals.
 Excluded products keep their regular storefront price, receive no sitewide
 cart discount, and do not count toward that rule's quantity or subtotal
 minimum. The authenticated Ops contract exposes the same exclusion IDs.
+
+2.2.0 gives every sitewide rule three independent sale-display colors: the
+percentage label, crossed-out regular price, and discounted price. Cart
+Discounts now uses a shared top navigation and the Sitewide editor includes a
+live Pep Select product-page/product-card preview with desktop and mobile modes.
+The same saved colors are included in the Ops contract and storefront markup.
