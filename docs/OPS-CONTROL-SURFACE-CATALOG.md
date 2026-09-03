@@ -39,7 +39,7 @@ Update this file whenever a custom plugin adds, removes, or changes a setting, R
 8. Preserve the WordPress admin as the emergency fallback. Ops must consume the same stored state and must not maintain a second source of truth.
 9. Validate on Staging before Live and retain an environment backup/rollback point for releases that change execution logic.
 
-## 1. Pep Select Cart Discounts 2.2.0 — READY
+## 1. Pep Select Cart Discounts 2.3.0 — READY
 
 Source: `pepselect-bogo-quantity/` (the directory name is retained for upgrade compatibility; the plugin name is **Pep Select Cart Discounts**).
 
@@ -51,7 +51,9 @@ Source: `pepselect-bogo-quantity/` (the directory name is retained for upgrade c
 - Percentage or fixed-cart amounts where supported.
 - Quantity or subtotal minimums, including no minimum for sitewide rules.
 - Audience targeting for everyone, logged-in customers, subscribers, prior purchasers, VIPs, or selected customer accounts.
-- Per-rule stackable/exclusive behavior. The coordinator applies all eligible stackable rules when no exclusive rule qualifies; otherwise it applies the single best eligible exclusive rule.
+- Per-rule stackable/exclusive behavior. An exclusive sitewide rule owns discount priority while active, including below its minimum: BOGO, compound promotions, and ordinary WooCommerce coupons are blocked unless explicitly allowed.
+- Exact-code and safe trailing-star prefix exceptions, plus native Cart Recovery and Military/VerifyPass coupon-source exceptions.
+- Exact replacement codes that remove the sitewide promotion and every other discount, then remain as the cart's only discount.
 - Customer-facing labels with bounded length so cart and checkout pills remain usable.
 - Per-sitewide-rule colors for the percentage label, crossed-out regular price, and discounted price.
 
@@ -84,7 +86,7 @@ Namespace: `pepselect-bogo/v1`
 | `/compound-discount` | GET, editable write | Legacy alias for the compound collection |
 | `/sitewide-discounts` | GET, editable write | Read or replace the sitewide rule collection |
 
-All routes require `manage_woocommerce`. Responses expose a SHA-256 `revision`; writes accept `if_revision` and return HTTP 409 on a stale update. Ops should treat each returned collection as the authoritative document.
+All routes require `manage_woocommerce`. Responses expose a SHA-256 `revision`; writes accept `if_revision` and return HTTP 409 on a stale update. Ops should treat each returned collection as the authoritative document. The sitewide collection is schema version 2 in plugin 2.3.0.
 
 ### Extension hooks
 
@@ -96,6 +98,7 @@ All routes require `manage_woocommerce`. Responses expose a SHA-256 `revision`; 
 - `pepselect_sitewide_discount_product_eligible`
 - `pepselect_discount_customer_is_subscriber`
 - `pepselect_discount_customer_is_vip`
+- `pepselect_discount_coupon_source`
 - Customer display bridges consumed by the child theme: `pepselect_product_has_b4g1` and `pepselect_child_b4g1_pill_label`
 
 Subscriber targeting detects FluentCRM membership when available and remains overrideable through the subscriber filter. VIP targeting is intentionally supplied by the filter until Ops becomes the owner of the VIP list.
@@ -113,10 +116,12 @@ Subscriber targeting detects FluentCRM membership when available and remains ove
 - Expanded sitewide eligibility from the Compounds category to every catalog item and added the approved original-price, percentage-off, and discounted-price presentation in 2.1.0.
 - Added per-rule catalog product exclusions to WordPress and the Ops contract in 2.1.1; excluded products keep their regular price and do not count toward the rule minimum.
 - Added `sale_label_color`, `regular_price_color`, and `sale_price_color` to every sitewide rule in 2.2.0. Ops can use the existing revision-protected endpoint to read or write the same colors shown in WordPress and on the storefront.
+- Added exclusive sitewide takeover, allowed coupon sources/codes/prefixes, and exact replacement codes in 2.3.0. Replacement codes such as `LABORDAY40` suppress the automatic catalog price treatment and become the only order discount.
 
 ### Ops milestone work
 
-- Build typed Ops forms for all three route families.
+- Extend the typed sitewide rule and form for schema version 2 fields: `allowed_coupon_sources`, `allowed_coupon_codes`, and `override_coupon_codes`.
+- Preserve all unknown/forward-compatible rule fields when Ops edits a rule; never rebuild a sitewide rule from a partial form object.
 - Map Ops customer groups to the subscriber and VIP hooks without sending entire customer lists to the browser.
 - Add preview output that names eligible products/customers and projected rule priority before activation.
 - Keep sitewide rules inactive by default and show a high-impact Live confirmation.

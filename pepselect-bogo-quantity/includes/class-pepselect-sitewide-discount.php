@@ -7,7 +7,7 @@ final class PepSelect_Sitewide_Discount {
 	const OPTION         = 'pepselect_sitewide_discount_rules_v1';
 	const PAGE_SLUG      = 'pepselect-sitewide-discounts';
 	const REST_NAMESPACE = 'pepselect-bogo/v1';
-	const SCHEMA_VERSION = 1;
+	const SCHEMA_VERSION = 2;
 	const LABEL_LIMIT    = 24;
 	const MAX_RULES      = 50;
 
@@ -37,7 +37,10 @@ final class PepSelect_Sitewide_Discount {
 			'audience'         => 'everyone',
 			'customer_ids'     => array(),
 			'excluded_product_ids' => array(),
-			'stackable'        => true,
+			'stackable'        => false,
+			'allowed_coupon_sources' => array(),
+			'allowed_coupon_codes' => array(),
+			'override_coupon_codes' => array(),
 			'label'            => '',
 			'sale_label_color' => '#087DA5',
 			'regular_price_color' => '#667786',
@@ -60,6 +63,7 @@ final class PepSelect_Sitewide_Discount {
 		$minimum      = max( 0, (float) wc_format_decimal( $input['threshold_amount'] ?? 0 ) );
 		$customer_ids = isset( $input['customer_ids'] ) && is_array( $input['customer_ids'] ) ? array_values( array_unique( array_filter( array_map( 'absint', $input['customer_ids'] ) ) ) ) : array();
 		$excluded_product_ids = isset( $input['excluded_product_ids'] ) && is_array( $input['excluded_product_ids'] ) ? array_values( array_unique( array_filter( array_map( 'absint', $input['excluded_product_ids'] ) ) ) ) : array();
+		$allowed_sources = isset( $input['allowed_coupon_sources'] ) && is_array( $input['allowed_coupon_sources'] ) ? array_values( array_intersect( array( 'cart_recovery', 'military' ), array_map( 'sanitize_key', $input['allowed_coupon_sources'] ) ) ) : array();
 		$label        = sanitize_text_field( $input['label'] ?? '' );
 		$label        = function_exists( 'mb_substr' ) ? mb_substr( $label, 0, self::LABEL_LIMIT ) : substr( $label, 0, self::LABEL_LIMIT );
 		$defaults     = self::defaults();
@@ -88,6 +92,9 @@ final class PepSelect_Sitewide_Discount {
 			'customer_ids'     => $customer_ids,
 			'excluded_product_ids' => $excluded_product_ids,
 			'stackable'        => ! isset( $input['stackable'] ) || ! empty( $input['stackable'] ),
+			'allowed_coupon_sources' => $allowed_sources,
+			'allowed_coupon_codes' => self::sanitize_coupon_codes( $input['allowed_coupon_codes'] ?? array(), true ),
+			'override_coupon_codes' => self::sanitize_coupon_codes( $input['override_coupon_codes'] ?? array(), false ),
 			'label'            => $label,
 			'sale_label_color' => strtoupper( $sale_label_color ),
 			'regular_price_color' => strtoupper( $regular_price_color ),
@@ -145,7 +152,10 @@ final class PepSelect_Sitewide_Discount {
 							<tr><th scope="row"><?php esc_html_e( 'Minimum order', 'pepselect-bogo-quantity' ); ?></th><td><select name="rule[threshold_type]"><option value="none" <?php selected( $rule['threshold_type'], 'none' ); ?>><?php esc_html_e( 'No minimum', 'pepselect-bogo-quantity' ); ?></option><option value="subtotal" <?php selected( $rule['threshold_type'], 'subtotal' ); ?>><?php esc_html_e( 'Order item subtotal', 'pepselect-bogo-quantity' ); ?></option><option value="quantity" <?php selected( $rule['threshold_type'], 'quantity' ); ?>><?php esc_html_e( 'Order item quantity', 'pepselect-bogo-quantity' ); ?></option></select> <input type="number" min="0" step="0.01" name="rule[threshold_amount]" value="<?php echo esc_attr( $rule['threshold_amount'] ); ?>" class="small-text"><p class="description"><?php esc_html_e( 'Measured before discounts. Leave at zero when No minimum is selected.', 'pepselect-bogo-quantity' ); ?></p></td></tr>
 							<tr><th scope="row"><label for="pepselect-sitewide-audience"><?php esc_html_e( 'Audience', 'pepselect-bogo-quantity' ); ?></label></th><td><select id="pepselect-sitewide-audience" name="rule[audience]"><option value="everyone" <?php selected( $rule['audience'], 'everyone' ); ?>><?php esc_html_e( 'Everyone', 'pepselect-bogo-quantity' ); ?></option><option value="logged_in" <?php selected( $rule['audience'], 'logged_in' ); ?>><?php esc_html_e( 'All logged-in customers', 'pepselect-bogo-quantity' ); ?></option><option value="subscribers" <?php selected( $rule['audience'], 'subscribers' ); ?>><?php esc_html_e( 'Active subscribers', 'pepselect-bogo-quantity' ); ?></option><option value="purchasers" <?php selected( $rule['audience'], 'purchasers' ); ?>><?php esc_html_e( 'Customers who purchased', 'pepselect-bogo-quantity' ); ?></option><option value="vip" <?php selected( $rule['audience'], 'vip' ); ?>><?php esc_html_e( 'VIP customers', 'pepselect-bogo-quantity' ); ?></option><option value="specific" <?php selected( $rule['audience'], 'specific' ); ?>><?php esc_html_e( 'Specific customers', 'pepselect-bogo-quantity' ); ?></option></select><p class="description"><?php esc_html_e( 'Customer-only audiences require the customer to log in.', 'pepselect-bogo-quantity' ); ?></p></td></tr>
 							<tr><th scope="row"><label for="pepselect-sitewide-customers"><?php esc_html_e( 'Customer list', 'pepselect-bogo-quantity' ); ?></label></th><td><select id="pepselect-sitewide-customers" class="wc-customer-search" multiple="multiple" name="rule[customer_ids][]" data-placeholder="<?php esc_attr_e( 'Search names or email addresses…', 'pepselect-bogo-quantity' ); ?>" data-action="woocommerce_json_search_customers"><?php foreach ( $rule['customer_ids'] as $customer_id ) : $customer = get_userdata( $customer_id ); if ( $customer ) : ?><option value="<?php echo esc_attr( $customer_id ); ?>" selected><?php echo esc_html( $customer->display_name . ' (' . $customer->user_email . ')' ); ?></option><?php endif; endforeach; ?></select><p class="description"><?php esc_html_e( 'Required for Specific customers. For VIP customers, this list is combined with customers tagged as VIP by Ops.', 'pepselect-bogo-quantity' ); ?></p></td></tr>
-							<tr><th scope="row"><?php esc_html_e( 'Stacking', 'pepselect-bogo-quantity' ); ?></th><td><select name="rule[stackable]"><option value="1" <?php selected( $rule['stackable'], true ); ?>><?php esc_html_e( 'Stack with other discounts', 'pepselect-bogo-quantity' ); ?></option><option value="0" <?php selected( $rule['stackable'], false ); ?>><?php esc_html_e( 'Do not stack', 'pepselect-bogo-quantity' ); ?></option></select><p class="description"><?php esc_html_e( 'If multiple exclusive discounts qualify, the customer receives the one with the greatest estimated savings.', 'pepselect-bogo-quantity' ); ?></p></td></tr>
+							<tr><th scope="row"><?php esc_html_e( 'Discount priority', 'pepselect-bogo-quantity' ); ?></th><td><select name="rule[stackable]"><option value="0" <?php selected( $rule['stackable'], false ); ?>><?php esc_html_e( 'Exclusive takeover', 'pepselect-bogo-quantity' ); ?></option><option value="1" <?php selected( $rule['stackable'], true ); ?>><?php esc_html_e( 'Allow every discount', 'pepselect-bogo-quantity' ); ?></option></select><p class="description"><?php esc_html_e( 'Exclusive takeover disables BOGO, compound discounts, and WooCommerce coupons except the exceptions selected below.', 'pepselect-bogo-quantity' ); ?></p></td></tr>
+							<tr><th scope="row"><?php esc_html_e( 'Allowed coupon sources', 'pepselect-bogo-quantity' ); ?></th><td><fieldset><label><input type="checkbox" name="rule[allowed_coupon_sources][]" value="cart_recovery" <?php checked( in_array( 'cart_recovery', $rule['allowed_coupon_sources'], true ) ); ?>> <?php esc_html_e( 'Cart recovery coupons', 'pepselect-bogo-quantity' ); ?></label><br><label><input type="checkbox" name="rule[allowed_coupon_sources][]" value="military" <?php checked( in_array( 'military', $rule['allowed_coupon_sources'], true ) ); ?>> <?php esc_html_e( 'Military / VerifyPass coupons', 'pepselect-bogo-quantity' ); ?></label></fieldset><p class="description"><?php esc_html_e( 'These valid WooCommerce coupon families may stack with an Exclusive takeover sale.', 'pepselect-bogo-quantity' ); ?></p></td></tr>
+							<tr><th scope="row"><label for="pepselect-sitewide-allowed-codes"><?php esc_html_e( 'Additional allowed codes', 'pepselect-bogo-quantity' ); ?></label></th><td><textarea id="pepselect-sitewide-allowed-codes" class="regular-text code" rows="3" name="rule[allowed_coupon_codes]" placeholder="WELCOME10, PARTNER-*"><?php echo esc_textarea( implode( "\n", $rule['allowed_coupon_codes'] ) ); ?></textarea><p class="description"><?php esc_html_e( 'One code or prefix per line. End a prefix with * to allow its valid generated codes.', 'pepselect-bogo-quantity' ); ?></p></td></tr>
+							<tr><th scope="row"><label for="pepselect-sitewide-override-codes"><?php esc_html_e( 'Replacement codes', 'pepselect-bogo-quantity' ); ?></label></th><td><textarea id="pepselect-sitewide-override-codes" class="regular-text code" rows="3" name="rule[override_coupon_codes]" placeholder="LABORDAY40"><?php echo esc_textarea( implode( "\n", $rule['override_coupon_codes'] ) ); ?></textarea><p class="description"><?php esc_html_e( 'A valid code here removes the sitewide discount and every other coupon, then applies by itself.', 'pepselect-bogo-quantity' ); ?></p></td></tr>
 							<tr><th scope="row"><?php esc_html_e( 'Sale colors', 'pepselect-bogo-quantity' ); ?></th><td><div class="pepselect-color-options"><label><span><?php esc_html_e( '% off label', 'pepselect-bogo-quantity' ); ?></span><input type="color" name="rule[sale_label_color]" value="<?php echo esc_attr( $rule['sale_label_color'] ); ?>"></label><label><span><?php esc_html_e( 'Crossed-out price', 'pepselect-bogo-quantity' ); ?></span><input type="color" name="rule[regular_price_color]" value="<?php echo esc_attr( $rule['regular_price_color'] ); ?>"></label><label><span><?php esc_html_e( 'Sale price', 'pepselect-bogo-quantity' ); ?></span><input type="color" name="rule[sale_price_color]" value="<?php echo esc_attr( $rule['sale_price_color'] ); ?>"></label></div><p class="description"><?php esc_html_e( 'Saved with this discount and shown anywhere its sale price appears.', 'pepselect-bogo-quantity' ); ?></p></td></tr>
 							<tr><th scope="row"><label for="pepselect-sitewide-label"><?php esc_html_e( 'Customer label', 'pepselect-bogo-quantity' ); ?></label></th><td><input id="pepselect-sitewide-label" type="text" class="regular-text" name="rule[label]" value="<?php echo esc_attr( $rule['label'] ); ?>" maxlength="<?php echo esc_attr( self::LABEL_LIMIT ); ?>" required><p class="description"><?php printf( esc_html__( 'Shown in Cart and Checkout. Maximum %d characters.', 'pepselect-bogo-quantity' ), self::LABEL_LIMIT ); ?></p></td></tr>
 						</table>
@@ -291,7 +301,7 @@ final class PepSelect_Sitewide_Discount {
 	public static function rest_update_rules( $request ) {
 		$body = $request->get_json_params();
 		if ( self::SCHEMA_VERSION !== absint( $body['schema_version'] ?? 0 ) || ! is_array( $body['rules'] ?? null ) ) {
-			return new WP_Error( 'pepselect_sitewide_schema', __( 'schema_version 1 and a rules array are required.', 'pepselect-bogo-quantity' ), array( 'status' => 400 ) );
+			return new WP_Error( 'pepselect_sitewide_schema', __( 'schema_version 2 and a rules array are required.', 'pepselect-bogo-quantity' ), array( 'status' => 400 ) );
 		}
 		$current = self::get_state();
 		if ( ! empty( $body['if_revision'] ) && ! hash_equals( self::revision( $current ), sanitize_text_field( $body['if_revision'] ) ) ) {
@@ -330,7 +340,7 @@ final class PepSelect_Sitewide_Discount {
 	public static function discount_candidates( $cart ) {
 		$candidates = array();
 		foreach ( self::get_state()['rules'] as $rule ) {
-			$candidates[] = array( 'code' => self::coupon_code_for_rule( $rule ), 'qualifies' => self::cart_qualifies( $cart, $rule ), 'stackable' => ! empty( $rule['stackable'] ), 'estimated_amount' => self::estimated_discount_amount( $cart, $rule ) );
+			$candidates[] = array( 'code' => self::coupon_code_for_rule( $rule ), 'qualifies' => self::cart_qualifies( $cart, $rule ), 'stackable' => ! empty( $rule['stackable'] ), 'estimated_amount' => self::estimated_discount_amount( $cart, $rule ), 'family' => 'sitewide', 'rule' => $rule );
 		}
 		foreach ( self::get_state()['retired_coupon_codes'] as $code ) {
 			$candidates[] = array( 'code' => $code, 'qualifies' => false, 'stackable' => true, 'estimated_amount' => 0 );
@@ -375,7 +385,7 @@ final class PepSelect_Sitewide_Discount {
 			return $data;
 		}
 		$metrics = self::eligible_metrics( WC()->cart, $rule );
-		return array( 'code' => self::coupon_code_for_rule( $rule ), 'description' => $rule['label'], 'discount_type' => $rule['discount_type'], 'amount' => $rule['discount_amount'], 'product_ids' => $metrics['product_ids'], 'individual_use' => empty( $rule['stackable'] ), 'usage_limit' => 0, 'free_shipping' => false );
+		return array( 'code' => self::coupon_code_for_rule( $rule ), 'description' => $rule['label'], 'discount_type' => $rule['discount_type'], 'amount' => $rule['discount_amount'], 'product_ids' => $metrics['product_ids'], 'individual_use' => false, 'usage_limit' => 0, 'free_shipping' => false );
 	}
 
 	public static function coupon_label( $label, $coupon ) {
@@ -459,6 +469,7 @@ final class PepSelect_Sitewide_Discount {
 						&& 'percent' === $rule['discount_type']
 						&& 'none' === $rule['threshold_type']
 						&& self::audience_qualifies( $rule )
+						&& ! self::rule_is_overridden( $rule )
 						&& self::is_product_eligible( $product->get_id(), $rule, $product->get_parent_id() );
 				}
 			)
@@ -468,6 +479,19 @@ final class PepSelect_Sitewide_Discount {
 		}
 		usort( $rules, static function ( $left, $right ) { return (float) $right['discount_amount'] <=> (float) $left['discount_amount']; } );
 		return $rules[0];
+	}
+
+	/** Avoid presenting the sitewide sale price after a replacement coupon takes over. */
+	private static function rule_is_overridden( $rule ) {
+		if ( empty( $rule['override_coupon_codes'] ) || ! function_exists( 'WC' ) || ! WC() || ! WC()->cart || ! method_exists( WC()->cart, 'get_applied_coupons' ) ) {
+			return false;
+		}
+		foreach ( WC()->cart->get_applied_coupons() as $code ) {
+			if ( self::coupon_code_matches( $code, $rule['override_coupon_codes'] ) ) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public static function coupon_code_for_rule( $rule ) {
@@ -535,6 +559,115 @@ final class PepSelect_Sitewide_Discount {
 		}
 		$vip = in_array( $user_id, array_map( 'absint', $rule['customer_ids'] ), true ) || ( function_exists( 'get_user_meta' ) && (bool) get_user_meta( $user_id, 'pepselect_discount_vip', true ) );
 		return (bool) apply_filters( 'pepselect_discount_customer_is_vip', $vip, $user_id, $user );
+	}
+
+	/** Return the highest-priority active sitewide rule that owns coupon priority. */
+	public static function active_takeover_rule( $cart ) {
+		$rules = array_values(
+			array_filter(
+				self::get_state()['rules'],
+				static function ( $rule ) {
+					return empty( $rule['stackable'] )
+						&& ! empty( $rule['enabled'] )
+						&& ! is_wp_error( self::validate_rule( $rule ) )
+						&& self::audience_qualifies( $rule );
+				}
+			)
+		);
+		if ( ! $rules ) {
+			return null;
+		}
+		usort(
+			$rules,
+			static function ( $left, $right ) use ( $cart ) {
+				$qualified = (int) self::cart_qualifies( $cart, $right ) <=> (int) self::cart_qualifies( $cart, $left );
+				if ( 0 !== $qualified ) {
+					return $qualified;
+				}
+				$amount = self::estimated_discount_amount( $cart, $right ) <=> self::estimated_discount_amount( $cart, $left );
+				if ( 0 !== $amount ) {
+					return $amount;
+				}
+				$configured = (float) $right['discount_amount'] <=> (float) $left['discount_amount'];
+				return 0 !== $configured ? $configured : strcmp( self::coupon_code_for_rule( $left ), self::coupon_code_for_rule( $right ) );
+			}
+		);
+		return $rules[0];
+	}
+
+	/** Whether any exclusive sitewide policy is enabled for the current customer. */
+	public static function takeover_enabled_for_customer() {
+		foreach ( self::get_state()['rules'] as $rule ) {
+			if ( empty( $rule['stackable'] ) && ! empty( $rule['enabled'] ) && ! is_wp_error( self::validate_rule( $rule ) ) && self::audience_qualifies( $rule ) ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/** Whether a valid WooCommerce coupon may remain beside this sitewide rule. */
+	public static function coupon_is_allowed( $coupon, $rule ) {
+		if ( ! $coupon instanceof WC_Coupon ) {
+			return false;
+		}
+		$code = $coupon->get_code();
+		if ( self::coupon_code_matches( $code, $rule['allowed_coupon_codes'] ?? array() ) ) {
+			return true;
+		}
+		$source = self::coupon_source( $coupon );
+		return $source && in_array( $source, (array) ( $rule['allowed_coupon_sources'] ?? array() ), true );
+	}
+
+	/** Whether a valid WooCommerce coupon replaces the sitewide rule entirely. */
+	public static function coupon_is_override( $coupon, $rule ) {
+		return $coupon instanceof WC_Coupon && self::coupon_code_matches( $coupon->get_code(), $rule['override_coupon_codes'] ?? array() );
+	}
+
+	/** Normalize exact codes and optional prefix patterns without creating coupons. */
+	private static function sanitize_coupon_codes( $input, $allow_wildcards ) {
+		$values = is_array( $input ) ? $input : preg_split( '/[\s,]+/', (string) $input );
+		$codes  = array();
+		foreach ( array_slice( array_filter( (array) $values ), 0, 50 ) as $value ) {
+			$value    = trim( sanitize_text_field( $value ) );
+			$wildcard = $allow_wildcards && '*' === substr( $value, -1 );
+			$value    = $wildcard ? substr( $value, 0, -1 ) : str_replace( '*', '', $value );
+			$code     = wc_format_coupon_code( $value );
+			if ( '' !== $code ) {
+				$codes[] = substr( $code, 0, 64 ) . ( $wildcard ? '*' : '' );
+			}
+		}
+		return array_values( array_unique( $codes ) );
+	}
+
+	/** Match a normalized coupon code against exact codes or trailing-star prefixes. */
+	private static function coupon_code_matches( $code, $patterns ) {
+		$code = wc_format_coupon_code( $code );
+		foreach ( (array) $patterns as $pattern ) {
+			$pattern = (string) $pattern;
+			if ( '*' === substr( $pattern, -1 ) ) {
+				$prefix = substr( $pattern, 0, -1 );
+				if ( '' !== $prefix && 0 === stripos( $code, $prefix ) ) {
+					return true;
+				}
+			} elseif ( 0 === strcasecmp( $code, wc_format_coupon_code( $pattern ) ) ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/** Identify coupon families generated outside this plugin. */
+	private static function coupon_source( $coupon ) {
+		$source = '';
+		if ( $coupon->get_meta( '_pepselect_exit_offer', true ) ) {
+			$source = 'cart_recovery';
+		} else {
+			$haystack = strtolower( $coupon->get_code() . ' ' . $coupon->get_description() );
+			if ( false !== strpos( $haystack, 'verifypass' ) || false !== strpos( $haystack, 'military' ) || false !== strpos( $haystack, 'first responder' ) ) {
+				$source = 'military';
+			}
+		}
+		return sanitize_key( apply_filters( 'pepselect_discount_coupon_source', $source, $coupon ) );
 	}
 
 	private static function normalize_state( $state ) {
@@ -607,7 +740,7 @@ final class PepSelect_Sitewide_Discount {
 	private static function rule_summary( $rule ) {
 		$discount = 'percent' === $rule['discount_type'] ? $rule['discount_amount'] . '%' : '$' . $rule['discount_amount'];
 		$minimum  = 'none' === $rule['threshold_type'] ? __( 'no minimum', 'pepselect-bogo-quantity' ) : ( 'quantity' === $rule['threshold_type'] ? $rule['threshold_amount'] . ' items' : '$' . $rule['threshold_amount'] . ' subtotal' );
-		$stacking = $rule['stackable'] ? __( 'stackable', 'pepselect-bogo-quantity' ) : __( 'exclusive', 'pepselect-bogo-quantity' );
+		$stacking = $rule['stackable'] ? __( 'allows every discount', 'pepselect-bogo-quantity' ) : __( 'exclusive takeover', 'pepselect-bogo-quantity' );
 		$excluded = count( $rule['excluded_product_ids'] ?? array() );
 		$scope    = $excluded ? sprintf( _n( '%d product excluded', '%d products excluded', $excluded, 'pepselect-bogo-quantity' ), $excluded ) : __( 'no exclusions', 'pepselect-bogo-quantity' );
 		return sprintf( __( '%1$s off · %2$s · %3$s · %4$s · %5$s', 'pepselect-bogo-quantity' ), $discount, $minimum, ucfirst( str_replace( '_', ' ', $rule['audience'] ) ), $stacking, $scope );
@@ -642,7 +775,7 @@ final class PepSelect_Sitewide_Discount {
 	}
 
 	private static function rest_payload( $state ) {
-		return array( 'schema_version' => self::SCHEMA_VERSION, 'revision' => self::revision( $state ), 'rules' => $state['rules'], 'contract' => array( 'max_rules' => self::MAX_RULES, 'customer_label_max_length' => self::LABEL_LIMIT, 'threshold_type' => array( 'none', 'quantity', 'subtotal' ), 'audience' => array( 'everyone', 'logged_in', 'subscribers', 'purchasers', 'vip', 'specific' ), 'excluded_product_ids' => true, 'sale_colors' => array( 'sale_label_color', 'regular_price_color', 'sale_price_color' ), 'stackable' => true ) );
+		return array( 'schema_version' => self::SCHEMA_VERSION, 'revision' => self::revision( $state ), 'rules' => $state['rules'], 'contract' => array( 'max_rules' => self::MAX_RULES, 'customer_label_max_length' => self::LABEL_LIMIT, 'threshold_type' => array( 'none', 'quantity', 'subtotal' ), 'audience' => array( 'everyone', 'logged_in', 'subscribers', 'purchasers', 'vip', 'specific' ), 'excluded_product_ids' => true, 'sale_colors' => array( 'sale_label_color', 'regular_price_color', 'sale_price_color' ), 'stackable' => true, 'allowed_coupon_sources' => array( 'cart_recovery', 'military' ), 'allowed_coupon_codes' => true, 'override_coupon_codes' => true ) );
 	}
 
 	private static function revision( $state ) {

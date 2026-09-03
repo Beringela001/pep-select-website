@@ -131,7 +131,9 @@ final class PepSelect_BOGO_Rule {
 	 */
 	public static function product_page_is_eligible( $detected, $product ) {
 		unset( $detected );
-		return $product instanceof WC_Product && self::is_product_eligible( $product->get_id() );
+		return $product instanceof WC_Product
+			&& ( ! class_exists( 'PepSelect_Sitewide_Discount' ) || ! PepSelect_Sitewide_Discount::takeover_enabled_for_customer() )
+			&& self::is_product_eligible( $product->get_id() );
 	}
 
 	/** @param string $label Existing label. @param WC_Product|null $product Product. @return string */

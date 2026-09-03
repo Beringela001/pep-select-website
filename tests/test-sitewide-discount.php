@@ -52,12 +52,24 @@ class WC_Product {
 	public function get_parent_id() { return $this->parent_id; }
 }
 
+class WC_Coupon {
+	private $code;
+	private $meta;
+	private $description;
+	public function __construct( $code, $meta = array(), $description = '' ) { $this->code = $code; $this->meta = $meta; $this->description = $description; }
+	public function get_code() { return $this->code; }
+	public function get_meta( $key ) { return $this->meta[ $key ] ?? ''; }
+	public function get_description() { return $this->description; }
+}
+
 function wc_get_product() { return new WC_Product(); }
 
 class WC_Cart {
 	private $items;
-	public function __construct( $items ) { $this->items = $items; }
+	private $applied;
+	public function __construct( $items, $applied = array() ) { $this->items = $items; $this->applied = $applied; }
 	public function get_cart() { return $this->items; }
+	public function get_applied_coupons() { return $this->applied; }
 }
 
 function WC() { global $pepselect_test_wc; return $pepselect_test_wc; }
@@ -76,6 +88,8 @@ $rule = PepSelect_Sitewide_Discount::sanitize_rule(
 		'id' => 'Launch Sale', 'enabled' => true, 'discount_type' => 'percent', 'discount_amount' => 20,
 		'threshold_type' => 'none', 'threshold_amount' => 999, 'audience' => 'everyone',
 		'excluded_product_ids' => array( '99', '99', '0' ), 'stackable' => '0', 'label' => 'Summer Compound Savings Now',
+		'allowed_coupon_sources' => array( 'cart_recovery', 'unknown' ), 'allowed_coupon_codes' => "WELCOME10\nPARTNER-*",
+		'override_coupon_codes' => "LABORDAY40\nVIP40*",
 		'sale_label_color' => '#aa1100', 'regular_price_color' => 'bad', 'sale_price_color' => '#123ABC',
 	)
 );
@@ -87,6 +101,12 @@ pepselect_assert( 24 === strlen( $rule['label'] ), 'sitewide labels are capped a
 pepselect_assert( '#AA1100' === $rule['sale_label_color'], 'sale label color is normalized' );
 pepselect_assert( '#667786' === $rule['regular_price_color'], 'invalid regular price color uses the safe default' );
 pepselect_assert( '#123ABC' === $rule['sale_price_color'], 'sale price color is normalized' );
+pepselect_assert( array( 'cart_recovery' ) === $rule['allowed_coupon_sources'], 'only supported coupon sources are retained' );
+pepselect_assert( array( 'WELCOME10', 'PARTNER-*' ) === $rule['allowed_coupon_codes'], 'allowed exact codes and prefixes are normalized' );
+pepselect_assert( array( 'LABORDAY40', 'VIP40' ) === $rule['override_coupon_codes'], 'replacement codes cannot use broad wildcard matching' );
+pepselect_assert( PepSelect_Sitewide_Discount::coupon_is_allowed( new WC_Coupon( 'partner-123' ), $rule ), 'allowed coupon prefixes match generated Woo codes' );
+pepselect_assert( PepSelect_Sitewide_Discount::coupon_is_allowed( new WC_Coupon( 'private', array( '_pepselect_exit_offer' => 1 ) ), $rule ), 'cart recovery coupon metadata matches its allowed source' );
+pepselect_assert( PepSelect_Sitewide_Discount::coupon_is_override( new WC_Coupon( 'laborday40' ), $rule ), 'replacement code matches case-insensitively' );
 
 $cart = new WC_Cart(
 	array(
@@ -101,6 +121,8 @@ pepselect_assert( 20.0 === PepSelect_Sitewide_Discount::estimated_discount_amoun
 $rule['threshold_type'] = 'subtotal';
 $rule['threshold_amount'] = '101';
 pepselect_assert( ! PepSelect_Sitewide_Discount::cart_qualifies( $cart, $rule ), 'order subtotal minimum omits excluded catalog items' );
+$pepselect_test_options[ PepSelect_Sitewide_Discount::OPTION ] = array( 'rules' => array( $rule ) );
+pepselect_assert( $rule['id'] === PepSelect_Sitewide_Discount::active_takeover_rule( $cart )['id'], 'active takeover still blocks other promotions below its minimum' );
 
 $rule['threshold_type'] = 'none';
 $rule['audience'] = 'subscribers';
@@ -115,7 +137,7 @@ pepselect_assert( PepSelect_Sitewide_Discount::cart_qualifies( $cart, $rule ), '
 
 $pepselect_test_options[ PepSelect_Sitewide_Discount::OPTION ] = array( 'rules' => array( $rule ) );
 $coupon = PepSelect_Sitewide_Discount::provide_virtual_coupon( false, $rule['label'] );
-pepselect_assert( true === $coupon['individual_use'], 'exclusive sitewide coupon blocks stacking' );
+pepselect_assert( false === $coupon['individual_use'], 'the shared coordinator owns sitewide coupon priority' );
 pepselect_assert( array( 11 ) === $coupon['product_ids'], 'coupon omits excluded products currently in cart' );
 
 $display_rule = PepSelect_Sitewide_Discount::sanitize_rule(
@@ -140,5 +162,12 @@ pepselect_assert( '$79.99' === PepSelect_Sitewide_Discount::price_html( '$79.99'
 
 $pepselect_ineligible_products[] = 11;
 pepselect_assert( '$79.99' === PepSelect_Sitewide_Discount::price_html( '$79.99', new WC_Product( 11, 79.99 ) ), 'Ops eligibility filter can exclude a product' );
+
+$pepselect_ineligible_products = array();
+$display_rule['excluded_product_ids'] = array();
+$display_rule['override_coupon_codes'] = array( 'LABORDAY40' );
+$pepselect_test_options[ PepSelect_Sitewide_Discount::OPTION ] = array( 'rules' => array( $display_rule ) );
+$pepselect_test_wc = (object) array( 'cart' => new WC_Cart( array(), array( 'laborday40' ) ) );
+pepselect_assert( '$79.99' === PepSelect_Sitewide_Discount::price_html( '$79.99', new WC_Product( 11, 79.99 ) ), 'replacement coupon suppresses the outdated sitewide storefront price treatment' );
 
 fwrite( STDOUT, "Pep Select sitewide discount behavior checks passed.\n" );
