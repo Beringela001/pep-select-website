@@ -2,7 +2,7 @@
 Contributors: pepselect
 Requires at least: 6.5
 Requires PHP: 7.4
-Stable tag: 0.5.1
+Stable tag: 0.5.2
 License: Proprietary
 
 Native Pep Select exit offer and Cart Abandonment Recovery integration.
@@ -56,6 +56,7 @@ Native Pep Select exit offer and Cart Abandonment Recovery integration.
 * Fills the browser's remaining first view below the menu and resizes automatically when the browser changes.
 * Provides Fill screen and Show full image modes; Fill screen avoids empty space while Show full image avoids cropping.
 * Keeps the Campaign Cover Banner disabled by default and limits it to the landing page and saved campaign window.
+* Makes the entire Campaign Cover Banner clickable when an optional destination is saved; a blank destination keeps it non-clickable.
 
 0.4.12 adds the complete generated-coupon controls to the Exit Popup editor, makes generated codes non-stackable by default, removes the separate 5% bonus, and makes the final saved-cart email reuse or create one private recovery code.
 
@@ -66,3 +67,5 @@ Native Pep Select exit offer and Cart Abandonment Recovery integration.
 0.5.0 adds the Campaign Cover Banner menu, scheduled landing-page placement, responsive desktop/mobile media, optional editable copy, focal-point cropping, and a live placement preview.
 
 0.5.1 makes the Campaign Cover Banner fill the browser's first landing-page view below the menu, resize without reload, and support both Fill screen and Show full image display modes.
+
+0.5.2 adds an optional Campaign Cover Banner destination, full-banner click behavior, an admin preview indicator, and keyboard-visible focus styling.

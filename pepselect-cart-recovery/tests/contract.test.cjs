@@ -45,6 +45,7 @@ const mockup = fs.readFileSync(path.join(root, '..', 'mockups', 'cart-recovery',
   "'cover_banner_desktop_image' => ''",
   "'cover_banner_mobile_image'  => ''",
   "'cover_banner_display_mode'  => 'cover'",
+  "'cover_banner_url'           => ''",
   'require_recovery_code_for_final_email',
   "'_pepselect_exit_offer_signature'",
   "'{{pepselect.recovery_coupon_code}}'",
@@ -88,7 +89,7 @@ const mockup = fs.readFileSync(path.join(root, '..', 'mockups', 'cart-recovery',
   'max-height:calc(100vh - 36px)'
 ].forEach((needle) => assert(css.includes(needle), `Missing centered modal contract: ${needle}`));
 
-assert(php.includes("const VERSION                     = '0.5.1'"), 'Plugin version must be 0.5.1');
+assert(php.includes("const VERSION                     = '0.5.2'"), 'Plugin version must be 0.5.2');
 assert(php.includes("const RECOVERY_COPY_VERSION       = '3'"), 'Saved-cart database copy migration must be versioned');
 assert(php.includes("'email_subject' => 'Want another look?'"), 'The 90-minute subject must use the approved copy');
 assert(php.includes("'email_subject' => 'Need a hand?'"), 'The 24-hour subject must use the approved copy');
@@ -156,6 +157,13 @@ assert(coverJs.includes("window.addEventListener('resize'"), 'The banner must re
 assert(adminJs.includes("value('cover_banner_display_mode') === 'contain'"), 'The admin preview must show the selected image-fit behavior');
 assert(php.includes('Fill screen (recommended)'), 'The editor must expose the fill-screen mode');
 assert(php.includes('Show full image'), 'The editor must expose the full-image mode');
+assert(php.includes("$output['cover_banner_url'] = esc_url_raw"), 'The banner destination must be sanitized before storage');
+assert(php.includes("'cover_banner_url', __( 'Banner destination'"), 'The editor must expose the banner destination');
+assert(php.includes('href="<?php echo esc_url( $destination ); ?>"'), 'The public banner link must escape its destination');
+assert(php.includes("$root_class .= ' is-clickable'"), 'Only banners with a destination may use clickable styling');
+assert(adminJs.includes("value('cover_banner_url')"), 'The admin preview must reflect the saved banner destination');
+assert(adminCoverCss.includes('.pep-cover-preview__link-state'), 'The admin preview must identify a clickable banner');
+assert(coverCss.includes('.pep-campaign-cover.is-clickable:focus-visible'), 'The banner link must have a visible keyboard focus state');
 assert(php.includes('data-pep-preview-screen="email"'), 'The Exit Popup editor must render the email preview');
 assert(php.includes('data-pep-preview-bind="email_subject"'), 'The email preview must live-update its subject');
 assert(php.includes('data-pep-preview-bind="email_code_note"'), 'The email preview must live-update coupon instructions');

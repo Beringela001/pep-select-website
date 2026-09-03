@@ -10,6 +10,23 @@
 	width: 100%;
 }
 
+.pep-campaign-cover.is-clickable {
+	color: var(--pep-cover-text, #fff);
+	cursor: pointer;
+	text-decoration: none;
+}
+
+.pep-campaign-cover.is-clickable:hover,
+.pep-campaign-cover.is-clickable:focus {
+	color: var(--pep-cover-text, #fff);
+	text-decoration: none;
+}
+
+.pep-campaign-cover.is-clickable:focus-visible {
+	outline: 4px solid #17a1cf;
+	outline-offset: -4px;
+}
+
 .pep-campaign-cover__media,
 .pep-campaign-cover__media img,
 .pep-campaign-cover__overlay {

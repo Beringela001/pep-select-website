@@ -70,6 +70,24 @@
 	z-index: 2;
 }
 
+.pep-cover-preview__link-state {
+	background: rgba(255, 255, 255, .94);
+	border-radius: 999px;
+	bottom: 14px;
+	box-shadow: 0 4px 14px rgba(0, 29, 58, .16);
+	color: #002a53;
+	font: 700 10px/1.35 "IBM Plex Mono", monospace;
+	left: 50%;
+	max-width: calc(100% - 28px);
+	overflow: hidden;
+	padding: 8px 12px;
+	position: absolute;
+	text-overflow: ellipsis;
+	transform: translateX(-50%);
+	white-space: nowrap;
+	z-index: 3;
+}
+
 .pep-cover-preview__copy small {
 	font: 700 9px/1.3 "IBM Plex Mono", monospace;
 	letter-spacing: .14em;

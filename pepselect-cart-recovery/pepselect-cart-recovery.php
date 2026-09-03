@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Pep Select Cart Recovery
  * Description: Lightweight exit offer, unique coupons, and Cart Abandonment Recovery integration for Pep Select.
- * Version: 0.5.1
+ * Version: 0.5.2
  * Author: Pep Select
  * Text Domain: pepselect-cart-recovery
  */
@@ -10,7 +10,7 @@
 defined( 'ABSPATH' ) || exit;
 
 final class PepSelect_Cart_Recovery {
-	const VERSION                     = '0.5.1';
+	const VERSION                     = '0.5.2';
 	const OPTION                      = 'pepselect_cart_recovery_settings';
 	const VERSION_OPTION              = 'pepselect_cart_recovery_version';
 	const RECOVERY_COPY_OPTION        = 'pepselect_cart_recovery_copy_version';
@@ -154,6 +154,7 @@ final class PepSelect_Cart_Recovery {
 			'cover_banner_desktop_image' => '',
 			'cover_banner_mobile_image'  => '',
 			'cover_banner_display_mode'  => 'cover',
+			'cover_banner_url'           => '',
 			'cover_banner_alt'           => '',
 			'cover_banner_eyebrow'       => 'Current campaign',
 			'cover_banner_heading'       => '',
@@ -495,6 +496,7 @@ HTML;
 
 		$desktop_image = esc_url( $settings['cover_banner_desktop_image'] );
 		$mobile_image  = esc_url( $settings['cover_banner_mobile_image'] );
+		$destination   = esc_url( $settings['cover_banner_url'] );
 		$primary_image = $desktop_image ? $desktop_image : $mobile_image;
 		$has_copy      = trim( $settings['cover_banner_eyebrow'] . $settings['cover_banner_heading'] . $settings['cover_banner_body'] );
 		if ( ! $primary_image && ! $has_copy ) {
@@ -512,8 +514,17 @@ HTML;
 			absint( $settings['cover_banner_focal_x'] ),
 			absint( $settings['cover_banner_focal_y'] )
 		);
+		$banner_label = $settings['cover_banner_alt'] ?: ( $settings['cover_banner_heading'] ?: __( 'Current Pep Select campaign', 'pepselect-cart-recovery' ) );
+		$root_class   = 'pep-campaign-cover' . ( $has_copy ? ' has-copy' : ' is-image-only' ) . ( 'contain' === $settings['cover_banner_display_mode'] ? ' is-fit-contain' : ' is-fit-cover' );
+		if ( $destination ) {
+			$root_class .= ' is-clickable';
+		}
 		?>
-		<section class="pep-campaign-cover<?php echo $has_copy ? ' has-copy' : ' is-image-only'; ?><?php echo 'contain' === $settings['cover_banner_display_mode'] ? ' is-fit-contain' : ' is-fit-cover'; ?>" data-pep-campaign-cover data-display-mode="<?php echo esc_attr( $settings['cover_banner_display_mode'] ); ?>" style="<?php echo esc_attr( $style ); ?>" aria-label="<?php echo esc_attr( $settings['cover_banner_alt'] ?: __( 'Current Pep Select campaign', 'pepselect-cart-recovery' ) ); ?>">
+		<?php if ( $destination ) : ?>
+		<a class="<?php echo esc_attr( $root_class ); ?>" href="<?php echo esc_url( $destination ); ?>" data-pep-campaign-cover data-display-mode="<?php echo esc_attr( $settings['cover_banner_display_mode'] ); ?>" style="<?php echo esc_attr( $style ); ?>" aria-label="<?php echo esc_attr( $banner_label ); ?>">
+		<?php else : ?>
+		<section class="<?php echo esc_attr( $root_class ); ?>" data-pep-campaign-cover data-display-mode="<?php echo esc_attr( $settings['cover_banner_display_mode'] ); ?>" style="<?php echo esc_attr( $style ); ?>" aria-label="<?php echo esc_attr( $banner_label ); ?>">
+		<?php endif; ?>
 			<?php if ( $primary_image ) : ?>
 			<picture class="pep-campaign-cover__media" aria-hidden="true">
 				<?php if ( $mobile_image ) : ?><source media="(max-width: 767px)" srcset="<?php echo esc_attr( $mobile_srcset ?: $mobile_image ); ?>" sizes="100vw"><?php endif; ?>
@@ -526,7 +537,7 @@ HTML;
 				<?php if ( $settings['cover_banner_heading'] ) : ?><h2><?php echo esc_html( $settings['cover_banner_heading'] ); ?></h2><?php endif; ?>
 				<?php if ( $settings['cover_banner_body'] ) : ?><p class="pep-campaign-cover__body"><?php echo esc_html( $settings['cover_banner_body'] ); ?></p><?php endif; ?>
 			</div><?php endif; ?>
-		</section>
+		<?php if ( $destination ) : ?></a><?php else : ?></section><?php endif; ?>
 		<?php
 	}
 
@@ -1202,6 +1213,7 @@ HTML;
 		}
 
 		$output['promo_url'] = esc_url_raw( $input['promo_url'] ?? $defaults['promo_url'] );
+		$output['cover_banner_url'] = esc_url_raw( $input['cover_banner_url'] ?? $defaults['cover_banner_url'] );
 		foreach ( array( 'exit_card_image', 'promo_card_image', 'cover_banner_desktop_image', 'cover_banner_mobile_image' ) as $key ) {
 			$output[ $key ] = esc_url_raw( $input[ $key ] ?? '' );
 		}
@@ -1444,6 +1456,7 @@ HTML;
 				<section class="pep-cover-preview__banner">
 					<img data-pep-cover-preview-image alt="" <?php if ( ! $settings['cover_banner_desktop_image'] ) : ?>hidden<?php endif; ?> src="<?php echo esc_url( $settings['cover_banner_desktop_image'] ); ?>">
 					<div class="pep-cover-preview__overlay"></div>
+					<span class="pep-cover-preview__link-state" data-pep-cover-preview-link data-label="<?php esc_attr_e( 'Clickable banner · Opens', 'pepselect-cart-recovery' ); ?>" <?php if ( ! $settings['cover_banner_url'] ) : ?>hidden<?php endif; ?>><?php echo esc_html( sprintf( __( 'Clickable banner · Opens %s', 'pepselect-cart-recovery' ), $settings['cover_banner_url'] ) ); ?></span>
 					<div class="pep-cover-preview__copy">
 						<small data-pep-preview-bind="cover_banner_eyebrow"><?php echo esc_html( $settings['cover_banner_eyebrow'] ); ?></small>
 						<h3 data-pep-preview-bind="cover_banner_heading"><?php echo esc_html( $settings['cover_banner_heading'] ); ?></h3>
@@ -1543,13 +1556,14 @@ HTML;
 
 				<div class="pep-recovery-panel" id="pep-panel-cover-banner" role="tabpanel" aria-labelledby="pep-tab-cover-banner" data-pep-panel="cover_banner" hidden>
 					<div class="pep-recovery-layout"><div class="pep-recovery-editor">
-						<section class="pep-recovery-card pep-recovery-intro"><div><span class="pep-recovery-kicker"><?php esc_html_e( 'Campaign Cover Banner', 'pepselect-cart-recovery' ); ?></span><h2><?php esc_html_e( 'Make the campaign the landing page’s first screen.', 'pepselect-cart-recovery' ); ?></h2><p><?php esc_html_e( 'The menu stays at the top. The campaign fills the rest of the visitor’s first view, and the existing homepage cover begins after they scroll. There are no banner buttons.', 'pepselect-cart-recovery' ); ?></p></div><label class="pep-recovery-switch"><input name="<?php echo esc_attr( self::OPTION ); ?>[cover_banner_enabled]" data-pep-setting="cover_banner_enabled" type="checkbox" value="1" <?php checked( $settings['cover_banner_enabled'], 1 ); ?>><span></span><b><?php esc_html_e( 'Campaign cover banner enabled', 'pepselect-cart-recovery' ); ?></b></label></section>
+						<section class="pep-recovery-card pep-recovery-intro"><div><span class="pep-recovery-kicker"><?php esc_html_e( 'Campaign Cover Banner', 'pepselect-cart-recovery' ); ?></span><h2><?php esc_html_e( 'Make the campaign the landing page’s first screen.', 'pepselect-cart-recovery' ); ?></h2><p><?php esc_html_e( 'The menu stays at the top. The campaign fills the rest of the visitor’s first view, and the existing homepage cover begins after they scroll. Add a destination to make the entire banner clickable.', 'pepselect-cart-recovery' ); ?></p></div><label class="pep-recovery-switch"><input name="<?php echo esc_attr( self::OPTION ); ?>[cover_banner_enabled]" data-pep-setting="cover_banner_enabled" type="checkbox" value="1" <?php checked( $settings['cover_banner_enabled'], 1 ); ?>><span></span><b><?php esc_html_e( 'Campaign cover banner enabled', 'pepselect-cart-recovery' ); ?></b></label></section>
 						<section class="pep-recovery-card"><h2><?php esc_html_e( 'Schedule', 'pepselect-cart-recovery' ); ?></h2><p class="description"><?php printf( esc_html__( 'Times use the website timezone: %s. The banner switches itself on and off.', 'pepselect-cart-recovery' ), esc_html( wp_timezone_string() ) ); ?></p><div class="pep-recovery-grid">
 							<?php $this->admin_field( $settings, 'cover_banner_start', __( 'Start showing', 'pepselect-cart-recovery' ), __( 'The first date and time the banner can appear.', 'pepselect-cart-recovery' ), 'datetime-local' ); ?>
 							<?php $this->admin_field( $settings, 'cover_banner_end', __( 'Stop showing', 'pepselect-cart-recovery' ), __( 'The banner disappears automatically at this date and time.', 'pepselect-cart-recovery' ), 'datetime-local' ); ?>
 						</div></section>
 						<section class="pep-recovery-card"><h2><?php esc_html_e( 'Desktop and mobile images', 'pepselect-cart-recovery' ); ?></h2><div class="pep-recovery-image-guidance"><div><b><?php esc_html_e( 'Desktop master', 'pepselect-cart-recovery' ); ?></b><span>1920 × 1080 px</span></div><div><b><?php esc_html_e( 'Mobile master', 'pepselect-cart-recovery' ); ?></b><span>1080 × 1920 px</span></div><div><b><?php esc_html_e( 'Responsive files', 'pepselect-cart-recovery' ); ?></b><span><?php esc_html_e( 'WordPress creates and serves smaller files automatically.', 'pepselect-cart-recovery' ); ?></span></div></div><div class="pep-recovery-grid">
 							<div class="pep-recovery-field"><label for="pep-cover-banner-display-mode"><?php esc_html_e( 'Display mode', 'pepselect-cart-recovery' ); ?></label><select id="pep-cover-banner-display-mode" name="<?php echo esc_attr( self::OPTION ); ?>[cover_banner_display_mode]" data-pep-setting="cover_banner_display_mode"><option value="cover" <?php selected( $settings['cover_banner_display_mode'], 'cover' ); ?>><?php esc_html_e( 'Fill screen (recommended)', 'pepselect-cart-recovery' ); ?></option><option value="contain" <?php selected( $settings['cover_banner_display_mode'], 'contain' ); ?>><?php esc_html_e( 'Show full image', 'pepselect-cart-recovery' ); ?></option></select><p class="description"><?php esc_html_e( 'Fill screen crops only what cannot fit. Show full image keeps every edge but may leave background space.', 'pepselect-cart-recovery' ); ?></p></div>
+							<?php $this->admin_field( $settings, 'cover_banner_url', __( 'Banner destination', 'pepselect-cart-recovery' ), __( 'Makes the entire banner clickable. Leave blank for no link. Use a website path such as /shop/ or a full URL.', 'pepselect-cart-recovery' ) ); ?>
 							<?php $this->admin_field( $settings, 'cover_banner_desktop_image', __( 'Desktop banner image', 'pepselect-cart-recovery' ), __( 'Recommended size: 1920 × 1080 px. Upload the largest clean version.', 'pepselect-cart-recovery' ), 'image' ); ?>
 							<?php $this->admin_field( $settings, 'cover_banner_mobile_image', __( 'Mobile banner image', 'pepselect-cart-recovery' ), __( 'Recommended size: 1080 × 1920 px. Without it, the desktop image is fitted around the focal point.', 'pepselect-cart-recovery' ), 'image' ); ?>
 							<?php $this->admin_field( $settings, 'cover_banner_alt', __( 'Image description', 'pepselect-cart-recovery' ), __( 'Describe meaningful artwork. Leave blank when the image is decorative and the editable text conveys the promotion.', 'pepselect-cart-recovery' ) ); ?>
