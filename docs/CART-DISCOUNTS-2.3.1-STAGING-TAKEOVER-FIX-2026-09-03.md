@@ -28,4 +28,10 @@ Sitewide REST schema is version 3. `allowed_automatic_discounts` accepts `bogo` 
 - `dist/pepselect-bogo-quantity-2.3.1.zip`
 - SHA-256: `D25E9B4432335661E96BFCFB85909A99BC9C398E729CDB5A4AEBC0FA0BBFD974`
 
-Live was not changed.
+## Live deployment
+
+- Deployed the same verified 2.3.1 ZIP to live on September 3, 2026 and cleared all Kinsta/WordPress caches.
+- Created the manual rollback backup `Before Cart Discounts 2.3.1 live - 2026-09-03` before replacing the plugin.
+- Preserved the existing live promotion state: Buy 4 Get 1 active, Compound Discounts off, Sitewide Discounts off, and `LABORDAY20` inactive.
+- No campaign or discount rule was activated, deactivated, edited, or saved during deployment.
+- Live smoke check confirmed regular prices remain unchanged, the eligible GLP product still shows the Buy 4 Get 1 pill, the side cart loads, and the free-shipping threshold remains visible.
