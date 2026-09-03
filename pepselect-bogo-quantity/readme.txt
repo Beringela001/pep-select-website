@@ -1,7 +1,13 @@
 === Pep Select Cart Discounts ===
-Version: 2.2.0
+Version: 2.3.1
 
 Single-source BOGO, compound, and sitewide automatic discount management.
+
+2.3.1 makes every active sitewide promotion an exclusive cart takeover. Buy 4
+Get 1, compound rules, and WooCommerce coupons disappear unless that specific
+automatic discount, coupon source, or coupon code is explicitly allowed on the
+sitewide rule. Shipping methods remain independent, so free shipping over $200
+continues to work.
 
 * Cart and product quantity inputs always keep the exact number selected.
 * The plugin discounts one vial at quantity 5, two at 10, and so on.

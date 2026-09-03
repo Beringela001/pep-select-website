@@ -131,8 +131,11 @@ final class PepSelect_BOGO_Rule {
 	 */
 	public static function product_page_is_eligible( $detected, $product ) {
 		unset( $detected );
+		$takeover_blocks_bogo = class_exists( 'PepSelect_Sitewide_Discount' )
+			&& PepSelect_Sitewide_Discount::takeover_enabled_for_customer()
+			&& ! PepSelect_Sitewide_Discount::takeover_allows_automatic( 'bogo' );
 		return $product instanceof WC_Product
-			&& ( ! class_exists( 'PepSelect_Sitewide_Discount' ) || ! PepSelect_Sitewide_Discount::takeover_enabled_for_customer() )
+			&& ! $takeover_blocks_bogo
 			&& self::is_product_eligible( $product->get_id() );
 	}
 

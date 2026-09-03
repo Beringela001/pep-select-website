@@ -62,6 +62,16 @@ class WC_Coupon {
 	public function get_description() { return $this->description; }
 }
 
+class PepSelect_BOGO_Rule {
+	const COUPON_CODE = 'Buy 4 Get 1 Free';
+}
+
+$pepselect_test_compound_rules = array( array( 'id' => 'duo', 'label' => 'GHK NAD Duo' ) );
+class PepSelect_Compound_Discount {
+	public static function get_state() { global $pepselect_test_compound_rules; return array( 'rules' => $pepselect_test_compound_rules ); }
+	public static function coupon_code_for_rule( $rule ) { return $rule['label']; }
+}
+
 function wc_get_product() { return new WC_Product(); }
 
 class WC_Cart {
@@ -88,6 +98,7 @@ $rule = PepSelect_Sitewide_Discount::sanitize_rule(
 		'id' => 'Launch Sale', 'enabled' => true, 'discount_type' => 'percent', 'discount_amount' => 20,
 		'threshold_type' => 'none', 'threshold_amount' => 999, 'audience' => 'everyone',
 		'excluded_product_ids' => array( '99', '99', '0' ), 'stackable' => '0', 'label' => 'Summer Compound Savings Now',
+		'allowed_automatic_discounts' => array( 'bogo', 'compound:duo', 'unknown', 'compound:bad value' ),
 		'allowed_coupon_sources' => array( 'cart_recovery', 'unknown' ), 'allowed_coupon_codes' => "WELCOME10\nPARTNER-*",
 		'override_coupon_codes' => "LABORDAY40\nVIP40*",
 		'sale_label_color' => '#aa1100', 'regular_price_color' => 'bad', 'sale_price_color' => '#123ABC',
@@ -96,6 +107,7 @@ $rule = PepSelect_Sitewide_Discount::sanitize_rule(
 pepselect_assert( 'launchsale' === $rule['id'], 'sitewide rule IDs are normalized' );
 pepselect_assert( '0' === $rule['threshold_amount'], 'no-minimum rules ignore a supplied amount' );
 pepselect_assert( false === $rule['stackable'], 'sitewide rules can be exclusive' );
+pepselect_assert( array( 'bogo', 'compound:duo' ) === $rule['allowed_automatic_discounts'], 'only valid automatic-discount exception IDs are retained' );
 pepselect_assert( array( 99 ) === $rule['excluded_product_ids'], 'sitewide exclusions are normalized and deduplicated' );
 pepselect_assert( 24 === strlen( $rule['label'] ), 'sitewide labels are capped at 24 characters' );
 pepselect_assert( '#AA1100' === $rule['sale_label_color'], 'sale label color is normalized' );
@@ -107,6 +119,8 @@ pepselect_assert( array( 'LABORDAY40', 'VIP40' ) === $rule['override_coupon_code
 pepselect_assert( PepSelect_Sitewide_Discount::coupon_is_allowed( new WC_Coupon( 'partner-123' ), $rule ), 'allowed coupon prefixes match generated Woo codes' );
 pepselect_assert( PepSelect_Sitewide_Discount::coupon_is_allowed( new WC_Coupon( 'private', array( '_pepselect_exit_offer' => 1 ) ), $rule ), 'cart recovery coupon metadata matches its allowed source' );
 pepselect_assert( PepSelect_Sitewide_Discount::coupon_is_override( new WC_Coupon( 'laborday40' ), $rule ), 'replacement code matches case-insensitively' );
+pepselect_assert( PepSelect_Sitewide_Discount::coupon_is_allowed( new WC_Coupon( 'Buy 4 Get 1 Free' ), $rule ), 'BOGO can stack only when its automatic exception is selected' );
+pepselect_assert( PepSelect_Sitewide_Discount::coupon_is_allowed( new WC_Coupon( 'GHK NAD Duo' ), $rule ), 'a selected compound rule can stack during takeover' );
 
 $cart = new WC_Cart(
 	array(
@@ -146,6 +160,13 @@ $display_rule = PepSelect_Sitewide_Discount::sanitize_rule(
 		'threshold_type' => 'none', 'audience' => 'everyone', 'stackable' => true, 'label' => '20% off',
 	)
 );
+pepselect_assert( false === $display_rule['stackable'], 'legacy allow-everything sitewide rules migrate to exclusive takeover' );
+$pepselect_test_options[ PepSelect_Sitewide_Discount::OPTION ] = array( 'rules' => array( $display_rule ) );
+pepselect_assert( PepSelect_Sitewide_Discount::takeover_enabled_for_customer(), 'every active sitewide rule owns discount priority' );
+pepselect_assert( ! PepSelect_Sitewide_Discount::takeover_allows_automatic( 'bogo' ), 'automatic discounts are blocked by default' );
+$display_rule['allowed_automatic_discounts'] = array( 'bogo' );
+$pepselect_test_options[ PepSelect_Sitewide_Discount::OPTION ] = array( 'rules' => array( $display_rule ) );
+pepselect_assert( PepSelect_Sitewide_Discount::takeover_allows_automatic( 'bogo' ), 'BOGO is available only after an explicit exception' );
 $pepselect_test_options[ PepSelect_Sitewide_Discount::OPTION ] = array( 'rules' => array( $display_rule ) );
 $price_html = PepSelect_Sitewide_Discount::price_html( '$79.99', new WC_Product( 11, 79.99 ) );
 pepselect_assert( false !== strpos( $price_html, '<del aria-hidden="true">$79.99</del>' ), 'storefront price crosses out the original price' );

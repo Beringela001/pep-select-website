@@ -92,7 +92,11 @@ final class PepSelect_Discount_Stacking {
 				continue;
 			}
 			if ( self::code_in_list( $code, $managed ) && ! self::code_in_list( $code, array( $sitewide_code ) ) ) {
-				$cart->remove_coupon( $code );
+				$candidate = self::candidate_for_code( $code, $candidates );
+				$coupon    = self::coupon( $code );
+				if ( ! $candidate || empty( $candidate['qualifies'] ) || ! $coupon || ! PepSelect_Sitewide_Discount::coupon_is_allowed( $coupon, $rule ) ) {
+					$cart->remove_coupon( $code );
+				}
 				continue;
 			}
 			if ( ! self::code_in_list( $code, array( $sitewide_code ) ) ) {
@@ -104,6 +108,16 @@ final class PepSelect_Discount_Stacking {
 		}
 		if ( $sitewide_qualifies && ! $cart->has_discount( $sitewide_code ) ) {
 			self::apply_silently( $cart, $sitewide_code );
+		}
+		foreach ( $candidates as $candidate ) {
+			$code = $candidate['code'] ?? '';
+			if ( ! $code || empty( $candidate['qualifies'] ) || self::code_in_list( $code, array( $sitewide_code ) ) || $cart->has_discount( $code ) ) {
+				continue;
+			}
+			$coupon = self::coupon( $code );
+			if ( $coupon && PepSelect_Sitewide_Discount::coupon_is_allowed( $coupon, $rule ) ) {
+				self::apply_silently( $cart, $code );
+			}
 		}
 	}
 
@@ -204,5 +218,15 @@ final class PepSelect_Discount_Stacking {
 			}
 		}
 		return false;
+	}
+
+	/** Find one plugin-owned candidate by its normalized coupon code. */
+	private static function candidate_for_code( $code, $candidates ) {
+		foreach ( $candidates as $candidate ) {
+			if ( self::code_in_list( $code, array( $candidate['code'] ?? '' ) ) ) {
+				return $candidate;
+			}
+		}
+		return null;
 	}
 }

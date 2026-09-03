@@ -70,6 +70,13 @@ $pepselect_test_wc = (object) array( 'cart' => $cart );
 PepSelect_Discount_Stacking::sync( $cart );
 pepselect_assert( array( 'military10', 'site30' ) === $cart->applied, 'takeover keeps only its sitewide coupon and explicitly allowed Woo coupons' );
 
+$pepselect_takeover_rule['allowed'][] = 'bogo';
+PepSelect_Discount_Stacking::sync( $cart );
+pepselect_assert( array( 'military10', 'site30', 'bogo' ) === $cart->applied, 'an explicitly allowed automatic BOGO coupon is restored during takeover' );
+$pepselect_takeover_rule['allowed'] = array( 'military10' );
+PepSelect_Discount_Stacking::sync( $cart );
+pepselect_assert( array( 'military10', 'site30' ) === $cart->applied, 'removing the BOGO exception removes its coupon again' );
+
 $cart->applied[] = 'laborday40';
 PepSelect_Discount_Stacking::sync( $cart );
 pepselect_assert( array( 'laborday40' ) === $cart->applied, 'replacement code removes the sitewide coupon and every other discount' );
