@@ -86,5 +86,6 @@ Deployed September 4, 2026 to `stg-pepselect-staging.kinsta.cloud`:
 - Confirmed fail-closed behavior in a fresh anonymous browser: the 7,512-byte first-party `tracking.js` loaded, while no GA4, Meta, or Clarity request was made without consent.
 - Confirmed the mobile shop and cart rendered, empty-cart checkout still redirected to the cart, and the browser reported no console errors.
 - Three-run public response-time medians improved from 1.623 s to 1.385 s on the home page and from 1.540 s to 1.450 s on the shop page. This is not a Core Web Vitals replacement, but it shows no material server-response regression from activation.
+- One successful post-install PageSpeed/Lighthouse report scored mobile 92 (FCP 1.5 s, LCP 2.6 s, TBT 0 ms, CLS 0, Speed Index 5.1 s) and desktop 95 (FCP 0.3 s, LCP 0.6 s, TBT 0 ms, CLS 0.004, Speed Index 2.4 s). Google's API quota was exhausted and a UI repeat did not complete, so this is recorded as a useful sample rather than the required three-run release gate.
 
 Live promotion remains blocked. Site Health correctly reports that a CMP integration is missing and paid-order GA4 delivery is not configured. Site Kit is also disconnected on the cloned Staging URL. Complete release gates 1-7 above, including the synthetic BACS paid-order test and comparable post-install mobile PageSpeed runs, before deploying this plugin to Live.
