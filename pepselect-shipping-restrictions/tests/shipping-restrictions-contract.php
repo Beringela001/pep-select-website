@@ -133,6 +133,7 @@ $valid_google_response = array(
 				'administrativeArea' => 'LA',
 				'locality'           => 'Prairieville',
 				'postalCode'         => '70769-9997',
+				'addressLines'       => array( '15655 Airline Hwy' ),
 			),
 		),
 		'uspsData' => array( 'dpvConfirmation' => 'Y' ),
@@ -158,6 +159,28 @@ $mismatched_city = $prairieville_address;
 $mismatched_city['city'] = 'Oceanside';
 $verified = PepSelect_Shipping_Restrictions::google_validation_result( $valid_google_response, $mismatched_city );
 pepselect_shipping_assert( false === $verified['valid'], 'City and ZIP combination must match the verified address.' );
+
+$oceanside_google_response = $valid_google_response;
+$oceanside_google_response['result']['verdict']['hasReplacedComponents'] = true;
+$oceanside_google_response['result']['address']['postalAddress'] = array(
+	'regionCode'        => 'US',
+	'administrativeArea' => 'NY',
+	'locality'           => 'Oceanside',
+	'postalCode'         => '11572-1234',
+	'addressLines'       => array( '66 Homecrest Ct' ),
+);
+$oceanside_submitted = array(
+	'address_1' => '66 Homecrest Court',
+	'address_2' => '',
+	'city'      => 'Oceanside',
+	'state'     => 'NJ',
+	'postcode'  => '11572',
+	'country'   => 'US',
+);
+$verified = PepSelect_Shipping_Restrictions::google_validation_result( $oceanside_google_response, $oceanside_submitted );
+pepselect_shipping_assert( false === $verified['valid'], 'Oceanside 11572 with New Jersey selected must fail.' );
+pepselect_shipping_assert( 'NY' === $verified['suggested']['state'], 'The verified suggestion must replace New Jersey with New York.' );
+pepselect_shipping_assert( '66 Homecrest Ct' === $verified['suggested']['address_1'], 'The verified suggestion must include the confirmed street.' );
 
 $incomplete_response = $valid_google_response;
 $incomplete_response['result']['uspsData']['dpvConfirmation'] = 'N';

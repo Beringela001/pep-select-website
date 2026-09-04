@@ -19,3 +19,43 @@
 .pepselect-shipping-area-error[hidden] {
 	display: none !important;
 }
+
+.pepselect-address-verification {
+	width: 100%;
+	margin: 10px 0 0;
+	padding: 10px 12px;
+	border: 1px solid currentColor;
+	border-radius: var(--pep-radius-card-inner, 6px);
+	background: #fff;
+	font-family: "Plus Jakarta Sans", sans-serif;
+	font-size: 0.875rem;
+	font-weight: 600;
+	line-height: 1.45;
+}
+
+.pepselect-address-verification--checking,
+.pepselect-address-verification--pending {
+	color: var(--pep-color-text-muted, #52606d);
+}
+
+.pepselect-address-verification--valid {
+	color: var(--pep-color-success, #176b45);
+}
+
+.pepselect-address-verification--invalid {
+	color: var(--pep-color-error, #b42318);
+}
+
+.pepselect-address-verification__message {
+	margin: 0;
+}
+
+.pepselect-address-verification__apply.button {
+	margin-top: 10px;
+	border-color: currentColor;
+	color: inherit;
+}
+
+.pepselect-address-verification[hidden] {
+	display: none !important;
+}

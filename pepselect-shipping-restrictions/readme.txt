@@ -2,20 +2,32 @@
 Contributors: pepselect
 Requires at least: 6.5
 Requires PHP: 8.1
-Stable tag: 0.2.6
+Stable tag: 0.4.0
 License: Proprietary
 
 Validates destination addresses and applies destination-specific carrier rules.
 
 == Description ==
 
-Adds three safeguards:
+Adds checkout address and destination safeguards:
 
 * Allows the 50 U.S. states, Washington, D.C., and Puerto Rico.
 * Keeps Alaska and Puerto Rico shipping USPS-only.
-* Blocks mismatched Alaska and Hawaii ZIP/state combinations and Puerto Rico ZIP/country combinations.
+* Verifies complete delivery addresses through a server-side Google/USPS check.
+* Locks order submission until the current address is verified.
+* Offers a verified corrected address when the entered street, city, state, or ZIP differs.
 
 == Changelog ==
+
+= 0.4.0 =
+* Verify complete checkout addresses before order submission.
+* Show verified address suggestions without exposing the Google API key in the browser.
+* Disable Place Order whenever the active address is incomplete, changed, invalid, or still being checked.
+
+= 0.3.0 =
+* Add final server-side Google Address Validation with USPS deliverability confirmation.
+* Block incomplete street lines and city, state, and ZIP mismatches before creating an order.
+* Synchronize billing and shipping address fields atomically when they are the same.
 
 = 0.2.6 =
 * Preserve Puerto Rico in the State / Territory field after WooCommerce rebuilds the US state selector.
