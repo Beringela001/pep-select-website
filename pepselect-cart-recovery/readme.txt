@@ -2,7 +2,7 @@
 Contributors: pepselect
 Requires at least: 6.5
 Requires PHP: 7.4
-Stable tag: 0.5.2
+Stable tag: 0.6.0
 License: Proprietary
 
 Native Pep Select exit offer and Cart Abandonment Recovery integration.
@@ -47,6 +47,7 @@ Native Pep Select exit offer and Cart Abandonment Recovery integration.
 * Limits FluentCRM marketing delivery to one message per second to reduce recipient-provider deferrals.
 * Supports one scheduled promotional popup with site-timezone start/end controls and an automatic stop at the configured end time.
 * Supports a configurable delay after arrival, dismiss cooldown, destination, optional displayed promotion code, and independent visual settings.
+* Optionally turns the timed Campaign Popup into an email-capture offer that sends a private code through the existing protected coupon and email pipeline.
 * Suppresses the email-capture popup during an active scheduled promotion by default so visitors do not receive competing modal messages.
 * Provides separate Exit Popup and Campaign Popup administration tabs with desktop/mobile live previews and plain-language field guidance.
 * Provides an authenticated, capability-protected WordPress REST settings endpoint for future Control Ops integration.
@@ -69,3 +70,5 @@ Native Pep Select exit offer and Cart Abandonment Recovery integration.
 0.5.1 makes the Campaign Cover Banner fill the browser's first landing-page view below the menu, resize without reload, and support both Fill screen and Show full image display modes.
 
 0.5.2 adds an optional Campaign Cover Banner destination, full-banner click behavior, an admin preview indicator, and keyboard-visible focus styling.
+
+0.6.0 adds optional email capture to the scheduled Campaign Popup, including campaign-specific form and success copy, live preview switching, source tracking, and separate analytics events.

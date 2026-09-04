@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Pep Select Cart Recovery
  * Description: Lightweight exit offer, unique coupons, and Cart Abandonment Recovery integration for Pep Select.
- * Version: 0.5.2
+ * Version: 0.6.0
  * Author: Pep Select
  * Text Domain: pepselect-cart-recovery
  */
@@ -10,7 +10,7 @@
 defined( 'ABSPATH' ) || exit;
 
 final class PepSelect_Cart_Recovery {
-	const VERSION                     = '0.5.2';
+	const VERSION                     = '0.6.0';
 	const OPTION                      = 'pepselect_cart_recovery_settings';
 	const VERSION_OPTION              = 'pepselect_cart_recovery_version';
 	const RECOVERY_COPY_OPTION        = 'pepselect_cart_recovery_copy_version';
@@ -129,6 +129,7 @@ final class PepSelect_Cart_Recovery {
 			'promo_delay_seconds'       => 8,
 			'promo_dismiss_days'        => 7,
 			'promo_suppress_exit'       => 1,
+			'promo_capture_email'       => 0,
 			'promo_eyebrow'             => 'Limited-time promotion',
 			'promo_heading'             => 'Something special is happening.',
 			'promo_body'                => 'Take a look at the current Pep Select promotion while it is available.',
@@ -137,6 +138,12 @@ final class PepSelect_Cart_Recovery {
 			'promo_button'              => 'View the promotion',
 			'promo_url'                 => '/shop/',
 			'promo_fineprint'           => '',
+			'promo_placeholder'         => 'Email address',
+			'promo_submit'              => 'Email my {discount} code',
+			'promo_loading'             => 'Sending…',
+			'promo_capture_fineprint'   => 'Your code comes with occasional product and restock emails. Unsubscribe anytime.',
+			'promo_success'             => 'Check your inbox for your {discount} code.',
+			'promo_success_note'        => 'Use it at checkout with the same email address.',
 			'promo_overlay_color'       => '#001D3A',
 			'promo_overlay_opacity'     => '0.50',
 			'promo_card_color'          => '#FFFFFF',
@@ -465,6 +472,8 @@ HTML;
 					'delaySeconds' => min( 86400, max( 0, absint( $settings['promo_delay_seconds'] ) ) ),
 					'dismissDays'  => min( 365, max( 1, absint( $settings['promo_dismiss_days'] ) ) ),
 					'suppressExit' => ! empty( $settings['promo_suppress_exit'] ),
+					'captureEmail' => ! empty( $settings['promo_capture_email'] ),
+					'loadingText'  => $this->replace_tokens( $settings['promo_loading'], $settings ),
 					'campaignId'   => substr( hash( 'sha256', $settings['promo_start'] . '|' . $settings['promo_end'] . '|' . $settings['promo_heading'] ), 0, 16 ),
 				),
 			)
@@ -555,7 +564,7 @@ HTML;
 				<p class="pep-exit-offer__eyebrow"><?php echo esc_html( $this->replace_tokens( $settings['exit_eyebrow'], $settings ) ); ?></p>
 				<h2 id="pep-exit-title"><?php echo esc_html( $this->replace_tokens( $settings['exit_heading'], $settings ) ); ?></h2>
 				<div class="pep-exit-offer__copy" id="pep-exit-copy"><?php echo wp_kses_post( wpautop( $this->replace_tokens( $settings['exit_body'], $settings ) ) ); ?></div>
-				<form data-pep-exit-form novalidate>
+				<form data-pep-exit-form data-pep-capture-form="exit" novalidate>
 					<label class="screen-reader-text" for="pep-exit-email"><?php esc_html_e( 'Email address', 'pepselect-cart-recovery' ); ?></label>
 					<div class="pep-exit-offer__fields">
 						<input id="pep-exit-email" name="email" type="email" autocomplete="email" placeholder="<?php echo esc_attr( $this->replace_tokens( $settings['exit_placeholder'], $settings ) ); ?>" required>
@@ -563,9 +572,9 @@ HTML;
 					</div>
 					<input class="pep-exit-offer__trap" name="company" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">
 					<p class="pep-exit-offer__fineprint"><?php echo esc_html( $this->replace_tokens( $settings['exit_fineprint'], $settings ) ); ?></p>
-					<p class="pep-exit-offer__message" data-pep-exit-message role="status" aria-live="polite"></p>
+					<p class="pep-exit-offer__message" data-pep-exit-message data-pep-capture-message role="status" aria-live="polite"></p>
 				</form>
-				<div class="pep-exit-offer__success" data-pep-exit-success hidden>
+				<div class="pep-exit-offer__success" data-pep-exit-success data-pep-capture-success hidden>
 					<p><?php echo esc_html( $this->replace_tokens( $settings['exit_success'], $settings ) ); ?></p>
 					<p class="pep-exit-offer__fineprint"><?php echo esc_html( $this->replace_tokens( $settings['exit_success_note'], $settings ) ); ?></p>
 				</div>
@@ -581,14 +590,30 @@ HTML;
 				<button class="pep-exit-offer__veil" type="button" data-pep-popup-close aria-label="<?php esc_attr_e( 'Close promotion', 'pepselect-cart-recovery' ); ?>"></button>
 				<section class="pep-exit-offer__dialog" role="dialog" aria-modal="true" aria-labelledby="pep-promo-title" aria-describedby="pep-promo-copy">
 					<button class="pep-exit-offer__close" type="button" data-pep-popup-close aria-label="<?php esc_attr_e( 'Close promotion', 'pepselect-cart-recovery' ); ?>">&times;</button>
-					<p class="pep-exit-offer__eyebrow"><?php echo esc_html( $settings['promo_eyebrow'] ); ?></p>
-					<h2 id="pep-promo-title"><?php echo esc_html( $settings['promo_heading'] ); ?></h2>
-					<div class="pep-exit-offer__copy" id="pep-promo-copy"><?php echo wp_kses_post( wpautop( $settings['promo_body'] ) ); ?></div>
-					<?php if ( $settings['promo_code'] ) : ?>
+					<p class="pep-exit-offer__eyebrow"><?php echo esc_html( $this->replace_tokens( $settings['promo_eyebrow'], $settings ) ); ?></p>
+					<h2 id="pep-promo-title"><?php echo esc_html( $this->replace_tokens( $settings['promo_heading'], $settings ) ); ?></h2>
+					<div class="pep-exit-offer__copy" id="pep-promo-copy"><?php echo wp_kses_post( wpautop( $this->replace_tokens( $settings['promo_body'], $settings ) ) ); ?></div>
+					<?php if ( ! empty( $settings['promo_capture_email'] ) ) : ?>
+						<form data-pep-capture-form="promo" novalidate>
+							<label class="screen-reader-text" for="pep-promo-email"><?php esc_html_e( 'Email address', 'pepselect-cart-recovery' ); ?></label>
+							<div class="pep-exit-offer__fields">
+								<input id="pep-promo-email" name="email" type="email" autocomplete="email" placeholder="<?php echo esc_attr( $this->replace_tokens( $settings['promo_placeholder'], $settings ) ); ?>" required>
+								<button type="submit"><?php echo esc_html( $this->replace_tokens( $settings['promo_submit'], $settings ) ); ?></button>
+							</div>
+							<input class="pep-exit-offer__trap" name="company" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">
+							<?php if ( $settings['promo_capture_fineprint'] ) : ?><p class="pep-exit-offer__fineprint"><?php echo esc_html( $this->replace_tokens( $settings['promo_capture_fineprint'], $settings ) ); ?></p><?php endif; ?>
+							<p class="pep-exit-offer__message" data-pep-capture-message role="status" aria-live="polite"></p>
+						</form>
+						<div class="pep-exit-offer__success" data-pep-capture-success hidden>
+							<p><?php echo esc_html( $this->replace_tokens( $settings['promo_success'], $settings ) ); ?></p>
+							<p class="pep-exit-offer__fineprint"><?php echo esc_html( $this->replace_tokens( $settings['promo_success_note'], $settings ) ); ?></p>
+							<?php if ( $settings['promo_button'] ) : ?><a class="pep-exit-offer__cta" href="<?php echo esc_url( $promo_url ); ?>"><?php echo esc_html( $settings['promo_button'] ); ?></a><?php endif; ?>
+						</div>
+					<?php elseif ( $settings['promo_code'] ) : ?>
 						<div class="pep-exit-offer__promo-code"><span><?php echo esc_html( $settings['promo_code_label'] ); ?></span><strong><?php echo esc_html( $settings['promo_code'] ); ?></strong></div>
 					<?php endif; ?>
-					<?php if ( $settings['promo_button'] ) : ?><a class="pep-exit-offer__cta" href="<?php echo esc_url( $promo_url ); ?>"><?php echo esc_html( $settings['promo_button'] ); ?></a><?php endif; ?>
-					<?php if ( $settings['promo_fineprint'] ) : ?><p class="pep-exit-offer__fineprint"><?php echo esc_html( $settings['promo_fineprint'] ); ?></p><?php endif; ?>
+					<?php if ( empty( $settings['promo_capture_email'] ) && $settings['promo_button'] ) : ?><a class="pep-exit-offer__cta" href="<?php echo esc_url( $promo_url ); ?>"><?php echo esc_html( $settings['promo_button'] ); ?></a><?php endif; ?>
+					<?php if ( empty( $settings['promo_capture_email'] ) && $settings['promo_fineprint'] ) : ?><p class="pep-exit-offer__fineprint"><?php echo esc_html( $settings['promo_fineprint'] ); ?></p><?php endif; ?>
 				</section>
 			</div>
 			<?php
@@ -603,6 +628,12 @@ HTML;
 		}
 
 		$email = isset( $_POST['email'] ) ? sanitize_email( wp_unslash( $_POST['email'] ) ) : '';
+		$source = isset( $_POST['source'] ) && 'promo' === sanitize_key( wp_unslash( $_POST['source'] ) ) ? 'campaign_popup' : 'popup';
+		$settings = $this->settings();
+		$campaign_active = ! empty( $settings['promo_enabled'] ) && ! empty( $settings['promo_capture_email'] ) && time() >= $this->setting_timestamp( $settings['promo_start'] ) && time() < $this->setting_timestamp( $settings['promo_end'] );
+		if ( ( 'campaign_popup' === $source && ! $campaign_active ) || ( 'popup' === $source && empty( $settings['enabled'] ) ) ) {
+			wp_send_json_error( array( 'message' => __( 'This offer is not available right now.', 'pepselect-cart-recovery' ) ), 403 );
+		}
 		if ( ! is_email( $email ) ) {
 			wp_send_json_error( array( 'message' => __( 'That email needs a quick second look.', 'pepselect-cart-recovery' ) ), 422 );
 		}
@@ -617,7 +648,7 @@ HTML;
 
 		$coupon_code = $this->coupon_for_email( $email );
 		if ( ! $coupon_code ) {
-			$coupon_code = $this->create_coupon( $email );
+			$coupon_code = $this->create_coupon( $email, $source );
 		}
 
 		if ( ! $coupon_code ) {
@@ -664,6 +695,7 @@ HTML;
 	private function create_coupon( $email, $source = 'popup' ) {
 		$settings            = $this->settings();
 		$is_cart_abandonment = 'cart_abandonment' === $source;
+		$source_label        = 'campaign_popup' === $source ? 'timed campaign-popup' : ( $is_cart_abandonment ? 'cart-abandonment recovery' : 'exit-popup recovery' );
 		$code                = '';
 		for ( $attempt = 0; $attempt < 4; $attempt++ ) {
 			$candidate = $settings['coupon_prefix'] . '-' . strtoupper( wp_generate_password( 8, false, false ) );
@@ -679,7 +711,7 @@ HTML;
 		try {
 			$coupon = new WC_Coupon();
 			$coupon->set_code( $code );
-			$coupon->set_description( sprintf( 'Pep Select %s private %s offer. Generated automatically.', $this->discount_label( $settings ), $is_cart_abandonment ? 'cart-abandonment recovery' : 'exit-popup recovery' ) );
+			$coupon->set_description( sprintf( 'Pep Select %s private %s offer. Generated automatically.', $this->discount_label( $settings ), $source_label ) );
 			$coupon->set_discount_type( $settings['discount_type'] );
 			$coupon->set_amount( (float) $settings['discount_amount'] );
 			$coupon->set_individual_use( $is_cart_abandonment ? true : empty( $settings['allow_coupon_stacking'] ) );
@@ -699,6 +731,7 @@ HTML;
 			$coupon->add_meta_data( 'exclude_product_brands', array_map( 'absint', (array) $settings['excluded_product_brand_ids'] ), true );
 			$coupon->set_date_expires( time() + max( 1, absint( $settings['coupon_expiry_days'] ) ) * DAY_IN_SECONDS );
 			$coupon->add_meta_data( '_pepselect_exit_offer', 1, true );
+			$coupon->add_meta_data( '_pepselect_offer_source', $source, true );
 			$coupon->add_meta_data( '_pepselect_exit_email_hash', hash_hmac( 'sha256', strtolower( $email ), wp_salt( 'auth' ) ), true );
 			$coupon->add_meta_data( '_pepselect_exit_offer_signature', $this->coupon_signature( $settings ), true );
 			$coupon->save();
@@ -1163,7 +1196,7 @@ HTML;
 		$input    = is_array( $input ) ? $input : array();
 		$output   = $defaults;
 
-		foreach ( array( 'enabled', 'promo_enabled', 'promo_suppress_exit', 'cover_banner_enabled', 'allow_coupon_stacking', 'free_shipping', 'exclude_sale_items' ) as $key ) {
+		foreach ( array( 'enabled', 'promo_enabled', 'promo_suppress_exit', 'promo_capture_email', 'cover_banner_enabled', 'allow_coupon_stacking', 'free_shipping', 'exclude_sale_items' ) as $key ) {
 			$output[ $key ] = empty( $input[ $key ] ) ? 0 : 1;
 		}
 
@@ -1197,6 +1230,7 @@ HTML;
 			'email_subject', 'email_preheader', 'email_label', 'email_eyebrow', 'email_heading', 'email_greeting', 'email_intro',
 			'email_code_label', 'email_code_note', 'email_extra', 'email_button', 'email_support',
 			'promo_eyebrow', 'promo_heading', 'promo_code_label', 'promo_code', 'promo_button', 'promo_fineprint',
+			'promo_placeholder', 'promo_submit', 'promo_loading', 'promo_capture_fineprint', 'promo_success', 'promo_success_note',
 			'cover_banner_alt', 'cover_banner_eyebrow', 'cover_banner_heading',
 		);
 		foreach ( $text_fields as $key ) {
@@ -1407,10 +1441,16 @@ HTML;
 							<input type="text" disabled data-pep-preview-placeholder="exit_placeholder" placeholder="<?php echo esc_attr( $settings['exit_placeholder'] ); ?>">
 							<button type="button" class="pep-recovery-preview__button" data-pep-preview-bind="exit_button"><?php echo esc_html( $this->replace_tokens( $settings['exit_button'], $settings ) ); ?></button>
 						<?php else : ?>
-							<div class="pep-recovery-preview__code" data-pep-preview-code <?php if ( ! $settings['promo_code'] ) : ?>hidden<?php endif; ?>><span data-pep-preview-bind="promo_code_label"><?php echo esc_html( $settings['promo_code_label'] ); ?></span><strong data-pep-preview-bind="promo_code"><?php echo esc_html( $settings['promo_code'] ); ?></strong></div>
-							<button type="button" class="pep-recovery-preview__button" data-pep-preview-bind="promo_button" <?php if ( ! $settings['promo_button'] ) : ?>hidden style="display:none"<?php endif; ?>><?php echo esc_html( $settings['promo_button'] ); ?></button>
+							<div data-pep-preview-capture <?php if ( empty( $settings['promo_capture_email'] ) ) : ?>hidden<?php endif; ?>>
+								<input type="text" disabled data-pep-preview-placeholder="promo_placeholder" placeholder="<?php echo esc_attr( $settings['promo_placeholder'] ); ?>">
+								<button type="button" class="pep-recovery-preview__button" data-pep-preview-bind="promo_submit"><?php echo esc_html( $this->replace_tokens( $settings['promo_submit'], $settings ) ); ?></button>
+							</div>
+							<div data-pep-preview-standard <?php if ( ! empty( $settings['promo_capture_email'] ) ) : ?>hidden<?php endif; ?>>
+								<div class="pep-recovery-preview__code" data-pep-preview-code <?php if ( ! $settings['promo_code'] ) : ?>hidden<?php endif; ?>><span data-pep-preview-bind="promo_code_label"><?php echo esc_html( $settings['promo_code_label'] ); ?></span><strong data-pep-preview-bind="promo_code"><?php echo esc_html( $settings['promo_code'] ); ?></strong></div>
+								<button type="button" class="pep-recovery-preview__button" data-pep-preview-bind="promo_button" <?php if ( ! $settings['promo_button'] ) : ?>hidden style="display:none"<?php endif; ?>><?php echo esc_html( $settings['promo_button'] ); ?></button>
+							</div>
 						<?php endif; ?>
-						<p class="pep-recovery-preview__fineprint" data-pep-preview-bind="<?php echo esc_attr( $prefix ); ?>_fineprint"><?php echo esc_html( $this->replace_tokens( $settings[ $prefix . '_fineprint' ], $settings ) ); ?></p>
+						<p class="pep-recovery-preview__fineprint" data-pep-preview-bind="<?php echo esc_attr( $prefix ); ?>_fineprint" <?php if ( ! $is_exit ) : ?>data-pep-preview-fineprint="promo"<?php endif; ?>><?php echo esc_html( $this->replace_tokens( $settings[ $prefix . '_fineprint' ], $settings ) ); ?></p>
 					</div>
 				</div>
 				</div>
@@ -1540,6 +1580,14 @@ HTML;
 							<?php $this->admin_field( $settings, 'promo_delay_seconds', __( 'Wait after page opens', 'pepselect-cart-recovery' ), __( 'Seconds between page arrival and the popup opening. Use 0 for immediate.', 'pepselect-cart-recovery' ), 'number', array( 'min' => '0', 'max' => '86400' ) ); ?>
 							<?php $this->admin_field( $settings, 'promo_dismiss_days', __( 'Wait after dismissal', 'pepselect-cart-recovery' ), __( 'Days before someone who closed this campaign can see it again.', 'pepselect-cart-recovery' ), 'number', array( 'min' => '1', 'max' => '365' ) ); ?>
 						</div><label class="pep-recovery-check"><input name="<?php echo esc_attr( self::OPTION ); ?>[promo_suppress_exit]" data-pep-setting="promo_suppress_exit" type="checkbox" value="1" <?php checked( $settings['promo_suppress_exit'], 1 ); ?>><span><b><?php esc_html_e( 'Pause the Exit Popup while this campaign is active', 'pepselect-cart-recovery' ); ?></b><small><?php esc_html_e( 'Recommended. Visitors see one clear message instead of two competing popups.', 'pepselect-cart-recovery' ); ?></small></span></label></section>
+						<section class="pep-recovery-card"><h2><?php esc_html_e( 'Email capture', 'pepselect-cart-recovery' ); ?></h2><?php $this->admin_checkbox( $settings, 'promo_capture_email', __( 'Ask for an email and send a private code', 'pepselect-cart-recovery' ), __( 'When on, the timed campaign replaces its displayed code and direct button with an email field. Coupon rules and email design come from the Recovery Codes settings.', 'pepselect-cart-recovery' ) ); ?><p class="description"><?php esc_html_e( 'Use the delay above to test a 30-second offer without enabling exit intent. Keep “Pause the Exit Popup” on so visitors never receive two competing prompts.', 'pepselect-cart-recovery' ); ?></p><div class="pep-recovery-grid">
+							<?php $this->admin_field( $settings, 'promo_placeholder', __( 'Email box placeholder', 'pepselect-cart-recovery' ), __( 'Light text shown inside the empty email field.', 'pepselect-cart-recovery' ) ); ?>
+							<?php $this->admin_field( $settings, 'promo_submit', __( 'Email button text', 'pepselect-cart-recovery' ), __( 'Use {discount} to insert the current Recovery Codes amount.', 'pepselect-cart-recovery' ) ); ?>
+							<?php $this->admin_field( $settings, 'promo_loading', __( 'Button text while sending', 'pepselect-cart-recovery' ), __( 'Briefly replaces the button label after submission.', 'pepselect-cart-recovery' ) ); ?>
+							<?php $this->admin_field( $settings, 'promo_capture_fineprint', __( 'Email and unsubscribe notice', 'pepselect-cart-recovery' ), __( 'Shown below the email button. Keep the permission and unsubscribe meaning clear.', 'pepselect-cart-recovery' ) ); ?>
+							<?php $this->admin_field( $settings, 'promo_success', __( 'Success headline', 'pepselect-cart-recovery' ), __( 'Appears after the email and coupon are accepted.', 'pepselect-cart-recovery' ) ); ?>
+							<?php $this->admin_field( $settings, 'promo_success_note', __( 'Success supporting text', 'pepselect-cart-recovery' ), __( 'Explains that the code is tied to the submitted email.', 'pepselect-cart-recovery' ) ); ?>
+						</div></section>
 						<section class="pep-recovery-card"><h2><?php esc_html_e( 'Words and action', 'pepselect-cart-recovery' ); ?></h2><div class="pep-recovery-grid">
 							<?php $this->admin_field( $settings, 'promo_eyebrow', __( 'Small label', 'pepselect-cart-recovery' ), __( 'The short all-caps line above the headline.', 'pepselect-cart-recovery' ) ); ?>
 							<?php $this->admin_field( $settings, 'promo_heading', __( 'Main headline', 'pepselect-cart-recovery' ), __( 'The largest text in the popup.', 'pepselect-cart-recovery' ) ); ?>

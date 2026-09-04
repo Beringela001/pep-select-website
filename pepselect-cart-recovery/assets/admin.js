@@ -72,6 +72,16 @@
       campaignButton.hidden = !String(value('promo_button') || '').trim();
       campaignButton.style.display = campaignButton.hidden ? 'none' : '';
     }
+
+    if (prefix === 'promo') {
+      var captureEnabled = Boolean(value('promo_capture_email'));
+      var capturePreview = preview.querySelector('[data-pep-preview-capture]');
+      var standardPreview = preview.querySelector('[data-pep-preview-standard]');
+      var fineprint = preview.querySelector('[data-pep-preview-fineprint="promo"]');
+      if (capturePreview) capturePreview.hidden = !captureEnabled;
+      if (standardPreview) standardPreview.hidden = captureEnabled;
+      if (fineprint) fineprint.textContent = tokens(value(captureEnabled ? 'promo_capture_fineprint' : 'promo_fineprint'));
+    }
   }
 
   function updateCoverPreview() {

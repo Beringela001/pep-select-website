@@ -190,11 +190,12 @@
     });
   }
 
-  if (exitRoot) {
-    var form = exitRoot.querySelector('[data-pep-exit-form]');
-    var message = exitRoot.querySelector('[data-pep-exit-message]');
-    var success = exitRoot.querySelector('[data-pep-exit-success]');
-    var emailInput = exitRoot.querySelector('input[name="email"]');
+  document.querySelectorAll('[data-pep-capture-form]').forEach(function (form) {
+    var root = form.closest('[data-pep-popup]');
+    var type = form.getAttribute('data-pep-capture-form') === 'promo' ? 'promo' : 'exit';
+    var message = root.querySelector('[data-pep-capture-message]');
+    var success = root.querySelector('[data-pep-capture-success]');
+    var emailInput = form.querySelector('input[name="email"]');
 
     form.addEventListener('submit', function (eventObject) {
       eventObject.preventDefault();
@@ -208,22 +209,23 @@
       var original = button.textContent;
       var trap = form.querySelector('input[name="company"]');
       button.disabled = true;
-      button.textContent = config.exit.loadingText || 'Sending…';
-      event('pep_exit_offer_submit');
+      button.textContent = config[type].loadingText || 'Sending…';
+      event(type === 'promo' ? 'pep_promo_email_submit' : 'pep_exit_offer_submit', type === 'promo' ? { campaign: config.promo.campaignId } : {});
 
       post({
         action: 'pepselect_capture_exit_offer',
         security: config.nonce,
         email: emailInput.value,
-        company: trap.value
+        company: trap.value,
+        source: type
       }).then(function (response) {
         if (!response.success) throw new Error(response.data && response.data.message ? response.data.message : 'Please try again.');
         var email = emailInput.value;
         try { sessionStorage.setItem('pep_exit_offer_email', email); } catch (error) { /* Optional. */ }
         form.hidden = true;
         success.hidden = false;
-        suppress(exitStorageKey, 180, 'submitted');
-        event('pep_exit_offer_success');
+        suppress(type === 'promo' ? promoStorageKey : exitStorageKey, 180, 'submitted');
+        event(type === 'promo' ? 'pep_promo_email_success' : 'pep_exit_offer_success', type === 'promo' ? { campaign: config.promo.campaignId } : {});
         if (response.data.hasCart) identifyCart(email);
       }).catch(function (error) {
         message.textContent = error.message;
@@ -231,7 +233,7 @@
         button.textContent = original;
       });
     });
-  }
+  });
 
   document.body.addEventListener('added_to_cart', function () {
     try { identifyCart(sessionStorage.getItem('pep_exit_offer_email')); } catch (error) { /* Optional. */ }
