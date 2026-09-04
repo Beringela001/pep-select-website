@@ -75,3 +75,16 @@ The new owned browser file is dependency-free, deferred, and limited to commerce
 ## Verification limits
 
 Source, WordPress configuration, anonymous markup, and public PageSpeed were audited. No Live settings were changed and no Live order was placed. Provider secrets, a CMP, a local WordPress/WooCommerce runtime, and an authorized Staging deployment were not available in this worktree, so external event receipt and payment-email delivery remain required Staging gates rather than claimed passes.
+
+## Staging deployment result
+
+Deployed September 4, 2026 to `stg-pepselect-staging.kinsta.cloud`:
+
+- Created and verified the Kinsta manual backup `Before Pep Select Tracking 0.1.0-beta.1 staging` before installation.
+- Installed and activated `Pep Select Conversion Tracking` version `0.1.0-beta.1` from the verified package in `dist/`.
+- Confirmed the plugin is active in WordPress and its Site Health tests are running.
+- Confirmed fail-closed behavior in a fresh anonymous browser: the 7,512-byte first-party `tracking.js` loaded, while no GA4, Meta, or Clarity request was made without consent.
+- Confirmed the mobile shop and cart rendered, empty-cart checkout still redirected to the cart, and the browser reported no console errors.
+- Three-run public response-time medians improved from 1.623 s to 1.385 s on the home page and from 1.540 s to 1.450 s on the shop page. This is not a Core Web Vitals replacement, but it shows no material server-response regression from activation.
+
+Live promotion remains blocked. Site Health correctly reports that a CMP integration is missing and paid-order GA4 delivery is not configured. Site Kit is also disconnected on the cloned Staging URL. Complete release gates 1-7 above, including the synthetic BACS paid-order test and comparable post-install mobile PageSpeed runs, before deploying this plugin to Live.
