@@ -350,7 +350,7 @@
 				prefix: prefix,
 				values: captureAutocompleteAddress( prefix )
 			};
-			autocompleteSnapshotExpires = Date.now() + 5000;
+			autocompleteSnapshotExpires = Date.now() + 20000;
 			queueCompleteAddressRefresh();
 		}, 0 );
 	}
