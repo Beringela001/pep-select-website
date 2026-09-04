@@ -2,7 +2,7 @@
 Contributors: pepselect
 Requires at least: 6.5
 Requires PHP: 8.1
-Stable tag: 0.4.1
+Stable tag: 0.4.2
 License: Proprietary
 
 Validates destination addresses and applies destination-specific carrier rules.
@@ -16,6 +16,9 @@ Adds three safeguards:
 * Blocks mismatched Alaska and Hawaii ZIP/state combinations and Puerto Rico ZIP/country combinations.
 
 == Changelog ==
+
+= 0.4.2 =
+* Normalize Google autocomplete results for Puerto Rico to WooCommerce's US:PR destination so USPS rates can be calculated.
 
 = 0.4.1 =
 * Preserve the complete Google-selected address through Fluid Checkout refreshes.

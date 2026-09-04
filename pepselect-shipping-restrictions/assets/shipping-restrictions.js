@@ -335,6 +335,17 @@
 		// change. Preserve Google's complete result and issue one final refresh
 		// containing the entire address instead of a mixture of old/new fields.
 		window.setTimeout( function () {
+			var country = document.getElementById( prefix + '_country' );
+			var state = document.getElementById( prefix + '_state' );
+			var postcode = document.getElementById( prefix + '_postcode' );
+
+			// Google can identify Puerto Rico as country US without supplying a
+			// state. WooCommerce needs US:PR to calculate the USPS destination.
+			if ( postcode && expectedRegion( postcode.value ) === 'PR' ) {
+				setAddressField( country, 'US' );
+				setAddressField( state, 'PR' );
+			}
+
 			autocompleteSnapshot = {
 				prefix: prefix,
 				values: captureAutocompleteAddress( prefix )

@@ -123,6 +123,21 @@ async function run() {
 	assert.equal( fields.billing_postcode.value, '70769' );
 	assert.ok( checkoutRefreshes >= 1, 'A final checkout refresh should serialize the complete address.' );
 
+	// Google sometimes reports Puerto Rico as country US and leaves the state
+	// blank. The checkout must normalize that result to WooCommerce's US:PR.
+	fields.shipping_address_1.value = 'Calle de San Francisco 150';
+	fields.shipping_city.value = 'San Juan';
+	fields.shipping_state.value = '';
+	fields.shipping_postcode.value = '00901';
+	fields.shipping_country.value = 'US';
+	listeners.fc_gaa_address_autocompleted.forEach( callback => callback( autocompleteEvent ) );
+	await new Promise( resolve => setTimeout( resolve, 150 ) );
+
+	assert.equal( fields.shipping_country.value, 'US' );
+	assert.equal( fields.shipping_state.value, 'PR' );
+	assert.equal( fields.billing_country.value, 'US' );
+	assert.equal( fields.billing_state.value, 'PR' );
+
 	console.log( 'Autocomplete checkout refresh race test passed.' );
 }
 
