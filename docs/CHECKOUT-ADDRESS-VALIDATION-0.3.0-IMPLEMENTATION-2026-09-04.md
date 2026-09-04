@@ -2,7 +2,7 @@
 
 ## Outcome
 
-Prepared a fail-closed postal-address verification layer for WooCommerce checkout. The package is not deployed.
+Released a fail-closed postal-address verification layer for WooCommerce checkout to staging and live.
 
 ## Root cause
 
@@ -22,12 +22,12 @@ Prepared a fail-closed postal-address verification layer for WooCommerce checkou
 - Copy shipping fields to billing atomically on the server when "Same as shipping" is selected.
 - Show the incomplete-street warning immediately in checkout before submission.
 
-## Configuration required before staging
+## Runtime configuration
 
-1. Enable Google Address Validation API in the existing `pep-select-website` Google Cloud project.
-2. Create a separate server-side API key restricted to Address Validation API and the production/staging server egress IPs.
-3. Define the key outside the repository as `PEPSELECT_GOOGLE_ADDRESS_VALIDATION_API_KEY`.
-4. Set a conservative daily quota and billing alert before enabling checkout enforcement.
+1. Google Address Validation API is enabled in the existing `pep-select-website` Google Cloud project.
+2. A dedicated server-side key is restricted to Address Validation API; it is not reused by browser autocomplete.
+3. The key is defined outside the repository as `PEPSELECT_GOOGLE_ADDRESS_VALIDATION_API_KEY` in both staging and live configuration.
+4. Application-level IP restriction, a conservative daily quota, and a billing alert remain recommended follow-up hardening.
 
 The existing browser-referrer key must not be reused for server requests. With no server key configured, version 0.3.0 keeps the structural and existing destination checks active but does not call Google, allowing safe installation/configuration ordering.
 
@@ -38,10 +38,16 @@ The existing browser-referrer key must not be reused for server requests. With n
 - Live checkout session restored to its original shipping and billing values after testing.
 - PHP syntax check passed.
 - Shipping restrictions contract passed, including incomplete street, atomic billing sync, valid Prairieville, state mismatch, city mismatch, and non-deliverable street cases.
+- Staging plugin version `0.3.0` is active.
+- Staging server-side checkout test rejected Prairieville, NY 70769 through Google verification and created no order.
+- Live plugin version `0.3.0` is active after cache clear.
+- Live storefront, admin, and checkout load successfully; the incomplete-street warning is active and the original checkout values were restored without submitting an order.
+- A transient live HTTP 500 occurred when the hosting editor duplicated `wp-config.php` during an attempted whole-file replacement. The original file was immediately restored, the storefront recovered, and the API constant was re-added with a verified single-line insertion before deployment continued.
 
 ## Release state
 
 - Source version: `0.3.0`
-- Staging: not deployed
-- Live: untouched
+- Staging: deployed and verified
+- Live: deployed and verified
+- Live rollback backup: `Before Shipping Restrictions 0.3.0 live - 2026-09-04`
 - Rollback: reinstall `pepselect-shipping-restrictions` 0.2.6
