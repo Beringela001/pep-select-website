@@ -50,8 +50,6 @@ final class PepSelect_Shipping_Restrictions {
 		add_filter( 'woocommerce_package_rates', array( $this, 'filter_package_rates' ), 100, 2 );
 		add_filter( 'woocommerce_checkout_fields', array( $this, 'label_state_as_territory' ), 30 );
 		add_filter( 'fc_gaa_google_autocomplete_js_settings', array( $this, 'configure_google_address_autocomplete' ), 100 );
-		add_action( 'wp_ajax_pepselect_validate_checkout_address', array( $this, 'ajax_validate_checkout_address' ) );
-		add_action( 'wp_ajax_nopriv_pepselect_validate_checkout_address', array( $this, 'ajax_validate_checkout_address' ) );
 	}
 
 	/** @param array<string,array<string,string>> $states WooCommerce states by country. */
@@ -96,97 +94,43 @@ final class PepSelect_Shipping_Restrictions {
 	}
 
 	public function enqueue_assets(): void {
+		$style_path;
+		$script_path;
+		$style_version;
+		$script_version;
+
 		if ( ! function_exists( 'is_checkout' ) || ! is_checkout() || ( function_exists( 'is_order_received_page' ) && is_order_received_page() ) ) {
 			return;
 		}
+
+		$style_path    = PEPSELECT_SHIPPING_RESTRICTIONS_DIR . 'assets/shipping-restrictions.css';
+		$script_path   = PEPSELECT_SHIPPING_RESTRICTIONS_DIR . 'assets/shipping-restrictions.js';
+		$style_version = file_exists( $style_path ) ? PEPSELECT_SHIPPING_RESTRICTIONS_VERSION . '-' . filemtime( $style_path ) : PEPSELECT_SHIPPING_RESTRICTIONS_VERSION;
+		$script_version = file_exists( $script_path ) ? PEPSELECT_SHIPPING_RESTRICTIONS_VERSION . '-' . filemtime( $script_path ) : PEPSELECT_SHIPPING_RESTRICTIONS_VERSION;
 
 		wp_enqueue_style(
 			'pepselect-shipping-restrictions',
 			plugins_url( 'assets/shipping-restrictions.css', PEPSELECT_SHIPPING_RESTRICTIONS_FILE ),
 			array(),
-			PEPSELECT_SHIPPING_RESTRICTIONS_VERSION
+			$style_version
 		);
 		wp_enqueue_script(
 			'pepselect-shipping-restrictions',
 			plugins_url( 'assets/shipping-restrictions.js', PEPSELECT_SHIPPING_RESTRICTIONS_FILE ),
 			array( 'jquery' ),
-			PEPSELECT_SHIPPING_RESTRICTIONS_VERSION,
+			$script_version,
 			true
 		);
 		wp_localize_script(
 			'pepselect-shipping-restrictions',
 			'pepSelectShippingRestrictions',
 			array(
-				'ajaxUrl'            => admin_url( 'admin-ajax.php' ),
-				'nonce'              => wp_create_nonce( 'pepselect_validate_checkout_address' ),
 				'allowedStates'      => self::ALLOWED_STATES,
 				'regionNames'        => self::REGION_NAMES,
 				'unsupportedMessage' => self::UNSUPPORTED_MESSAGE,
 				'incompleteMessage'  => self::INCOMPLETE_ADDRESS_MESSAGE,
-				'checkingMessage'    => 'Verifying delivery address…',
-				'verifiedMessage'    => 'Delivery address verified.',
 			)
 		);
-	}
-
-	/** Validate a complete checkout address without exposing the Google API key. */
-	public function ajax_validate_checkout_address(): void {
-		check_ajax_referer( 'pepselect_validate_checkout_address', 'nonce' );
-
-		if ( ! self::ajax_request_is_within_limit() ) {
-			wp_send_json_error(
-				array( 'message' => 'Address verification is temporarily busy. Wait a moment and try again.' ),
-				429
-			);
-		}
-
-		$value = static function ( string $key ): string {
-			$value = isset( $_POST[ $key ] ) && is_scalar( $_POST[ $key ] ) ? wp_unslash( (string) $_POST[ $key ] ) : '';
-			return function_exists( 'wc_clean' ) ? wc_clean( $value ) : sanitize_text_field( $value );
-		};
-
-		$address = array(
-			'address_1' => $value( 'address_1' ),
-			'address_2' => $value( 'address_2' ),
-			'city'      => $value( 'city' ),
-			'country'   => strtoupper( $value( 'country' ) ),
-			'state'     => strtoupper( $value( 'state' ) ),
-			'postcode'  => $value( 'postcode' ),
-		);
-
-		if ( ! self::address_is_complete( $address ) ) {
-			wp_send_json_success( array( 'valid' => false, 'message' => 'Complete the street, city, state, and ZIP code to verify this address.' ) );
-		}
-
-		$message = self::address_error_message( $address['country'], $address['state'], $address['postcode'] );
-		if ( '' === $message && ! self::address_line_is_complete( $address['address_1'] ) ) {
-			$message = self::INCOMPLETE_ADDRESS_MESSAGE;
-		}
-
-		$result = '' === $message
-			? $this->verify_postal_address( $address )
-			: array( 'valid' => false, 'message' => $message, 'suggested' => array() );
-
-		wp_send_json_success( $result );
-	}
-
-	private static function ajax_request_is_within_limit(): bool {
-		$identity = '';
-		if ( function_exists( 'WC' ) && WC()->session ) {
-			$identity = (string) WC()->session->get_customer_id();
-		}
-		if ( '' === $identity ) {
-			$identity = (string) ( $_SERVER['REMOTE_ADDR'] ?? '' ) . '|' . (string) ( $_SERVER['HTTP_USER_AGENT'] ?? '' );
-		}
-
-		$key   = 'pep_av_rate_' . substr( hash( 'sha256', $identity ), 0, 32 );
-		$count = (int) get_transient( $key );
-		if ( $count >= 30 ) {
-			return false;
-		}
-
-		set_transient( $key, $count + 1, MINUTE_IN_SECONDS );
-		return true;
 	}
 
 	/** @param array $fields Checkout fields. */
@@ -214,11 +158,6 @@ final class PepSelect_Shipping_Restrictions {
 			$message = self::address_error_message( $address['country'], $address['state'], $address['postcode'] );
 			if ( '' === $message && ! self::address_line_is_complete( $address['address_1'] ) ) {
 				$message = self::INCOMPLETE_ADDRESS_MESSAGE;
-			}
-
-			if ( '' === $message ) {
-				$verification = $this->verify_postal_address( $address );
-				$message      = $verification['message'];
 			}
 
 			if ( '' !== $message ) {
@@ -445,12 +384,14 @@ final class PepSelect_Shipping_Restrictions {
 			: '';
 		$api_key = (string) apply_filters( 'pepselect_address_validation_api_key', $api_key );
 
+		// Safe deployment fallback: the structural and destination rules remain
+		// active until the separately restricted server key is configured.
 		if ( '' === trim( $api_key ) ) {
-			return array( 'valid' => false, 'message' => self::UNVERIFIED_ADDRESS_MESSAGE, 'suggested' => array() );
+			return array( 'valid' => true, 'message' => '' );
 		}
 
 		$fingerprint = self::address_fingerprint( $address );
-		$cache_key   = 'pep_av_v2_' . substr( hash( 'sha256', $fingerprint ), 0, 40 );
+		$cache_key   = 'pep_av_' . substr( hash( 'sha256', $fingerprint ), 0, 40 );
 		$cached      = get_transient( $cache_key );
 		if ( is_array( $cached ) && isset( $cached['valid'], $cached['message'] ) ) {
 			return $cached;
@@ -514,32 +455,10 @@ final class PepSelect_Shipping_Restrictions {
 		$matches  = self::normalized_component_matches( $postal, $submitted_address );
 
 		if ( $complete && $precise && $accepted && $unchanged && 'Y' === $dpv && $matches ) {
-			return array( 'valid' => true, 'message' => '', 'suggested' => array() );
+			return array( 'valid' => true, 'message' => '' );
 		}
 
-		$suggested = $complete && $precise && 'Y' === $dpv ? self::suggested_address_from_postal( $postal ) : array();
-		return array( 'valid' => false, 'message' => self::ADDRESS_REVIEW_MESSAGE, 'suggested' => $suggested );
-	}
-
-	/** @return array{address_1:string,address_2:string,city:string,state:string,postcode:string,country:string}|array{} */
-	private static function suggested_address_from_postal( array $postal ): array {
-		$lines = isset( $postal['addressLines'] ) && is_array( $postal['addressLines'] ) ? array_values( $postal['addressLines'] ) : array();
-		$suggestion = array(
-			'address_1' => trim( (string) ( $lines[0] ?? '' ) ),
-			'address_2' => trim( (string) ( $lines[1] ?? '' ) ),
-			'city'      => trim( (string) ( $postal['locality'] ?? '' ) ),
-			'state'     => strtoupper( trim( (string) ( $postal['administrativeArea'] ?? '' ) ) ),
-			'postcode'  => trim( (string) ( $postal['postalCode'] ?? '' ) ),
-			'country'   => strtoupper( trim( (string) ( $postal['regionCode'] ?? '' ) ) ),
-		);
-
-		foreach ( array( 'address_1', 'city', 'state', 'postcode', 'country' ) as $required ) {
-			if ( '' === $suggestion[ $required ] ) {
-				return array();
-			}
-		}
-
-		return $suggestion;
+		return array( 'valid' => false, 'message' => self::ADDRESS_REVIEW_MESSAGE );
 	}
 
 	private static function normalized_component_matches( array $postal, array $submitted ): bool {
