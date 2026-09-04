@@ -5,6 +5,12 @@
 	var allowedStates = Array.isArray( config.allowedStates ) ? config.allowedStates : [];
 	var regionNames = config.regionNames || { AK: 'Alaska', HI: 'Hawaii', PR: 'Puerto Rico' };
 	var unsupportedMessage = config.unsupportedMessage || 'Pep Select does not currently ship to this destination. Enter an address in the 50 U.S. states, Washington, D.C., or Puerto Rico.';
+	var incompleteMessage = config.incompleteMessage || 'Enter a complete street address, including the street number and street name.';
+
+	function addressLineIsComplete( addressLine ) {
+		var normalized = String( addressLine || '' ).trim().replace( /\s+/g, ' ' );
+		return /\d/.test( normalized ) && /[A-Za-z]{2,}/.test( normalized ) && normalized.split( ' ' ).length >= 2;
+	}
 
 	function expectedRegion( postcode ) {
 		var digits = String( postcode || '' ).replace( /\D+/g, '' );
@@ -89,28 +95,38 @@
 	}
 
 	function getAddressStatus( prefix ) {
+		var address1 = document.getElementById( prefix + '_address_1' );
 		var country = document.getElementById( prefix + '_country' );
 		var state = document.getElementById( prefix + '_state' );
 		var postcode = document.getElementById( prefix + '_postcode' );
-		var row = document.getElementById( prefix + '_postcode_field' );
+		var addressRow = document.getElementById( prefix + '_address_1_field' );
+		var postcodeRow = document.getElementById( prefix + '_postcode_field' );
+		var invalidInput;
 		var message;
 
-		if ( ! country || ! state || ! postcode || ! row ) {
+		if ( ! address1 || ! country || ! state || ! postcode || ! addressRow || ! postcodeRow ) {
 			return null;
 		}
 
-		message = country.value && state.value && postcode.value ? addressError(
-			country.value.toUpperCase(),
-			state.value.toUpperCase(),
-			postcode.value
-		) : '';
+		message = '';
+		invalidInput = postcode;
+		if ( address1.value && ! addressLineIsComplete( address1.value ) ) {
+			message = incompleteMessage;
+			invalidInput = address1;
+		} else if ( country.value && state.value && postcode.value ) {
+			message = addressError( country.value.toUpperCase(), state.value.toUpperCase(), postcode.value );
+		}
 
-		row.classList.toggle( 'pepselect-shipping-area-invalid', Boolean( message ) );
-		postcode.setAttribute( 'aria-invalid', message ? 'true' : 'false' );
+		addressRow.classList.toggle( 'pepselect-shipping-area-invalid', Boolean( message ) && invalidInput === address1 );
+		postcodeRow.classList.toggle( 'pepselect-shipping-area-invalid', Boolean( message ) && invalidInput === postcode );
+		address1.setAttribute( 'aria-invalid', message && invalidInput === address1 ? 'true' : 'false' );
+		postcode.setAttribute( 'aria-invalid', message && invalidInput === postcode ? 'true' : 'false' );
 
 		return {
+			address1: address1,
+			postcode: postcode,
 			message: message,
-			postcode: postcode
+			input: invalidInput
 		};
 	}
 
@@ -140,7 +156,8 @@
 
 		[ billing, shipping ].forEach( function ( status ) {
 			if ( status ) {
-				setDescription( status.postcode, warningId, Boolean( status.message ) );
+				setDescription( status.address1, warningId, Boolean( status.message ) && status.input === status.address1 );
+				setDescription( status.postcode, warningId, Boolean( status.message ) && status.input === status.postcode );
 			}
 		} );
 
@@ -241,13 +258,13 @@
 	}
 
 	document.addEventListener( 'input', function ( event ) {
-		if ( /_(country|state|postcode)$/.test( event.target.id || '' ) ) {
+		if ( /_(address_1|city|country|state|postcode)$/.test( event.target.id || '' ) ) {
 			updateWarnings();
 		}
 	} );
 	document.addEventListener( 'change', function ( event ) {
 		normalizePuertoRicoCountryField( event.target );
-		if ( /_(country|state|postcode)$/.test( event.target.id || '' ) ) {
+		if ( /_(address_1|city|country|state|postcode)$/.test( event.target.id || '' ) ) {
 			updateWarnings();
 		}
 	} );

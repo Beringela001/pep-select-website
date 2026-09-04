@@ -7,6 +7,9 @@ defined( 'ABSPATH' ) || exit;
 
 final class PepSelect_Shipping_Restrictions {
 	const UNSUPPORTED_MESSAGE = 'Pep Select does not currently ship to this destination. Enter an address in the 50 U.S. states, Washington, D.C., or Puerto Rico.';
+	const INCOMPLETE_ADDRESS_MESSAGE = 'Enter a complete street address, including the street number and street name.';
+	const UNVERIFIED_ADDRESS_MESSAGE = 'We could not verify this delivery address. Check the street, city, state, and ZIP code, then try again.';
+	const ADDRESS_REVIEW_MESSAGE = 'This address could not be confirmed as entered. Choose the suggested address or correct the street, city, state, and ZIP code.';
 
 	/** @var PepSelect_Shipping_Restrictions|null */
 	private static $instance;
@@ -42,6 +45,7 @@ final class PepSelect_Shipping_Restrictions {
 		add_filter( 'woocommerce_states', array( $this, 'add_puerto_rico_state' ), 20 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 		add_action( 'woocommerce_checkout_update_order_review', array( $this, 'clear_destination_rate_cache' ), 5 );
+		add_filter( 'woocommerce_checkout_posted_data', array( $this, 'synchronize_billing_to_shipping' ), 100 );
 		add_action( 'woocommerce_after_checkout_validation', array( $this, 'validate_checkout' ), 20, 2 );
 		add_filter( 'woocommerce_package_rates', array( $this, 'filter_package_rates' ), 100, 2 );
 		add_filter( 'woocommerce_checkout_fields', array( $this, 'label_state_as_territory' ), 30 );
@@ -114,6 +118,7 @@ final class PepSelect_Shipping_Restrictions {
 				'allowedStates'      => self::ALLOWED_STATES,
 				'regionNames'        => self::REGION_NAMES,
 				'unsupportedMessage' => self::UNSUPPORTED_MESSAGE,
+				'incompleteMessage'  => self::INCOMPLETE_ADDRESS_MESSAGE,
 			)
 		);
 	}
@@ -135,15 +140,52 @@ final class PepSelect_Shipping_Restrictions {
 	 * @param WP_Error $errors Checkout validation errors.
 	 */
 	public function validate_checkout( array $data, $errors ): void {
-		$address = self::checkout_destination( $data );
-		if ( ! self::address_is_complete( $address ) ) {
-			return;
+		foreach ( self::checkout_addresses( $data ) as $address ) {
+			if ( ! self::address_is_complete( $address ) ) {
+				continue;
+			}
+
+			$message = self::address_error_message( $address['country'], $address['state'], $address['postcode'] );
+			if ( '' === $message && ! self::address_line_is_complete( $address['address_1'] ) ) {
+				$message = self::INCOMPLETE_ADDRESS_MESSAGE;
+			}
+
+			if ( '' === $message ) {
+				$verification = $this->verify_postal_address( $address );
+				$message      = $verification['message'];
+			}
+
+			if ( '' !== $message ) {
+				$errors->add( 'pepselect_' . $address['prefix'] . '_address', $message, array( 'id' => $address['prefix'] . '_address_1' ) );
+			}
+		}
+	}
+
+	/**
+	 * Fluid Checkout can update the hidden billing fields one at a time. Make the
+	 * posted order data atomic when the customer selected "Same as shipping".
+	 */
+	public function synchronize_billing_to_shipping( array $data ): array {
+		return self::synchronize_same_address_data( $data );
+	}
+
+	public static function synchronize_same_address_data( array $data ): array {
+		if ( empty( $data['billing_same_as_shipping'] ) ) {
+			return $data;
 		}
 
-		$message = self::address_error_message( $address['country'], $address['state'], $address['postcode'] );
-		if ( '' !== $message ) {
-			$errors->add( 'pepselect_shipping_address', $message, array( 'id' => $address['prefix'] . '_postcode' ) );
+		foreach ( array( 'first_name', 'last_name', 'company', 'address_1', 'address_2', 'city', 'state', 'postcode', 'country' ) as $field ) {
+			$shipping_key = 'shipping_' . $field;
+			if ( array_key_exists( $shipping_key, $data ) ) {
+				$data[ 'billing_' . $field ] = $data[ $shipping_key ];
+			}
 		}
+
+		if ( array_key_exists( 'shipping_phone', $data ) ) {
+			$data['billing_phone'] = $data['shipping_phone'];
+		}
+
+		return $data;
 	}
 
 	/** @param string $posted_data Serialized checkout fields. */
@@ -204,6 +246,13 @@ final class PepSelect_Shipping_Restrictions {
 
 	public static function state_is_allowed( string $state ): bool {
 		return in_array( strtoupper( trim( $state ) ), self::ALLOWED_STATES, true );
+	}
+
+	public static function address_line_is_complete( string $address_line ): bool {
+		$address_line = trim( preg_replace( '/\s+/', ' ', $address_line ) );
+		return 1 === preg_match( '/\d/u', $address_line )
+			&& 1 === preg_match( '/\p{L}{2,}/u', $address_line )
+			&& count( preg_split( '/\s+/', $address_line ) ) >= 2;
 	}
 
 	public static function expected_region_for_postcode( string $postcode ): string {
@@ -284,16 +333,156 @@ final class PepSelect_Shipping_Restrictions {
 		return '';
 	}
 
-	/** @return array{prefix:string,country:string,state:string,postcode:string} */
+	/** @return array{prefix:string,address_1:string,address_2:string,city:string,country:string,state:string,postcode:string} */
 	private static function checkout_destination( array $data ): array {
 		$prefix = ! empty( $data['ship_to_different_address'] ) ? 'shipping' : 'billing';
+		return self::address_from_checkout_data( $data, $prefix );
+	}
+
+	/** @return array<int,array{prefix:string,address_1:string,address_2:string,city:string,country:string,state:string,postcode:string}> */
+	private static function checkout_addresses( array $data ): array {
+		$shipping = self::address_from_checkout_data( $data, 'shipping' );
+		$billing  = self::address_from_checkout_data( $data, 'billing' );
+
+		if ( '' === $shipping['address_1'] ) {
+			return array( $billing );
+		}
+
+		if ( ! empty( $data['billing_same_as_shipping'] ) || self::address_fingerprint( $shipping ) === self::address_fingerprint( $billing ) ) {
+			return array( $shipping );
+		}
+
+		return array( $shipping, $billing );
+	}
+
+	/** @return array{prefix:string,address_1:string,address_2:string,city:string,country:string,state:string,postcode:string} */
+	private static function address_from_checkout_data( array $data, string $prefix ): array {
+		$value = static function ( string $key ) use ( $data ): string {
+			return is_scalar( $data[ $key ] ?? null ) ? trim( (string) $data[ $key ] ) : '';
+		};
 
 		return array(
 			'prefix'   => $prefix,
-			'country'  => is_scalar( $data[ $prefix . '_country' ] ?? null ) ? trim( (string) $data[ $prefix . '_country' ] ) : '',
-			'state'    => is_scalar( $data[ $prefix . '_state' ] ?? null ) ? trim( (string) $data[ $prefix . '_state' ] ) : '',
-			'postcode' => is_scalar( $data[ $prefix . '_postcode' ] ?? null ) ? trim( (string) $data[ $prefix . '_postcode' ] ) : '',
+			'address_1' => $value( $prefix . '_address_1' ),
+			'address_2' => $value( $prefix . '_address_2' ),
+			'city'      => $value( $prefix . '_city' ),
+			'country'   => $value( $prefix . '_country' ),
+			'state'     => $value( $prefix . '_state' ),
+			'postcode'  => $value( $prefix . '_postcode' ),
 		);
+	}
+
+	/** @param array{address_1:string,address_2:string,city:string,country:string,state:string,postcode:string} $address */
+	private function verify_postal_address( array $address ): array {
+		$api_key = defined( 'PEPSELECT_GOOGLE_ADDRESS_VALIDATION_API_KEY' )
+			? (string) PEPSELECT_GOOGLE_ADDRESS_VALIDATION_API_KEY
+			: '';
+		$api_key = (string) apply_filters( 'pepselect_address_validation_api_key', $api_key );
+
+		// Safe deployment fallback: the structural and destination rules remain
+		// active until the separately restricted server key is configured.
+		if ( '' === trim( $api_key ) ) {
+			return array( 'valid' => true, 'message' => '' );
+		}
+
+		$fingerprint = self::address_fingerprint( $address );
+		$cache_key   = 'pep_av_' . substr( hash( 'sha256', $fingerprint ), 0, 40 );
+		$cached      = get_transient( $cache_key );
+		if ( is_array( $cached ) && isset( $cached['valid'], $cached['message'] ) ) {
+			return $cached;
+		}
+
+		$lines = array_values( array_filter( array( $address['address_1'], $address['address_2'] ) ) );
+		$body  = array(
+			'address'        => array(
+				'regionCode'        => strtoupper( $address['country'] ),
+				'administrativeArea' => strtoupper( $address['state'] ),
+				'locality'           => $address['city'],
+				'postalCode'         => $address['postcode'],
+				'addressLines'       => $lines,
+			),
+			'enableUspsCass' => true,
+		);
+
+		$response = wp_safe_remote_post(
+			'https://addressvalidation.googleapis.com/v1:validateAddress',
+			array(
+				'timeout' => 5,
+				'headers' => array(
+					'Content-Type'   => 'application/json',
+					'X-Goog-Api-Key' => $api_key,
+				),
+				'body'    => wp_json_encode( $body ),
+			)
+		);
+
+		if ( is_wp_error( $response ) || 200 !== (int) wp_remote_retrieve_response_code( $response ) ) {
+			return array( 'valid' => false, 'message' => self::UNVERIFIED_ADDRESS_MESSAGE );
+		}
+
+		$payload = json_decode( wp_remote_retrieve_body( $response ), true );
+		$result  = self::google_validation_result( is_array( $payload ) ? $payload : array(), $address );
+		set_transient( $cache_key, $result, DAY_IN_SECONDS );
+
+		return $result;
+	}
+
+	/**
+	 * Reduce the Google/USPS response to the only decision checkout needs.
+	 * USPS DPV=Y confirms the primary and any required secondary information.
+	 */
+	public static function google_validation_result( array $payload, array $submitted_address ): array {
+		$result      = isset( $payload['result'] ) && is_array( $payload['result'] ) ? $payload['result'] : array();
+		$verdict     = isset( $result['verdict'] ) && is_array( $result['verdict'] ) ? $result['verdict'] : array();
+		$usps        = isset( $result['uspsData'] ) && is_array( $result['uspsData'] ) ? $result['uspsData'] : array();
+		$postal      = isset( $result['address']['postalAddress'] ) && is_array( $result['address']['postalAddress'] ) ? $result['address']['postalAddress'] : array();
+		$granularity = strtoupper( (string) ( $verdict['validationGranularity'] ?? '' ) );
+		$next_action = strtoupper( (string) ( $verdict['possibleNextAction'] ?? '' ) );
+		$dpv         = strtoupper( (string) ( $usps['dpvConfirmation'] ?? '' ) );
+
+		$complete = ! empty( $verdict['addressComplete'] );
+		$precise  = in_array( $granularity, array( 'PREMISE', 'SUB_PREMISE' ), true );
+		$accepted = '' === $next_action || 'ACCEPT' === $next_action;
+		$unchanged = empty( $verdict['hasUnconfirmedComponents'] )
+			&& empty( $verdict['hasInferredComponents'] )
+			&& empty( $verdict['hasReplacedComponents'] )
+			&& empty( $verdict['hasSpellCorrectedComponents'] );
+		$matches  = self::normalized_component_matches( $postal, $submitted_address );
+
+		if ( $complete && $precise && $accepted && $unchanged && 'Y' === $dpv && $matches ) {
+			return array( 'valid' => true, 'message' => '' );
+		}
+
+		return array( 'valid' => false, 'message' => self::ADDRESS_REVIEW_MESSAGE );
+	}
+
+	private static function normalized_component_matches( array $postal, array $submitted ): bool {
+		if ( empty( $postal ) ) {
+			return false;
+		}
+
+		$submitted_zip = substr( preg_replace( '/\D+/', '', (string) ( $submitted['postcode'] ?? '' ) ), 0, 5 );
+		$postal_zip    = substr( preg_replace( '/\D+/', '', (string) ( $postal['postalCode'] ?? '' ) ), 0, 5 );
+		$submitted_city = self::normalize_component_text( (string) ( $submitted['city'] ?? '' ) );
+		$postal_city    = self::normalize_component_text( (string) ( $postal['locality'] ?? '' ) );
+
+		return strtoupper( trim( (string) ( $postal['regionCode'] ?? '' ) ) ) === strtoupper( trim( (string) ( $submitted['country'] ?? '' ) ) )
+			&& strtoupper( trim( (string) ( $postal['administrativeArea'] ?? '' ) ) ) === strtoupper( trim( (string) ( $submitted['state'] ?? '' ) ) )
+			&& $postal_zip === $submitted_zip
+			&& '' !== $postal_city
+			&& $postal_city === $submitted_city;
+	}
+
+	private static function normalize_component_text( string $value ): string {
+		$value = strtoupper( trim( $value ) );
+		return preg_replace( '/[^A-Z0-9]+/', '', $value );
+	}
+
+	private static function address_fingerprint( array $address ): string {
+		$parts = array( 'address_1', 'address_2', 'city', 'state', 'postcode', 'country' );
+		return implode( '|', array_map( static function ( string $key ) use ( $address ): string {
+			return strtoupper( trim( preg_replace( '/\s+/', ' ', (string) ( $address[ $key ] ?? '' ) ) ) );
+		}, $parts ) );
 	}
 
 	/** @param array{country:string,state:string,postcode:string} $address */
@@ -305,7 +494,9 @@ final class PepSelect_Shipping_Restrictions {
 
 	/** @param array{country:string,state:string,postcode:string} $address */
 	private static function address_is_complete( array $address ): bool {
-		return '' !== $address['country']
+		return '' !== $address['address_1']
+			&& '' !== $address['city']
+			&& '' !== $address['country']
 			&& '' !== $address['postcode']
 			&& '' !== $address['state'];
 	}

@@ -4,6 +4,10 @@ define( 'ABSPATH', __DIR__ . '/' );
 
 require_once dirname( __DIR__ ) . '/includes/class-pepselect-shipping-restrictions.php';
 
+function apply_filters( $hook, $value ) {
+	return $value;
+}
+
 function pepselect_shipping_assert( $condition, $message ) {
 	if ( ! $condition ) {
 		fwrite( STDERR, "FAIL: {$message}\n" );
@@ -23,7 +27,17 @@ final class PepSelect_Test_Rate {
 	}
 }
 
+final class PepSelect_Test_Errors {
+	public $errors = array();
+
+	public function add( $code, $message, $data = array() ) {
+		$this->errors[ $code ] = array( 'message' => $message, 'data' => $data );
+	}
+}
+
 pepselect_shipping_assert( PepSelect_Shipping_Restrictions::address_is_allowed( 'US', 'CA', '90210' ), 'California should pass.' );
+pepselect_shipping_assert( ! PepSelect_Shipping_Restrictions::address_line_is_complete( '38206' ), 'A house number alone must fail.' );
+pepselect_shipping_assert( PepSelect_Shipping_Restrictions::address_line_is_complete( '15655 Airline Hwy' ), 'A complete street line should pass.' );
 pepselect_shipping_assert( PepSelect_Shipping_Restrictions::address_is_allowed( 'US', 'AK', '99501' ), 'Alaska should pass.' );
 pepselect_shipping_assert( PepSelect_Shipping_Restrictions::address_is_allowed( 'US', 'HI', '96801' ), 'Hawaii should pass.' );
 pepselect_shipping_assert( PepSelect_Shipping_Restrictions::address_is_allowed( 'US', 'PR', '00901' ), 'Puerto Rico state and ZIP should pass.' );
@@ -86,5 +100,87 @@ pepselect_shipping_assert(
 	),
 	'Mismatched Puerto Rico ZIP and New York state should remove all rates.'
 );
+
+$synced = PepSelect_Shipping_Restrictions::synchronize_same_address_data(
+	array(
+		'billing_same_as_shipping' => '1',
+		'shipping_address_1'       => '15655 Airline Hwy',
+		'shipping_city'            => 'Prairieville',
+		'shipping_state'           => 'LA',
+		'shipping_postcode'        => '70769',
+		'shipping_country'         => 'US',
+		'billing_address_1'        => 'Old value',
+		'billing_city'             => 'Oceanside',
+		'billing_state'            => 'NY',
+		'billing_postcode'         => '11572',
+		'billing_country'          => 'US',
+	)
+);
+pepselect_shipping_assert( 'LA' === $synced['billing_state'], 'Same-as-shipping must atomically copy state.' );
+pepselect_shipping_assert( '70769' === $synced['billing_postcode'], 'Same-as-shipping must atomically copy ZIP.' );
+pepselect_shipping_assert( 'Prairieville' === $synced['billing_city'], 'Same-as-shipping must atomically copy city.' );
+
+$valid_google_response = array(
+	'result' => array(
+		'verdict' => array(
+			'addressComplete'       => true,
+			'validationGranularity' => 'PREMISE',
+			'possibleNextAction'    => 'ACCEPT',
+		),
+		'address' => array(
+			'postalAddress' => array(
+				'regionCode'        => 'US',
+				'administrativeArea' => 'LA',
+				'locality'           => 'Prairieville',
+				'postalCode'         => '70769-9997',
+			),
+		),
+		'uspsData' => array( 'dpvConfirmation' => 'Y' ),
+	),
+);
+$prairieville_address = array(
+	'address_1' => '15655 Airline Hwy',
+	'address_2' => '',
+	'city'      => 'Prairieville',
+	'state'     => 'LA',
+	'postcode'  => '70769',
+	'country'   => 'US',
+);
+$verified = PepSelect_Shipping_Restrictions::google_validation_result( $valid_google_response, $prairieville_address );
+pepselect_shipping_assert( true === $verified['valid'], 'Deliverable Prairieville address should pass.' );
+
+$mismatched = $prairieville_address;
+$mismatched['state'] = 'NY';
+$verified = PepSelect_Shipping_Restrictions::google_validation_result( $valid_google_response, $mismatched );
+pepselect_shipping_assert( false === $verified['valid'], 'Louisiana ZIP with New York state must fail.' );
+
+$mismatched_city = $prairieville_address;
+$mismatched_city['city'] = 'Oceanside';
+$verified = PepSelect_Shipping_Restrictions::google_validation_result( $valid_google_response, $mismatched_city );
+pepselect_shipping_assert( false === $verified['valid'], 'City and ZIP combination must match the verified address.' );
+
+$incomplete_response = $valid_google_response;
+$incomplete_response['result']['uspsData']['dpvConfirmation'] = 'N';
+$verified = PepSelect_Shipping_Restrictions::google_validation_result( $incomplete_response, $prairieville_address );
+pepselect_shipping_assert( false === $verified['valid'], 'Non-deliverable street address must fail.' );
+
+$corrected_response = $valid_google_response;
+$corrected_response['result']['verdict']['hasReplacedComponents'] = true;
+$verified = PepSelect_Shipping_Restrictions::google_validation_result( $corrected_response, $prairieville_address );
+pepselect_shipping_assert( false === $verified['valid'], 'An address corrected by the service must be reviewed by the customer.' );
+
+$errors = new PepSelect_Test_Errors();
+$restriction->validate_checkout(
+	array(
+		'billing_same_as_shipping' => '1',
+		'shipping_address_1'       => '38206',
+		'shipping_city'            => 'Prairieville',
+		'shipping_state'           => 'NY',
+		'shipping_postcode'        => '70769',
+		'shipping_country'         => 'US',
+	),
+	$errors
+);
+pepselect_shipping_assert( isset( $errors->errors['pepselect_shipping_address'] ), 'Checkout must block a house-number-only street line.' );
 
 echo "Pep Select shipping rules contract passed.\n";
