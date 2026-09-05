@@ -7,6 +7,10 @@ final class PepSelect_OE_COA_Resolver {
 	/** @return array<string,mixed> */
 	public function resolve( string $batch_number ): array {
 		$batch_number = trim( $batch_number );
+		// Approved NAD label typo: keep historical Ops snapshots intact.
+		if ( 'ND50026205JP' === strtoupper( $batch_number ) ) {
+			$batch_number = 'ND50026205JS';
+		}
 		if ( '' === $batch_number || ! post_type_exists( 'ps_coa_test' ) ) {
 			return array();
 		}
@@ -37,6 +41,7 @@ final class PepSelect_OE_COA_Resolver {
 		}
 		$image_id = absint( get_post_meta( $post_id, 'batch_vial_photo', true ) );
 		return array(
+			'batch'           => $batch_number,
 			'post_id'         => $post_id,
 			'stage'           => $stage,
 			'outcome'         => $outcome,

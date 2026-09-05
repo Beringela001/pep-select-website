@@ -4,7 +4,7 @@ Tags: woocommerce, orders, batch, coa
 Requires at least: 6.5
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 0.4.1
+Stable tag: 0.4.2
 License: GPLv2 or later
 
 Secure, batch-specific customer order records connected to Pep Select Ops.
@@ -17,6 +17,9 @@ Secure, batch-specific customer order records connected to Pep Select Ops.
 4. Leave the feature disabled until staging verification is complete.
 
 == Changelog ==
+
+= 0.4.2 =
+* Resolves the approved NAD batch typo ND50026205JP to ND50026205JS for the exact COA photo, displayed batch, and report link without rewriting historical Ops snapshots.
 
 = 0.4.1 =
 * Gives Hospira Bacteriostatic Water, USP a product-details card without peptide testing, purity, laboratory, or unavailable-COA messaging.

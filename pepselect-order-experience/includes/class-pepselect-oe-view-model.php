@@ -83,6 +83,7 @@ final class PepSelect_OE_View_Model {
 	private function allocation( array $allocation, $product ): array {
 		$batch = trim( (string) ( $allocation['batch_number'] ?? '' ) );
 		$live  = $this->coa->resolve( $batch );
+		$corrected_batch = isset( $live['batch'] ) && $live['batch'] !== $batch;
 		$image = (string) ( $live['image'] ?? '' );
 		$exact = '' !== $image;
 		if ( ! $exact && $product instanceof WC_Product ) {
@@ -101,9 +102,9 @@ final class PepSelect_OE_View_Model {
 		}
 		$purity = rtrim( trim( (string) ( $live['purity'] ?? $allocation['purity_percent'] ?? '' ) ), "% \t\n\r\0\x0B" );
 		return array(
-			'batch'        => $batch,
+			'batch'        => $live['batch'] ?? $batch,
 			'quantity'     => max( 1, absint( $allocation['quantity'] ?? 1 ) ),
-			'coa_url'      => esc_url_raw( (string) ( $allocation['coa_permalink'] ?? $live['url'] ?? '' ) ),
+			'coa_url'      => esc_url_raw( (string) ( $corrected_batch ? $live['url'] : ( $allocation['coa_permalink'] ?? $live['url'] ?? '' ) ) ),
 			'image'        => esc_url_raw( $image ),
 			'image_srcset' => esc_attr( (string) ( $live['image_srcset'] ?? '' ) ),
 			'image_exact'  => $exact,
